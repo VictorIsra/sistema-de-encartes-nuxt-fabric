@@ -1,25 +1,5 @@
 <template>
   <div>
-    <div class="elevation-1">
-      <v-toolbar flat color="white">
-        <v-toolbar-title>
-          <v-layout align-center class="mr-2">
-            <v-img class="mr-2" width="40" src="/icones/campanhas.png"></v-img>
-            Campanhas
-          </v-layout>
-        </v-toolbar-title>
-        <v-divider
-          class="mx-2"
-          inset
-          vertical
-        ></v-divider>
-        <span class="subheading">Listagem</span>
-        <v-spacer></v-spacer>
-        <v-btn color="success">
-          <v-icon class="mr-2">far fa-plus-square</v-icon>
-          Adicionar campanha
-        </v-btn>
-      </v-toolbar>
       <v-data-table
         :headers="headers"
         :items="items"
@@ -50,7 +30,6 @@
           <v-btn color="primary" @click="initialize">Reset</v-btn>
         </template>
       </v-data-table>
-    </div>
   </div>
 </template>
 
