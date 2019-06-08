@@ -16,16 +16,15 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
-              v-model="dateFormatted"
+              v-model="dateFormatted_inicio"
               label="DATA DE INÍCIO:"
               persistent-hint
               prepend-icon="event"
-              @blur="date = parseDate(dateFormatted)"
               readonly
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker :format="formatDate" v-model="date" no-title @input="menu1 = false"></v-date-picker>
+          <v-date-picker :format="formatDate(data_inicio)" v-model="data_inicio" no-title @input="menu1 = false"></v-date-picker>
         </v-menu>
       </v-flex>
 
@@ -43,7 +42,7 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
-              v-model="computedDateFormatted"
+              v-model="dateFormatted_termino"
               label="DATA DE TÉRMINO"
               persistent-hint
               prepend-icon="event"
@@ -51,7 +50,7 @@
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="date" no-title @input="menu2 = false"></v-date-picker>
+          <v-date-picker v-model="data_termino" no-title @input="menu2 = false"></v-date-picker>
         </v-menu>
 
       </v-flex>
@@ -67,21 +66,22 @@ Vue.use(VeeValidate);
 
   export default {
     data: vm => ({
-      date: new Date().toISOString().substr(0, 10),
-      dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
+      data_inicio: new Date().toISOString().substr(0, 10),
+      data_termino: new Date().toISOString().substr(0, 10),
+
+      dateFormatted_inicio: vm.formatDate(new Date().toISOString().substr(0, 10)),
+      dateFormatted_termino: vm.formatDate(new Date().toISOString().substr(0, 10)),
+      
       menu1: false,
       menu2: false
     }),
 
-    computed: {
-      computedDateFormatted () {
-        return this.formatDate(this.date)
-      }
-    },
-
     watch: {
-      date (val) {
-        this.dateFormatted = this.formatDate(this.date)
+      data_inicio (val) {
+        this.dateFormatted_inicio = this.formatDate(this.data_inicio)
+      },
+      data_termino (val) {
+        this.dateFormatted_termino = this.formatDate(this.data_termino)
       }
     },
 
