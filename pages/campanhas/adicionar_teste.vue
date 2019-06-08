@@ -1,7 +1,8 @@
 <template>
   <v-stepper v-model="e1">
+    <v-btn color="success" @click="form_validado = !form_validado">{{teste}}</v-btn>
     <v-stepper-header>
-      <v-stepper-step :complete="e1 > 1" step="1">Name of step 1</v-stepper-step>
+      <v-stepper-step :complete="form_validado === true" step="1">Name of step 1</v-stepper-step>
 
       <v-divider></v-divider>
 
@@ -18,7 +19,7 @@
             <formulario/>
             <v-btn
             color="primary"
-            @click="e1 = 2"
+            
             >
             Continue
             </v-btn>
@@ -80,8 +81,11 @@
       formulario
     },
     methods: {
-      validaForm(){
-        return form_validado ? true : false
+      
+    },
+    computed: {
+      teste(){
+        return this.form_validado
       }
     }
   }
