@@ -59,6 +59,11 @@
 </template>
 
 <script>
+  import Vue from 'vue';
+  import VeeValidate from 'vee-validate';
+ 
+  Vue.use(VeeValidate);
+
   export default {
     data: vm => ({
       date: new Date().toISOString().substr(0, 10),

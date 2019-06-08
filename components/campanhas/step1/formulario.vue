@@ -25,10 +25,19 @@
       label="Tipo de campanha:"
       required
     ></v-select>
+    
+    <v-text-field
+      v-model="mlucro"
+      :rules="mlucroRules"
+      label="Margem de lucro mínima (%)"
+      required
+      type="number"
+      :min="min" 
+      :max="max"
+    ></v-text-field>
 
     <datas/>
     
-    <number/>
   
     <v-btn
       :disabled="!valid"
@@ -50,13 +59,11 @@
 <script>
 
   import datas from './datas.vue'
-  import number from './number.vue'
 
   export default {
     
     components: {
-        datas,
-        number
+        datas
     },
     data: () => ({
       valid: true,
@@ -67,6 +74,16 @@
       campanha: '',
       campanhaRules: [
         v => !!v || 'É preciso entrar com uma campanha.',
+      ],
+      mlucro: '',
+      min: 0,
+      max: 100,
+      mlucroRules: [
+        v => !!v || 'É preciso entrar com uma margem de lucro mínima',
+        v => (v >= 0 && v <= 100) || 'porcentagem tem que estar entre 0 e 100%'
+        /*gostaria mas n ta funcionando:
+        (v,max,min) => (v >= this.min && v <= this.max) || 'porcentagem tem que
+        estar entre 0 e 100% */
       ],
       select: null,
       items: [
