@@ -14,11 +14,10 @@
 
     <v-stepper-items>
       <v-stepper-content step="1">
-        <v-card
-          class="mb-5"
-          color="grey lighten-1"
-          height="200px"
-        ></v-card>
+        
+        <v-card-text>
+           <formulario/>
+        </v-card-text>
 
         <v-btn
           color="primary"
@@ -40,6 +39,7 @@
           color="primary"
           @click="e1 = 3"
         >
+       
           Continuar
         </v-btn>
 
@@ -67,11 +67,16 @@
 </template>
 
 <script>
+  import formulario from '../../components/campanhas/step1/formulario.vue';
+  
   export default {
     data () {
       return {
         e1: 0
       }
+    },
+    components: {
+      formulario
     }
   }
 </script>

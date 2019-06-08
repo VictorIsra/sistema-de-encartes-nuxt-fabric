@@ -10,7 +10,7 @@
       label="Empresa:"
       required
     ></v-text-field>
-
+  
     <v-text-field
       v-model="campanha"
       :rules="campanhaRules"
@@ -25,8 +25,11 @@
       label="Tipo de campanha:"
       required
     ></v-select>
+
     <datas/>
     
+    <number/>
+  
     <v-btn
       :disabled="!valid"
       color="success"
@@ -47,11 +50,13 @@
 <script>
 
   import datas from './datas.vue'
+  import number from './number.vue'
 
   export default {
     
     components: {
-        'datas': datas
+        datas,
+        number
     },
     data: () => ({
       valid: true,
