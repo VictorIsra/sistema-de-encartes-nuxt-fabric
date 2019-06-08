@@ -195,7 +195,7 @@ export default {
       }
       else if(path.includes('usuarios')){
         this.color = {
-          value: 'blue-grey darken-2',
+          value: 'blue-grey',
           dark: true
         }
       }
