@@ -21,10 +21,11 @@
               persistent-hint
               prepend-icon="event"
               @blur="date = parseDate(dateFormatted)"
+              readonly
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
+          <v-date-picker :format="formatDate" v-model="date" no-title @input="menu1 = false"></v-date-picker>
         </v-menu>
       </v-flex>
 
@@ -62,7 +63,7 @@
   import Vue from 'vue';
   import VeeValidate from 'vee-validate';
  
-  Vue.use(VeeValidate);
+Vue.use(VeeValidate);
 
   export default {
     data: vm => ({
@@ -88,13 +89,15 @@
       formatDate (date) {
         if (!date) return null
 
+        //console.log("data: ",date)
         const [year, month, day] = date.split('-')
-        return `${month}/${day}/${year}`
+        return `${day}/${month}/${year}`//ajustar pro padrao que quero
       },
       parseDate (date) {
         if (!date) return null
 
-        const [month, day, year] = date.split('/')
+       // console.log("PARdata: ",date)
+        const [month, day, year] = date.split('/')//n sei qd isso e'chamado, n mexerei ainda
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
       }
     }
