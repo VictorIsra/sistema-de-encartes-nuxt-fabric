@@ -22,6 +22,7 @@
               prepend-icon="event"
               readonly
               v-on="on"
+              :rules="dataRule"
             ></v-text-field>
           </template>
           <v-date-picker :format="formatDate(data_inicio)" v-model="data_inicio" no-title @input="menu1 = false"></v-date-picker>
@@ -48,6 +49,7 @@
               prepend-icon="event"
               readonly
               v-on="on"
+              :rules="dataRule"
             ></v-text-field>
           </template>
           <v-date-picker v-model="data_termino" no-title @input="menu2 = false"></v-date-picker>
@@ -71,7 +73,9 @@ Vue.use(VeeValidate);
 
       dateFormatted_inicio: vm.formatDate(new Date().toISOString().substr(0, 10)),
       dateFormatted_termino: vm.formatDate(new Date().toISOString().substr(0, 10)),
-      
+      dataRule: [
+        v => !!v || 'É preciso escolher uma data'
+      ],
       menu1: false,
       menu2: false
     }),
