@@ -1,48 +1,49 @@
 <template>
   <v-stepper  v-model="e1">
     <v-stepper-header>
-      <v-stepper-step :complete="e1 > 1" step="1">Dados da campanha</v-stepper-step>
+      <v-stepper-step :complete="e1 > 1" step="1">Dados da Campanha</v-stepper-step>
 
       <v-divider></v-divider>
 
-      <v-stepper-step :complete="e1 > 2" step="2">Produtos</v-stepper-step>
+      <v-stepper-step :complete="e1 > 2" step="2">Escolha de Produtos</v-stepper-step>
 
       <v-divider></v-divider>
 
       <v-stepper-step step="3">Aprovação do Diretor</v-stepper-step>
+
+       <v-divider></v-divider>
+
+      <v-stepper-step step="4">Criação das Demandas</v-stepper-step>
     </v-stepper-header>
 
     <v-stepper-items>
-      <v-stepper-content step="1">
+
+      <v-stepper-content step="1">  
+       <v-container grid-list-xs>
+         <formulario/>
+       </v-container>
         
-        <v-card-text>
-           <formulario/>
-        </v-card-text>
 
         <v-btn
           color="primary"
           @click="e1 = 2"
         >
-          Continuar
+          Próximo
         </v-btn>
-
       </v-stepper-content>
 
       <v-stepper-content step="2">
-        <v-card
-          class="mb-5"
-          color="grey lighten-1"
-          height="200px"
-        ></v-card>
+        <v-container grid-list-xs>
+           <tabela-produtos/>
+        </v-container>
+       
 
         <v-btn
           color="primary"
           @click="e1 = 3"
         >
-       
-          Continuar
+          Próximo
         </v-btn>
-
         <v-btn flat @click="e1 = e1 - 1">Voltar</v-btn>
       </v-stepper-content>
 
@@ -55,20 +56,43 @@
 
         <v-btn
           color="primary"
-          @click="e1 = 1"
+          @click="e1 = 4"
         >
-          Cadastrar campanha
+          Próximo
         </v-btn>
 
         <v-btn flat @click="e1 = e1 - 1">Voltar</v-btn>
       </v-stepper-content>
+      
+      <v-stepper-content step="4">
+        <v-card
+          class="mb-5"
+          color="grey lighten-1"
+          height="200px"
+        ></v-card>
+
+        <v-btn
+          color="primary"
+          @click="e1 = 3"
+        > 
+          Cadastrar campanha
+        </v-btn>
+
+        <v-btn flat @click="e1 = e1 - 1">Voltar</v-btn>
+     
+      </v-stepper-content>
+      
+
     </v-stepper-items>
   </v-stepper>
 </template>
 
 <script>
+  //import da etapa 1( slot1):
   import formulario from '../../components/campanhas/step1/formulario.vue';
-  
+  //import da etapa 2 ( step2):
+  import tabelaProdutos from '../../components/campanhas/step2/tabelaProdutos.vue'
+
   export default {
     data () {
       return {
@@ -76,7 +100,8 @@
       }
     },
     components: {
-      formulario
+      formulario,
+      'tabela-produtos': tabelaProdutos
     }
   }
 </script>

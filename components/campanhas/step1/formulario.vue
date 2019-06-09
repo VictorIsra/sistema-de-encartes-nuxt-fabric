@@ -1,8 +1,9 @@
 <template>
+
   <v-form
     ref="form"
     v-model="valid"
-    lazy-validation
+    
   > 
     <v-text-field
       v-model="empresa"
@@ -17,7 +18,7 @@
       label="Nome da campanha:"
       required
     ></v-text-field>
-
+ <v-btn color="success" @click="teste">text</v-btn>
     <v-select
       v-model="select"
       :items="items"
@@ -96,6 +97,9 @@
     }),
 
     methods: {
+      teste(){
+        console.log("this.refslbla: ", this.$refs.form.$data.inputs);
+      },
       validate () {
         if (this.$refs.form.validate()) {
           this.snackbar = true

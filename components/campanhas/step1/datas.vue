@@ -61,10 +61,6 @@
 </template>
 
 <script>
-  import Vue from 'vue';
-  import VeeValidate from 'vee-validate';
- 
-Vue.use(VeeValidate);
 
   export default {
     data: vm => ({
@@ -95,7 +91,7 @@ Vue.use(VeeValidate);
 
         //console.log("data: ",date)
         const [year, month, day] = date.split('-')
-        return `${day}/${month}/${year}`//ajustar pro padrao que quero
+        return `${day}/${month}/${year}`//ajustado pro padrao que quero
       },
       parseDate (date) {
         if (!date) return null
