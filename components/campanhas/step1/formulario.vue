@@ -61,6 +61,7 @@
 <script>
 
   import datas from './datas.vue'
+  import data_t from './data_t.vue'
 
   export default {
     
@@ -68,7 +69,8 @@
         datas
     },
     data: () => ({
-
+      
+      //lembre que retorna uma F, logo só acessarei os atributos após invoca-la
       datasData: datas.data,
       valid: true,
       //empresa: '',
@@ -89,6 +91,8 @@
         (v,max,min) => (v >= this.min && v <= this.max) || 'porcentagem tem que
         estar entre 0 e 100% */
       ],
+      dateFormatted_inicio: '',
+      dateFormatted_termino:'',
       form_inputs: {
         empresa: '',
         campanha: '',
@@ -113,10 +117,13 @@
     methods: {
       teste(){
 
-       //
-
+        console.log("datas data xD: ", this.datasData)
+        // let testando = this.datasData()
+        // console.log("testandp: ", testando.nome)
         // console.log("inputsd o form:\n ");
-
+        // let x = this.datasData()
+        // console.log("x é ", x.data_termino)
+       // this.form_inputs.data_inicio = this.datasData().data_inicio
         // Object.values(this.form_inputs).forEach(v =>
         // {
         //   console.log("valor: ", v);

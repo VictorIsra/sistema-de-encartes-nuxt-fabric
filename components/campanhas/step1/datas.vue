@@ -63,12 +63,12 @@
 <script>
 
   export default {
-    data: vm => ({
+    data: () => ({
       data_inicio: new Date().toISOString().substr(0, 10),
       data_termino: new Date().toISOString().substr(0, 10),
-
-      dateFormatted_inicio: vm.formatDate(new Date().toISOString().substr(0, 10)),
-      dateFormatted_termino: vm.formatDate(new Date().toISOString().substr(0, 10)),
+      
+      dateFormatted_inicio:'', //vm.formatDate(new Date().toISOString().substr(0, 10)),
+      dateFormatted_termino:'',// vm.formatDate(new Date().toISOString().substr(0, 10)),
       dataRule: [
         v => !!v || 'É preciso escolher uma data'
       ],
@@ -81,7 +81,10 @@
         this.dateFormatted_inicio = this.formatDate(this.data_inicio)
       },
       data_termino (val) {
+                console.log("antes INVOCA ", this.dateFormatted_termino)
+
         this.dateFormatted_termino = this.formatDate(this.data_termino)
+        console.log("POS INVOCA ", this.dateFormatted_termino)
       }
     },
 
@@ -89,8 +92,9 @@
       formatDate (date) {
         if (!date) return null
 
-        //console.log("data: ",date)
+        console.log("dataSS e: ",date)
         const [year, month, day] = date.split('-')
+      
         return `${day}/${month}/${year}`//ajustado pro padrao que quero
       },
       parseDate (date) {
