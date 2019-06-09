@@ -3,7 +3,6 @@
   <v-form
     ref="form"
     v-model="valid"
-    
   > 
   <v-btn @click="teste">text</v-btn>
     <v-text-field
@@ -41,13 +40,7 @@
     <datas @datachanged="getData"/>
     
   
-    <v-btn
-      :disabled="!valid"
-      color="success"
-      @click="validate"
-    >
-      Validate
-    </v-btn>
+    
 
     <v-btn
       color="info"
@@ -67,9 +60,12 @@
     components: {
         datas
     },
+    props: ['send_input']
+    ,
     data: () => ({
-            
-      valid: true,
+      carneiro:true,
+      valid: true,//diz respeito aos inputs do form
+     
       empresaRules: [
         v => !!v || 'É preciso entrar com o nome de uma empresa.',
       ],
@@ -96,12 +92,11 @@
       select: null,
       checkbox: false
     }),
-
     methods: {
       teste(){
        let xd = Object.values(this.form_inputs)
-      
-        console.log(xd)
+        this.carneiro = !this.carneiro
+        console.log("envio: ", this.send_input)
        
       },
       getData(data){
@@ -112,13 +107,14 @@
           this.form_inputs.data_termino = data.data
         else
           console.log("erro ocorreu na funcao getData")    
-        console.log('data ini ',this.form_inputs.data_inicio)
-        console.log('data termi', this.form_inputs.data_termino)  
+        //console.log('data ini ',this.form_inputs.data_inicio)
+        //console.log('data termi', this.form_inputs.data_termino)  
       },
       validate () {
+        console.log("entro validate")
         if (this.$refs.form.validate()) {
-          this.snackbar = true
           this.teste();
+          this.$emit('statusform', this.valid)
         }
         else
           console.log("ainda n");
@@ -128,6 +124,23 @@
       },
       resetValidation () {
         this.$refs.form.resetValidation()
+      }
+    },
+    watch: {
+      valid: {
+        handler(){
+          console.log("valid: ", this.valid)
+         // if(this.valid){
+           // this.validate()
+         // }
+         this.$emit('statusform', this.valid)
+          
+        }
+      },
+      send_input: {
+       handler(){
+          return this.send_input ? this.$emit('getinputs',this.form_inputs) : "falso"
+        }
       }
     }
   }

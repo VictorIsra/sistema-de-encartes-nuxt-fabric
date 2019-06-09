@@ -20,12 +20,13 @@
 
       <v-stepper-content step="1">  
        <v-container grid-list-xs>
-         <formulario/>
+         <formulario :send_input='send_input' @statusform="validarForm" @getinputs="printFormInput"/>
        </v-container>
         
 
         <v-btn
           color="primary"
+          :disabled="!form_validated"
           @click="e1 = 2"
         >
           Próximo
@@ -44,7 +45,6 @@
         >
           Próximo
         </v-btn>
-        <v-btn flat @click="e1 = e1 - 1">Voltar</v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="3">
@@ -94,14 +94,34 @@
   import tabelaProdutos from '../../components/campanhas/step2/tabelaProdutos.vue'
 
   export default {
-    data () {
-      return {
-        e1: 0
-      }
-    },
+
     components: {
       formulario,
       'tabela-produtos': tabelaProdutos
+    },
+    data () {
+      return {
+        e1: 0,
+        form_validated: false,
+        send_input: false,
+        form_inputs: ''//componente filgo formulario irá preencher isso na hora correta
+      }
+    },
+    methods: {
+      validarForm(flag){
+        if(flag){
+          this.form_validated = true
+          this.send_input = true
+        }
+        else{
+          this.form_validated = false
+          this.send_input = false
+        }
+      },
+      printFormInput(inputs){
+        let xd = Object.values(inputs)
+        console.log("inputs: ", xd)
+      }
     }
   }
 </script>
