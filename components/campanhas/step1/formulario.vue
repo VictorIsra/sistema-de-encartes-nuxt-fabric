@@ -39,15 +39,6 @@
     <datas @datachanged="getData"/>
     
     <v-btn
-        :disabled="!valid"
-        color="success"
-        @click="validate"
-      >
-        Confirmar informações
-    </v-btn>
-    
-
-    <v-btn
       color="info"
       @click="reset"
     >
@@ -57,22 +48,17 @@
 </template>
 
 <script>
-/*falta aparecer uma animacao qd o usuario validar as informacoes do formulario.
-optei for fazer ele validar e só dps poder clicar em proximo, pois
-assim garante que os inputs passados serao completos, em vez
-de fragmentos ( sem o botao d confirmacao, corria o risco de
-ser enviado informacoes antes do usuario terminar de digitar uma frase
-ex: em vez de enviar 'coca-cola', eviaria 'coc' ou 'c' etc..) */
+
   import datas from './datas.vue'
  
   export default {
-    
+    props: ['send_form_data'],//flag para enviar os inputs preenchidos para o componente pai ( adicionar.vue)
     components: {
         datas
     },
     data: () => ({
       valid: true,//diz respeito aos inputs do form
-     
+      
       empresaRules: [
         v => !!v || 'É preciso entrar com o nome de uma empresa.',
       ],
@@ -109,16 +95,6 @@ ex: em vez de enviar 'coca-cola', eviaria 'coc' ou 'c' etc..) */
         else
           console.log("erro ocorreu na funcao getData")    
       },
-      validate () {
-        if (this.$refs.form.validate()) {
-          this.$emit('statusform', {
-            valid: this.valid,
-            inputs: this.form_inputs
-          })
-        }
-        else
-          console.log("ainda n");
-      },
       reset () {
         this.$refs.form.reset()
       },
@@ -129,8 +105,18 @@ ex: em vez de enviar 'coca-cola', eviaria 'coc' ou 'c' etc..) */
     watch: {
       valid: {
         handler(){
-          if(!this.valid )
+          if(!this.valid )//controla se o botao de 'proximo' no componente pai ficará habilitado ou nao
             this.$emit('statusform', this.valid)
+          else 
+            this.$emit('statusform',this.valid)
+        }
+      },
+      send_form_data: {
+        handler(){
+          if(this.send_form_data){//envia os inputs preenchidos para o componente pai ( adicionar.vue)
+            //console.log("enviarei os inputs ")
+            this.$emit('getinputs',this.form_inputs)
+          }  
         }
       }
     }
