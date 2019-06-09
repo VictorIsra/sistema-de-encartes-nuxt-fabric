@@ -4,7 +4,6 @@
     ref="form"
     v-model="valid"
   > 
-  <v-btn @click="teste">text</v-btn>
     <v-text-field
       v-model="form_inputs.empresa"
       :rules="empresaRules"
@@ -39,7 +38,13 @@
 
     <datas @datachanged="getData"/>
     
-  
+    <v-btn
+        :disabled="!valid"
+        color="success"
+        @click="validate"
+      >
+        Confirmar informações
+    </v-btn>
     
 
     <v-btn
@@ -52,7 +57,12 @@
 </template>
 
 <script>
-
+/*falta aparecer uma animacao qd o usuario validar as informacoes do formulario.
+optei for fazer ele validar e só dps poder clicar em proximo, pois
+assim garante que os inputs passados serao completos, em vez
+de fragmentos ( sem o botao d confirmacao, corria o risco de
+ser enviado informacoes antes do usuario terminar de digitar uma frase
+ex: em vez de enviar 'coca-cola', eviaria 'coc' ou 'c' etc..) */
   import datas from './datas.vue'
  
   export default {
@@ -60,10 +70,7 @@
     components: {
         datas
     },
-    props: ['send_input']
-    ,
     data: () => ({
-      carneiro:true,
       valid: true,//diz respeito aos inputs do form
      
       empresaRules: [
@@ -93,13 +100,7 @@
       checkbox: false
     }),
     methods: {
-      teste(){
-       let xd = Object.values(this.form_inputs)
-        this.carneiro = !this.carneiro
-        console.log("envio: ", this.send_input)
-       
-      },
-      getData(data){
+      getData(data){//pega as datas formatas no componente filho 'datas'
 
         if(data.flag === 0)
           this.form_inputs.data_inicio = data.data
@@ -107,14 +108,13 @@
           this.form_inputs.data_termino = data.data
         else
           console.log("erro ocorreu na funcao getData")    
-        //console.log('data ini ',this.form_inputs.data_inicio)
-        //console.log('data termi', this.form_inputs.data_termino)  
       },
       validate () {
-        console.log("entro validate")
         if (this.$refs.form.validate()) {
-          this.teste();
-          this.$emit('statusform', this.valid)
+          this.$emit('statusform', {
+            valid: this.valid,
+            inputs: this.form_inputs
+          })
         }
         else
           console.log("ainda n");
@@ -129,17 +129,8 @@
     watch: {
       valid: {
         handler(){
-          console.log("valid: ", this.valid)
-         // if(this.valid){
-           // this.validate()
-         // }
-         this.$emit('statusform', this.valid)
-          
-        }
-      },
-      send_input: {
-       handler(){
-          return this.send_input ? this.$emit('getinputs',this.form_inputs) : "falso"
+          if(!this.valid )
+            this.$emit('statusform', this.valid)
         }
       }
     }

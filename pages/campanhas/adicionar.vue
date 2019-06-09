@@ -20,7 +20,7 @@
 
       <v-stepper-content step="1">  
        <v-container grid-list-xs>
-         <formulario :send_input='send_input' @statusform="validarForm" @getinputs="printFormInput"/>
+         <formulario @statusform="validarForm"/>
        </v-container>
         
 
@@ -103,24 +103,23 @@
       return {
         e1: 0,
         form_validated: false,
-        send_input: false,
-        form_inputs: ''//componente filgo formulario irá preencher isso na hora correta
+        form_inputs: ''//componente filho formulario irá preencher isso na hora correta
       }
     },
     methods: {
-      validarForm(flag){
-        if(flag){
+      validarForm(data){
+        if(data.valid){
           this.form_validated = true
-          this.send_input = true
+          this.form_inputs = data.inputs
+          this.printFormInput()
         }
         else{
           this.form_validated = false
-          this.send_input = false
         }
       },
-      printFormInput(inputs){
-        let xd = Object.values(inputs)
-        console.log("inputs: ", xd)
+      printFormInput(){
+        let inputs = Object.values(this.form_inputs)
+        console.log("inputs: ", inputs)
       }
     }
   }
