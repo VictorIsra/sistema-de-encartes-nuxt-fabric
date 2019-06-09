@@ -38,7 +38,7 @@
       :max="max"
     ></v-text-field>
 
-    <datas/>
+    <datas @datachanged="getData"/>
     
   
     <v-btn
@@ -61,38 +61,27 @@
 <script>
 
   import datas from './datas.vue'
-  import data_t from './data_t.vue'
-
+ 
   export default {
     
     components: {
         datas
     },
     data: () => ({
-      
-      //lembre que retorna uma F, logo só acessarei os atributos após invoca-la
-      datasData: datas.data,
+            
       valid: true,
-      //empresa: '',
       empresaRules: [
         v => !!v || 'É preciso entrar com o nome de uma empresa.',
       ],
-     // campanha: '',
       campanhaRules: [
         v => !!v || 'É preciso entrar com uma campanha.',
       ],
-     // mlucro: '',
       min: 0,
       max: 100,
       mlucroRules: [
         v => !!v || 'É preciso entrar com uma margem de lucro mínima',
         v => (v >= 0 && v <= 100) || 'porcentagem tem que estar entre 0 e 100%'
-        /*gostaria mas n ta funcionando:
-        (v,max,min) => (v >= this.min && v <= this.max) || 'porcentagem tem que
-        estar entre 0 e 100% */
       ],
-      dateFormatted_inicio: '',
-      dateFormatted_termino:'',
       form_inputs: {
         empresa: '',
         campanha: '',
@@ -105,30 +94,26 @@
         data_termino: ''
       },
       select: null,
-      // items: [
-      //   'Campanha semanal',
-      //   'Campanha mensal',
-      //   'Campanha anual',
-      //   'Campanha motherfuckearll'
-      // ],
       checkbox: false
     }),
 
     methods: {
       teste(){
-
-        console.log("datas data xD: ", this.datasData)
-        // let testando = this.datasData()
-        // console.log("testandp: ", testando.nome)
-        // console.log("inputsd o form:\n ");
-        // let x = this.datasData()
-        // console.log("x é ", x.data_termino)
-       // this.form_inputs.data_inicio = this.datasData().data_inicio
-        // Object.values(this.form_inputs).forEach(v =>
-        // {
-        //   console.log("valor: ", v);
-        // })
+       let xd = Object.values(this.form_inputs)
+      
+        console.log(xd)
        
+      },
+      getData(data){
+
+        if(data.flag === 0)
+          this.form_inputs.data_inicio = data.data
+        else if(data.flag === 1)
+          this.form_inputs.data_termino = data.data
+        else
+          console.log("erro ocorreu na funcao getData")    
+        console.log('data ini ',this.form_inputs.data_inicio)
+        console.log('data termi', this.form_inputs.data_termino)  
       },
       validate () {
         if (this.$refs.form.validate()) {
