@@ -18,7 +18,7 @@
       label="Nome da campanha:"
       required
     ></v-text-field>
- <v-btn color="success" @click="teste">text</v-btn>
+
     <v-select
       v-model="select"
       :items="items"

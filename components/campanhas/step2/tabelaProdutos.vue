@@ -1,11 +1,11 @@
 <template>
   <v-card>
     <v-card-title>
-       <v-text-area>
+      
             Você pode remover um item,
-     editá-lo,excluí-lo da tabela, bem como
+     editá-lo ou excluí-lo, bem como
      listá-los por ordem crescente ou decrescente.
-       </v-text-area>
+       
    
       <v-spacer></v-spacer>
       <v-text-field
@@ -18,11 +18,13 @@
     </v-card-title>
     <v-data-table
       :headers="headers"
-      :items="linhas"
+      :items="items"
       :search="search"
     >
+    
       <template v-slot:items="props">
        
+          
         <td class="text-xs-center">{{ props.item.img }}</td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
         <td class="text-xs-center">{{ props.item.qtdade }}</td>
@@ -34,6 +36,20 @@
         <td class="text-xs-center">{{ props.item.preco_v }}</td>
         <td class="text-xs-center">{{ props.item.selout }}</td>
         <td class="text-xs-center">{{ props.item.marluc}}</td>
+
+        <v-icon
+            small
+            class="mr-2"
+            @click="editItem(props.item)"
+        >
+              edit
+            </v-icon>
+            <v-icon
+              small
+              @click="deleteItem(props.item)"
+            >
+              delete
+        </v-icon>
       </template>
       <template v-slot:no-results>
         <v-alert :value="true" color="error" icon="warning">
@@ -65,7 +81,7 @@
 
         ],
         //vira do bd, mas hardodearei por hora:
-        linhas: [
+        items: [
         {
             img:  'xd.png',
             nome: 'ALCATRA',
@@ -94,6 +110,17 @@
         }
           
         ]
+      }
+    },
+    methods: {
+        editItem (item) {
+            this.editedIndex = this.items.indexOf(item)
+            this.editedItem = Object.assign({}, item)
+            this.dialog = true
+        },
+        deleteItem (item) {
+            const index = this.items.indexOf(item)
+        confirm('Tem certeza que deseja remover este item?') && this.items.splice(index, 1)
       }
     }
   }
