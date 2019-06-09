@@ -5,15 +5,16 @@
     v-model="valid"
     
   > 
+  <v-btn @click="teste">text</v-btn>
     <v-text-field
-      v-model="empresa"
+      v-model="form_inputs.empresa"
       :rules="empresaRules"
       label="Empresa:"
       required
     ></v-text-field>
   
     <v-text-field
-      v-model="campanha"
+      v-model="form_inputs.campanha"
       :rules="campanhaRules"
       label="Nome da campanha:"
       required
@@ -21,14 +22,14 @@
 
     <v-select
       v-model="select"
-      :items="items"
+      :items="form_inputs.items"
       :rules="[v => !!v || 'É preciso escolher um tipo de campanha!']"
       label="Tipo de campanha:"
       required
     ></v-select>
     
     <v-text-field
-      v-model="mlucro"
+      v-model="form_inputs.mlucro"
       :rules="mlucroRules"
       label="Margem de lucro mínima (%)"
       required
@@ -67,16 +68,18 @@
         datas
     },
     data: () => ({
+
+      datasData: datas.data,
       valid: true,
-      empresa: '',
+      //empresa: '',
       empresaRules: [
         v => !!v || 'É preciso entrar com o nome de uma empresa.',
       ],
-      campanha: '',
+     // campanha: '',
       campanhaRules: [
         v => !!v || 'É preciso entrar com uma campanha.',
       ],
-      mlucro: '',
+     // mlucro: '',
       min: 0,
       max: 100,
       mlucroRules: [
@@ -86,24 +89,47 @@
         (v,max,min) => (v >= this.min && v <= this.max) || 'porcentagem tem que
         estar entre 0 e 100% */
       ],
+      form_inputs: {
+        empresa: '',
+        campanha: '',
+        items: [
+          'campanha semanal',
+          'campanha mensal'
+        ],
+        mlucro: '',
+        data_inicio: '',
+        data_termino: ''
+      },
       select: null,
-      items: [
-        'Campanha semanal',
-        'Campanha mensal',
-        'Campanha anual',
-        'Campanha motherfuckearll'
-      ],
+      // items: [
+      //   'Campanha semanal',
+      //   'Campanha mensal',
+      //   'Campanha anual',
+      //   'Campanha motherfuckearll'
+      // ],
       checkbox: false
     }),
 
     methods: {
       teste(){
-        console.log("this.refslbla: ", this.$refs.form.$data.inputs);
+
+       //
+
+        // console.log("inputsd o form:\n ");
+
+        // Object.values(this.form_inputs).forEach(v =>
+        // {
+        //   console.log("valor: ", v);
+        // })
+       
       },
       validate () {
         if (this.$refs.form.validate()) {
           this.snackbar = true
+          this.teste();
         }
+        else
+          console.log("ainda n");
       },
       reset () {
         this.$refs.form.reset()
