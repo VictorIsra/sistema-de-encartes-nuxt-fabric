@@ -37,6 +37,7 @@
                 <v-flex xs12 sm6 md4>
                   <v-text-field v-model="editedItem.protein" label="Protein (g)"></v-text-field>
                 </v-flex>
+                
               </v-layout>
             </v-container>
           </v-card-text>
@@ -52,16 +53,25 @@
     <!-- campos que faram binds inportantes, como o search -->
     <v-data-table 
       :headers="headers"
-      :items="desserts"
+      :items="itens"
       class="elevation-1"
       :search="search"
     > 
       <template v-slot:items="props">
-        <td>{{ props.item.name }}</td>
-        <td class="text-xs-right">{{ props.item.calories }}</td>
-        <td class="text-xs-right">{{ props.item.fat }}</td>
-        <td class="text-xs-right">{{ props.item.carbs }}</td>
-        <td class="text-xs-right">{{ props.item.protein }}</td>
+       
+        <td class="text-xs-center">{{ props.item.img }}</td>
+        <td class="text-xs-center">{{ props.item.nome }}</td>
+        <td class="text-xs-center">{{ props.item.qtdade }}</td>
+        <td class="text-xs-center">{{ props.item.unidade }}</td>
+        <td class="text-xs-center">{{ props.item.obs }}</td>
+        <td class="text-xs-center">{{ props.item.data_i }}</td>
+        <td class="text-xs-center">{{ props.item.data_f }}</td>
+        <td class="text-xs-center">{{ props.item.preco_c }}</td>
+        <td class="text-xs-center">{{ props.item.preco_v }}</td>
+        <td class="text-xs-center">{{ props.item.selout }}</td>
+        <td class="text-xs-center">{{ props.item.marluc}}</td>
+        
+
         <td class="justify-center layout px-0">
           <v-icon
             small
@@ -96,19 +106,21 @@
       dialog: false,
       search: '',
       headers: [
-        {
-          text: 'Dessert (100g serving)',
-          align: 'left',
-          sortable: false,
-          value: 'name'
-        },
-        { text: 'Calories', value: 'calories' },
-        { text: 'Fat (g)', value: 'fat' },
-        { text: 'Carbs (g)', value: 'carbs' },
-        { text: 'Protein (g)', value: 'protein' },
-        { text: 'Ações', value: 'name', sortable: false }
+        
+        { text: 'IMAGEM', value: 'img' },
+        { text: 'PRODUTO', value: 'nome' },
+        { text: 'ESTOQUE', value: 'qtdade' },
+        { text: 'UNIDADE', value: 'unidade' },
+        { text: 'OBSERVAÇÃO', value: 'obs' },
+        { text: 'DATA DE INÍCIO', value: 'data_i' },
+        { text: 'DATA DE TÉRMINO', value: 'data_f' },
+        { text: 'PREÇO DE COMPRA', value: 'preco_c' },
+        { text: 'PREÇO DE VENDA', value: 'preco_v' },
+        { text: 'SELL OUT', value: 'selout' },
+        { text: 'MARGEM DE LUCRO', value: 'marluc' },  
+        { text: 'AÇÕES', value: 'acao' } 
       ],
-      desserts: [],
+      itens: [],
       editedIndex: -1,
       editedItem: {
         name: '',
@@ -144,89 +156,33 @@
 
     methods: {
       initialize () {
-        this.desserts = [
+        this.itens = [
           {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7
+            img:  'pqp.png',
+            nome: 'Arroz',
+            qtdade: 409,
+            unidade: 'kg',
+            obs: 'nada a declarar',
+            data_i: '11/05/2019',
+            data_f: '23/06/2019',
+            preco_c: '130$',
+            preco_v: '303$',
+            selout: '--',
+            marluc: '10%'
           }
+         
         ]
       },
 
       editItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
+        this.editedIndex = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
 
       deleteItem (item) {
-        const index = this.desserts.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+        const index = this.itens.indexOf(item)
+        confirm('Are you sure you want to delete this item?') && this.itens.splice(index, 1)
       },
 
       close () {
@@ -239,9 +195,9 @@
 
       save () {
         if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
+          Object.assign(this.itens[this.editedIndex], this.editedItem)
         } else {
-          this.desserts.push(this.editedItem)
+          this.itens.push(this.editedItem)
         }
         this.close()
       }
