@@ -1,14 +1,8 @@
 <template>
   <div>
     <v-toolbar flat color="white">
-      <v-toolbar-title>My CRUD</v-toolbar-title>
-      <v-divider
-        class="mx-2"
-        inset
-        vertical
-      ></v-divider>
-       <v-spacer></v-spacer>
-       <v-text-field
+      <v-spacer></v-spacer>
+      <v-text-field
         v-model="search"
         append-icon="search"
         label="Buscar produto"
@@ -17,13 +11,15 @@
       ></v-text-field>
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
-        
+        <template v-slot:activator="{ on }">
+          <v-btn color="primary" dark class="mb-2" v-on="on">Adicionar item</v-btn>
+        </template>
         <v-card>
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
           </v-card-title>
 
-          <v-card-text>
+          <v-card-text> <!-- informacoes de adicionar e deletar-->
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12 sm6 md4>
@@ -47,18 +43,19 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-            <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
+            <v-btn color="blue darken-1" flat @click="close">Cancelar</v-btn>
+            <v-btn color="blue darken-1" flat @click="save">Salvar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-toolbar>
-    <v-data-table
+    <!-- campos que faram binds inportantes, como o search -->
+    <v-data-table 
       :headers="headers"
       :items="desserts"
       class="elevation-1"
       :search="search"
-    >
+    > 
       <template v-slot:items="props">
         <td>{{ props.item.name }}</td>
         <td class="text-xs-right">{{ props.item.calories }}</td>
@@ -82,7 +79,12 @@
         </td>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">Reset</v-btn>
+        <v-btn color="primary" @click="initialize">Resetar</v-btn>
+      </template>
+      <template v-slot:no-results>
+        <v-alert :value="true" color="error" icon="warning">
+          O produto "{{ search }}" não foi encontrado.
+        </v-alert>
       </template>
     </v-data-table>
   </div>
@@ -104,7 +106,7 @@
         { text: 'Fat (g)', value: 'fat' },
         { text: 'Carbs (g)', value: 'carbs' },
         { text: 'Protein (g)', value: 'protein' },
-        { text: 'Actions', value: 'name', sortable: false }
+        { text: 'Ações', value: 'name', sortable: false }
       ],
       desserts: [],
       editedIndex: -1,
@@ -126,7 +128,7 @@
 
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+        return this.editedIndex === -1 ? 'Novo Item:' : 'Editando Item:'
       }
     },
 
