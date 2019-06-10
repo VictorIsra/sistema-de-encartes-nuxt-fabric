@@ -22,6 +22,9 @@
           <v-card-text> <!-- informacoes de adicionar e deletar-->
             <v-container grid-list-md>
               <v-layout wrap>
+                 <v-flex >
+                 <img-upload/>
+                </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field v-model="editedItem.name" label="Dessert name"></v-text-field>
                 </v-flex>
@@ -101,7 +104,13 @@
 </template>
 
 <script>
+
+  import imgUpload from './image_upload.vue'
+
   export default {
+    components: {
+      'img-upload': imgUpload
+    },
     data: () => ({
       dialog: false,
       search: '',
