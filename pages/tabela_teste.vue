@@ -316,35 +316,22 @@
       fillImgInfo(newItemIndex = ''){   
          //só guardarei a foto escolhida se ele salvou algo, se nao, nao
         //sera chamada se o user de fato quis salvar uma img e ela nao for em braco, pois caso seja, n tem objeto pra criar e daria erro!
-        if(this.cachedImgInfo.imgFile !== '' && (newItemIndex === '')){
-          console.log("chamei A this.ediiteitem ")
-          if(this.editedItem.img === ''){//caso ele tenha criado algo sem img e depois queira bota-la
-            console.log("edite zuado")
-            this.editedItem.img = {
-              src: this.cachedImgInfo.imgFile,
-              name:this.cachedImgInfo.imgName
-            }
-            console.log("veee ")
-            this.createImage(this.editedItem.img.src,this.editedItem)
-            this.editedItem.img.name =  this.cachedImgInfo.imgName
-          }
-          else{
-            console.log("edite normaç")
-            this.createImage(this.cachedImgInfo.imgFile,this.editedItem)
-            this.editedItem.img.name =  this.cachedImgInfo.imgName
-          }  
+        if(this.cachedImgInfo.imgFile !== '' && (newItemIndex === '')){//caso editando algo existente
+          this.createImage(this.cachedImgInfo.imgFile,this.editedItem)
+          this.editedItem.img.name =  this.cachedImgInfo.imgName         
         }
-        else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){
-                    console.log("chamei B")
-
+        else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){//caso criando algo novo  que contenha img
           this.itens[newItemIndex].img = {
             src: this.cachedImgInfo.imgFile,
             name: this.cachedImgInfo.imgName
           }
           this.createImage(this.itens[newItemIndex].img.src,this.itens[newItemIndex])
         }
-        else{
-          console.log("criado sem img", this.editedItem)
+        else{//caso criando algo novo e sem img
+          this.itens[newItemIndex].img = {
+            src: this.cachedImgInfo.imgFile,
+            name: this.cachedImgInfo.imgName
+          }  
         }
         //esvazia p uso futuro. lembre que só é possivel editar uma linha por vez :)
         this.cachedImgInfo.imgName = ''
