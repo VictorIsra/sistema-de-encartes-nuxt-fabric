@@ -12,7 +12,7 @@
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark class="mb-2" v-on="on">Adicionar item</v-btn>
+          <v-btn color="primary" dark class="mb-2" v-on="on" >Adicionar item</v-btn>
         </template>
         <v-card > <!-- o form em si é esse v card! -->
           <v-card-title>
@@ -38,7 +38,7 @@
                   <v-text-field v-model="editedItem.obs" label="Observação"></v-text-field>
                 </v-flex>
                 <v-flex>
-                  <datas :checkDataRange="checkDataRange" @datachanged="getData" :defaultDatasValues="defaultDatasValues"/>              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
+                  <datas :checkDataRange="checkDataRange" @datechanged="getDate" :defaultDatesValues="defaultDatesValues"/>              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field  v-model="editedItem.preco_c" label="Preço de compra"></v-text-field>
@@ -123,7 +123,7 @@
       'img-upload': imgUpload,
       datas
     },
-
+  
     data: () => ({
       dialog: false,
       search: '',
@@ -138,7 +138,7 @@
           Pdata_f: '2/2/2019'
         },
         //fim de info relativa a validacao de datas.^
-        defaultDatasValues: {//valor das datas em uma linha em particular da tabela. É uma prop
+        defaultDatesValues: {//valor das datas em uma linha em particular da tabela. É uma prop
           Rdata_i: '', //de 'row data inicio'
           Rdata_f: '',
           flag: 0
@@ -215,6 +215,7 @@
 
     methods: {
       initialize () {
+  
         this.itens = [
           {
             img:  {
@@ -253,11 +254,10 @@
       },
 
       editItem (item) {//esse objeto é preenchido no momento que o dialog de edicao é aberto
+        console.log("criacaooo")
         this.editedIndex = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
-        this.defaultDatasValues.flag = 1
-        this.defaultDatasValues.Rdata_i = this.editedItem.data_i
-        this.defaultDatasValues.Rdata_f = this.editedItem.data_f
+        this.sendDefaultDates()//pro componente filho mostrar as datas referentes a linha ao abrir o dialog
         this.dialog = true  
       },
 
@@ -265,9 +265,10 @@
         const index = this.itens.indexOf(item)
         confirm('Você tem certeza de que deseja remover este item?') && this.itens.splice(index, 1)
       },
-
+    
       close () {
-        this.defaultDatasValues.flag = 0
+        console.log("fecho")
+        this.defaultDatesValues.flag = 0
         this.dialog = false
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
@@ -284,10 +285,9 @@
         }
         this.close()
       },
-      getData(data){//pega as datas formatas no componente filho 'datas'
+      getDate(data){//pega as datas formatas no componente filho 'datas'
         //será chamado antes do método save, aqui, devo associar o valor do item editado com data
         //que assim ele atualizará na tabela no save ;)
-        console.log("coe ng coe")
         if(data.flag === 0)
             this.editedItem.data_i = data.data 
         else if(data.flag === 1)
@@ -295,30 +295,38 @@
         else
           console.log("erro ocorreu na funcao getData(componente datas.vue)")    
       },
+      sendDefaultDates(){
+        this.defaultDatesValues.flag = 1
+        this.defaultDatesValues.Rdata_i = this.editedItem.data_i
+        this.defaultDatesValues.Rdata_f = this.editedItem.data_f
+      },
       fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
-        //console.log("dados img", data.file)//savo isso no bd
         this.cachedImgInfo.imgName = data.name
         this.cachedImgInfo.imgFile = data.file
       },
       fillImgInfo(){
+        console.log("chamoooou fill")
+       // var saveImgOnDialogOpen = false //só guardarei a foto escolhida se ele salvou algo, se nao, nao
         //sera chamada se o user de fato quis salvar uma img e ela nao for em braco, pois caso seja, n tem objeto pra criar e daria erro!
         if(this.cachedImgInfo.imgFile !== ''){
-          this.createImage(this.cachedImgInfo.imgFile);
+          this.createImage(this.cachedImgInfo.imgFile)
           this.editedItem.img.name =  this.cachedImgInfo.imgName
+         // saveImgOnDialogOpen = true
         }
         //esvazia p uso futuro. lembre que só é possivel editar uma linha por vez :)
-        this.cachedImgInfo.imgName = '',
+        this.cachedImgInfo.imgName = ''
         this.cachedImgInfo.imgFile = ''
+
+       // return saveImgOnDialogOpen
       },
       createImage(file) {
         let image = new Image();
         var reader = new FileReader(); 
         reader.onload = (e) => {
-          this.editedItem.img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-        console.log("crie img")
+          this.editedItem.img.src = e.target.result
+        }
+        reader.readAsDataURL(file);//console.log("crie img")
       }
     }
   }

@@ -23,10 +23,9 @@
 //obs: "append() bota a data na ultima posicao de um vetor, prepend() bota na primeira posicao"
 export default {
      data: () => ({
-        title: "Upload da imagem",
         dialog: false,
+        imageUrl: '',
 		imageName: '',
-		imageUrl: '', //a principo nao salvaria no bd, mas tvz seja uma info interessante
         imageFile: '',//arquivo que irei salvar no bd e q é capaz de
         //de ser convertido numa img de fato, alem de conter info do nome, tamanho etc
     }),
@@ -54,8 +53,7 @@ export default {
 				fr.addEventListener('load', () => {
 					this.imageUrl = fr.result
 					this.imageFile = files[0] // arquivo da img que posso mandar pro server/bd/back-end...
-                
-                    console.log("vou mandaraaa")
+                   // this.clearInput()
                     this.$emit('imgUploaded',{
                         file: this.imageFile,
                         name: this.imageName

@@ -36,7 +36,7 @@
       :max="max"
     ></v-text-field>
 
-    <datas @datachanged="getData"/>
+    <datas @datechanged="getDate"/>
     
     <v-btn
       color="info"
@@ -86,7 +86,7 @@
       checkbox: false
     }),
     methods: {
-      getData(data){//pega as datas formatas no componente filho 'datas'
+      getDate(data){//pega as datas formatas no componente filho 'datas'
 
         if(data.flag === 0)
           this.form_inputs.data_inicio = data.data

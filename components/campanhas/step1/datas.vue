@@ -74,7 +74,7 @@
             }  
           }
         },
-        defaultDatasValues:{//pra qd abrir um dialog, as datas serem iguais as das contidas na linha de uma tabela, em vez de em branco
+        defaultDatesValues:{//pra qd abrir um dialog, as datas serem iguais as das contidas na linha de uma tabela, em vez de em branco
           type: Object,
           default: function(){
             return {
@@ -97,28 +97,25 @@
     watch: {
       data_inicio (val) {
         this.dateFormatted_inicio = this.formatDate(this.data_inicio)
-        this.$emit('datachanged',{
+        this.$emit('datechanged',{
           data: this.dateFormatted_inicio,
           flag: 0
         })
       },
       data_termino (val) {
-        //console.log("antes INVOCA ", this.dateFormatted_termino)
-
         this.dateFormatted_termino = this.formatDate(this.data_termino)
-        this.$emit('datachanged',{
+        this.$emit('datechanged',{
           data: this.dateFormatted_termino,
           flag: 1
         });
       },
-      'defaultDatasValues.flag': {
+      'defaultDatesValues.flag': {//me dirá qd um dialog foi aberto, daí associo a data daqui com as contidas na tabela q chamou o dialog
         handler(){
           let temp_data_i = ''
           let temp_data_f = ''
-          if( this.defaultDatasValues.flag === 1){//p n auterar a prop no comp filho
-          console.log("opa")
-            temp_data_i = this.defaultDatasValues.Rdata_i
-            temp_data_f = this.defaultDatasValues.Rdata_f
+          if( this.defaultDatesValues.flag === 1){//p n auterar a prop no comp filho
+            temp_data_i = this.defaultDatesValues.Rdata_i
+            temp_data_f = this.defaultDatesValues.Rdata_f
 
             this.dateFormatted_inicio = temp_data_i
             this.dateFormatted_termino = temp_data_f
@@ -146,7 +143,6 @@
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
       },
       dataRange(dateFrom,dateTo,dateCheck){ //ve se a data tá entre um range
-      console.log("chamei data range")
         var d1 = dateFrom.split("/")
         var d2 = dateTo.split("/")
         var c = dateCheck.split("/")
@@ -160,10 +156,9 @@
         return check > from && check < to
       },
       checkDefaultDataValues(){//padrao é vazio, mas o componente pai pode preenche-las
-        console.log("checkeiii")
-        if(this.defaultDatasValues.flag !== 0){ //se o pai enviou algo
-          this.dateFormatted_inicio = this.defaultDatasValues.Rdata_i
-          this.dateFormatted_termino = this.defaultDatasValues.Rdata_f
+        if(this.defaultDatesValues.flag !== 0){ //se o pai enviou algo
+          this.dateFormatted_inicio = this.defaultDatesValues.Rdata_i
+          this.dateFormatted_termino = this.defaultDatesValues.Rdata_f
         }
       },
       dataRule(v){
