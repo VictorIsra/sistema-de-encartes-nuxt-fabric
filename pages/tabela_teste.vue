@@ -1,3 +1,5 @@
+<!-- //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
+-->
 <template>
   <div>
     <v-toolbar flat color="white">
@@ -12,7 +14,7 @@
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark class="mb-2" v-on="on" >Adicionar item</v-btn>
+          <v-btn color="primary" dark class="mb-2" v-on="on" >Adicionar item</v-btn> <!--v-on="on" -->
         </template>
         <v-card > <!-- o form em si é esse v card! -->
           <v-card-title>
@@ -114,9 +116,9 @@
 </template>
 
 <script>
-
-  import imgUpload from './image_upload.vue'
-  import datas from  '../components/campanhas/step1/datas.vue'
+//arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
+  import imgUpload from '../components/campanhas/generalUseComponents/image_upload.vue'
+  import datas from  '../components/campanhas/generalUseComponents/datas.vue'
   
   export default {
     components: {
@@ -126,6 +128,7 @@
   
     data: () => ({
       dialog: false,
+      addItemFlag: 1,
       search: '',
       valid: true,
       formErrors: [],//data n pode ser fora do range, esse vetor controlará se o form podera ser salvo ou n, baseado nas datas
@@ -205,6 +208,7 @@
 
     watch: {
       dialog (val) {
+        console.log("dialog abriu!")
         val || this.close()
       }
     },
@@ -252,9 +256,8 @@
          
         ]
       },
-
-      editItem (item) {//esse objeto é preenchido no momento que o dialog de edicao é aberto
-        console.log("criacaooo")
+  
+      editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
         this.sendDefaultDates()//pro componente filho mostrar as datas referentes a linha ao abrir o dialog
@@ -267,7 +270,6 @@
       },
     
       close () {
-        console.log("fecho")
         this.defaultDatesValues.flag = 0
         this.dialog = false
         setTimeout(() => {
@@ -280,8 +282,9 @@
         if (this.editedIndex > -1) {
           Object.assign(this.itens[this.editedIndex], this.editedItem)
           this.fillImgInfo()
-        } else {
+        } else {//caso esteja adicionando algo 
           this.itens.push(this.editedItem)
+          this.fillImgInfo(this.itens.length -1)//passa o item criado como argumento
         }
         this.close()
       },
@@ -295,36 +298,41 @@
         else
           console.log("erro ocorreu na funcao getData(componente datas.vue)")    
       },
-      sendDefaultDates(){
+      sendDefaultDates(){//dps passarei 1 ou 0 como argumento, pra dif edicao de um item novo
         this.defaultDatesValues.flag = 1
         this.defaultDatesValues.Rdata_i = this.editedItem.data_i
         this.defaultDatesValues.Rdata_f = this.editedItem.data_f
       },
       fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
+       
         this.cachedImgInfo.imgName = data.name
         this.cachedImgInfo.imgFile = data.file
+        console.log("fil cached: ", this.cachedImgInfo.imgFile)
       },
-      fillImgInfo(){
-        console.log("chamoooou fill")
-       // var saveImgOnDialogOpen = false //só guardarei a foto escolhida se ele salvou algo, se nao, nao
+      fillImgInfo(newItemIndex = ''){   
+         //só guardarei a foto escolhida se ele salvou algo, se nao, nao
         //sera chamada se o user de fato quis salvar uma img e ela nao for em braco, pois caso seja, n tem objeto pra criar e daria erro!
-        if(this.cachedImgInfo.imgFile !== ''){
-          this.createImage(this.cachedImgInfo.imgFile)
+        if(this.cachedImgInfo.imgFile !== '' && (newItemIndex === '')){
+          this.createImage(this.cachedImgInfo.imgFile,this.editedItem)
           this.editedItem.img.name =  this.cachedImgInfo.imgName
-         // saveImgOnDialogOpen = true
+        }
+        else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){
+          this.itens[newItemIndex].img = {
+            src: this.cachedImgInfo.imgFile,
+            name: this.cachedImgInfo.imgName
+          }
+          this.createImage(this.itens[newItemIndex].img.src,this.itens[newItemIndex])
         }
         //esvazia p uso futuro. lembre que só é possivel editar uma linha por vez :)
         this.cachedImgInfo.imgName = ''
         this.cachedImgInfo.imgFile = ''
-
-       // return saveImgOnDialogOpen
       },
-      createImage(file) {
+      createImage(file, item) {
         let image = new Image();
         var reader = new FileReader(); 
         reader.onload = (e) => {
-          this.editedItem.img.src = e.target.result
+           item.img.src = e.target.result//this.editedItem.img.src = e.target.result
         }
         reader.readAsDataURL(file);//console.log("crie img")
       }

@@ -49,7 +49,7 @@
 
 <script>
 
-  import datas from './datas.vue'
+  import datas from '../generalUseComponents/datas.vue'
  
   export default {
     props: ['send_form_data'],//flag para enviar os inputs preenchidos para o componente pai ( adicionar.vue)
