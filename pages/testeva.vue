@@ -132,13 +132,13 @@
       resetForm () {
         this.errorMessages = []
         this.formHasErrors = false
-
         Object.keys(this.form).forEach(f => {
           this.$refs[f].reset()
         })
       },
       submit () {
         this.formHasErrors = false
+                        console.log("orm: ", this.form)
 
         Object.keys(this.form).forEach(f => {
           if (!this.form[f]) this.formHasErrors = true

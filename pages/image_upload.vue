@@ -1,7 +1,8 @@
 <template>
     <div >  
-        <v-flex  > 
-                <img :src="imageUrl" height="150" v-if="imageUrl"/>
+        <v-flex> 
+           <!-- <img :src="image" width="50px" height="50px"/>-->
+                <img :src="imageUrl" height="50px" v-if="imageUrl"/>
                 <v-text-field label="Selecione uma imagem" @click='pickFile' v-model='imageName' prepend-icon='attach_file'></v-text-field>
                 <input
                     type="file"
@@ -11,13 +12,14 @@
                     @change="onFilePicked"
                 >
         </v-flex>
-        <v-dialog v-model="dialog"  max-width="200px">
+        <!--<v-dialog v-model="dialog"  max-width="200px">
             SOU DIALOGO
-        </v-dialog>    
+        </v-dialog>    -->
     </div> 
 </template>
 
 <script>
+//como só aceita imagem na input, n adianta tentar usar o rule pra dar um output de erro ( pois esta ultima é string, n img)
 //obs: "append() bota a data na ultima posicao de um vetor, prepend() bota na primeira posicao"
 export default {
      data: () => ({
@@ -26,6 +28,7 @@ export default {
 		imageName: '',
 		imageUrl: '', //a principo nao salvaria no bd, mas tvz seja uma info interessante
         imageFile: '',//arquivo que irei salvar no bd
+        image: ''
     }),
 
     methods: {
@@ -42,7 +45,7 @@ export default {
 					return
                 }
                 if(files[0].type.match('image/*'))
-                    console.log("é img!")
+                   console.log("é img!")
                 else{//n é img
                     this.clearInput()
                     return
@@ -52,8 +55,16 @@ export default {
 				fr.addEventListener('load', () => {
 					this.imageUrl = fr.result
 					this.imageFile = files[0] // arquivo da img que posso mandar pro server/bd/back-end...
-                    console.log("img url:", this.imageUrl)
-                    console.log("imagefile(bd): ", this.imageFile)
+                  //  console.log("img url:", this.imageUrl)
+                    //console.log("imagefile(bd): ", this.imageFile)
+                  
+
+                    console.log("vou mandaraaa")
+                    this.$emit('imgUploaded',{
+                        url: this.imageUrl,
+                        file: this.imageFile,
+                        img: this.imageName
+                    })
                 })
 			} else {
 				this.clearInput()
@@ -63,7 +74,17 @@ export default {
             this.imageName = ''
 			this.imageFile = ''
 			this.imageUrl = ''
-        }
+        },
+        //  createImage(file) {
+        //     var image = new Image();
+        //     var reader = new FileReader();
+        //     var vm = this;
+
+        //     reader.onload = (e) => {
+        //         vm.image = e.target.result;
+        //     };
+        //     reader.readAsDataURL(file);
+        // }
     }
 }
 </script>

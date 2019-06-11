@@ -64,7 +64,7 @@
 
   export default {
     props: {
-        checkDataRange: {
+        checkDataRange: {//tabela precisa q as datas fiquem dentro de um intervalo, daí ela envia essa prop preenchida
           type: Object,
           default: function(){
             return{
@@ -81,9 +81,6 @@
       
       dateFormatted_inicio:'', //vm.formatDate(new Date().toISOString().substr(0, 10)),
       dateFormatted_termino:'',// vm.formatDate(new Date().toISOString().substr(0, 10)),
-      // dataRule: [
-      //   v => !!v || 'É preciso escolher uma data'
-      // ],
       menu1: false,
       menu2: false
     }),
@@ -131,6 +128,7 @@
         var check = new Date(c[2], parseInt(c[1])-1, c[0])
     
         console.log(check > from && check < to)
+       
         return check > from && check < to
       },
       dataRule(v){

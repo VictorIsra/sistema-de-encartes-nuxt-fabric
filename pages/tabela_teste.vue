@@ -14,7 +14,7 @@
         <template v-slot:activator="{ on }">
           <v-btn color="primary" dark class="mb-2" v-on="on">Adicionar item</v-btn>
         </template>
-        <v-card>
+        <v-card > <!-- o form em si é esse v card! -->
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
           </v-card-title>
@@ -23,7 +23,7 @@
             <v-container grid-list-md >
               <v-layout wrap>
                  <v-flex >
-                 <img-upload/><!-- binds tao dentro do componente, ver isso melhor dps-->
+                 <img-upload @imgUploaded="getImgInfo"/><!-- binds tao dentro do componente, ver isso melhor dps-->
                 </v-flex>
                  <v-flex xs12 sm6 md4>
                   <v-text-field  v-model="editedItem.nome" label="Produto"></v-text-field>
@@ -71,9 +71,8 @@
       class="elevation-1"
       :search="search"
     > 
-      <template v-slot:items="props">
-       
-        <td class="text-xs-center">{{ props.item.img }}</td>
+      <template v-slot:items="props"> <!-- {{ props.item.img }}-->
+        <td class="text-xs-center">{{ props.item.imge }}<img :src="image" width="50px" height="50px" alt=""></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
         <td class="text-xs-center">{{ props.item.qtdade }}</td>
         <td class="text-xs-center">{{ props.item.unidade }}</td>
@@ -118,7 +117,7 @@
 
   import imgUpload from './image_upload.vue'
   import datas from  '../components/campanhas/step1/datas.vue'
-
+  
   export default {
     components: {
       'img-upload': imgUpload,
@@ -127,16 +126,19 @@
     data: () => ({
       dialog: false,
       search: '',
+      myimg: '',
       valid: true,
+      image: '',
+      formErrors: [],//data n pode ser fora do range, esse vetor controlará se o form podera ser salvo ou n, baseado nas datas
       dataRange: datas.methods.dataRange,
       checkDataRange: {
         checkRange: true,
-        Pdata_i: '1/1/2018',
+        Pdata_i: '1/1/2018',//virá da etapa um 
         Pdata_f: '2/2/2019',
       },
       headers: [
         
-        { text: 'IMAGEM', value: 'img' },
+        { text: 'IMAGEM', value: 'imge' },
         { text: 'PRODUTO', value: 'nome' },
         { text: 'ESTOQUE', value: 'qtdade' },
         { text: 'UNIDADE', value: 'unidade' },
@@ -152,7 +154,7 @@
       itens: [],
       editedIndex: -1,
       editedItem: {
-        img:  '',
+        imge:  '',
         nome: '',
         qtdade: '',
         unidade: '',
@@ -165,7 +167,7 @@
         marluc: ''
       },
       defaultItem: {
-        img:  '',
+        imge:  '',
         nome: '',
         qtdade: '',
         unidade: '',
@@ -193,13 +195,14 @@
 
     created () {
       this.initialize()
+   
     },
 
     methods: {
       initialize () {
         this.itens = [
           {
-            img:  'pqp.png',
+            imge:  'pqp.png',
             nome: 'Arroz',
             qtdade: 409,
             unidade: 'kg',
@@ -210,16 +213,32 @@
             preco_v: '303$',
             selout: '--',
             marluc: '10%'
+          },
+           {
+            imge:  'pqsp.png',
+            nome: 'feijao',
+            qtdade: 1000,
+            unidade: 'kg',
+            obs: 'nada a declarar',
+            data_i: '11/05/2019',
+            data_f: '23/06/2019',
+            preco_c: '1300',
+            preco_v: '3033',
+            selout: '--',
+            marluc: '130%'
           }
          
         ]
       },
 
-      editItem (item) {
+      editItem (item) {//esse objeto é preenchido no momento que o dialog de edicao é aberto
+        
+                  
         this.editedIndex = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
-        console.log("item editado:", this.editedItem.data_i)
+        // console.log(this.editedItem)
+        // console.log("item editado:", this.editedItem.data_i)
       },
 
       deleteItem (item) {
@@ -241,38 +260,34 @@
         } else {
           this.itens.push(this.editedItem)
         }
-              
         this.close()
       },
       getData(data){//pega as datas formatas no componente filho 'datas'
         //será chamado antes do método save, aqui, devo associar o valor do item editado com data
         //que assim ele atualizará na tabela no save ;)
         console.log("coe ng coe")
-        if(data.flag === 0){
-          if(this.dataRange('11/11/2018','1/12/2019',data.data)){
-            this.editedItem.data_i = data.data
-            this.dataInRange = true
-          }  
-          else{
-            this.editedItem.data_i = ''
-            data.data = ''
-            this.dataInRange = false//fica vermelho pra alertar que a data n bate ( solu noob q achei)
-          }  
-        }  
-        else if(data.flag === 1){
-          if(this.dataRange('11/11/2018','1/12/2019',data.data)){
+        if(data.flag === 0)
+            this.editedItem.data_i = data.data 
+        else if(data.flag === 1)
             this.editedItem.data_f = data.data
-            this.dataInRange = true
-          }
-          else{
-            this.editedItem.data_i = ''
-            data.data = ''
-            this.dataInRange = false//fica vermelho pra alertar que a data n bate ( solu noob q achei)
-          }  
-        } 
-        else{
-          console.log("erro ocorreu na funcao getData(componente datas.vue)")  
-        }    
+        else
+          console.log("erro ocorreu na funcao getData(componente datas.vue)")    
+      },
+      getImgInfo(data){
+        //this.editedItem.img = data.file
+        console.log("dados img", data.file)//savo no bd
+         this.createImage(data.file);
+      },
+      createImage(file) {
+        let image = new Image();
+        var reader = new FileReader(); 
+        reader.onload = (e) => {
+          this.image = e.target.result;
+         // this.editedItem.imge = e.target.result
+          console.log("this.image: ", this.image)
+        };
+        reader.readAsDataURL(file);
+        console.log("crie img")
       }
     }
   }
