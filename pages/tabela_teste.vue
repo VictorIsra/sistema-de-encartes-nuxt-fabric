@@ -23,24 +23,35 @@
             <v-container grid-list-md>
               <v-layout wrap>
                  <v-flex >
-                 <img-upload/>
+                 <img-upload/><!-- binds tao dentro do componente, ver isso melhor dps-->
+                </v-flex>
+                 <v-flex xs12 sm6 md4>
+                  <v-text-field  v-model="editedItem.nome" label="Produto"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.name" label="Dessert name"></v-text-field>
+                  <v-text-field v-model="editedItem.qtdade" label="Estoque"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.calories" label="Calories"></v-text-field>
+                  <v-text-field v-model="editedItem.unidade" label="Unidade"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.fat" label="Fat (g)"></v-text-field>
+                  <v-text-field v-model="editedItem.obs" label="Observação"></v-text-field>
+                </v-flex>
+                <v-flex>
+                  <datas class="" @datachanged="getData"/>              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.carbs" label="Carbs (g)"></v-text-field>
+                  <v-text-field  v-model="editedItem.preco_c" label="Preço de compra"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.protein" label="Protein (g)"></v-text-field>
+                  <v-text-field v-model="editedItem.preco_v" label="Preço de venda"></v-text-field>
                 </v-flex>
-                
+                <v-flex xs12 sm6 md4>
+                  <v-text-field v-model="editedItem.selout" label="Sell out"></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-text-field v-model="editedItem.marluc" label="Margem de lucro"></v-text-field>
+                </v-flex>
               </v-layout>
             </v-container>
           </v-card-text>
@@ -106,14 +117,20 @@
 <script>
 
   import imgUpload from './image_upload.vue'
+  import datas from  '../components/campanhas/step1/datas.vue'
+  //import dataRange from '../auxMethods/dataRange.js'
 
   export default {
     components: {
-      'img-upload': imgUpload
+      'img-upload': imgUpload,
+      datas
     },
     data: () => ({
       dialog: false,
       search: '',
+      teste: 100,
+      dataRange: datas.methods.dataRange,
+      teste:'',
       headers: [
         
         { text: 'IMAGEM', value: 'img' },
@@ -132,18 +149,30 @@
       itens: [],
       editedIndex: -1,
       editedItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
+        img:  '',
+        nome: '',
+        qtdade: '',
+        unidade: '',
+        obs: '',
+        data_i: '',
+        data_f: '',
+        preco_c: '',
+        preco_v: '',
+        selout: '',
+        marluc: ''
       },
       defaultItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
+        img:  '',
+        nome: '',
+        qtdade: '',
+        unidade: '',
+        obs: '',
+        data_i: '',
+        data_f: '',
+        preco_c: '',
+        preco_v: '',
+        selout: '',
+        marluc: ''
       }
     }),
 
@@ -161,6 +190,7 @@
 
     created () {
       this.initialize()
+      //this.dataRange('2/03/2014','2/09/2015','2/5/2014')
     },
 
     methods: {
@@ -187,11 +217,12 @@
         this.editedIndex = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
+        console.log("item editado:", this.editedItem.data_i)
       },
 
       deleteItem (item) {
         const index = this.itens.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.itens.splice(index, 1)
+        confirm('Você tem certeza de que deseja remover este item?') && this.itens.splice(index, 1)
       },
 
       close () {
@@ -208,7 +239,32 @@
         } else {
           this.itens.push(this.editedItem)
         }
+              
         this.close()
+      },
+      getData(data){//pega as datas formatas no componente filho 'datas'
+        //será chamado antes do método save, aqui, devo associar o valor do item editado com data
+        //que assim ele atualizará na tabela no save ;)
+         console.log("opa")
+        if(data.flag === 0){
+          if(this.dataRange('11/11/2018','1/12/2019',data.data))
+            this.editedItem.data_i = data.data
+          else{
+            this.editedItem.data_i = ''
+            data.data = ''
+          }  
+        }  
+        else if(data.flag === 1)
+         this.editedItem.data_f = data.data
+        else
+          console.log("erro ocorreu na funcao getData")    
+      },
+      testeRul(v){
+          console.log("entrada da rul: ",v, " valor ", this.editedItem.data_i)
+          if(this.dataRange('11/11/2018','1/12/2019',this.editedItem.data_i))
+            return true
+          else
+            return "mt treta"  
       }
     }
   }
