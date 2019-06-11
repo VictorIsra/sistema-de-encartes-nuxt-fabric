@@ -38,7 +38,7 @@
                   <v-text-field v-model="editedItem.obs" label="Observação"></v-text-field>
                 </v-flex>
                 <v-flex>
-                  <datas :checkDataRange="checkDataRange" @datachanged="getData"/>              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
+                  <datas :checkDataRange="checkDataRange" @datachanged="getData" :defaultDatasValues="defaultDatasValues"/>              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field  v-model="editedItem.preco_c" label="Preço de compra"></v-text-field>
@@ -130,13 +130,20 @@
       valid: true,
       formErrors: [],//data n pode ser fora do range, esse vetor controlará se o form podera ser salvo ou n, baseado nas datas
       //info relativas a validacao do range de datas. v
-      dataRange: datas.methods.dataRange,
-      checkDataRange: {
-        checkRange: true,
-        Pdata_i: '1/1/2018',//virá da etapa um 
-        Pdata_f: '2/2/2019'
-      },
-      //fim de info relativa a validacao de datas.^
+      //dataRange: datas.methods.dataRange,
+      //PROPS (lembrar que, na verdade, são props para um componente filho
+        checkDataRange: {
+          checkRange: true,
+          Pdata_i: '1/1/2018',//virá da etapa um 
+          Pdata_f: '2/2/2019'
+        },
+        //fim de info relativa a validacao de datas.^
+        defaultDatasValues: {//valor das datas em uma linha em particular da tabela. É uma prop
+          Rdata_i: '', //de 'row data inicio'
+          Rdata_f: '',
+          flag: 0
+        },
+      //FIM DAS PROPS ^  
       //info relativas ao upload de img.v
       // Faco um cache em vez de assimilar a variavel 'itens'
       //diretamente pois só quero associa-la se o usuário salvar as alterações, se não, nao. :)
@@ -247,7 +254,10 @@
 
       editItem (item) {//esse objeto é preenchido no momento que o dialog de edicao é aberto
         this.editedIndex = this.itens.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+        this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
+        this.defaultDatasValues.flag = 1
+        this.defaultDatasValues.Rdata_i = this.editedItem.data_i
+        this.defaultDatasValues.Rdata_f = this.editedItem.data_f
         this.dialog = true  
       },
 
@@ -257,6 +267,7 @@
       },
 
       close () {
+        this.defaultDatasValues.flag = 0
         this.dialog = false
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
@@ -286,15 +297,11 @@
       },
       fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
-        console.log("dados img", data.file)//savo isso no bd
+        //console.log("dados img", data.file)//savo isso no bd
         this.cachedImgInfo.imgName = data.name
         this.cachedImgInfo.imgFile = data.file
-        // this.createImage(data.file);
-        // this.editedItem.img.name = data.name
       },
       fillImgInfo(){
-        // console.log("chamei fillimginfo, datos: img file",
-        // this.cachedImgInfo.imgFile, " img name ",this.cachedImgInfo.imgName)
         //sera chamada se o user de fato quis salvar uma img e ela nao for em braco, pois caso seja, n tem objeto pra criar e daria erro!
         if(this.cachedImgInfo.imgFile !== ''){
           this.createImage(this.cachedImgInfo.imgFile);

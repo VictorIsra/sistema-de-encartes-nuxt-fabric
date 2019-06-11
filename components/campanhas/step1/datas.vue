@@ -69,9 +69,19 @@
           default: function(){
             return{
               checkRange: false,
-              Pdata_i: '', //de 'parent data inicio
+              Pdata_i: '', //de 'parent data inicio'
               Pdata_f: ''
             }  
+          }
+        },
+        defaultDatasValues:{//pra qd abrir um dialog, as datas serem iguais as das contidas na linha de uma tabela, em vez de em branco
+          type: Object,
+          default: function(){
+            return {
+              Rdata_i: '', //de 'row data inicio'
+              Rdata_f: '',
+              flag: 0 //0 indica que o pai nao mandou nada, 1 indica que sim. Facilita na hora de escolher valores default
+            }
           }
         }
     },
@@ -90,8 +100,7 @@
         this.$emit('datachanged',{
           data: this.dateFormatted_inicio,
           flag: 0
-        });
-
+        })
       },
       data_termino (val) {
         //console.log("antes INVOCA ", this.dateFormatted_termino)
@@ -101,6 +110,24 @@
           data: this.dateFormatted_termino,
           flag: 1
         });
+      },
+      'defaultDatasValues.flag': {
+        handler(){
+          let temp_data_i = ''
+          let temp_data_f = ''
+          if( this.defaultDatasValues.flag === 1){//p n auterar a prop no comp filho
+          console.log("opa")
+            temp_data_i = this.defaultDatasValues.Rdata_i
+            temp_data_f = this.defaultDatasValues.Rdata_f
+
+            this.dateFormatted_inicio = temp_data_i
+            this.dateFormatted_termino = temp_data_f
+          }
+          else{
+            this.dateFormatted_inicio = ''
+            this.data_termino = ''
+          }
+        }
       }
     },
 
@@ -119,6 +146,7 @@
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
       },
       dataRange(dateFrom,dateTo,dateCheck){ //ve se a data tá entre um range
+      console.log("chamei data range")
         var d1 = dateFrom.split("/")
         var d2 = dateTo.split("/")
         var c = dateCheck.split("/")
@@ -131,16 +159,24 @@
        
         return check > from && check < to
       },
+      checkDefaultDataValues(){//padrao é vazio, mas o componente pai pode preenche-las
+        console.log("checkeiii")
+        if(this.defaultDatasValues.flag !== 0){ //se o pai enviou algo
+          this.dateFormatted_inicio = this.defaultDatasValues.Rdata_i
+          this.dateFormatted_termino = this.defaultDatasValues.Rdata_f
+        }
+      },
       dataRule(v){
-            if(!this.checkDataRange.checkRange)
-             console.log("sou data rule e n checo range :)")
-            else{//só no caso da data precisar estar entre um intervalo
-              return this.dataRange(this.checkDataRange.Pdata_i,
+        if(!this.checkDataRange.checkRange)
+          console.log("sou data rule e n checo range :)")
+        else{//só no caso da data precisar estar entre um intervalo
+          if(v !== null){
+            return this.dataRange(this.checkDataRange.Pdata_i,
               this.checkDataRange.Pdata_f,v) || "a data precisa estar entre " + this.checkDataRange.Pdata_i
               + " e " + this.checkDataRange.Pdata_f + "."
-            }  
-
-          return !!v || 'É preciso escolher uma data'
+          }    
+        }  
+        return !!v || 'É preciso escolher uma data'
       }
     }
   }
