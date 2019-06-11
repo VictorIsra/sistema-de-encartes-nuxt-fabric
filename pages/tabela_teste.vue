@@ -38,7 +38,7 @@
                   <v-text-field v-model="editedItem.obs" label="Observação"></v-text-field>
                 </v-flex>
                 <v-flex>
-                  <datas :class="[dataInRange ? '': 'red']" @datachanged="getData"/>              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
+                  <datas :checkDataRange="checkDataRange" @datachanged="getData"/>              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field  v-model="editedItem.preco_c" label="Preço de compra"></v-text-field>
@@ -60,7 +60,7 @@
             <v-btn  color="primary" :disabled="!valid"  @click="save">Salvar</v-btn>
            </v-card-actions>
           </v-card-text>
-          
+
         </v-card>
       </v-dialog>
     </v-toolbar>
@@ -129,7 +129,11 @@
       search: '',
       valid: true,
       dataRange: datas.methods.dataRange,
-      dataInRange: true,
+      checkDataRange: {
+        checkRange: true,
+        Pdata_i: '1/1/2018',
+        Pdata_f: '2/2/2019',
+      },
       headers: [
         
         { text: 'IMAGEM', value: 'img' },
@@ -189,7 +193,6 @@
 
     created () {
       this.initialize()
-      //this.dataRange('2/03/2014','2/09/2015','2/5/2014')
     },
 
     methods: {
@@ -244,6 +247,7 @@
       getData(data){//pega as datas formatas no componente filho 'datas'
         //será chamado antes do método save, aqui, devo associar o valor do item editado com data
         //que assim ele atualizará na tabela no save ;)
+        console.log("coe ng coe")
         if(data.flag === 0){
           if(this.dataRange('11/11/2018','1/12/2019',data.data)){
             this.editedItem.data_i = data.data

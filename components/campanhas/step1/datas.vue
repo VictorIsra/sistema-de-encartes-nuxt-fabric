@@ -22,7 +22,7 @@
               prepend-icon="event"
               readonly
               v-on="on"
-              :rules="dataRule"
+              :rules="[dataRule]"
             ></v-text-field>
           </template>
           <v-date-picker :format="formatDate(data_inicio)" v-model="data_inicio" no-title @input="menu1 = false"></v-date-picker>
@@ -49,7 +49,7 @@
               prepend-icon="event"
               readonly
               v-on="on"
-              :rules="dataRule"
+              :rules="[dataRule]"
             ></v-text-field>
           </template>
           <v-date-picker v-model="data_termino" no-title @input="menu2 = false"></v-date-picker>
@@ -63,16 +63,27 @@
 <script>
 
   export default {
-    
+    props: {
+        checkDataRange: {
+          type: Object,
+          default: function(){
+            return{
+              checkRange: false,
+              Pdata_i: '', //de 'parent data inicio
+              Pdata_f: ''
+            }  
+          }
+        }
+    },
     data: () => ({
       data_inicio: new Date().toISOString().substr(0, 10),
       data_termino: new Date().toISOString().substr(0, 10),
       
       dateFormatted_inicio:'', //vm.formatDate(new Date().toISOString().substr(0, 10)),
       dateFormatted_termino:'',// vm.formatDate(new Date().toISOString().substr(0, 10)),
-      dataRule: [
-        v => !!v || 'É preciso escolher uma data'
-      ],
+      // dataRule: [
+      //   v => !!v || 'É preciso escolher uma data'
+      // ],
       menu1: false,
       menu2: false
     }),
@@ -121,6 +132,17 @@
     
         console.log(check > from && check < to)
         return check > from && check < to
+      },
+      dataRule(v){
+            if(!this.checkDataRange.checkRange)
+             console.log("sou data rule e n checo range :)")
+            else{//só no caso da data precisar estar entre um intervalo
+              return this.dataRange(this.checkDataRange.Pdata_i,
+              this.checkDataRange.Pdata_f,v) || "a data precisa estar entre " + this.checkDataRange.Pdata_i
+              + " e " + this.checkDataRange.Pdata_f + "."
+            }  
+
+          return !!v || 'É preciso escolher uma data'
       }
     }
   }
