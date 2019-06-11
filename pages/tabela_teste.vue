@@ -20,7 +20,7 @@
           </v-card-title>
 
           <v-card-text> <!-- informacoes de adicionar e deletar-->
-            <v-container grid-list-md>
+            <v-container grid-list-md >
               <v-layout wrap>
                  <v-flex >
                  <img-upload/><!-- binds tao dentro do componente, ver isso melhor dps-->
@@ -38,7 +38,7 @@
                   <v-text-field v-model="editedItem.obs" label="Observação"></v-text-field>
                 </v-flex>
                 <v-flex>
-                  <datas class="" @datachanged="getData"/>              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
+                  <datas :class="[dataInRange ? '': 'red']" @datachanged="getData"/>              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field  v-model="editedItem.preco_c" label="Preço de compra"></v-text-field>
@@ -49,18 +49,18 @@
                 <v-flex xs12 sm6 md4>
                   <v-text-field v-model="editedItem.selout" label="Sell out"></v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.marluc" label="Margem de lucro"></v-text-field>
+                <v-flex xs12>
+                  <v-text-field justify-center v-model="editedItem.marluc" label="Margem de lucro"></v-text-field>
                 </v-flex>
               </v-layout>
             </v-container>
-          </v-card-text>
-
-          <v-card-actions>
+            <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click="close">Cancelar</v-btn>
-            <v-btn color="blue darken-1" flat @click="save">Salvar</v-btn>
-          </v-card-actions>
+            <v-btn  color="primary" @click="close">Cancelar</v-btn>
+            <v-btn  color="primary" :disabled="!valid"  @click="save">Salvar</v-btn>
+           </v-card-actions>
+          </v-card-text>
+          
         </v-card>
       </v-dialog>
     </v-toolbar>
@@ -118,7 +118,6 @@
 
   import imgUpload from './image_upload.vue'
   import datas from  '../components/campanhas/step1/datas.vue'
-  //import dataRange from '../auxMethods/dataRange.js'
 
   export default {
     components: {
@@ -128,9 +127,9 @@
     data: () => ({
       dialog: false,
       search: '',
-      teste: 100,
+      valid: true,
       dataRange: datas.methods.dataRange,
-      teste:'',
+      dataInRange: true,
       headers: [
         
         { text: 'IMAGEM', value: 'img' },
@@ -245,26 +244,31 @@
       getData(data){//pega as datas formatas no componente filho 'datas'
         //será chamado antes do método save, aqui, devo associar o valor do item editado com data
         //que assim ele atualizará na tabela no save ;)
-         console.log("opa")
         if(data.flag === 0){
-          if(this.dataRange('11/11/2018','1/12/2019',data.data))
+          if(this.dataRange('11/11/2018','1/12/2019',data.data)){
             this.editedItem.data_i = data.data
+            this.dataInRange = true
+          }  
           else{
             this.editedItem.data_i = ''
             data.data = ''
+            this.dataInRange = false//fica vermelho pra alertar que a data n bate ( solu noob q achei)
           }  
         }  
-        else if(data.flag === 1)
-         this.editedItem.data_f = data.data
-        else
-          console.log("erro ocorreu na funcao getData")    
-      },
-      testeRul(v){
-          console.log("entrada da rul: ",v, " valor ", this.editedItem.data_i)
-          if(this.dataRange('11/11/2018','1/12/2019',this.editedItem.data_i))
-            return true
-          else
-            return "mt treta"  
+        else if(data.flag === 1){
+          if(this.dataRange('11/11/2018','1/12/2019',data.data)){
+            this.editedItem.data_f = data.data
+            this.dataInRange = true
+          }
+          else{
+            this.editedItem.data_i = ''
+            data.data = ''
+            this.dataInRange = false//fica vermelho pra alertar que a data n bate ( solu noob q achei)
+          }  
+        } 
+        else{
+          console.log("erro ocorreu na funcao getData(componente datas.vue)")  
+        }    
       }
     }
   }

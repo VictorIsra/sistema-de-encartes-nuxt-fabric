@@ -1,6 +1,6 @@
 <template>
-    <div>  
-        <v-flex > 
+    <div >  
+        <v-flex  > 
                 <img :src="imageUrl" height="150" v-if="imageUrl"/>
                 <v-text-field label="Selecione uma imagem" @click='pickFile' v-model='imageName' prepend-icon='attach_file'></v-text-field>
                 <input

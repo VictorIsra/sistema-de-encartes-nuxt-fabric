@@ -1,7 +1,7 @@
 <template>
-  <v-container grid-list-md>
+  <v-container  grid-list-md> <!-- md lg6-->
     <v-layout row wrap>
-      <v-flex xs12 lg6>
+      <v-flex xs1 lg6>
         <v-menu
           ref="menu1"
           v-model="menu1"
@@ -107,7 +107,6 @@
       parseDate (date) {
         if (!date) return null
 
-       // console.log("PARdata: ",date)
         const [month, day, year] = date.split('/')//n sei qd isso e'chamado, n mexerei ainda
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
       },
