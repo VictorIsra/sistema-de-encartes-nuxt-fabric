@@ -111,6 +111,7 @@
       },
       'defaultDatesValues.flag': {//me dirá qd um dialog foi aberto, daí associo a data daqui com as contidas na tabela q chamou o dialog
         handler(){
+          //console.log("algo mudou nas dates: ",this.defaultDatesValues.flag)
           let temp_data_i = ''
           let temp_data_f = ''
           if( this.defaultDatesValues.flag === 1){//p n auterar a prop no comp filho
@@ -122,7 +123,7 @@
           }
           else{
             this.dateFormatted_inicio = ''
-            this.data_termino = ''
+            this.dateFormatted_termino = ''
           }
         }
       }
@@ -155,12 +156,12 @@
        
         return check > from && check < to
       },
-      checkDefaultDataValues(){//padrao é vazio, mas o componente pai pode preenche-las
-        if(this.defaultDatesValues.flag !== 0){ //se o pai enviou algo
-          this.dateFormatted_inicio = this.defaultDatesValues.Rdata_i
-          this.dateFormatted_termino = this.defaultDatesValues.Rdata_f
-        }
-      },
+      // checkDefaultDataValues(){//padrao é vazio, mas o componente pai pode preenche-las
+      //   if(this.defaultDatesValues.flag !== 0){ //se o pai enviou algo
+      //     this.dateFormatted_inicio = this.defaultDatesValues.Rdata_i
+      //     this.dateFormatted_termino = this.defaultDatesValues.Rdata_f
+      //   }
+      // },
       dataRule(v){
         if(!this.checkDataRange.checkRange)
           console.log("sou data rule e n checo range :)")

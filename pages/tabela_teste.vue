@@ -14,7 +14,7 @@
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark class="mb-2" v-on="on" >Adicionar item</v-btn> <!--v-on="on" -->
+          <v-btn color="primary" dark class="mb-2" @click="sendDefaultDates(-1)" v-on="on" >Adicionar item</v-btn> <!--v-on="on" -->
         </template>
         <v-card > <!-- o form em si é esse v card! -->
           <v-card-title>
@@ -74,7 +74,7 @@
       :search="search"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
-        <td class="text-xs-center">{{ props.item.img.name }}<img :src="props.item.img.src" width="50px" height="50px" alt=""></td>
+        <td class="text-xs-center"><img :src="props.item.img.src" width="50px" height="50px" alt=""></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
         <td class="text-xs-center">{{ props.item.qtdade }}</td>
         <td class="text-xs-center">{{ props.item.unidade }}</td>
@@ -85,8 +85,8 @@
         <td class="text-xs-center">{{ props.item.preco_v }}</td>
         <td class="text-xs-center">{{ props.item.selout }}</td>
         <td class="text-xs-center">{{ props.item.marluc}}</td>
-        
 
+    
         <td class="justify-center layout px-0">
           <v-icon
             small
@@ -208,7 +208,6 @@
 
     watch: {
       dialog (val) {
-        console.log("dialog abriu!")
         val || this.close()
       }
     },
@@ -260,7 +259,7 @@
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
-        this.sendDefaultDates()//pro componente filho mostrar as datas referentes a linha ao abrir o dialog
+        this.sendDefaultDates(1)//pro componente filho mostrar as datas referentes a linha ao abrir o dialog
         this.dialog = true  
       },
 
@@ -280,9 +279,11 @@
 
       save () {
         if (this.editedIndex > -1) {
+          console.log("caso edite normal")
           Object.assign(this.itens[this.editedIndex], this.editedItem)
           this.fillImgInfo()
         } else {//caso esteja adicionando algo 
+          console.log("caso nov ou edited zuado?")
           this.itens.push(this.editedItem)
           this.fillImgInfo(this.itens.length -1)//passa o item criado como argumento
         }
@@ -298,8 +299,10 @@
         else
           console.log("erro ocorreu na funcao getData(componente datas.vue)")    
       },
-      sendDefaultDates(){//dps passarei 1 ou 0 como argumento, pra dif edicao de um item novo
-        this.defaultDatesValues.flag = 1
+      sendDefaultDates(flag){//dps passarei 1 ou 0 como argumento, pra dif edicao de um item novo
+        //se flag == 1, irá fazer as dates no componente data.vue passarem o valor presente na linha atual da tabela 
+        //se flag == 0, é o valor default, das datas ficarem em branco qd abrir um form/dialogo
+        this.defaultDatesValues.flag = flag
         this.defaultDatesValues.Rdata_i = this.editedItem.data_i
         this.defaultDatesValues.Rdata_f = this.editedItem.data_f
       },
@@ -308,21 +311,40 @@
        
         this.cachedImgInfo.imgName = data.name
         this.cachedImgInfo.imgFile = data.file
-        console.log("fil cached: ", this.cachedImgInfo.imgFile)
+        console.log("fil cached: ")
       },
       fillImgInfo(newItemIndex = ''){   
          //só guardarei a foto escolhida se ele salvou algo, se nao, nao
         //sera chamada se o user de fato quis salvar uma img e ela nao for em braco, pois caso seja, n tem objeto pra criar e daria erro!
         if(this.cachedImgInfo.imgFile !== '' && (newItemIndex === '')){
-          this.createImage(this.cachedImgInfo.imgFile,this.editedItem)
-          this.editedItem.img.name =  this.cachedImgInfo.imgName
+          console.log("chamei A this.ediiteitem ")
+          if(this.editedItem.img === ''){//caso ele tenha criado algo sem img e depois queira bota-la
+            console.log("edite zuado")
+            this.editedItem.img = {
+              src: this.cachedImgInfo.imgFile,
+              name:this.cachedImgInfo.imgName
+            }
+            console.log("veee ")
+            this.createImage(this.editedItem.img.src,this.editedItem)
+            this.editedItem.img.name =  this.cachedImgInfo.imgName
+          }
+          else{
+            console.log("edite normaç")
+            this.createImage(this.cachedImgInfo.imgFile,this.editedItem)
+            this.editedItem.img.name =  this.cachedImgInfo.imgName
+          }  
         }
         else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){
+                    console.log("chamei B")
+
           this.itens[newItemIndex].img = {
             src: this.cachedImgInfo.imgFile,
             name: this.cachedImgInfo.imgName
           }
           this.createImage(this.itens[newItemIndex].img.src,this.itens[newItemIndex])
+        }
+        else{
+          console.log("criado sem img", this.editedItem)
         }
         //esvazia p uso futuro. lembre que só é possivel editar uma linha por vez :)
         this.cachedImgInfo.imgName = ''
@@ -334,7 +356,8 @@
         reader.onload = (e) => {
            item.img.src = e.target.result//this.editedItem.img.src = e.target.result
         }
-        reader.readAsDataURL(file);//console.log("crie img")
+        reader.readAsDataURL(file);
+        console.log("crie img")
       }
     }
   }
