@@ -27,15 +27,14 @@ export default {
         dialog: false,
 		imageName: '',
 		imageUrl: '', //a principo nao salvaria no bd, mas tvz seja uma info interessante
-        imageFile: '',//arquivo que irei salvar no bd
-        image: ''
+        imageFile: '',//arquivo que irei salvar no bd e q é capaz de
+        //de ser convertido numa img de fato, alem de conter info do nome, tamanho etc
     }),
 
     methods: {
         pickFile () {
             this.$refs.image.click ()
         },
-		
 		onFilePicked (e) {
             console.log("targfile",e.target.files) //mostra o elemento do input, mas quero é os files. logo, linah abaixo:
 			const files = e.target.files//objeto com nome da img,tamanho,tipo,data de modificacao
@@ -55,17 +54,12 @@ export default {
 				fr.addEventListener('load', () => {
 					this.imageUrl = fr.result
 					this.imageFile = files[0] // arquivo da img que posso mandar pro server/bd/back-end...
-                  //  console.log("img url:", this.imageUrl)
-                    //console.log("imagefile(bd): ", this.imageFile)
-                  
-
+                
                     console.log("vou mandaraaa")
                     this.$emit('imgUploaded',{
-                        url: this.imageUrl,
                         file: this.imageFile,
-                        img: this.imageName
-                    })
-                   
+                        name: this.imageName
+                    })      
                 })
 			} else {
 				this.clearInput()
@@ -76,16 +70,6 @@ export default {
 			this.imageFile = ''
 			this.imageUrl = ''
         },
-        //  createImage(file) {
-        //     var image = new Image();
-        //     var reader = new FileReader();
-        //     var vm = this;
-
-        //     reader.onload = (e) => {
-        //         vm.image = e.target.result;
-        //     };
-        //     reader.readAsDataURL(file);
-        // }
     }
 }
 </script>

@@ -23,7 +23,7 @@
             <v-container grid-list-md >
               <v-layout wrap>
                  <v-flex >
-                 <img-upload @imgUploaded="getImgInfo"/><!-- binds tao dentro do componente, ver isso melhor dps-->
+                 <img-upload @imgUploaded="fillCachedImgInfo"/><!-- binds tao dentro do componente, ver isso melhor dps-->
                 </v-flex>
                  <v-flex xs12 sm6 md4>
                   <v-text-field  v-model="editedItem.nome" label="Produto"></v-text-field>
@@ -72,7 +72,7 @@
       :search="search"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
-        <td class="text-xs-center">{{ props.item.img.url }}<img :src="props.item.img.img" width="50px" height="50px" alt=""></td>
+        <td class="text-xs-center">{{ props.item.img.name }}<img :src="props.item.img.src" width="50px" height="50px" alt=""></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
         <td class="text-xs-center">{{ props.item.qtdade }}</td>
         <td class="text-xs-center">{{ props.item.unidade }}</td>
@@ -123,19 +123,28 @@
       'img-upload': imgUpload,
       datas
     },
+
     data: () => ({
       dialog: false,
       search: '',
-      myimg: '',
       valid: true,
-      image: '',
       formErrors: [],//data n pode ser fora do range, esse vetor controlará se o form podera ser salvo ou n, baseado nas datas
+      //info relativas a validacao do range de datas. v
       dataRange: datas.methods.dataRange,
       checkDataRange: {
         checkRange: true,
         Pdata_i: '1/1/2018',//virá da etapa um 
-        Pdata_f: '2/2/2019',
+        Pdata_f: '2/2/2019'
       },
+      //fim de info relativa a validacao de datas.^
+      //info relativas ao upload de img.v
+      // Faco um cache em vez de assimilar a variavel 'itens'
+      //diretamente pois só quero associa-la se o usuário salvar as alterações, se não, nao. :)
+      cachedImgInfo: {
+        imgName: '',//só o nome da img
+        imgFile: ''//objeto que pode ser salvo no db e posteriormente renderizado em uma img,inclusive
+      },
+      //fim info relativas ao uplode e img ^
       headers: [
         
         { text: 'IMAGEM', value: 'img' },
@@ -194,8 +203,7 @@
     },
 
     created () {
-      this.initialize()
-   
+      this.initialize()//sera alimentado pelo bd eventualmente, tvz?
     },
 
     methods: {
@@ -203,8 +211,8 @@
         this.itens = [
           {
             img:  {
-              img: '',
-              url: 'hehe.jpg'
+              src: '',
+              name: 'hehe.jpg'
             },
             nome: 'Arroz',
             qtdade: 409,
@@ -219,8 +227,8 @@
           },
            {
             img:  {
-              img: '',
-              url: 'xd.jpg'
+              src: '',
+              name: 'xd.jpg'
             },
             nome: 'feijao',
             qtdade: 1000,
@@ -238,12 +246,9 @@
       },
 
       editItem (item) {//esse objeto é preenchido no momento que o dialog de edicao é aberto
-        
-                  
         this.editedIndex = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)
-        this.dialog = true
-      
+        this.dialog = true  
       },
 
       deleteItem (item) {
@@ -262,6 +267,7 @@
       save () {
         if (this.editedIndex > -1) {
           Object.assign(this.itens[this.editedIndex], this.editedItem)
+          this.fillImgInfo()
         } else {
           this.itens.push(this.editedItem)
         }
@@ -278,17 +284,31 @@
         else
           console.log("erro ocorreu na funcao getData(componente datas.vue)")    
       },
-      getImgInfo(data){
-        //this.editedItem.img = data.file
-        console.log("dados img", data.file)//savo no bd
-         this.createImage(data.file);
+      fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
+        //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
+        console.log("dados img", data.file)//savo isso no bd
+        this.cachedImgInfo.imgName = data.name
+        this.cachedImgInfo.imgFile = data.file
+        // this.createImage(data.file);
+        // this.editedItem.img.name = data.name
+      },
+      fillImgInfo(){
+        // console.log("chamei fillimginfo, datos: img file",
+        // this.cachedImgInfo.imgFile, " img name ",this.cachedImgInfo.imgName)
+        //sera chamada se o user de fato quis salvar uma img e ela nao for em braco, pois caso seja, n tem objeto pra criar e daria erro!
+        if(this.cachedImgInfo.imgFile !== ''){
+          this.createImage(this.cachedImgInfo.imgFile);
+          this.editedItem.img.name =  this.cachedImgInfo.imgName
+        }
+        //esvazia p uso futuro. lembre que só é possivel editar uma linha por vez :)
+        this.cachedImgInfo.imgName = '',
+        this.cachedImgInfo.imgFile = ''
       },
       createImage(file) {
         let image = new Image();
         var reader = new FileReader(); 
         reader.onload = (e) => {
-          this.editedItem.img.img = e.target.result;
-         // this.editedItem.img = e.target.result
+          this.editedItem.img.src = e.target.result;
         };
         reader.readAsDataURL(file);
         console.log("crie img")
