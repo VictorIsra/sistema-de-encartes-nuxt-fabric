@@ -72,7 +72,7 @@
       :search="search"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
-        <td class="text-xs-center">{{ props.item.imge }}<img :src="image" width="50px" height="50px" alt=""></td>
+        <td class="text-xs-center">{{ props.item.img.url }}<img :src="props.item.img.img" width="50px" height="50px" alt=""></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
         <td class="text-xs-center">{{ props.item.qtdade }}</td>
         <td class="text-xs-center">{{ props.item.unidade }}</td>
@@ -138,7 +138,7 @@
       },
       headers: [
         
-        { text: 'IMAGEM', value: 'imge' },
+        { text: 'IMAGEM', value: 'img' },
         { text: 'PRODUTO', value: 'nome' },
         { text: 'ESTOQUE', value: 'qtdade' },
         { text: 'UNIDADE', value: 'unidade' },
@@ -154,7 +154,7 @@
       itens: [],
       editedIndex: -1,
       editedItem: {
-        imge:  '',
+        img:  '',
         nome: '',
         qtdade: '',
         unidade: '',
@@ -167,7 +167,7 @@
         marluc: ''
       },
       defaultItem: {
-        imge:  '',
+        img:  '',
         nome: '',
         qtdade: '',
         unidade: '',
@@ -202,7 +202,10 @@
       initialize () {
         this.itens = [
           {
-            imge:  'pqp.png',
+            img:  {
+              img: '',
+              url: 'hehe.jpg'
+            },
             nome: 'Arroz',
             qtdade: 409,
             unidade: 'kg',
@@ -215,7 +218,10 @@
             marluc: '10%'
           },
            {
-            imge:  'pqsp.png',
+            img:  {
+              img: '',
+              url: 'xd.jpg'
+            },
             nome: 'feijao',
             qtdade: 1000,
             unidade: 'kg',
@@ -237,8 +243,7 @@
         this.editedIndex = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
-        // console.log(this.editedItem)
-        // console.log("item editado:", this.editedItem.data_i)
+      
       },
 
       deleteItem (item) {
@@ -282,9 +287,8 @@
         let image = new Image();
         var reader = new FileReader(); 
         reader.onload = (e) => {
-          this.image = e.target.result;
-         // this.editedItem.imge = e.target.result
-          console.log("this.image: ", this.image)
+          this.editedItem.img.img = e.target.result;
+         // this.editedItem.img = e.target.result
         };
         reader.readAsDataURL(file);
         console.log("crie img")

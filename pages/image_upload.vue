@@ -65,6 +65,7 @@ export default {
                         file: this.imageFile,
                         img: this.imageName
                     })
+                   
                 })
 			} else {
 				this.clearInput()
