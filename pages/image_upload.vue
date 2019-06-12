@@ -29,23 +29,23 @@ export default {
         imageFile: '',//arquivo que irei salvar no bd e q é capaz de
         //de ser convertido numa img de fato, alem de conter info do nome, tamanho etc
     }),
-    // props:{FAZER AMANHA: OQ PRECISO PEGAR DO PAI É O IMG NAME E IMG URL, E BOTAR NO TEMPLATE DAQUI ;D
-    //     clearURLflag: {
-    //         default: 0
-    //     }
-    // },
-    // watch: {
-    //     clearURLflag() {
-    //             console.log("MUDOaaaaaaaaaa UP")
-    //             if(this.clearURLflag === 1){
-    //                 this.clearInput() 
-    //                 console.log("Limpei")
-    //             }    
-    //             else{
-    //                 console.log("mostra oq ja ta")
-    //             }
-    //     }
-    // },
+    props:{
+        clearURLflag: {
+            default: 0
+        }
+    },
+    watch: {
+        clearURLflag() {
+                console.log("MUDOaaaaaaaaaa UP")
+                if(this.clearURLflag === 1){
+                    this.clearInput() 
+                    console.log("Limpei")
+                }    
+                else{
+                    console.log("mostra oq ja ta")
+                }
+        }
+    },
     methods: {
         pickFile () {
             this.$refs.image.click ()

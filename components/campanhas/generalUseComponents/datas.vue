@@ -111,7 +111,6 @@
       },
       'defaultDatesValues.flag': {//me dirá qd um dialog foi aberto, daí associo a data daqui com as contidas na tabela q chamou o dialog
         handler(){
-          //console.log("algo mudou nas dates: ",this.defaultDatesValues.flag)
           let temp_data_i = ''
           let temp_data_f = ''
           if( this.defaultDatesValues.flag === 1){//p n auterar a prop no comp filho
@@ -144,6 +143,8 @@
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
       },
       dataRange(dateFrom,dateTo,dateCheck){ //ve se a data tá entre um range
+        if(dateCheck === undefined)
+          return
         var d1 = dateFrom.split("/")
         var d2 = dateTo.split("/")
         var c = dateCheck.split("/")
@@ -163,15 +164,17 @@
       //   }
       // },
       dataRule(v){
+        console.log("checo alogsss")
         if(!this.checkDataRange.checkRange)
           console.log("sou data rule e n checo range :)")
-        else{//só no caso da data precisar estar entre um intervalo
+        else{//só no caso da data precisar estar entre um intervalo 
           if(v !== null){
             return this.dataRange(this.checkDataRange.Pdata_i,
               this.checkDataRange.Pdata_f,v) || "a data precisa estar entre " + this.checkDataRange.Pdata_i
               + " e " + this.checkDataRange.Pdata_f + "."
           }    
-        }  
+        }
+        
         return !!v || 'É preciso escolher uma data'
       }
     }
