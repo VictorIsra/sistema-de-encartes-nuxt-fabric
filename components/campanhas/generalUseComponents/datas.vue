@@ -164,7 +164,6 @@
       //   }
       // },
       dataRule(v){
-        console.log("checo alogsss")
         if(!this.checkDataRange.checkRange)
           console.log("sou data rule e n checo range :)")
         else{//só no caso da data precisar estar entre um intervalo 

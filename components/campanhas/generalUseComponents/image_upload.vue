@@ -29,29 +29,46 @@ export default {
         imageFile: '',//arquivo que irei salvar no bd e q é capaz de
         //de ser convertido numa img de fato, alem de conter info do nome, tamanho etc
     }),
-    // props:{FAZER AMANHA: OQ PRECISO PEGAR DO PAI É O IMG NAME E IMG URL, E BOTAR NO TEMPLATE DAQUI ;D
-    //     clearURLflag: {
-    //         default: 0
-    //     }
-    // },
-    // watch: {
-    //     clearURLflag() {
-    //             console.log("MUDOaaaaaaaaaa UP")
-    //             if(this.clearURLflag === 1){
-    //                 this.clearInput() 
-    //                 console.log("Limpei")
-    //             }    
-    //             else{
-    //                 console.log("mostra oq ja ta")
-    //             }
-    //     }
-    // },
+    props: {
+        imgInfo: {
+            type: Object,
+            default: function(){
+                return {
+                    imgName: '',
+                    imgURL: '',
+                    imgFile: '',
+                    flag: 0
+                }
+            }
+        }
+    },
+    watch: {
+        'imgInfo.flag':{//assim a img e nome associado estaram corretos qd um dialog abrir
+            handler(){
+                let tempURL = ''
+                let tempFile = ''
+                let tempName
+                if(this.imgInfo.flag === 1){
+                    tempURL = this.imgInfo.imgURL
+                    tempFile = this.imgInfo.imgFile
+                    tempName = this.imgInfo.imgName
+
+                    this.imageUrl= tempURL
+                    this.imageFile = tempFile
+                    this.imageName = tempName
+                }
+                else{
+                    this.clearInput()
+                }
+            }
+        }
+    },
     methods: {
         pickFile () {
             this.$refs.image.click ()
         },
 		onFilePicked (e) {
-            console.log("targfile",e.target.files) //mostra o elemento do input, mas quero é os files. logo, linah abaixo:
+             // e.target.files mostra o elemento do input, mas quero é os files. logo, linah abaixo:
 			const files = e.target.files//objeto com nome da img,tamanho,tipo,data de modificacao
 			if(files[0] !== undefined) {
 				this.imageName = files[0].name
@@ -71,7 +88,8 @@ export default {
 					this.imageFile = files[0] // arquivo da img que posso mandar pro server/bd/back-end...
                     this.$emit('imgUploaded',{
                         file: this.imageFile,
-                        name: this.imageName
+                        name: this.imageName,
+                        url: this.imageUrl
                     })      
                 })
 			} else {
@@ -82,7 +100,7 @@ export default {
             this.imageName = ''
 			this.imageFile = ''
 			this.imageUrl = ''
-        },
+        }
     }
 }
 </script>

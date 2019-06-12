@@ -25,7 +25,7 @@
             <v-container grid-list-md >
               <v-layout wrap>
                  <v-flex >
-                 <img-upload :clearURLflag="clearURLflag" @imgUploaded="fillCachedImgInfo"/><!-- binds tao dentro do componente, ver isso melhor dps-->
+                 <img-upload :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/><!-- binds tao dentro do componente, ver isso melhor dps-->
                 </v-flex>
                  <v-flex xs12 sm6 md4>
                   <v-text-field  v-model="editedItem.nome" label="Produto"></v-text-field>
@@ -128,7 +128,7 @@
   
     data: () => ({
       dialog: false,
-      addItemFlag: 1,
+      //addItemFlag: 1,
       search: '',
       valid: true,
       formErrors: [],//data n pode ser fora do range, esse vetor controlará se o form podera ser salvo ou n, baseado nas datas
@@ -146,8 +146,13 @@
           Rdata_f: '',
           flag: 0
         },
-        //prop que indicará pro componente filho (image_upload) se ele deve ou n limpar o campo de imagem
-        clearURLflag: 0,
+        //prop que indicará pro componente filho (image_upload) as img que devem ser mostradas qd um dialog/form abrir
+        imgInfo: {
+          imgName: '',
+          imgURL: '',
+          imgFile: '',
+          flag: 0
+        },
       //FIM DAS PROPS ^  
 
       //info relativas ao upload de img.v
@@ -155,7 +160,8 @@
       //diretamente pois só quero associa-la se o usuário salvar as alterações, se não, nao. :)
       cachedImgInfo: {
         imgName: '',//só o nome da img
-        imgFile: ''//objeto que pode ser salvo no db e posteriormente renderizado em uma img,inclusive
+        imgFile: '',//objeto que pode ser salvo no db e posteriormente renderizado em uma img,inclusive
+        imgURL: ''
       },
       //fim info relativas ao uplode e img ^
       headers: [
@@ -226,7 +232,8 @@
           {
             img:  {
               src: '',
-              name: 'hehe.jpg'
+              name: 'hehe.jpg',
+              url: ''
             },
             nome: 'Arroz',
             qtdade: 409,
@@ -242,7 +249,8 @@
            {
             img:  {
               src: '',
-              name: 'xd.jpg'
+              name: 'xd.jpg',
+              url: ''
             },
             nome: 'feijao',
             qtdade: 1000,
@@ -258,11 +266,18 @@
          
         ]
       },
+      prepareImgInfo(currentItem){//envia pro componente filho image_uload.vue os valores ( sao props no comp filho) a serem colocados ao abrir a aba/form de edit
+        this.imgInfo.imgFile = currentItem.img.src
+        this.imgInfo.imgURL = currentItem.img.url
+        this.imgInfo.imgName = currentItem.img.name
+        this.imgInfo.flag = 1
+      },
   
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
         this.sendDefaultDates(1)//pro componente filho mostrar as datas referentes a linha ao abrir o dialog
+        this.prepareImgInfo(this.editedItem)
         this.dialog = true  
       },
 
@@ -272,13 +287,16 @@
       },
     
       close () {
-        this.defaultDatesValues.flag = 0
+        this.resetFlags()
         this.dialog = false
-        this.clearURLflag = false
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         }, 300)
+      },
+      resetFlags(){//reseta as flags que sao props em componentes filhos, pra que o watch sempre observe mudanca
+        this.defaultDatesValues.flag = 0
+        this.imgInfo.flag = 0
       },
 
       save () {
@@ -313,32 +331,38 @@
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
         this.cachedImgInfo.imgName = data.name
         this.cachedImgInfo.imgFile = data.file
+        this.cachedImgInfo.imgURL = data.url
       },
       fillImgInfo(newItemIndex = ''){   
          //só guardarei a foto escolhida se ele salvou algo, se nao, nao
         //sera chamada se o user de fato quis salvar uma img e ela nao for em branco, pois caso seja, n tem objeto pra criar e daria erro!
         if(this.cachedImgInfo.imgFile !== '' && newItemIndex === ''){//caso editando algo existente c img
           this.createImage(this.cachedImgInfo.imgFile,this.editedItem)
-          this.editedItem.img.name = this.cachedImgInfo.imgName         
+          this.editedItem.img.name = this.cachedImgInfo.imgName
+          this.editedItem.img.url = this.cachedImgInfo.imgURL         
         }
         else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){//caso criando algo novo  que contenha img
           this.itens[newItemIndex].img = {
-            src: this.cachedImgInfo.imgFile,
-            name: this.cachedImgInfo.imgName
+            src:  this.cachedImgInfo.imgFile,
+            name: this.cachedImgInfo.imgName,
+            url:  this.cachedImgInfo.imgURL
+
           }
           this.createImage(this.itens[newItemIndex].img.src,this.itens[newItemIndex])
         }
         else{//caso criando algo novo e sem img ou editando algo sem img
           if(newItemIndex !== ''){//só sera dif se já tiver sido criado
             this.itens[newItemIndex].img = {
-              src: this.cachedImgInfo.imgFile,
-              name: this.cachedImgInfo.imgName
+              src:  this.cachedImgInfo.imgFile,
+              name: this.cachedImgInfo.imgName,
+              url:  this.cachedImgInfo.imgURL
             }
           }    
         }
         //esvazia p uso futuro. lembre que só é possivel editar uma linha por vez :)
         this.cachedImgInfo.imgName = ''
         this.cachedImgInfo.imgFile = ''
+        this.cachedImgInfo.imgURL = ''
       },
       createImage(file, item) {
         let image = new Image();

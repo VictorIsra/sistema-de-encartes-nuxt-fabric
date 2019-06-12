@@ -1,6 +1,7 @@
 <template>
     <div >  
-        <v-flex> 
+        <v-flex>
+                <v-btn @click="clearInput">Limpei</v-btn>
            <!-- <img :src="image" width="50px" height="50px"/>-->
                 <img :src="imageUrl" height="50px" v-if="imageUrl"/>
                 <v-text-field label="Selecione uma imagem" @click='pickFile' v-model='imageName' prepend-icon='attach_file'></v-text-field>
@@ -54,7 +55,7 @@ export default {
             console.log("targfile",e.target.files) //mostra o elemento do input, mas quero é os files. logo, linah abaixo:
 			const files = e.target.files//objeto com nome da img,tamanho,tipo,data de modificacao
 			if(files[0] !== undefined) {
-				this.imageName = files[0].name
+				this.imageName = files[0].name 
 				if(this.imageName.lastIndexOf('.') <= 0) {
 					return
                 }
@@ -71,7 +72,8 @@ export default {
 					this.imageFile = files[0] // arquivo da img que posso mandar pro server/bd/back-end...
                     this.$emit('imgUploaded',{
                         file: this.imageFile,
-                        name: this.imageName
+                        name: this.imageName,
+                        url: this.imageUrl
                     })      
                 })
 			} else {
@@ -79,9 +81,10 @@ export default {
 			}
         },
         clearInput(){
-            this.imageName = ''
-			this.imageFile = ''
-			this.imageUrl = ''
+            console.log("limpou input imgname(q n muda nada tirando u botnado) ",this.imageName)
+            this.imageName = ''//muda nada
+			this.imageFile = '' //limpa icone da img
+			this.imageUrl = '' //li,pa o texto no "selecioe img"
         },
     }
 }
