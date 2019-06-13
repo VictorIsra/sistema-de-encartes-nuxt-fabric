@@ -88,7 +88,7 @@
     data: () => ({
       data_inicio: new Date().toISOString().substr(0, 10),
       data_termino: new Date().toISOString().substr(0, 10),
-      
+      caller: '',//zero se for a de inicio, 1 se for a final. uso p saber qual delas é a caller, e usarei essa info pra passar pro pai
       dateFormatted_inicio:'', //vm.formatDate(new Date().toISOString().substr(0, 10)),
       dateFormatted_termino:'',// vm.formatDate(new Date().toISOString().substr(0, 10)),
       menu1: false,
@@ -155,15 +155,25 @@
         var check = new Date(c[2], parseInt(c[1])-1, c[0])    
         //console.log(check > from && check < to)
         var status = check > from && check < to
-        if(!status)//se invalido emite evento ao pai avisando. rule tb faz isso, visualmente, mas esse evento faz a nivel lógico
-          this.$emit('invalidDate',1)
-        else
-          this.$emit('invalidDate',0)//se valido emite ao pai, q ai ele remove um item do vetor de errors
-
+        this.sendDateStatus(status)
         return status
       },
+      sendDateStatus(status){//componente pai usará isso pra saber ql data é inicial e ql a final, a fim de valida-las num form/dialog
+        console.log("quem me chamou: ", this.caller)
+        if(!status && this.caller !== ''){//se invalido emite evento ao pai avisando. rule tb faz isso, visualmente, mas esse evento faz a nivel lógico
+            this.$emit('dateStatusInfo',{
+              status: 1,//1 é pq teve erro
+              caller: this.caller
+            })
+        }  
+        else if(status && this.caller !== ''){
+          this.$emit('dateStatusInfo',{
+            status: 0,//0 é pq n teve error
+            caller: this.caller
+          })//se valido emite ao pai, q ai ele remove um item do vetor de errors
+        } 
+      },
       dataRule(v){
-        console.log("VVV ", v)
         if(!this.checkDataRange.checkRange)
           console.log("sou data rule e n checo range :)")
         else{//só no caso da data precisar estar entre um intervalo 
@@ -176,8 +186,8 @@
         
         return !!v || 'É preciso escolher uma data'
       },
-      teste(e){
-          console.log("Opaaaa sou ", e)
+      teste(caller){//0 é a de inicio, 1 a de fim
+          this.caller = caller
       }
     }
   }

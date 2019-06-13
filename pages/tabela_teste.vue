@@ -44,7 +44,7 @@
                   <datas  :checkDataRange="checkDataRange" 
                           :defaultDatesValues="defaultDatesValues" 
                            @datechanged="getDate"
-                           @invalidDate="getDateError"           
+                           @dateStatusInfo="getDateStatus"           
                     />              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
                 </v-flex>
                 <v-flex xs12 sm6 md4>
@@ -136,10 +136,7 @@
       
       search: '',
       valid: true,
-      datesError: [],
-      formErrors: [],//data n pode ser fora do range, esse vetor controlará se o form podera ser salvo ou n, baseado nas datas
-      //info relativas a validacao do range de datas. v
-      //dataRange: datas.methods.dataRange,
+      datesErrors: [''],//é uma pilha que checa os erros nas datas. nao terá erro qd ela só tiver o elemento base(''), ou seja, se datesErros.length ===1
       //PROPS (lembrar que, na verdade, são props para um componente filho
         checkDataRange: {
           checkRange: true,
@@ -296,7 +293,7 @@
         this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
         this.sendDefaultDates(1)//pro componente filho mostrar as datas referentes a linha ao abrir o dialog
         this.prepareImgInfo(this.editedItem)
-        console.log("valor ", this.editedItem.nome)
+       // console.log("valor ", this.editedItem.nome)
         this.teste()
         this.dialog = true  
       },
@@ -308,6 +305,7 @@
     
       close () {
         this.resetFlags()
+        this.resetDateErrorStack()
         this.dialog = false
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
@@ -339,8 +337,24 @@
         else
           console.log("erro ocorreu na funcao getData(componente datas.vue)")    
       },
-      getDateError(error){//se o componente filho viu que a data é invalida ( fora do range), adiciona um item ao vetor de erros
-        this.datesError.push(error)
+      getDateStatus(info){//se o componente filho viu que a data é invalida ( fora do range), adiciona um item ao vetor de erros
+          //lembre, só as datas só serao validas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha)
+          const duplicates = this.datesErrors.find(obj =>
+            info.status === obj.status && info.caller === obj.caller)
+         
+          if(duplicates === undefined && info.status !== 0)//status 0 é pq n teve erro, só quero preencher se foi error ( 1)
+             this.datesErrors.unshift(info)
+          if(info.status === 0 ){//se nao tem mais erro, removo do array ( pilha ) o item que agora é valido
+          //n preciso me preocupar das checagens caso a pilha esteja 'default' ( só com a base ), js cuida disso p mim
+           this.datesErrors.forEach((obj,i) => {
+              if(info.caller === obj.caller)
+                this.datesErrors.splice(i,1)
+            })
+          }
+      },
+      resetDateErrorStack(){//validacao só fará sentido qd o dialog tiver aberto, qd fechado, limpar a pilha
+        this.datesErrors = ['']
+        console.log("leeen ", this.datesErrors.length)
       },
       sendDefaultDates(flag){//dps passarei 1 ou 0 como argumento, pra dif edicao de um item novo
         //se flag == 1, irá fazer as dates no componente data.vue passarem o valor presente na linha atual da tabela 
@@ -397,7 +411,7 @@
       },
       teste(){
         Object.keys(this.editedItem).forEach(f => {
-          console.log("iteraando ", this.editedItem[f])
+         // console.log("iteraando ", this.editedItem[f])
          // console.log("!this.editemItem[f]: ", !this.editedItem)//se n tiver nada prenchido
 
           
