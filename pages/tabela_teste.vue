@@ -35,7 +35,7 @@
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field ref="editedItem.qtdade" 
-                                :rules="[() => editedItem.qtdade >= 0 || 'a quantidade deve ser um número']" 
+                                :rules="[() => (editedItem.qtdade >= 0 && editedItem.qtdade !== '')|| 'a quantidade é obrigatória e deve ser um número']" 
                                 v-model="editedItem.qtdade"
                                 label="Estoque"
                                 type="number">
@@ -60,7 +60,7 @@
                   <v-text-field  ref="editedItem.preco_c"
                                  min="1" step="any"
                                  v-model="editedItem.preco_c" 
-                                 :rules="[() => editedItem.preco_c >= 0 || 'o preço de compra deve ser um número ']" 
+                                 :rules="[() => (editedItem.preco_c >= 0 && editedItem.preco_c !== '') || 'o preço de compra é obrigatório e deve ser um número ']" 
                                  label="Preço de compra"
                                  type="number">
                   </v-text-field>
@@ -70,7 +70,7 @@
                                 v-model="editedItem.preco_v" 
                                 min="1" step="any"
                                 type="number"
-                                :rules="[() => editedItem.preco_v >= 0 || 'o preço de venda deve ser um número']" 
+                                :rules="[() => (editedItem.preco_v >= 0 && editedItem.preco_v !== '')|| 'o preço de venda é obrigatório e deve ser um número']" 
                                 label="Preço de venda">
                   </v-text-field>
                 </v-flex>
@@ -80,7 +80,7 @@
                 <v-flex >
                   <v-text-field ref="editedItem.marluc" justify-center 
                                 v-model="editedItem.marluc" 
-                                :rules="[() => editedItem.marluc >= 0 || 'a margem de lucro deve ser um número']"
+                                :rules="[() => (editedItem.marluc >= 0 && editedItem.marluc !== '')|| 'a margem de lucro é obrigatória e deve ser um número']"
                                 type="number" 
                                 label="Margem de lucro"></v-text-field>
                 </v-flex>
@@ -270,7 +270,7 @@
             qtdade: 409,
             unidade: 'kg',
             obs: 'nada a declarar',
-            data_i: '11/05/2019',
+            data_i: '23/06/2019',
             data_f: '23/06/2019',
             preco_c: '130$',
             preco_v: '303$',
@@ -362,47 +362,49 @@
         this.defaultDatesValues.Rdata_i = this.editedItem.data_i
         this.defaultDatesValues.Rdata_f = this.editedItem.data_f
       },
-      getDateStatus(info){//se o componente filho viu que a data é invalida ( fora do range), adiciona um item ao vetor de erros
-          //lembre, as datas só serao validadas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha)
-            if(!this.dialog)
+      getDateStatus(info){//se o componente filho viu que a data é invalida ( fora do range), adiciona um item a pilha de erros
+          //lembre, as datas só serao validadas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha ('#'))
+            if(!this.dialog)//só quero checar e mexer na pilha se um form/dialog tiver aberto
               return
-        
-           console.log("ENTREweI COM caler ", info.caller ," e stat ", info.status)
+          //console.log("ENTREweI COM caler ", info.caller ," e stat ", info.status)
           const duplicates = this.datesErrors.find(obj => //checa se nao estou adicionando um el repetido a pilha
             info.status === obj.status && info.caller === obj.caller )
          
           if(duplicates === undefined && info.status !== 0 ){//status 0 é pq n teve erro, só quero preencher se foi error ( 1)
-             this.datesErrors.unshift(info)
-             console.log(" adicioneei")
+            if(info.caller !== -1){// se caller != -1 é pq sao datas difs e invalidas
+                this.datesErrors.unshift(info)
+            }
+            else{//se caller = -1 é pq sao datas iguais e invalidas
+              if(this.datesErrors.length < 3){//se é  3 é pq ambas as invalidas ja tao na pilha, entao nada devo fazer, caso contrário devo adicionar as 2 datas a pilha de erro
+                var i
+                this.resetDateErrorStack()//reseto a pilha e adiciono as 2 datas invalidas e iguais, pois:
+                for(i = 0; i < 2;i++){//se length é menor que 3 e caller é -1, é pq ambas sao iguais e invalidas, logo adiciono ambas a pilha
+                  this.datesErrors.unshift({
+                    status: 1,
+                    caller: i
+                  })
+                }  
+              }
+            }   
           }   
           if(info.status === 0 ){//se a data nao é mais invalida, removo do array ( pilha ) o item que indicava que aquela data era invalida
-            this.datesErrors.forEach((obj,i) => {
-              console.log("foeach estranho")
-              if(info.caller === obj.caller){
-                console.log("MAATAREI")
-                this.datesErrors.splice(i,1)//se removi algo é pq corrigiu, aqui checo se agora o tamanho é 1, se for, posso assumir que resolveu os erros e agora boto a bae da pilha em vez de '', como uma flag de validacao
-                //if(this.datesErrors.length === 1)//agora posso indicar q foi validado
-                  //this.datesErrors[0] = -1//flag q indica q foi validado
-              }  
-            })
+            if(info.caller === -1)//datas sao iguais e validas, esvazio a pilha
+              this.resetDateErrorStack()
+            else{//datas sao dif, mas alguma delas agora é valida, logo removo só uma data da pilha de erros  
+              this.datesErrors.forEach((obj,i) => {
+                if(info.caller === obj.caller)
+                  this.datesErrors.splice(i,1)//se removi algo é pq corrigiu algo, mas só sera valido totalmente qd a o tamanho da pilha for 1 (só ter a base dela)
+              })
+            }  
           }
-                          console.log("MAATAREssdI")
-
-          if(info.caller === ''){//caso default qd abre um dialog
-            if(info.status === 0)//datas validas
-              this.valid = true
-            else
-              this.valid = false //datas invalidas  
-          }
-          
-          console.log(" siz ", this.datesErrors.length)
+          console.log(" siz ", this.datesErrors.length)//p debug
          this.datesErrors.forEach(i => console.log(i))
-       //   this.validate()//tenta validar
+          this.validate()//tenta validar
       },
       resetDateErrorStack(){//validacao só fará sentido qd o dialog tiver aberto, qd fechado, limpar a pilha
-        console.log("resetnado ")
+        //console.log("resetnado ")
         this.datesErrors = ['#']
-        console.log("size rset ", this.datesErrors.length)
+       // console.log("size rset ", this.datesErrors.length)
       },
       fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
@@ -451,29 +453,25 @@
       validate(){
       // console.log("ME CHAMOS base ", this.datesErrors[0] === -1)
         const valid = []
-        const datesValid = this.datesErrors.length === 1 && this.datesErrors[0] === -1 ? true : false
-       // console.log("AAAAteste ", datesValid, " ", this.datesErrors.length)
-        // if(datesValid)
-        //   console.log("val ")
-        // else
-        //   console.log("Inva")  
+        const datesValid = this.datesErrors.length === 1 ? true : false
+        console.log("AAAAteste ", datesValid, " ", this.datesErrors.length)
+          if(datesValid)
+            console.log(" DAT val ")
+          else
+            console.log(" DAT Inva")  
         Object.keys(this.editedItem).forEach((f,index) => {
-
-          //validando data:
-          //blablba
-          //validando inputs normais
           if(index !== 0 && index !== 5 && index !== 6){//se n for data nem img, de boa usar o metodo validate
             valid.push(this.$refs["editedItem." + f.toString()].validate(true))                           // console.log("!this.editemItem[f]: ", !this.editedItem)//se n tiver nada prenchido
           }
         })
-        if(valid.includes(false)|| !datesValid){
-       //   console.log("invalido")
+        if(valid.includes(false) || !datesValid){
+          console.log(" FORM invalido")
           this.valid = false
           return false
         }  
         else if(!valid.includes(false) && datesValid){
-        //  console.log("valido!")
-          this.valid  
+          console.log(" Form valido!")
+          this.valid  = true
           return true
         }  
         //juntando as info pro veredito final

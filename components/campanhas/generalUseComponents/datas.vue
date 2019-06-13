@@ -194,12 +194,13 @@
       },
       getFlag(input){//n posso passar como argumento pra rules pq congela a f sl pq...
       console.log("Input padrao: ", input)
-        if(input === this.dateFormatted_inicio)
+        if(this.dateFormatted_inicio === this.dateFormatted_termino)//precisa ser a primeira condicao
+          return -1
+        else if(input === this.dateFormatted_inicio)
           return 0
         else if (input === this.dateFormatted_termino)
           return 1  
-        else
-          return -1  
+        
       }
     }
   }
