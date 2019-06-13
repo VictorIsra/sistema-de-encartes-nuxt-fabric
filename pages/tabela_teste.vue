@@ -22,7 +22,7 @@
             <span class="headline">{{ formTitle }}</span>
           </v-card-title>
           
-          <v-card-text ref="editedItem"> <!-- informacoes de adicionar e deletar (é um form)-->
+          <v-card-text v-model="valid" ref="editedItem"> <!-- informacoes de adicionar e deletar (é um form)-->
             <v-container grid-list-md >
               <v-layout wrap>
                  <v-flex >
@@ -90,7 +90,7 @@
             <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn  color="primary" @click="close">Cancelar</v-btn>
-            <v-btn  color="primary" :disabled="!valid"  @click="save">Salvar</v-btn>
+            <v-btn  color="primary" ref="savebtn" :disabled="!valid"  @click="save">Salvar</v-btn>
            </v-card-actions>
           </v-card-text>
 
@@ -157,6 +157,7 @@
     },
   
     data: () => ({
+      savebtn: '',
       dialog: false,
       search: '',
       valid: true,
@@ -245,9 +246,14 @@
     watch: {
       dialog (val) {
         val || this.close()
+      },
+      valid:{
+        handler(){
+          //console.log("validando ")
+          this.validate()
+        }
       }
     },
-
     created () {
       this.initialize()//sera alimentado pelo bd eventualmente, tvz?
     },
@@ -305,7 +311,6 @@
         this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
         this.sendDefaultDates(1)//pro componente filho mostrar as dates referentes a linha correspondente ao se abrir o dialog
         this.prepareImgInfo(this.editedItem)
-       // console.log("valor ", this.editedItem.nome)
         this.validate()
         this.dialog = true  
       },
@@ -331,14 +336,15 @@
 
       save () {
         if (this.editedIndex > -1) {
-          Object.assign(this.itens[this.editedIndex], this.editedItem)
-          this.fillImgInfo()
+            Object.assign(this.itens[this.editedIndex], this.editedItem)
+            this.fillImgInfo()
         } else {//caso esteja adicionando algo em vez de editando
-          this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
-          this.fillImgInfo(0)
+            this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
+            this.fillImgInfo(0)
         }
-        this.close()
+        this.close()      
       },
+
       getDate(data){//pega as datas formatadas no componente filho 'datas.vue'
         //será chamado antes do método save, aqui, devo associar o valor do item editado com data
         //que assim ele atualizará na tabela no save ;)
@@ -370,6 +376,7 @@
                 this.datesErrors.splice(i,1)
             })
           }
+          this.validate()//tenta validar
       },
       resetDateErrorStack(){//validacao só fará sentido qd o dialog tiver aberto, qd fechado, limpar a pilha
         this.datesErrors = ['']
@@ -420,8 +427,16 @@
         reader.readAsDataURL(file);// console.log("crie img")
       },
       validate(){
+        console.log("ME CHAMOS")
         const valid = []
+        const datesValid = this.datesErrors.length === 1 ? true : false
+        //console.log("teste ", datesValid, " ", this.datesErrors.length)
+        if(datesValid)
+          console.log("val ")
+        else
+          console.log("Inva")  
         Object.keys(this.editedItem).forEach((f,index) => {
+
           //validando data:
           //blablba
           //validando inputs normais
@@ -429,10 +444,16 @@
             valid.push(this.$refs["editedItem." + f.toString()].validate(true))                           // console.log("!this.editemItem[f]: ", !this.editedItem)//se n tiver nada prenchido
           }
         })
-        if(valid.includes(false))
+        if(valid.includes(false)|| !datesValid){
           console.log("invalido")
-        else
-          console.log("valido!")  
+          this.valid = false
+          return false
+        }  
+        else if(!valid.includes(false) && datesValid){
+          console.log("valido!")
+          this.valid  
+          return true
+        }  
         //juntando as info pro veredito final
       }
     }
