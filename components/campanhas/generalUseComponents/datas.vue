@@ -22,7 +22,7 @@
               prepend-icon="event"
               readonly
               v-on="on"
-              :rules="[dataRule]"
+              :rules="[dataRule(dateFormatted_inicio,0)]"
             ></v-text-field>
           </template>
           <v-date-picker  @change="caller = 0" :format="formatDate(data_inicio)" v-model="data_inicio" no-title @input="menu1 = false"></v-date-picker>
@@ -49,7 +49,7 @@
               prepend-icon="event"
               readonly
               v-on="on"
-              :rules="[dataRule]"
+              :rules="[dataRule(dateFormatted_termino,1)]"
             ></v-text-field>
           </template>
           <v-date-picker  @change="caller = 1" v-model="data_termino" no-title @input="menu2 = false"></v-date-picker>
@@ -142,7 +142,7 @@
         const [month, day, year] = date.split('/')//n sei qd isso e'chamado, n mexerei ainda
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
       },
-      dataRange(dateFrom,dateTo,dateCheck){ //ve se a data tá entre um range
+      dataRange(dateFrom,dateTo,dateCheck,flag){ //ve se a data tá entre um range
       //true se a data for ok( dentro do range), false caso contrário
         if(dateCheck === undefined)
           return
@@ -155,11 +155,10 @@
         var check = new Date(c[2], parseInt(c[1])-1, c[0])    
         //console.log(check > from && check < to)
         var status = check > from && check < to
-
-        this.sendDateStatus(status)
+        this.sendDateStatus(!status,flag) //aqui status 1/true se for ok e 0/false se for falso, mas eu defini na pilha q 0/true e 1/false, por isso passo !status
         return status
       },
-      sendDateStatus(status){//componente pai usará isso pra saber ql data é inicial e ql a final, a fim de valida-las num form/dialog
+      sendDateStatus(status,flag){//componente pai usará isso pra saber ql data é inicial e ql a final, a fim de valida-las num form/dialog
         if(!status && this.caller !== ''){//se invalido emite evento ao pai avisando. rule tb faz isso, visualmente, mas esse evento faz a nivel lógico
             this.$emit('dateStatusInfo',{
               status: 1,//1 é pq teve erro
@@ -175,16 +174,17 @@
         else if(this.caller === ''){//caso default de qd abri um dialog
           this.$emit('dateStatusInfo',{
             status,//pode ser 0 ou 1 qd abre o dialog
-            caller: this.caller
+            caller: flag //flag assume os msm valores de caller: 0 ou 1, mas como ao abrir um dialog n dá pra ter o caller como 0 ou 1 antes de interagir, passo a flag
           })
         }
       },
-      dataRule(v){
+      dataRule(v,flag){
+        console.log("v   ev ", v, " f ", flag )
         if(!this.checkDataRange.checkRange)
           console.log("sou data rule e n checo range :)")
         else{//só no caso da data precisar estar entre um intervalo 
           if(v !== null){
-            var status = this.dataRange(this.checkDataRange.Pdata_i,this.checkDataRange.Pdata_f,v)
+            var status = this.dataRange(this.checkDataRange.Pdata_i,this.checkDataRange.Pdata_f,v,flag)
             return status || "a data precisa estar entre " + this.checkDataRange.Pdata_i
                               + " e " + this.checkDataRange.Pdata_f + "."
           }    

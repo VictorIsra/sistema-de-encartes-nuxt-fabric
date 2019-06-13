@@ -364,17 +364,22 @@
       },
       getDateStatus(info){//se o componente filho viu que a data é invalida ( fora do range), adiciona um item ao vetor de erros
           //lembre, as datas só serao validadas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha)
+            if(!this.dialog)
+              return
+         //  console.log("ENTREI COM caler ", info.caller ," e stat ", info.status)
           const duplicates = this.datesErrors.find(obj => //checa se nao estou adicionando um el repetido a pilha
             info.status === obj.status && info.caller === obj.caller )
-           
-          if(duplicates === undefined && info.status !== 0 && info.caller !== '')//status 0 é pq n teve erro, só quero preencher se foi error ( 1)
+         //  console.log("INFO ",info)
+         
+          if(duplicates === undefined && info.status !== 0 )//status 0 é pq n teve erro, só quero preencher se foi error ( 1)
              this.datesErrors.unshift(info)
           if(info.status === 0 ){//se a data nao é mais invalida, removo do array ( pilha ) o item que indicava que aquela data era invalida
             this.datesErrors.forEach((obj,i) => {
               if(info.caller === obj.caller){
+                console.log("viii")
                 this.datesErrors.splice(i,1)//se removi algo é pq corrigiu, aqui checo se agora o tamanho é 1, se for, posso assumir que resolveu os erros e agora boto a bae da pilha em vez de '', como uma flag de validacao
-                if(this.datesErrors.length === 1)//agora posso indicar q foi validado
-                  this.datesErrors[0] = -1//flag q indica q foi validado
+                //if(this.datesErrors.length === 1)//agora posso indicar q foi validado
+                  //this.datesErrors[0] = -1//flag q indica q foi validado
               }  
             })
           }
@@ -384,9 +389,9 @@
             else
               this.valid = false //datas invalidas  
           }
-          console.log("Pilha ", this.datesErrors.length,
-           " base ", this.datesErrors[length -1]," ", this.datesErrors[0])
-        //  this.datesErrors.forEach(i => console.log(i))
+          
+          console.log(" siz ", this.datesErrors.length)
+         this.datesErrors.forEach(i => console.log(i))
        //   this.validate()//tenta validar
       },
       resetDateErrorStack(){//validacao só fará sentido qd o dialog tiver aberto, qd fechado, limpar a pilha
@@ -438,10 +443,10 @@
         reader.readAsDataURL(file);// console.log("crie img")
       },
       validate(){
-       console.log("ME CHAMOS base ", this.datesErrors[0] === -1)
+      // console.log("ME CHAMOS base ", this.datesErrors[0] === -1)
         const valid = []
         const datesValid = this.datesErrors.length === 1 && this.datesErrors[0] === -1 ? true : false
-        console.log("AAAAteste ", datesValid, " ", this.datesErrors.length)
+       // console.log("AAAAteste ", datesValid, " ", this.datesErrors.length)
         // if(datesValid)
         //   console.log("val ")
         // else
