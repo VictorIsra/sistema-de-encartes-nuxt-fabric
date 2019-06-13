@@ -90,7 +90,7 @@
             <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn  color="primary" @click="close">Cancelar</v-btn>
-            <v-btn  color="primary" ref="savebtn" :disabled="!valid"  @click="save">Salvar</v-btn>
+            <v-btn  color="primary" :disabled="!valid"  @click="save">Salvar</v-btn>
            </v-card-actions>
           </v-card-text>
 
@@ -157,7 +157,6 @@
     },
   
     data: () => ({
-      savebtn: '',
       dialog: false,
       search: '',
       valid: true,
@@ -249,7 +248,6 @@
       },
       valid:{
         handler(){
-          //console.log("validando ")
           this.validate()
         }
       }
@@ -311,7 +309,8 @@
         this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
         this.sendDefaultDates(1)//pro componente filho mostrar as dates referentes a linha correspondente ao se abrir o dialog
         this.prepareImgInfo(this.editedItem)
-        this.validate()
+       // this.getDateStatus()//checar a pilha de erros ao abrir o dialog
+        //this.validate()
         this.dialog = true  
       },
 
@@ -366,17 +365,29 @@
       getDateStatus(info){//se o componente filho viu que a data é invalida ( fora do range), adiciona um item ao vetor de erros
           //lembre, as datas só serao validadas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha)
           const duplicates = this.datesErrors.find(obj => //checa se nao estou adicionando um el repetido a pilha
-            info.status === obj.status && info.caller === obj.caller)
-         
-          if(duplicates === undefined && info.status !== 0)//status 0 é pq n teve erro, só quero preencher se foi error ( 1)
+            info.status === obj.status && info.caller === obj.caller )
+           
+          if(duplicates === undefined && info.status !== 0 && info.caller !== '')//status 0 é pq n teve erro, só quero preencher se foi error ( 1)
              this.datesErrors.unshift(info)
           if(info.status === 0 ){//se a data nao é mais invalida, removo do array ( pilha ) o item que indicava que aquela data era invalida
             this.datesErrors.forEach((obj,i) => {
-              if(info.caller === obj.caller)
-                this.datesErrors.splice(i,1)
+              if(info.caller === obj.caller){
+                this.datesErrors.splice(i,1)//se removi algo é pq corrigiu, aqui checo se agora o tamanho é 1, se for, posso assumir que resolveu os erros e agora boto a bae da pilha em vez de '', como uma flag de validacao
+                if(this.datesErrors.length === 1)//agora posso indicar q foi validado
+                  this.datesErrors[0] = -1//flag q indica q foi validado
+              }  
             })
           }
-          this.validate()//tenta validar
+          if(info.caller === ''){//caso default qd abre um dialog
+            if(info.status === 0)//datas validas
+              this.valid = true
+            else
+              this.valid = false //datas invalidas  
+          }
+          console.log("Pilha ", this.datesErrors.length,
+           " base ", this.datesErrors[length -1]," ", this.datesErrors[0])
+        //  this.datesErrors.forEach(i => console.log(i))
+       //   this.validate()//tenta validar
       },
       resetDateErrorStack(){//validacao só fará sentido qd o dialog tiver aberto, qd fechado, limpar a pilha
         this.datesErrors = ['']
@@ -427,14 +438,14 @@
         reader.readAsDataURL(file);// console.log("crie img")
       },
       validate(){
-        console.log("ME CHAMOS")
+       console.log("ME CHAMOS base ", this.datesErrors[0] === -1)
         const valid = []
-        const datesValid = this.datesErrors.length === 1 ? true : false
-        //console.log("teste ", datesValid, " ", this.datesErrors.length)
-        if(datesValid)
-          console.log("val ")
-        else
-          console.log("Inva")  
+        const datesValid = this.datesErrors.length === 1 && this.datesErrors[0] === -1 ? true : false
+        console.log("AAAAteste ", datesValid, " ", this.datesErrors.length)
+        // if(datesValid)
+        //   console.log("val ")
+        // else
+        //   console.log("Inva")  
         Object.keys(this.editedItem).forEach((f,index) => {
 
           //validando data:
@@ -445,12 +456,12 @@
           }
         })
         if(valid.includes(false)|| !datesValid){
-          console.log("invalido")
+       //   console.log("invalido")
           this.valid = false
           return false
         }  
         else if(!valid.includes(false) && datesValid){
-          console.log("valido!")
+        //  console.log("valido!")
           this.valid  
           return true
         }  

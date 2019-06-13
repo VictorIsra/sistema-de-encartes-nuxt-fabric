@@ -155,6 +155,7 @@
         var check = new Date(c[2], parseInt(c[1])-1, c[0])    
         //console.log(check > from && check < to)
         var status = check > from && check < to
+
         this.sendDateStatus(status)
         return status
       },
@@ -171,6 +172,12 @@
             caller: this.caller
           })
         } 
+        else if(this.caller === ''){//caso default de qd abri um dialog
+          this.$emit('dateStatusInfo',{
+            status,//pode ser 0 ou 1 qd abre o dialog
+            caller: this.caller
+          })
+        }
       },
       dataRule(v){
         if(!this.checkDataRange.checkRange)
