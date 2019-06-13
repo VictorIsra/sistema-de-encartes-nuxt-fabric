@@ -154,18 +154,18 @@
         var to   = new Date(d2[2], parseInt(d2[1])-1, d2[0])
         var check = new Date(c[2], parseInt(c[1])-1, c[0])    
         //console.log(check > from && check < to)
-        var status = check > from && check < to
-        this.sendDateStatus(!status,flag) //aqui status 1/true se for ok e 0/false se for falso, mas eu defini na pilha q 0/true e 1/false, por isso passo !status
-        return status
+        var dataInRange = check > from && check < to
+        this.sendDateStatus(dataInRange,flag)
+        return dataInRange
       },
-      sendDateStatus(status,flag){//componente pai usará isso pra saber ql data é inicial e ql a final, a fim de valida-las num form/dialog
-        if(!status && this.caller !== ''){//se invalido emite evento ao pai avisando. rule tb faz isso, visualmente, mas esse evento faz a nivel lógico
+      sendDateStatus(dataInRange,flag){//componente pai usará isso pra saber ql data é inicial e ql a final, a fim de valida-las num form/dialog
+        if(!dataInRange && this.caller !== ''){//se invalido emite evento ao pai avisando. rule tb faz isso, visualmente, mas esse evento faz a nivel lógico
             this.$emit('dateStatusInfo',{
-              status: 1,//1 é pq teve erro
+              status: 1,//1 é pq teve erro //esse stauts é dif nada tem a ver com o status do parametro
               caller: this.caller//caller 0 se for data inicial, caler 1 se for data final
             })
         }  
-        else if(status && this.caller !== ''){
+        else if(dataInRange && this.caller !== ''){
           this.$emit('dateStatusInfo',{
             status: 0,//0 é pq n teve error
             caller: this.caller
@@ -173,13 +173,16 @@
         } 
         else if(this.caller === ''){//caso default de qd abri um dialog
           this.$emit('dateStatusInfo',{
-            status,//pode ser 0 ou 1 qd abre o dialog
+            status: this.convertBoolToNumber(dataInRange),//pode ser 0 ou 1 qd abre o dialog
             caller: flag //flag assume os msm valores de caller: 0 ou 1, mas como ao abrir um dialog n dá pra ter o caller como 0 ou 1 antes de interagir, passo a flag
           })
         }
       },
+      convertBoolToNumber(dataInRange){//lembre q 1 é erro ( fora do range) e 0 é q foi td ok
+        return dataInRange === true ? 0 : 1
+      },
       dataRule(v,flag){
-        console.log("v   ev ", v, " f ", flag )
+      //  console.log("v   ev ", v, " f ", flag )
         if(!this.checkDataRange.checkRange)
           console.log("sou data rule e n checo range :)")
         else{//só no caso da data precisar estar entre um intervalo 
