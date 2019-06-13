@@ -22,10 +22,10 @@
               prepend-icon="event"
               readonly
               v-on="on"
-              :rules="[dataRule(dateFormatted_inicio,0)]"
+              :rules="[dataRule]"
             ></v-text-field>
           </template>
-          <v-date-picker  @change="caller = 0" :format="formatDate(data_inicio)" v-model="data_inicio" no-title @input="menu1 = false"></v-date-picker>
+          <v-date-picker  @change="caller = 0" :format="formatDate(data_inicio)" v-model.lazy="data_inicio" no-title @input="menu1 = false"></v-date-picker>
         </v-menu>
       </v-flex>
 
@@ -49,10 +49,10 @@
               prepend-icon="event"
               readonly
               v-on="on"
-              :rules="[dataRule(dateFormatted_termino,1)]"
+              :rules="[dataRule]"
             ></v-text-field>
           </template>
-          <v-date-picker  @change="caller = 1" v-model="data_termino" no-title @input="menu2 = false"></v-date-picker>
+          <v-date-picker @change="caller = 1" v-model.lazy="data_termino" no-title @input="menu2 = false"></v-date-picker>
         </v-menu>
 
       </v-flex>
@@ -92,7 +92,9 @@
       dateFormatted_inicio:'', 
       dateFormatted_termino:'',
       menu1: false,
-      menu2: false
+      menu2: false,
+      b0: '',
+      b1: ''
     }),
     watch: {
       data_inicio (val) {
@@ -155,6 +157,7 @@
         var check = new Date(c[2], parseInt(c[1])-1, c[0])    
         //console.log(check > from && check < to)
         var dataInRange = check > from && check < to
+        console.log("chamei d novo")
         this.sendDateStatus(dataInRange,flag)
         return dataInRange
       },
@@ -181,18 +184,25 @@
       convertBoolToNumber(dataInRange){//lembre q 1 é erro ( fora do range) e 0 é q foi td ok
         return dataInRange === true ? 0 : 1
       },
-      dataRule(v,flag){
-      //  console.log("v   ev ", v, " f ", flag )
+      dataRule(v){
+        
         if(!this.checkDataRange.checkRange)
           console.log("sou data rule e n checo range :)")
         else{//só no caso da data precisar estar entre um intervalo 
           if(v !== null){
+            var flag = this.getFlag(v)
             var status = this.dataRange(this.checkDataRange.Pdata_i,this.checkDataRange.Pdata_f,v,flag)
             return status || "a data precisa estar entre " + this.checkDataRange.Pdata_i
                               + " e " + this.checkDataRange.Pdata_f + "."
           }    
         }  
         return !!v || 'É preciso escolher uma data'
+      },
+      getFlag(input){//n posso passar como argumento pra rules pq congela a f sl pq...
+        if(input === this.dateFormatted_inicio)
+          return 0
+        else
+          return 1  
       }
     }
   }

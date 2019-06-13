@@ -22,7 +22,7 @@
             <span class="headline">{{ formTitle }}</span>
           </v-card-title>
           
-          <v-card-text v-model="valid" ref="editedItem"> <!-- informacoes de adicionar e deletar (é um form)-->
+          <v-card-text v-model.lazy="valid" ref="editedItem"> <!-- informacoes de adicionar e deletar (é um form)-->
             <v-container grid-list-md >
               <v-layout wrap>
                  <v-flex >
@@ -366,10 +366,10 @@
           //lembre, as datas só serao validadas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha)
             if(!this.dialog)
               return
-         //  console.log("ENTREI COM caler ", info.caller ," e stat ", info.status)
+           console.log("ENTREI COM caler ", info.caller ," e stat ", info.status)
           const duplicates = this.datesErrors.find(obj => //checa se nao estou adicionando um el repetido a pilha
             info.status === obj.status && info.caller === obj.caller )
-           console.log("INFO ",info)
+
          
           if(duplicates === undefined && info.status !== 0 )//status 0 é pq n teve erro, só quero preencher se foi error ( 1)
              this.datesErrors.unshift(info)
