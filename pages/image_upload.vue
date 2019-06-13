@@ -37,13 +37,12 @@ export default {
     },
     watch: {
         clearURLflag() {
-                console.log("MUDOaaaaaaaaaa UP")
                 if(this.clearURLflag === 1){
                     this.clearInput() 
-                    console.log("Limpei")
+                    //console.log("Limpei")
                 }    
                 else{
-                    console.log("mostra oq ja ta")
+                    //console.log("mostra oq ja ta")
                 }
         }
     },

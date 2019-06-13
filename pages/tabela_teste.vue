@@ -2,7 +2,7 @@
 -->
 <template>
   <div>
-    <v-btn @click="teste"> TESTEEE</v-btn>
+    <v-btn @click="validate"> TESTEEE</v-btn>
     <v-toolbar flat color="white">
       <v-spacer></v-spacer>
       <v-text-field
@@ -26,19 +26,28 @@
             <v-container grid-list-md >
               <v-layout wrap>
                  <v-flex >
-                 <img-upload ref="img" :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
+                 <img-upload :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
                 </v-flex>
                  <v-flex xs12 sm6 md4>
-                  <v-text-field ref="editedItem.nome" :rules="[() => editedItem.nome > 100 || 'vixi']" v-model="editedItem.nome" label="Produto"></v-text-field>
+                  <v-text-field ref="editedItem.nome"
+                                v-model="editedItem.nome" label="Produto">
+                  </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field ref="qtdade" v-model="editedItem.qtdade" label="Estoque"></v-text-field>
+                  <v-text-field ref="editedItem.qtdade" 
+                                :rules="[() => editedItem.qtdade >= 0 || 'a quantidade deve ser um número']" 
+                                v-model="editedItem.qtdade"
+                                label="Estoque"
+                                type="number">
+                  </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field ref="unidade" v-model="editedItem.unidade" label="Unidade"></v-text-field>
+                  <v-text-field ref="editedItem.unidade"
+                                v-model="editedItem.unidade" 
+                                label="Unidade"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field ref="obs" v-model="editedItem.obs" label="Observação"></v-text-field>
+                  <v-text-field ref="editedItem.obs" v-model="editedItem.obs" label="Observação"></v-text-field>
                 </v-flex>
                 <v-flex>
                   <datas  :checkDataRange="checkDataRange" 
@@ -48,16 +57,32 @@
                     />              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field  ref="preco_c" v-model="editedItem.preco_c" label="Preço de compra"></v-text-field>
+                  <v-text-field  ref="editedItem.preco_c"
+                                 min="1" step="any"
+                                 v-model="editedItem.preco_c" 
+                                 :rules="[() => editedItem.preco_c >= 0 || 'o preço de compra deve ser um número ']" 
+                                 label="Preço de compra"
+                                 type="number">
+                  </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field ref="preco_v" v-model="editedItem.preco_v" label="Preço de venda"></v-text-field>
+                  <v-text-field ref="editedItem.preco_v"
+                                v-model="editedItem.preco_v" 
+                                min="1" step="any"
+                                type="number"
+                                :rules="[() => editedItem.preco_v >= 0 || 'o preço de venda deve ser um número']" 
+                                label="Preço de venda">
+                  </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field ref="selout" v-model="editedItem.selout" label="Sell out"></v-text-field>
+                  <v-text-field ref="editedItem.selout" v-model="editedItem.selout" label="Sell out"></v-text-field>
                 </v-flex>
                 <v-flex >
-                  <v-text-field ref="maluc" justify-center v-model="editedItem.marluc" label="Margem de lucro"></v-text-field>
+                  <v-text-field ref="editedItem.marluc" justify-center 
+                                v-model="editedItem.marluc" 
+                                :rules="[() => editedItem.marluc >= 0 || 'a margem de lucro deve ser um número']"
+                                type="number" 
+                                label="Margem de lucro"></v-text-field>
                 </v-flex>
                 
               </v-layout>
@@ -133,7 +158,6 @@
   
     data: () => ({
       dialog: false,
-      
       search: '',
       valid: true,
       datesErrors: [''],//é uma pilha que checa os erros nas datas. nao terá erro qd ela só tiver o elemento base(''), ou seja, se datesErros.length ===1
@@ -157,19 +181,7 @@
           flag: 0
         },
       //FIM DAS PROPS ^  
-      //refs pro form: //n vo precisar, mas deixa aki por hr de cao
-        img:  '',
-        nome: '',
-        qtdade: '',
-        unidade: '',
-        obs: '',
-        data_i: '',
-        data_f: '',
-        preco_c: '',
-        preco_v: '',
-        selout: '',
-        marluc: ''
-      ,
+     
       //info relativas ao upload de img.v
       // Faco um cache em vez de assimilar a variavel 'itens'
       //diretamente pois só quero associa-la se o usuário salvar as alterações, se não, nao. :)
@@ -291,10 +303,10 @@
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
-        this.sendDefaultDates(1)//pro componente filho mostrar as datas referentes a linha ao abrir o dialog
+        this.sendDefaultDates(1)//pro componente filho mostrar as dates referentes a linha correspondente ao se abrir o dialog
         this.prepareImgInfo(this.editedItem)
        // console.log("valor ", this.editedItem.nome)
-        this.teste()
+        this.validate()
         this.dialog = true  
       },
 
@@ -327,7 +339,7 @@
         }
         this.close()
       },
-      getDate(data){//pega as datas formatas no componente filho 'datas'
+      getDate(data){//pega as datas formatadas no componente filho 'datas.vue'
         //será chamado antes do método save, aqui, devo associar o valor do item editado com data
         //que assim ele atualizará na tabela no save ;)
         if(data.flag === 0)
@@ -337,16 +349,23 @@
         else
           console.log("erro ocorreu na funcao getData(componente datas.vue)")    
       },
+       sendDefaultDates(flag){//dps passarei 1 ou 0 como argumento, pra dif edicao de um item novo
+        //se flag == 1, irá fazer as dates no componente data.vue passarem o valor presente na linha atual da tabela 
+        //se flag == 0, é o valor default, das datas ficarem em branco qd abrir um form/dialogo
+        //flag == -1, msm comportamento do default, mas garante q será executado, pois as flags sao baseados em watch no componente filho
+        this.defaultDatesValues.flag = flag
+        this.defaultDatesValues.Rdata_i = this.editedItem.data_i
+        this.defaultDatesValues.Rdata_f = this.editedItem.data_f
+      },
       getDateStatus(info){//se o componente filho viu que a data é invalida ( fora do range), adiciona um item ao vetor de erros
-          //lembre, só as datas só serao validas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha)
-          const duplicates = this.datesErrors.find(obj =>
+          //lembre, as datas só serao validadas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha)
+          const duplicates = this.datesErrors.find(obj => //checa se nao estou adicionando um el repetido a pilha
             info.status === obj.status && info.caller === obj.caller)
          
           if(duplicates === undefined && info.status !== 0)//status 0 é pq n teve erro, só quero preencher se foi error ( 1)
              this.datesErrors.unshift(info)
-          if(info.status === 0 ){//se nao tem mais erro, removo do array ( pilha ) o item que agora é valido
-          //n preciso me preocupar das checagens caso a pilha esteja 'default' ( só com a base ), js cuida disso p mim
-           this.datesErrors.forEach((obj,i) => {
+          if(info.status === 0 ){//se a data nao é mais invalida, removo do array ( pilha ) o item que indicava que aquela data era invalida
+            this.datesErrors.forEach((obj,i) => {
               if(info.caller === obj.caller)
                 this.datesErrors.splice(i,1)
             })
@@ -354,15 +373,6 @@
       },
       resetDateErrorStack(){//validacao só fará sentido qd o dialog tiver aberto, qd fechado, limpar a pilha
         this.datesErrors = ['']
-        console.log("leeen ", this.datesErrors.length)
-      },
-      sendDefaultDates(flag){//dps passarei 1 ou 0 como argumento, pra dif edicao de um item novo
-        //se flag == 1, irá fazer as dates no componente data.vue passarem o valor presente na linha atual da tabela 
-        //se flag == 0, é o valor default, das datas ficarem em branco qd abrir um form/dialogo
-        //flag == -1, msm comportamento do default, mas garante q será executado, pois as flags sao baseados em watch no componente filho
-        this.defaultDatesValues.flag = flag
-        this.defaultDatesValues.Rdata_i = this.editedItem.data_i
-        this.defaultDatesValues.Rdata_f = this.editedItem.data_f
       },
       fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
@@ -405,21 +415,25 @@
         let image = new Image();
         var reader = new FileReader(); 
         reader.onload = (e) => {
-           item.img.src = e.target.result//this.editedItem.img.src = e.target.result
+           item.img.src = e.target.result
         }
         reader.readAsDataURL(file);// console.log("crie img")
       },
-      teste(){
-        Object.keys(this.editedItem).forEach(f => {
-         // console.log("iteraando ", this.editedItem[f])
-         // console.log("!this.editemItem[f]: ", !this.editedItem)//se n tiver nada prenchido
-
-          
-           
+      validate(){
+        const valid = []
+        Object.keys(this.editedItem).forEach((f,index) => {
+          //validando data:
+          //blablba
+          //validando inputs normais
+          if(index !== 0 && index !== 5 && index !== 6){//se n for data nem img, de boa usar o metodo validate
+            valid.push(this.$refs["editedItem." + f.toString()].validate(true))                           // console.log("!this.editemItem[f]: ", !this.editedItem)//se n tiver nada prenchido
+          }
         })
-       
-       //console.log("fff ",this.$refs["editedItem.nome"].validate(true) )//funciona se eu explicitar no rule
-
+        if(valid.includes(false))
+          console.log("invalido")
+        else
+          console.log("valido!")  
+        //juntando as info pro veredito final
       }
     }
   }

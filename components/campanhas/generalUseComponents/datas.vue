@@ -25,7 +25,7 @@
               :rules="[dataRule]"
             ></v-text-field>
           </template>
-          <v-date-picker  @change="teste(0)" :format="formatDate(data_inicio)" v-model="data_inicio" no-title @input="menu1 = false"></v-date-picker>
+          <v-date-picker  @change="caller = 0" :format="formatDate(data_inicio)" v-model="data_inicio" no-title @input="menu1 = false"></v-date-picker>
         </v-menu>
       </v-flex>
 
@@ -52,7 +52,7 @@
               :rules="[dataRule]"
             ></v-text-field>
           </template>
-          <v-date-picker  @change="teste(1)" v-model="data_termino" no-title @input="menu2 = false"></v-date-picker>
+          <v-date-picker  @change="caller = 1" v-model="data_termino" no-title @input="menu2 = false"></v-date-picker>
         </v-menu>
 
       </v-flex>
@@ -88,9 +88,9 @@
     data: () => ({
       data_inicio: new Date().toISOString().substr(0, 10),
       data_termino: new Date().toISOString().substr(0, 10),
-      caller: '',//zero se for a de inicio, 1 se for a final. uso p saber qual delas é a caller, e usarei essa info pra passar pro pai
-      dateFormatted_inicio:'', //vm.formatDate(new Date().toISOString().substr(0, 10)),
-      dateFormatted_termino:'',// vm.formatDate(new Date().toISOString().substr(0, 10)),
+      caller: '',//zero se for a date de inicio, 1 se for  data final. uso p saber qual delas é a caller, e usarei essa info pra passar pro pai
+      dateFormatted_inicio:'', 
+      dateFormatted_termino:'',
       menu1: false,
       menu2: false
     }),
@@ -150,7 +150,7 @@
         var d2 = dateTo.split("/")
         var c = dateCheck.split("/")
         
-        var from = new Date(d1[2], parseInt(d1[1])-1, d1[0])  // -1 because months are from 0 to 11
+        var from = new Date(d1[2], parseInt(d1[1])-1, d1[0])  // -1 because (mes de 0 a 11)
         var to   = new Date(d2[2], parseInt(d2[1])-1, d2[0])
         var check = new Date(c[2], parseInt(c[1])-1, c[0])    
         //console.log(check > from && check < to)
@@ -159,18 +159,17 @@
         return status
       },
       sendDateStatus(status){//componente pai usará isso pra saber ql data é inicial e ql a final, a fim de valida-las num form/dialog
-        console.log("quem me chamou: ", this.caller)
         if(!status && this.caller !== ''){//se invalido emite evento ao pai avisando. rule tb faz isso, visualmente, mas esse evento faz a nivel lógico
             this.$emit('dateStatusInfo',{
               status: 1,//1 é pq teve erro
-              caller: this.caller
+              caller: this.caller//caller 0 se for data inicial, caler 1 se for data final
             })
         }  
         else if(status && this.caller !== ''){
           this.$emit('dateStatusInfo',{
             status: 0,//0 é pq n teve error
             caller: this.caller
-          })//se valido emite ao pai, q ai ele remove um item do vetor de errors
+          })
         } 
       },
       dataRule(v){
@@ -182,12 +181,8 @@
             return status || "a data precisa estar entre " + this.checkDataRange.Pdata_i
                               + " e " + this.checkDataRange.Pdata_f + "."
           }    
-        }
-        
+        }  
         return !!v || 'É preciso escolher uma data'
-      },
-      teste(caller){//0 é a de inicio, 1 a de fim
-          this.caller = caller
       }
     }
   }
