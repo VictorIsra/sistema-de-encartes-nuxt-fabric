@@ -10,7 +10,7 @@
             :error-messages="errorMessages"
             label="Full Name"
             placeholder="John Doe"
-            required
+           
           ></v-text-field>
           <v-text-field
             ref="address"
@@ -23,7 +23,7 @@
             label="Address Line"
             placeholder="Snowy Rock Pl"
             counter="25"
-            required
+            
           ></v-text-field>
           <v-text-field
             ref="city"
@@ -31,14 +31,13 @@
             :rules="[() => !!city || 'This field is required', addressCheck]"
             label="City"
             placeholder="El Paso"
-            required
+            
           ></v-text-field>
           <v-text-field
             ref="state"
             v-model="state"
             :rules="[() => !!state || 'This field is required']"
             label="State/Province/Region"
-            required
             placeholder="TX"
           ></v-text-field>
           <v-text-field
@@ -46,7 +45,7 @@
             v-model="zip"
             :rules="[() => !!zip || 'This field is required']"
             label="ZIP / Postal Code"
-            required
+        
             placeholder="79938"
           ></v-text-field>
           <v-autocomplete
@@ -56,7 +55,7 @@
             :items="countries"
             label="Country"
             placeholder="Select..."
-            required
+          
           ></v-autocomplete>
         </v-card-text>
         <v-divider class="mt-5"></v-divider>
@@ -141,9 +140,11 @@
                         console.log("orm: ", this.form)
 
         Object.keys(this.form).forEach(f => {
-          if (!this.form[f]) this.formHasErrors = true
-
-          this.$refs[f].validate(true)
+          if (!this.form[f])
+            this.formHasErrors = true
+            console.log("uqm é o fdp ",this.$refs["name"])
+            console.log("ddd ", this.$refs["name"].validate(true))
+        //  this.$refs[f].validate(true)
         })
       }
     }

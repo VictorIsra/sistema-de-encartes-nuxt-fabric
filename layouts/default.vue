@@ -177,25 +177,25 @@ export default {
       console.log(path)
       if(path.includes('campanhas')){
         this.color = {
-          value: 'indigo darken-2',
+          value: 'blue darken-2',
           dark: true
         }
       }
       else if(path.includes('tabloides')){
         this.color = {
-          value: 'cyan darken-2',
+          value: 'blue darken-2',
           dark: true
         }
       }
       else if(path.includes('produtos')){
         this.color = {
-          value: 'grey darken-2',
+          value: 'blue darken-2',
           dark: true
         }
       }
       else if(path.includes('usuarios')){
         this.color = {
-          value: 'blue-grey',
+          value: 'blue darken-2',
           dark: true
         }
       }

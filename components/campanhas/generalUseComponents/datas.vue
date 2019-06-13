@@ -25,7 +25,7 @@
               :rules="[dataRule]"
             ></v-text-field>
           </template>
-          <v-date-picker :format="formatDate(data_inicio)" v-model="data_inicio" no-title @input="menu1 = false"></v-date-picker>
+          <v-date-picker  @change="teste(0)" :format="formatDate(data_inicio)" v-model="data_inicio" no-title @input="menu1 = false"></v-date-picker>
         </v-menu>
       </v-flex>
 
@@ -52,7 +52,7 @@
               :rules="[dataRule]"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="data_termino" no-title @input="menu2 = false"></v-date-picker>
+          <v-date-picker  @change="teste(1)" v-model="data_termino" no-title @input="menu2 = false"></v-date-picker>
         </v-menu>
 
       </v-flex>
@@ -143,6 +143,7 @@
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
       },
       dataRange(dateFrom,dateTo,dateCheck){ //ve se a data tá entre um range
+      //true se a data for ok( dentro do range), false caso contrário
         if(dateCheck === undefined)
           return
         var d1 = dateFrom.split("/")
@@ -151,30 +152,32 @@
         
         var from = new Date(d1[2], parseInt(d1[1])-1, d1[0])  // -1 because months are from 0 to 11
         var to   = new Date(d2[2], parseInt(d2[1])-1, d2[0])
-        var check = new Date(c[2], parseInt(c[1])-1, c[0])
-    
-        console.log(check > from && check < to)
-       
-        return check > from && check < to
+        var check = new Date(c[2], parseInt(c[1])-1, c[0])    
+        //console.log(check > from && check < to)
+        var status = check > from && check < to
+        if(!status)//se invalido emite evento ao pai avisando. rule tb faz isso, visualmente, mas esse evento faz a nivel lógico
+          this.$emit('invalidDate',1)
+        else
+          this.$emit('invalidDate',0)//se valido emite ao pai, q ai ele remove um item do vetor de errors
+
+        return status
       },
-      // checkDefaultDataValues(){//padrao é vazio, mas o componente pai pode preenche-las
-      //   if(this.defaultDatesValues.flag !== 0){ //se o pai enviou algo
-      //     this.dateFormatted_inicio = this.defaultDatesValues.Rdata_i
-      //     this.dateFormatted_termino = this.defaultDatesValues.Rdata_f
-      //   }
-      // },
       dataRule(v){
+        console.log("VVV ", v)
         if(!this.checkDataRange.checkRange)
           console.log("sou data rule e n checo range :)")
         else{//só no caso da data precisar estar entre um intervalo 
           if(v !== null){
-            return this.dataRange(this.checkDataRange.Pdata_i,
-              this.checkDataRange.Pdata_f,v) || "a data precisa estar entre " + this.checkDataRange.Pdata_i
-              + " e " + this.checkDataRange.Pdata_f + "."
+            var status = this.dataRange(this.checkDataRange.Pdata_i,this.checkDataRange.Pdata_f,v)
+            return status || "a data precisa estar entre " + this.checkDataRange.Pdata_i
+                              + " e " + this.checkDataRange.Pdata_f + "."
           }    
         }
         
         return !!v || 'É preciso escolher uma data'
+      },
+      teste(e){
+          console.log("Opaaaa sou ", e)
       }
     }
   }

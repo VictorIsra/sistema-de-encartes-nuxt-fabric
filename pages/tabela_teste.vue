@@ -2,6 +2,7 @@
 -->
 <template>
   <div>
+    <v-btn @click="teste"> TESTEEE</v-btn>
     <v-toolbar flat color="white">
       <v-spacer></v-spacer>
       <v-text-field
@@ -20,40 +21,45 @@
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
           </v-card-title>
-
-          <v-card-text> <!-- informacoes de adicionar e deletar-->
+          
+          <v-card-text ref="editedItem"> <!-- informacoes de adicionar e deletar (é um form)-->
             <v-container grid-list-md >
               <v-layout wrap>
                  <v-flex >
-                 <img-upload :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/><!-- binds tao dentro do componente, ver isso melhor dps-->
+                 <img-upload ref="img" :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
                 </v-flex>
                  <v-flex xs12 sm6 md4>
-                  <v-text-field  v-model="editedItem.nome" label="Produto"></v-text-field>
+                  <v-text-field ref="editedItem.nome" :rules="[() => editedItem.nome > 100 || 'vixi']" v-model="editedItem.nome" label="Produto"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.qtdade" label="Estoque"></v-text-field>
+                  <v-text-field ref="qtdade" v-model="editedItem.qtdade" label="Estoque"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.unidade" label="Unidade"></v-text-field>
+                  <v-text-field ref="unidade" v-model="editedItem.unidade" label="Unidade"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.obs" label="Observação"></v-text-field>
+                  <v-text-field ref="obs" v-model="editedItem.obs" label="Observação"></v-text-field>
                 </v-flex>
                 <v-flex>
-                  <datas :checkDataRange="checkDataRange" @datechanged="getDate" :defaultDatesValues="defaultDatesValues"/>              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
+                  <datas  :checkDataRange="checkDataRange" 
+                          :defaultDatesValues="defaultDatesValues" 
+                           @datechanged="getDate"
+                           @invalidDate="getDateError"           
+                    />              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field  v-model="editedItem.preco_c" label="Preço de compra"></v-text-field>
+                  <v-text-field  ref="preco_c" v-model="editedItem.preco_c" label="Preço de compra"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.preco_v" label="Preço de venda"></v-text-field>
+                  <v-text-field ref="preco_v" v-model="editedItem.preco_v" label="Preço de venda"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.selout" label="Sell out"></v-text-field>
+                  <v-text-field ref="selout" v-model="editedItem.selout" label="Sell out"></v-text-field>
                 </v-flex>
-                <v-flex xs12>
-                  <v-text-field justify-center v-model="editedItem.marluc" label="Margem de lucro"></v-text-field>
+                <v-flex >
+                  <v-text-field ref="maluc" justify-center v-model="editedItem.marluc" label="Margem de lucro"></v-text-field>
                 </v-flex>
+                
               </v-layout>
             </v-container>
             <v-card-actions>
@@ -86,7 +92,6 @@
         <td class="text-xs-center">{{ props.item.selout }}</td>
         <td class="text-xs-center">{{ props.item.marluc}}</td>
 
-    
         <td class="justify-center layout px-0">
           <v-icon
             small
@@ -119,7 +124,7 @@
 //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
   import imgUpload from '../components/campanhas/generalUseComponents/image_upload.vue'
   import datas from  '../components/campanhas/generalUseComponents/datas.vue'
-  
+ 
   export default {
     components: {
       'img-upload': imgUpload,
@@ -128,9 +133,10 @@
   
     data: () => ({
       dialog: false,
-      //addItemFlag: 1,
+      
       search: '',
       valid: true,
+      datesError: [],
       formErrors: [],//data n pode ser fora do range, esse vetor controlará se o form podera ser salvo ou n, baseado nas datas
       //info relativas a validacao do range de datas. v
       //dataRange: datas.methods.dataRange,
@@ -154,7 +160,19 @@
           flag: 0
         },
       //FIM DAS PROPS ^  
-
+      //refs pro form: //n vo precisar, mas deixa aki por hr de cao
+        img:  '',
+        nome: '',
+        qtdade: '',
+        unidade: '',
+        obs: '',
+        data_i: '',
+        data_f: '',
+        preco_c: '',
+        preco_v: '',
+        selout: '',
+        marluc: ''
+      ,
       //info relativas ao upload de img.v
       // Faco um cache em vez de assimilar a variavel 'itens'
       //diretamente pois só quero associa-la se o usuário salvar as alterações, se não, nao. :)
@@ -278,6 +296,8 @@
         this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
         this.sendDefaultDates(1)//pro componente filho mostrar as datas referentes a linha ao abrir o dialog
         this.prepareImgInfo(this.editedItem)
+        console.log("valor ", this.editedItem.nome)
+        this.teste()
         this.dialog = true  
       },
 
@@ -304,8 +324,8 @@
           Object.assign(this.itens[this.editedIndex], this.editedItem)
           this.fillImgInfo()
         } else {//caso esteja adicionando algo em vez de editando
-          this.itens.push(this.editedItem)
-          this.fillImgInfo(this.itens.length -1)
+          this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
+          this.fillImgInfo(0)
         }
         this.close()
       },
@@ -318,6 +338,9 @@
             this.editedItem.data_f = data.data
         else
           console.log("erro ocorreu na funcao getData(componente datas.vue)")    
+      },
+      getDateError(error){//se o componente filho viu que a data é invalida ( fora do range), adiciona um item ao vetor de erros
+        this.datesError.push(error)
       },
       sendDefaultDates(flag){//dps passarei 1 ou 0 como argumento, pra dif edicao de um item novo
         //se flag == 1, irá fazer as dates no componente data.vue passarem o valor presente na linha atual da tabela 
@@ -371,7 +394,20 @@
            item.img.src = e.target.result//this.editedItem.img.src = e.target.result
         }
         reader.readAsDataURL(file);// console.log("crie img")
+      },
+      teste(){
+        Object.keys(this.editedItem).forEach(f => {
+          console.log("iteraando ", this.editedItem[f])
+         // console.log("!this.editemItem[f]: ", !this.editedItem)//se n tiver nada prenchido
+
+          
+           
+        })
+       
+       //console.log("fff ",this.$refs["editedItem.nome"].validate(true) )//funciona se eu explicitar no rule
+
       }
     }
   }
 </script>
+

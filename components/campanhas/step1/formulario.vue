@@ -5,14 +5,14 @@
     v-model="valid"
   > 
     <v-text-field
-      v-model="form_inputs.empresa"
+      v-model.trim="form_inputs.empresa"
       :rules="empresaRules"
       label="Empresa:"
       required
     ></v-text-field>
   
     <v-text-field
-      v-model="form_inputs.campanha"
+      v-model.trim="form_inputs.campanha"
       :rules="campanhaRules"
       label="Nome da campanha:"
       required
@@ -27,7 +27,7 @@
     ></v-select>
     
     <v-text-field
-      v-model="form_inputs.mlucro"
+      v-model.trim="form_inputs.mlucro"
       :rules="mlucroRules"
       label="Margem de lucro mínima (%)"
       required

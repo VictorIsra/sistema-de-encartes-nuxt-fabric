@@ -23,7 +23,7 @@
          <formulario @statusform="validarForm" @getinputs="getFormInputs" :send_form_data="send_form_data"/>
        </v-container>
         
-
+      
         <v-btn
           color="primary"
           :disabled="!form_validated"
@@ -35,7 +35,7 @@
 
       <v-stepper-content step="2">
         <v-container grid-list-xs>
-           <tabela-produtos/>
+           <escolha-produtos/>
         </v-container>
        
 
@@ -90,13 +90,13 @@
   //import da etapa 1( slot1):
   import formulario from '../../components/campanhas/step1/formulario.vue';
   //import da etapa 2 ( step2):
-  import tabelaProdutos from '../../components/campanhas/step2/tabelaProdutos.vue'
+  import escolhaProdutos from '../../components/campanhas/step2/EscolhaProdutos.vue'
 
   export default {
 
     components: {
       formulario,
-      'tabela-produtos': tabelaProdutos
+      'escolha-produtos': escolhaProdutos
     },
     data () {
       return {
@@ -117,7 +117,7 @@
       getFormInputs(inputs){//ao validar o form, o botao de prox ficara ativado e, ao clicar nele, os inputs serao passados pra cá
        this.form_inputs = inputs
        this.e1 = 2
-       this.printFormInputs()
+       this.printFormInputs()//p debug
       },
       printFormInputs(){
         let inputs = Object.values(this.form_inputs)
