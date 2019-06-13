@@ -122,13 +122,13 @@
             this.dateFormatted_termino = temp_data_f
           }
           else{
+            console.log("MUSUUUUU ",this.defaultDatesValues.flag)
             this.dateFormatted_inicio = ''
             this.dateFormatted_termino = ''
           }
         }
       }
     },
-
     methods: {
       formatDate (date) {
         if (!date) return null
@@ -145,7 +145,6 @@
       },
       dataRange(dateFrom,dateTo,dateCheck,flag){ //ve se a data tá entre um range
       //true se a data for ok( dentro do range), false caso contrário
-      console.log("FLAG D ", flag , " <-- un ", flag === undefined, " b ", flag === '' )
         if(dateCheck === undefined)
           return
         var d1 = dateFrom.split("/")
@@ -157,7 +156,7 @@
         var check = new Date(c[2], parseInt(c[1])-1, c[0])    
         //console.log(check > from && check < to)
         var dataInRange = check > from && check < to
-        console.log("chamei d novo caler: ", flag)
+       // console.log("chamei d novo caler: ", flag)
         this.sendDateStatus(dataInRange,flag)
         return dataInRange
       },
@@ -178,21 +177,24 @@
       convertBoolToNumber(dataInRange){//lembre q 1 é erro ( fora do range) e 0 é q foi td ok
         return dataInRange === true ? 0 : 1
       },
-      dataRule(v){
-        
+      dataRule(v){   
         if(!this.checkDataRange.checkRange)
           console.log("sou data rule e n checo range :)")
         else{//só no caso da data precisar estar entre um intervalo 
-          if(v !== ''){
+          if(v !== '' && this.defaultDatesValues.flag !== -1){
             var flag = this.getFlag(v)
             var status = this.dataRange(this.checkDataRange.Pdata_i,this.checkDataRange.Pdata_f,v,flag)
             return status || "a data precisa estar entre " + this.checkDataRange.Pdata_i
                               + " e " + this.checkDataRange.Pdata_f + "."
-          }    
+          } 
+          else{//funciona mas lembra q esse true indica q é valido, e n quero isso. por isso, lembre de checar na validacao o caso em q data vale ''
+            console.log("Lallal samu")
+            return true
+          }      
         }  
         return !!v || 'É preciso escolher uma data'
       },
-      getFlag(input){//n posso passar como argumento pra rules pq congela a f sl pq...
+      getFlag(input){//n posso passar como argumento pra rules pq congela a f e d stack overflow sl pq (semp q eu passar uma f com mais de 1 arg pra rule rola isso o.O)...
       console.log("Input padrao: ", input)
         if(this.dateFormatted_inicio === this.dateFormatted_termino)//precisa ser a primeira condicao
           return -1

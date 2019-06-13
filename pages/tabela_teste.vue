@@ -235,13 +235,11 @@
         marluc: ''
       }
     }),
-
     computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'Novo Item:' : 'Editando Item:'
       }
     },
-
     watch: {
       dialog (val) {
         val || this.close()
@@ -255,7 +253,6 @@
     created () {
       this.initialize()//sera alimentado pelo bd eventualmente, tvz?
     },
-
     methods: {
       initialize () {
   
@@ -303,22 +300,17 @@
         this.imgInfo.imgName = currentItem.img.name
         this.imgInfo.flag = 1
       },
-  
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
         this.sendDefaultDates(1)//pro componente filho mostrar as dates referentes a linha correspondente ao se abrir o dialog
         this.prepareImgInfo(this.editedItem)
-       // this.getDateStatus()//checar a pilha de erros ao abrir o dialog
-        //this.validate()
         this.dialog = true  
       },
-
       deleteItem (item) {
         const index = this.itens.indexOf(item)
         confirm('Você tem certeza de que deseja remover este item?') && this.itens.splice(index, 1)
       },
-    
       close () {
         this.resetFlags()
         this.resetDateErrorStack()
@@ -332,7 +324,6 @@
         this.defaultDatesValues.flag = 0
         this.imgInfo.flag = 0
       },
-
       save () {
         if (this.editedIndex > -1) {
             Object.assign(this.itens[this.editedIndex], this.editedItem)
@@ -343,7 +334,6 @@
         }
         this.close()      
       },
-
       getDate(data){//pega as datas formatadas no componente filho 'datas.vue'
         //será chamado antes do método save, aqui, devo associar o valor do item editado com data
         //que assim ele atualizará na tabela no save ;)
@@ -354,13 +344,15 @@
         else
           console.log("erro ocorreu na funcao getData(componente datas.vue)")    
       },
-       sendDefaultDates(flag){//dps passarei 1 ou 0 como argumento, pra dif edicao de um item novo
+      sendDefaultDates(flag){//dps passarei 1 ou 0 como argumento, pra dif edicao de um item novo
         //se flag == 1, irá fazer as dates no componente data.vue passarem o valor presente na linha atual da tabela 
         //se flag == 0, é o valor default, das datas ficarem em branco qd abrir um form/dialogo
         //flag == -1, msm comportamento do default, mas garante q será executado, pois as flags sao baseados em watch no componente filho
         this.defaultDatesValues.flag = flag
         this.defaultDatesValues.Rdata_i = this.editedItem.data_i
         this.defaultDatesValues.Rdata_f = this.editedItem.data_f
+        this.defaultDatesValues.flag = 1//p garantir que, na hr de criar o item, apos o user interagir com uma data, volte a validacao default (msg vermelha feia e irritante xD)
+
       },
       getDateStatus(info){//se o componente filho viu que a data é invalida ( fora do range), adiciona um item a pilha de erros
           //lembre, as datas só serao validadas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha ('#'))
@@ -451,32 +443,32 @@
         reader.readAsDataURL(file);// console.log("crie img")
       },
       validate(){
-      // console.log("ME CHAMOS base ", this.datesErrors[0] === -1)
-        const valid = []
-        const datesValid = this.datesErrors.length === 1 ? true : false
+        const valid = []//verá quantos itens passarão no teste de validade ( excluindo datas, quem te validacao particular e diferenciada )
+        let datesValid = this.datesErrors.length === 1 ? true : false//checa validade para das datas, que tem uma logica particular
         console.log("AAAAteste ", datesValid, " ", this.datesErrors.length)
-          if(datesValid)
+          if(datesValid && this.editedItem.data_i !== '' && this.editedItem.data_f !== ''){
             console.log(" DAT val ")
-          else
-            console.log(" DAT Inva")  
+            datesValid = true
+          }  
+          else{
+            console.log(" DAT inval ")
+            datesValid = false
+          } 
+        //checando a validade dos campos obrigatórios que nao sejam datas    
         Object.keys(this.editedItem).forEach((f,index) => {
           if(index !== 0 && index !== 5 && index !== 6){//se n for data nem img, de boa usar o metodo validate
             valid.push(this.$refs["editedItem." + f.toString()].validate(true))                           // console.log("!this.editemItem[f]: ", !this.editedItem)//se n tiver nada prenchido
           }
         })
-        if(valid.includes(false) || !datesValid){
+        if(valid.includes(false) || !datesValid){//se os campos ou alguma data for inválida, invalide o form/dialog
           console.log(" FORM invalido")
           this.valid = false
-          return false
         }  
-        else if(!valid.includes(false) && datesValid){
+        else if(!valid.includes(false) && datesValid){//caso contrário, valide
           console.log(" Form valido!")
           this.valid  = true
-          return true
         }  
-        //juntando as info pro veredito final
       }
     }
   }
 </script>
-
