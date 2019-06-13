@@ -25,7 +25,7 @@
               :rules="[dataRule]"
             ></v-text-field>
           </template>
-          <v-date-picker  @change="caller = 0" :format="formatDate(data_inicio)" v-model.lazy="data_inicio" no-title @input="menu1 = false"></v-date-picker>
+          <v-date-picker @change="caller = 0" :format="formatDate(data_inicio)" v-model="data_inicio" no-title @input="menu1 = false"></v-date-picker>
         </v-menu>
       </v-flex>
 
@@ -52,7 +52,7 @@
               :rules="[dataRule]"
             ></v-text-field>
           </template>
-          <v-date-picker @change="caller = 1" v-model.lazy="data_termino" no-title @input="menu2 = false"></v-date-picker>
+          <v-date-picker @change="caller = 1" v-model="data_termino" no-title @input="menu2 = false"></v-date-picker>
         </v-menu>
 
       </v-flex>
@@ -93,8 +93,7 @@
       dateFormatted_termino:'',
       menu1: false,
       menu2: false,
-      b0: '',
-      b1: ''
+      counter: 0
     }),
     watch: {
       data_inicio (val) {
@@ -146,6 +145,7 @@
       },
       dataRange(dateFrom,dateTo,dateCheck,flag){ //ve se a data tá entre um range
       //true se a data for ok( dentro do range), false caso contrário
+      console.log("FLAG D ", flag , " <-- un ", flag === undefined, " b ", flag === '' )
         if(dateCheck === undefined)
           return
         var d1 = dateFrom.split("/")
@@ -157,29 +157,23 @@
         var check = new Date(c[2], parseInt(c[1])-1, c[0])    
         //console.log(check > from && check < to)
         var dataInRange = check > from && check < to
-        console.log("chamei d novo")
+        console.log("chamei d novo caler: ", flag)
         this.sendDateStatus(dataInRange,flag)
         return dataInRange
       },
       sendDateStatus(dataInRange,flag){//componente pai usará isso pra saber ql data é inicial e ql a final, a fim de valida-las num form/dialog
-        if(!dataInRange && this.caller !== ''){//se invalido emite evento ao pai avisando. rule tb faz isso, visualmente, mas esse evento faz a nivel lógico
+        if(!dataInRange ){//se invalido emite evento ao pai avisando. rule tb faz isso, visualmente, mas esse evento faz a nivel lógico
             this.$emit('dateStatusInfo',{
               status: 1,//1 é pq teve erro //esse stauts é dif nada tem a ver com o status do parametro
-              caller: this.caller//caller 0 se for data inicial, caler 1 se for data final
+              caller: flag//caller 0 se for data inicial, caler 1 se for data final
             })
         }  
-        else if(dataInRange && this.caller !== ''){
+        else if(dataInRange){
           this.$emit('dateStatusInfo',{
             status: 0,//0 é pq n teve error
-            caller: this.caller
+            caller: flag
           })
         } 
-        else if(this.caller === ''){//caso default de qd abri um dialog
-          this.$emit('dateStatusInfo',{
-            status: this.convertBoolToNumber(dataInRange),//pode ser 0 ou 1 qd abre o dialog
-            caller: flag //flag assume os msm valores de caller: 0 ou 1, mas como ao abrir um dialog n dá pra ter o caller como 0 ou 1 antes de interagir, passo a flag
-          })
-        }
       },
       convertBoolToNumber(dataInRange){//lembre q 1 é erro ( fora do range) e 0 é q foi td ok
         return dataInRange === true ? 0 : 1
@@ -189,7 +183,7 @@
         if(!this.checkDataRange.checkRange)
           console.log("sou data rule e n checo range :)")
         else{//só no caso da data precisar estar entre um intervalo 
-          if(v !== null){
+          if(v !== ''){
             var flag = this.getFlag(v)
             var status = this.dataRange(this.checkDataRange.Pdata_i,this.checkDataRange.Pdata_f,v,flag)
             return status || "a data precisa estar entre " + this.checkDataRange.Pdata_i
@@ -199,10 +193,13 @@
         return !!v || 'É preciso escolher uma data'
       },
       getFlag(input){//n posso passar como argumento pra rules pq congela a f sl pq...
+      console.log("Input padrao: ", input)
         if(input === this.dateFormatted_inicio)
           return 0
-        else
+        else if (input === this.dateFormatted_termino)
           return 1  
+        else
+          return -1  
       }
     }
   }

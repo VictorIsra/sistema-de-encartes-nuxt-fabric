@@ -160,7 +160,7 @@
       dialog: false,
       search: '',
       valid: true,
-      datesErrors: [''],//é uma pilha que checa os erros nas datas. nao terá erro qd ela só tiver o elemento base(''), ou seja, se datesErros.length ===1
+      datesErrors: ['#'],//é uma pilha que checa os erros nas datas. nao terá erro qd ela só tiver o elemento base(''), ou seja, se datesErros.length ===1
       //PROPS (lembrar que, na verdade, são props para um componente filho
         checkDataRange: {
           checkRange: true,
@@ -366,23 +366,28 @@
           //lembre, as datas só serao validadas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha)
             if(!this.dialog)
               return
-           console.log("ENTREI COM caler ", info.caller ," e stat ", info.status)
+        
+           console.log("ENTREweI COM caler ", info.caller ," e stat ", info.status)
           const duplicates = this.datesErrors.find(obj => //checa se nao estou adicionando um el repetido a pilha
             info.status === obj.status && info.caller === obj.caller )
-
          
-          if(duplicates === undefined && info.status !== 0 )//status 0 é pq n teve erro, só quero preencher se foi error ( 1)
+          if(duplicates === undefined && info.status !== 0 ){//status 0 é pq n teve erro, só quero preencher se foi error ( 1)
              this.datesErrors.unshift(info)
+             console.log(" adicioneei")
+          }   
           if(info.status === 0 ){//se a data nao é mais invalida, removo do array ( pilha ) o item que indicava que aquela data era invalida
             this.datesErrors.forEach((obj,i) => {
+              console.log("foeach estranho")
               if(info.caller === obj.caller){
-                console.log("viii")
+                console.log("MAATAREI")
                 this.datesErrors.splice(i,1)//se removi algo é pq corrigiu, aqui checo se agora o tamanho é 1, se for, posso assumir que resolveu os erros e agora boto a bae da pilha em vez de '', como uma flag de validacao
                 //if(this.datesErrors.length === 1)//agora posso indicar q foi validado
                   //this.datesErrors[0] = -1//flag q indica q foi validado
               }  
             })
           }
+                          console.log("MAATAREssdI")
+
           if(info.caller === ''){//caso default qd abre um dialog
             if(info.status === 0)//datas validas
               this.valid = true
@@ -395,7 +400,9 @@
        //   this.validate()//tenta validar
       },
       resetDateErrorStack(){//validacao só fará sentido qd o dialog tiver aberto, qd fechado, limpar a pilha
-        this.datesErrors = ['']
+        console.log("resetnado ")
+        this.datesErrors = ['#']
+        console.log("size rset ", this.datesErrors.length)
       },
       fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
@@ -416,7 +423,6 @@
             src:  this.cachedImgInfo.imgFile,
             name: this.cachedImgInfo.imgName,
             url:  this.cachedImgInfo.imgURL
-
           }
           this.createImage(this.itens[newItemIndex].img.src,this.itens[newItemIndex])
         }
