@@ -1,26 +1,28 @@
 <template>
-
   <v-form
     ref="form"
     v-model="valid"
   > 
+    <v-btn @click="teste" color="success">text</v-btn>
+
     <v-text-field
       v-model.trim="form_inputs.empresa"
-      :rules="empresaRules"
+      :rules="[empresaRules]"
       label="Empresa:"
       required
     ></v-text-field>
   
     <v-text-field
       v-model.trim="form_inputs.campanha"
-      :rules="campanhaRules"
+      :rules="[campanhaRules]"
       label="Nome da campanha:"
       required
     ></v-text-field>
 
     <v-select
-      v-model="select"
-      :items="form_inputs.items"
+      v-model="form_inputs.tipos_campanhas"
+      :items="tipos_campanhas"
+      @blur="teste"
       :rules="[v => !!v || 'É preciso escolher um tipo de campanha!']"
       label="Tipo de campanha:"
       required
@@ -28,12 +30,11 @@
     
     <v-text-field
       v-model.trim="form_inputs.mlucro"
-      :rules="mlucroRules"
+      @blur="parseMlucro"
+      :rules="[mlucroRules]"
       label="Margem de lucro mínima (%)"
       required
-      type="number"
-      :min="min" 
-      :max="max"
+      suffix="%"
     ></v-text-field>
 
     <datas @datechanged="getDate"/>
@@ -50,39 +51,42 @@
 <script>
 
   import datas from '../generalUseComponents/datas.vue'
- 
+  import formtInputMixin from '../../mixins/FormatInputMixin.js'
+
   export default {
     props: ['send_form_data'],//flag para enviar os inputs preenchidos para o componente pai ( adicionar.vue)
     components: {
         datas
     },
+    mixins: [
+      formtInputMixin
+    ],
     data: () => ({
       valid: true,//diz respeito aos inputs do form
-      
-      empresaRules: [
-        v => !!v || 'É preciso entrar com o nome de uma empresa.',
-      ],
-      campanhaRules: [
-        v => !!v || 'É preciso entrar com uma campanha.',
-      ],
-      min: 0,
-      max: 100,
-      mlucroRules: [
-        v => !!v || 'É preciso entrar com uma margem de lucro mínima',
-        v => (v >= 0 && v <= 100) || 'porcentagem tem que estar entre 0 e 100%'
+      empresaRules(v){
+        v = v.trim(v)
+        return !!v || 'É preciso entrar com o nome de uma empresa.'
+      },
+      campanhaRules(v){
+        v = v.trim(v)
+        return !!v || 'É preciso entrar com uma campanha.'
+      },
+      mlucroRules(v){
+        v = v.trim(v)
+        return !!v || 'É preciso entrar com uma margem de lucro mínima de pelo menos 0%'
+      },
+      tipos_campanhas: [
+        'campanha semanal',
+        'campanha mensal'
       ],
       form_inputs: {
         empresa: '',
         campanha: '',
-        items: [
-          'campanha semanal',
-          'campanha mensal'
-        ],
+        tipos_campanhas: '', 
         mlucro: '',
         data_inicio: '',
         data_termino: ''
       },
-      select: null,
       checkbox: false
     }),
     methods: {
@@ -100,15 +104,20 @@
       },
       resetValidation () {
         this.$refs.form.resetValidation()
+      },
+      parseMlucro(){
+        this.form_inputs.mlucro = this.parsePtBr(this.form_inputs.mlucro)
+      },
+      teste(){
+      console.log(this.form_inputs)
       }
     },
-    watch: {
-      
+    watch: { 
       valid: {
         handler(){
           if(!this.valid )//controla se o botao de 'proximo' no componente pai ficará habilitado ou nao
             this.$emit('statusform', this.valid)
-          else 
+          else
             this.$emit('statusform',this.valid)
         }
       },
@@ -116,6 +125,7 @@
         handler(){
           if(this.send_form_data){//envia os inputs preenchidos para o componente pai ( adicionar.vue)
             //console.log("enviarei os inputs ")
+            this.parseMlucro()
             this.$emit('getinputs',this.form_inputs)
           }  
         }

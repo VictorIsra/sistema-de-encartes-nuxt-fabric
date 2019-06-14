@@ -14,7 +14,7 @@
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark class="mb-2" @click="sendDefaultDates(-1)" v-on="on" >Adicionar item</v-btn> <!--v-on="on" -->
+          <v-btn color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >Adicionar item</v-btn> <!--v-on="on" -->
         </template>
         <v-card > <!-- o form em si é esse v card! -->
           <v-card-title>
@@ -25,10 +25,11 @@
             <v-container grid-list-md >
               <v-layout wrap>
                  <v-flex >
-                 <img-upload :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
+                 <img-upload @blur="editUserInputs(false)" :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
                 </v-flex>
                  <v-flex xs12 sm6 md4>
                   <v-text-field ref="editedItem.nome"
+                                @blur="editUserInputs(false)"
                                 v-model.trim="editedItem.nome"
                                 :rules="[nomeRule]" 
                                 label="Produto">
@@ -37,12 +38,14 @@
                 <v-flex xs12 sm6 md4>
                   <v-text-field ref="editedItem.qtdade" 
                                 :rules="[qtdadeRule]"
+                                @blur="editUserInputs(false)"
                                 v-model.trim="editedItem.qtdade"
                                 label="Estoque">
                   </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field ref="editedItem.unidade"
+                  <v-text-field @blur="editUserInputs(false)" 
+                                ref="editedItem.unidade"
                                 v-model.trim="editedItem.unidade" 
                                 label="Unidade"></v-text-field>
                 </v-flex>
@@ -53,12 +56,14 @@
                   <datas  :checkDataRange="checkDataRange" 
                           :defaultDatesValues="defaultDatesValues" 
                            @datechanged="getDate"
+                           @blur="editUserInputs(false)"
                            @dateStatusInfo="getDateStatus"           
                     />              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field  ref="editedItem.preco_c"
                                  min="1" step="any"
+                                 @blur="editUserInputs(false)"
                                  v-model.trim="editedItem.preco_c" 
                                  :rules="[preco_cRule]" 
                                  label="Preço de compra"
@@ -68,6 +73,7 @@
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field ref="editedItem.preco_v"
+                                @blur="editUserInputs(false)"
                                 v-model.trim="editedItem.preco_v" 
                                 min="1" step="any"
                                 :rules="[preco_vRule]" 
@@ -82,7 +88,8 @@
                   <v-text-field ref="editedItem.marluc" justify-center 
                                 v-model.trim="editedItem.marluc" 
                                 :rules="[marlucRule]"
-                                 suffix="%"
+                                 @blur="editUserInputs(false)"
+                                suffix="%"
                                 label="Margem de lucro"></v-text-field>
                 </v-flex>
                 
@@ -150,7 +157,8 @@
 //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
   import imgUpload from '../components/campanhas/generalUseComponents/image_upload.vue'
   import datas from  '../components/campanhas/generalUseComponents/datas.vue'
-  import formatInput from '../components/campanhas/campanhaMixins/FormatInputMixin.js'
+  import formatInputMixin from '../components/mixins/FormatInputMixin.js'
+  import imgMixin from '../components/mixins/ImgMixin.js'
 
   export default {
     components: {
@@ -158,7 +166,8 @@
       datas
     },
     mixins: [
-      formatInput
+      formatInputMixin,
+      imgMixin
     ],
     data: () => ({
       dialog: false,
@@ -312,6 +321,10 @@
         this.editUserInputs(false)
         this.dialog = true  
       },
+      addItem(flag){
+        this.imgInfo.flag = 1//garante q nao vai ter uma img pre definida ao abrir o dialog
+        this.sendDefaultDates(flag)
+      },
       deleteItem (item) {
         const index = this.itens.indexOf(item)
         confirm('Você tem certeza de que deseja remover este item?') && this.itens.splice(index, 1)
@@ -385,7 +398,7 @@
               }
             }   
           }   
-          if(info.status === 0 ){//se a data nao é mais invalida, removo do array ( pilha ) o item que indicava que aquela data era invalida
+          if(info.status === 0 ){//se a data nao é mais invalida, removo da  pilha o item que indicava que aquela data era invalida
             if(info.caller === -1)//datas sao iguais e validas, esvazio a pilha
               this.resetDateErrorStack()
             else{//datas sao dif, mas alguma delas agora é valida, logo removo só uma data da pilha de erros  
@@ -436,14 +449,6 @@
         this.cachedImgInfo.imgFile = ''
         this.cachedImgInfo.imgURL = ''
       },
-      createImage(file, item) {
-        let image = new Image();
-        var reader = new FileReader(); 
-        reader.onload = (e) => {
-           item.img.src = e.target.result
-        }
-        reader.readAsDataURL(file);// console.log("crie img")
-      },
       validate(){
         const valid = []//verá quantos itens passarão no teste de validade ( excluindo datas, quem te validacao particular e diferenciada )
         let datesValid = this.datesErrors.length === 1 ? true : false//checa validade para das datas, que tem uma logica particular
@@ -471,15 +476,12 @@
           return !!v || "é preciso escolher um nome para o produto. "
       },
       qtdadeRule(v){
-       
          return !!v || 'a quantidade é obrigatória'
       },
       preco_cRule(v){
-
         return  !!v || 'o preço de compra e é obrigatório'
       },
       preco_vRule(v){
-  
         return !!v || 'o preço de venda e é obrigatório'
       },
       marlucRule(v){

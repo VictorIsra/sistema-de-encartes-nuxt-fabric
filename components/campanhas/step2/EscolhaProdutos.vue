@@ -14,46 +14,85 @@
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark class="mb-2" @click="sendDefaultDates(-1)" v-on="on" >Adicionar item</v-btn> <!--v-on="on" -->
+          <v-btn color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >Adicionar item</v-btn> <!--v-on="on" -->
         </template>
         <v-card > <!-- o form em si é esse v card! -->
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
           </v-card-title>
-
-          <v-card-text> <!-- informacoes de adicionar e deletar-->
+          
+          <v-card-text v-model.lazy="valid" ref="editedItem"> <!-- informacoes de adicionar e deletar (é um form)-->
             <v-container grid-list-md >
               <v-layout wrap>
                  <v-flex >
-                 <img-upload :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/><!-- binds tao dentro do componente, ver isso melhor dps-->
+                 <img-upload @blur="editUserInputs(false)" :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
                 </v-flex>
                  <v-flex xs12 sm6 md4>
-                  <v-text-field  v-model="editedItem.nome" label="Produto"></v-text-field>
+                  <v-text-field ref="editedItem.nome"
+                                @blur="editUserInputs(false)"
+                                v-model.trim="editedItem.nome"
+                                :rules="[nomeRule]" 
+                                label="Produto">
+                  </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.qtdade" label="Estoque"></v-text-field>
+                  <v-text-field ref="editedItem.qtdade" 
+                                :rules="[qtdadeRule]"
+                                @blur="editUserInputs(false)"
+                                v-model.trim="editedItem.qtdade"
+                                label="Estoque">
+                  </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.unidade" label="Unidade"></v-text-field>
+                  <v-text-field @blur="editUserInputs(false)" 
+                                ref="editedItem.unidade"
+                                v-model.trim="editedItem.unidade" 
+                                label="Unidade"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.obs" label="Observação"></v-text-field>
+                  <v-text-field ref="editedItem.obs" v-model="editedItem.obs" label="Observação"></v-text-field>
                 </v-flex>
                 <v-flex>
-                  <datas :checkDataRange="checkDataRange" @datechanged="getDate" :defaultDatesValues="defaultDatesValues"/>              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
+                  <datas  :checkDataRange="checkDataRange" 
+                          :defaultDatesValues="defaultDatesValues" 
+                           @datechanged="getDate"
+                           @blur="editUserInputs(false)"
+                           @dateStatusInfo="getDateStatus"           
+                    />              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field  v-model="editedItem.preco_c" label="Preço de compra"></v-text-field>
+                  <v-text-field  ref="editedItem.preco_c"
+                                 min="1" step="any"
+                                 @blur="editUserInputs(false)"
+                                 v-model.trim="editedItem.preco_c" 
+                                 :rules="[preco_cRule]" 
+                                 label="Preço de compra"
+                                 prefix="R$"
+                                 >
+                  </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.preco_v" label="Preço de venda"></v-text-field>
+                  <v-text-field ref="editedItem.preco_v"
+                                @blur="editUserInputs(false)"
+                                v-model.trim="editedItem.preco_v" 
+                                min="1" step="any"
+                                :rules="[preco_vRule]" 
+                                prefix="R$"
+                                label="Preço de venda">
+                  </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.selout" label="Sell out"></v-text-field>
+                  <v-text-field ref="editedItem.selout" v-model="editedItem.selout" label="Sell out"></v-text-field>
                 </v-flex>
-                <v-flex xs12>
-                  <v-text-field justify-center v-model="editedItem.marluc" label="Margem de lucro"></v-text-field>
+                <v-flex >
+                  <v-text-field ref="editedItem.marluc" justify-center 
+                                v-model.trim="editedItem.marluc" 
+                                :rules="[marlucRule]"
+                                 @blur="editUserInputs(false)"
+                                suffix="%"
+                                label="Margem de lucro"></v-text-field>
                 </v-flex>
+                
               </v-layout>
             </v-container>
             <v-card-actions>
@@ -86,7 +125,6 @@
         <td class="text-xs-center">{{ props.item.selout }}</td>
         <td class="text-xs-center">{{ props.item.marluc}}</td>
 
-    
         <td class="justify-center layout px-0">
           <v-icon
             small
@@ -103,9 +141,9 @@
           </v-icon>
         </td>
       </template>
-      <template v-slot:no-data>
+     <!-- <template v-slot:no-data>
         <v-btn color="primary" @click="initialize">Resetar</v-btn>
-      </template>
+      </template>-->
       <template v-slot:no-results>
         <v-alert :value="true" color="error" icon="warning">
           O produto "{{ search }}" não foi encontrado.
@@ -119,26 +157,28 @@
 //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
   import imgUpload from '../generalUseComponents/image_upload.vue'
   import datas from  '../generalUseComponents/datas.vue'
-  
+  import formatInputMixin from '../../mixins/FormatInputMixin.js'
+  import imgMixin from '../../mixins/ImgMixin.js'
+
   export default {
     components: {
       'img-upload': imgUpload,
       datas
     },
-  
+    mixins: [
+      formatInputMixin,
+      imgMixin
+    ],
     data: () => ({
       dialog: false,
-      //addItemFlag: 1,
       search: '',
       valid: true,
-      formErrors: [],//data n pode ser fora do range, esse vetor controlará se o form podera ser salvo ou n, baseado nas datas
-      //info relativas a validacao do range de datas. v
-      //dataRange: datas.methods.dataRange,
+      datesErrors: ['#'],//é uma pilha que checa os erros nas datas. nao terá erro qd ela só tiver o elemento base('#'), ou seja, se datesErros.length ===1
       //PROPS (lembrar que, na verdade, são props para um componente filho
         checkDataRange: {
           checkRange: true,
-          Pdata_i: '1/1/2018',//virá da etapa um 
-          Pdata_f: '2/2/2019'
+          Pdata_i: '1/1/2019',//virá da etapa um 
+          Pdata_f: '6/4/2019'
         },
         //fim de info relativa a validacao de datas.^
         defaultDatesValues: {//valor das datas em uma linha em particular da tabela. É uma prop
@@ -146,7 +186,7 @@
           Rdata_f: '',
           flag: 0
         },
-        //prop que indicará pro componente filho (image_upload) as img que devem ser mostradas qd um dialog/form abrir
+        //prop' que indicará pro componente filho (image_upload) as img que devem ser mostradas qd um dialog/form abrir
         imgInfo: {
           imgName: '',
           imgURL: '',
@@ -154,7 +194,7 @@
           flag: 0
         },
       //FIM DAS PROPS ^  
-
+     
       //info relativas ao upload de img.v
       // Faco um cache em vez de assimilar a variavel 'itens'
       //diretamente pois só quero associa-la se o usuário salvar as alterações, se não, nao. :)
@@ -184,85 +224,86 @@
       editedItem: {
         img:  '',
         nome: '',
-        qtdade: '',
+        qtdade: '0.00',
         unidade: '',
         obs: '',
         data_i: '',
         data_f: '',
-        preco_c: '',
-        preco_v: '',
+        preco_c: '0,00',
+        preco_v: '0,00',
         selout: '',
-        marluc: ''
+        marluc: '0.00'
       },
-      defaultItem: {
+      defaultItem: {//aqui seto os valores defaults
         img:  '',
         nome: '',
-        qtdade: '',
+        qtdade: '0.00',
         unidade: '',
         obs: '',
         data_i: '',
         data_f: '',
-        preco_c: '',
-        preco_v: '',
+        preco_c: '0,00',
+        preco_v: '0,00',
         selout: '',
-        marluc: ''
+        marluc: '0.00'
       }
     }),
-
     computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'Novo Item:' : 'Editando Item:'
       }
     },
-
     watch: {
       dialog (val) {
         val || this.close()
+      },
+      valid:{
+        handler(){
+          this.validate()
+        }
       }
     },
-
     created () {
       this.initialize()//sera alimentado pelo bd eventualmente, tvz?
     },
-
     methods: {
       initialize () {
   
         this.itens = [
-          {
-            img:  {
-              src: '',
-              name: 'hehe.jpg',
-              url: ''
-            },
-            nome: 'Arroz',
-            qtdade: 409,
-            unidade: 'kg',
-            obs: 'nada a declarar',
-            data_i: '11/05/2019',
-            data_f: '23/06/2019',
-            preco_c: '130$',
-            preco_v: '303$',
-            selout: '--',
-            marluc: '10%'
-          },
-           {
-            img:  {
-              src: '',
-              name: 'xd.jpg',
-              url: ''
-            },
-            nome: 'feijao',
-            qtdade: 1000,
-            unidade: 'kg',
-            obs: 'nada a declarar',
-            data_i: '11/05/2019',
-            data_f: '23/06/2019',
-            preco_c: '1300',
-            preco_v: '3033',
-            selout: '--',
-            marluc: '130%'
-          }
+          // {
+          //   img:  {
+          //     src: '',
+          //     name: 'hehe.jpg',
+          //     url: ''
+          //   },
+          //   nome: 'Arroz',
+          //   qtdade: 409,
+          //   unidade: 'kg',
+          //   obs: 'nada a declarar',
+          //   data_i: '23/06/2019',
+          //   data_f: '23/06/2019',
+          //   preco_c: '130$',
+          //   preco_v: '303$',
+          //   selout: '--',
+          //   marluc: '10%'
+          // },
+          //  {
+          //   img:  {
+          //     src: '',
+          //     name: 'xd.jpg',
+          //     url: ''
+          //   },
+          //   nome: 'feijao',
+          //   qtdade: 1000,
+          //   unidade: 'kg',
+          //   obs: 'nada a declarar',
+          //   data_i: '11/05/2019',
+          //   data_f: '23/06/2019',
+          //   preco_c: '1300',
+          //   preco_v: '3033',
+          //   selout: '--',
+          //   marluc: '130%'
+          // }
          
         ]
       },
@@ -272,22 +313,25 @@
         this.imgInfo.imgName = currentItem.img.name
         this.imgInfo.flag = 1
       },
-  
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
-        this.sendDefaultDates(1)//pro componente filho mostrar as datas referentes a linha ao abrir o dialog
+        this.sendDefaultDates(1)//pro componente filho mostrar as dates referentes a linha correspondente ao se abrir o dialog
         this.prepareImgInfo(this.editedItem)
+        this.editUserInputs(false)
         this.dialog = true  
       },
-
+      addItem(flag){
+        this.imgInfo.flag = 1//garante q nao vai ter uma img pre definida ao abrir o dialog
+        this.sendDefaultDates(flag)
+      },
       deleteItem (item) {
         const index = this.itens.indexOf(item)
         confirm('Você tem certeza de que deseja remover este item?') && this.itens.splice(index, 1)
       },
-    
       close () {
         this.resetFlags()
+        this.resetDateErrorStack()
         this.dialog = false
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
@@ -298,18 +342,19 @@
         this.defaultDatesValues.flag = 0
         this.imgInfo.flag = 0
       },
-
       save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.itens[this.editedIndex], this.editedItem)
-          this.fillImgInfo()
+        if (this.editedIndex > -1) {//na edicao, preciso editar antes do assign, se nao vou modificar uma copia q nao é mais usada
+            this.editUserInputs()
+            Object.assign(this.itens[this.editedIndex], this.editedItem)
+            this.fillImgInfo()
         } else {//caso esteja adicionando algo em vez de editando
-          this.itens.push(this.editedItem)
-          this.fillImgInfo(this.itens.length -1)
+            this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
+            this.editUserInputs()
+            this.fillImgInfo(0)
         }
-        this.close()
+        this.close()      
       },
-      getDate(data){//pega as datas formatas no componente filho 'datas'
+      getDate(data){//pega as datas formatadas no componente filho 'datas.vue'
         //será chamado antes do método save, aqui, devo associar o valor do item editado com data
         //que assim ele atualizará na tabela no save ;)
         if(data.flag === 0)
@@ -326,6 +371,47 @@
         this.defaultDatesValues.flag = flag
         this.defaultDatesValues.Rdata_i = this.editedItem.data_i
         this.defaultDatesValues.Rdata_f = this.editedItem.data_f
+        this.defaultDatesValues.flag = 1//p garantir que, na hr de criar o item, apos o user interagir com uma data, volte a validacao default (msg vermelha feia e irritante xD)
+        this.validate()
+      },
+      getDateStatus(info){//se o componente filho viu que a data é invalida ( fora do range), adiciona um item a pilha de erros
+          //lembre, as datas só serao validadas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha ('#'))
+            if(!this.dialog)//só quero checar e mexer na pilha se um form/dialog tiver aberto
+              return
+          //console.log("ENTREweI COM caler ", info.caller ," e stat ", info.status)
+          const duplicates = this.datesErrors.find(obj => //checa se nao estou adicionando um el repetido a pilha
+            info.status === obj.status && info.caller === obj.caller )
+         
+          if(duplicates === undefined && info.status !== 0 ){//status 0 é pq n teve erro, só quero preencher se foi error ( 1)
+            if(info.caller !== -1)// se caller != -1 é pq sao datas difs e invalidas
+                this.datesErrors.unshift(info)
+            else{//se caller = -1 é pq sao datas iguais e invalidas
+              if(this.datesErrors.length < 3){//se é  3 é pq ambas as invalidas ja tao na pilha, entao nada devo fazer, caso contrário devo adicionar as 2 datas a pilha de erro
+                var i
+                this.resetDateErrorStack()//reseto a pilha e adiciono as 2 datas invalidas e iguais, pois:
+                for(i = 0; i < 2;i++){//se length é menor que 3 e caller é -1, é pq ambas sao iguais e invalidas, logo adiciono ambas a pilha
+                  this.datesErrors.unshift({
+                    status: 1,
+                    caller: i
+                  })
+                }  
+              }
+            }   
+          }   
+          if(info.status === 0 ){//se a data nao é mais invalida, removo da  pilha o item que indicava que aquela data era invalida
+            if(info.caller === -1)//datas sao iguais e validas, esvazio a pilha
+              this.resetDateErrorStack()
+            else{//datas sao dif, mas alguma delas agora é valida, logo removo só uma data da pilha de erros  
+              this.datesErrors.forEach((obj,i) => {
+                if(info.caller === obj.caller)
+                  this.datesErrors.splice(i,1)//se removi algo é pq corrigiu algo, mas só sera valido totalmente qd a o tamanho da pilha for 1 (só ter a base dela)
+              })
+            }  
+          }
+          this.validate()//tenta validar
+      },
+      resetDateErrorStack(){//validacao só fará sentido qd o dialog tiver aberto, qd fechado, limpar a pilha
+        this.datesErrors = ['#']
       },
       fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
@@ -346,7 +432,6 @@
             src:  this.cachedImgInfo.imgFile,
             name: this.cachedImgInfo.imgName,
             url:  this.cachedImgInfo.imgURL
-
           }
           this.createImage(this.itens[newItemIndex].img.src,this.itens[newItemIndex])
         }
@@ -364,13 +449,55 @@
         this.cachedImgInfo.imgFile = ''
         this.cachedImgInfo.imgURL = ''
       },
-      createImage(file, item) {
-        let image = new Image();
-        var reader = new FileReader(); 
-        reader.onload = (e) => {
-           item.img.src = e.target.result//this.editedItem.img.src = e.target.result
+      validate(){
+        const valid = []//verá quantos itens passarão no teste de validade ( excluindo datas, quem te validacao particular e diferenciada )
+        let datesValid = this.datesErrors.length === 1 ? true : false//checa validade para das datas, que tem uma logica particular
+          if(datesValid && this.editedItem.data_i !== '' && this.editedItem.data_f !== '')
+            datesValid = true
+          else
+            datesValid = false
+        //checando a validade dos campos obrigatórios que nao sejam datas    
+        Object.keys(this.editedItem).forEach((f,index) => {
+          if(index !== 0 && index !== 5 && index !== 6){//se n for data nem img, de boa usar o metodo validate
+            valid.push(this.$refs["editedItem." + f.toString()].validate(true))                           // console.log("!this.editemItem[f]: ", !this.editedItem)//se n tiver nada prenchido
+          }
+        })
+        if(valid.includes(false) || !datesValid){//se os campos ou alguma data for inválida, invalide o form/dialog
+          console.log(" FORM invalido")
+          this.valid = false
+        }  
+        else if(!valid.includes(false) && datesValid){//caso contrário, valide
+          console.log(" Form valido!")
+          this.valid  = true
+        }  
+      },
+      //RULES:
+      nomeRule(v){
+          return !!v || "é preciso escolher um nome para o produto. "
+      },
+      qtdadeRule(v){
+         return !!v || 'a quantidade é obrigatória'
+      },
+      preco_cRule(v){
+        return  !!v || 'o preço de compra e é obrigatório'
+      },
+      preco_vRule(v){
+        return !!v || 'o preço de venda e é obrigatório'
+      },
+      marlucRule(v){
+        return !!v || 'a margem de lucro e é obrigatória'
+      },
+      editUserInputs(addUnit = true){//addUnit para botar o R$ e afins. quero isso pra salvar na tabela, mas nao quero isso ( addUnit = false) qd abrir uma form/dialog pra edicao
+        this.editedItem.qtdade = this.parsePtBr(this.editedItem.qtdade)
+        this.editedItem.preco_c = this.parsePtBr(this.editedItem.preco_c)
+        this.editedItem.preco_v = this.parsePtBr(this.editedItem.preco_v)
+        this.editedItem.marluc = this.parsePtBr(this.editedItem.marluc)
+
+        if(addUnit){
+          this.editedItem.preco_c = 'R$ ' + this.editedItem.preco_c
+          this.editedItem.preco_v = 'R$ ' + this.editedItem.preco_v
+          this.editedItem.marluc += '%'
         }
-        reader.readAsDataURL(file);// console.log("crie img")
       }
     }
   }
