@@ -2,7 +2,6 @@
     <div >  
         <v-flex>
                 <v-btn @click="clearInput">Limpei</v-btn>
-           <!-- <img :src="image" width="50px" height="50px"/>-->
                 <img :src="imageUrl" height="50px" v-if="imageUrl"/>
                 <v-text-field label="Selecione uma imagem" @click='pickFile' v-model='imageName' prepend-icon='attach_file'></v-text-field>
                 <input
@@ -13,9 +12,6 @@
                     @change="onFilePicked"
                 >
         </v-flex>
-        <!--<v-dialog v-model="dialog"  max-width="200px">
-            SOU DIALOGO
-        </v-dialog>    -->
     </div> 
 </template>
 
@@ -70,7 +66,7 @@ export default {
 					this.imageUrl = fr.result
 					this.imageFile = files[0] // arquivo da img que posso mandar pro server/bd/back-end...
                     this.$emit('imgUploaded',{
-                        file: this.imageFile,
+                        file: this.imageFile,//esse é oq salvarei num bd eventualmente
                         name: this.imageName,
                         url: this.imageUrl
                     })      
@@ -80,7 +76,6 @@ export default {
 			}
         },
         clearInput(){
-            console.log("limpou input imgname(q n muda nada tirando u botnado) ",this.imageName)
             this.imageName = ''//muda nada
 			this.imageFile = '' //limpa icone da img
 			this.imageUrl = '' //li,pa o texto no "selecioe img"

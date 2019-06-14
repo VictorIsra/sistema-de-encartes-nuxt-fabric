@@ -2,7 +2,6 @@
 -->
 <template>
   <div>
-    <v-btn @click="validate"> TESTEEE</v-btn>
     <v-toolbar flat color="white">
       <v-spacer></v-spacer>
       <v-text-field
@@ -30,20 +29,21 @@
                 </v-flex>
                  <v-flex xs12 sm6 md4>
                   <v-text-field ref="editedItem.nome"
-                                v-model="editedItem.nome" label="Produto">
+                                v-model.trim="editedItem.nome"
+                                :rules="[nomeRule]" 
+                                label="Produto">
                   </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field ref="editedItem.qtdade" 
-                                :rules="[() => (editedItem.qtdade >= 0 && editedItem.qtdade !== '')|| 'a quantidade é obrigatória e deve ser um número']" 
-                                v-model="editedItem.qtdade"
-                                label="Estoque"
-                                type="number">
+                                :rules="[qtdadeRule]"
+                                v-model.trim="editedItem.qtdade"
+                                label="Estoque">
                   </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field ref="editedItem.unidade"
-                                v-model="editedItem.unidade" 
+                                v-model.trim="editedItem.unidade" 
                                 label="Unidade"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
@@ -59,18 +59,19 @@
                 <v-flex xs12 sm6 md4>
                   <v-text-field  ref="editedItem.preco_c"
                                  min="1" step="any"
-                                 v-model="editedItem.preco_c" 
-                                 :rules="[() => (editedItem.preco_c >= 0 && editedItem.preco_c !== '') || 'o preço de compra é obrigatório e deve ser um número ']" 
+                                 v-model.trim="editedItem.preco_c" 
+                                 :rules="[preco_cRule]" 
                                  label="Preço de compra"
-                                 type="number">
+                                 prefix="R$"
+                                 >
                   </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field ref="editedItem.preco_v"
-                                v-model="editedItem.preco_v" 
+                                v-model.trim="editedItem.preco_v" 
                                 min="1" step="any"
-                                type="number"
-                                :rules="[() => (editedItem.preco_v >= 0 && editedItem.preco_v !== '')|| 'o preço de venda é obrigatório e deve ser um número']" 
+                                :rules="[preco_vRule]" 
+                                prefix="R$"
                                 label="Preço de venda">
                   </v-text-field>
                 </v-flex>
@@ -79,9 +80,9 @@
                 </v-flex>
                 <v-flex >
                   <v-text-field ref="editedItem.marluc" justify-center 
-                                v-model="editedItem.marluc" 
-                                :rules="[() => (editedItem.marluc >= 0 && editedItem.marluc !== '')|| 'a margem de lucro é obrigatória e deve ser um número']"
-                                type="number" 
+                                v-model.trim="editedItem.marluc" 
+                                :rules="[marlucRule]"
+                                 suffix="%"
                                 label="Margem de lucro"></v-text-field>
                 </v-flex>
                 
@@ -133,9 +134,9 @@
           </v-icon>
         </td>
       </template>
-      <template v-slot:no-data>
+     <!-- <template v-slot:no-data>
         <v-btn color="primary" @click="initialize">Resetar</v-btn>
-      </template>
+      </template>-->
       <template v-slot:no-results>
         <v-alert :value="true" color="error" icon="warning">
           O produto "{{ search }}" não foi encontrado.
@@ -164,8 +165,8 @@
       //PROPS (lembrar que, na verdade, são props para um componente filho
         checkDataRange: {
           checkRange: true,
-          Pdata_i: '1/1/2018',//virá da etapa um 
-          Pdata_f: '2/2/2019'
+          Pdata_i: '1/1/18',//virá da etapa um 
+          Pdata_f: '2/2/2099'
         },
         //fim de info relativa a validacao de datas.^
         defaultDatesValues: {//valor das datas em uma linha em particular da tabela. É uma prop
@@ -211,28 +212,28 @@
       editedItem: {
         img:  '',
         nome: '',
-        qtdade: '',
+        qtdade: '0',
         unidade: '',
         obs: '',
         data_i: '',
         data_f: '',
-        preco_c: '',
-        preco_v: '',
+        preco_c: '0,00',
+        preco_v: '0,00',
         selout: '',
-        marluc: ''
+        marluc: '0'
       },
-      defaultItem: {
+      defaultItem: {//aqui seto os valores defaults
         img:  '',
         nome: '',
-        qtdade: '',
+        qtdade: '0',
         unidade: '',
         obs: '',
         data_i: '',
         data_f: '',
-        preco_c: '',
-        preco_v: '',
+        preco_c: '0,00',
+        preco_v: '0,00',
         selout: '',
-        marluc: ''
+        marluc: '0'
       }
     }),
     computed: {
@@ -257,40 +258,40 @@
       initialize () {
   
         this.itens = [
-          {
-            img:  {
-              src: '',
-              name: 'hehe.jpg',
-              url: ''
-            },
-            nome: 'Arroz',
-            qtdade: 409,
-            unidade: 'kg',
-            obs: 'nada a declarar',
-            data_i: '23/06/2019',
-            data_f: '23/06/2019',
-            preco_c: '130$',
-            preco_v: '303$',
-            selout: '--',
-            marluc: '10%'
-          },
-           {
-            img:  {
-              src: '',
-              name: 'xd.jpg',
-              url: ''
-            },
-            nome: 'feijao',
-            qtdade: 1000,
-            unidade: 'kg',
-            obs: 'nada a declarar',
-            data_i: '11/05/2019',
-            data_f: '23/06/2019',
-            preco_c: '1300',
-            preco_v: '3033',
-            selout: '--',
-            marluc: '130%'
-          }
+          // {
+          //   img:  {
+          //     src: '',
+          //     name: 'hehe.jpg',
+          //     url: ''
+          //   },
+          //   nome: 'Arroz',
+          //   qtdade: 409,
+          //   unidade: 'kg',
+          //   obs: 'nada a declarar',
+          //   data_i: '23/06/2019',
+          //   data_f: '23/06/2019',
+          //   preco_c: '130$',
+          //   preco_v: '303$',
+          //   selout: '--',
+          //   marluc: '10%'
+          // },
+          //  {
+          //   img:  {
+          //     src: '',
+          //     name: 'xd.jpg',
+          //     url: ''
+          //   },
+          //   nome: 'feijao',
+          //   qtdade: 1000,
+          //   unidade: 'kg',
+          //   obs: 'nada a declarar',
+          //   data_i: '11/05/2019',
+          //   data_f: '23/06/2019',
+          //   preco_c: '1300',
+          //   preco_v: '3033',
+          //   selout: '--',
+          //   marluc: '130%'
+          // }
          
         ]
       },
@@ -325,13 +326,16 @@
         this.imgInfo.flag = 0
       },
       save () {
-        if (this.editedIndex > -1) {
+        if (this.editedIndex > -1) {//na edicao, preciso editar antes do assign, se nao vou modificar uma copia q nao é mais usada
+            this.editUserInputs()
             Object.assign(this.itens[this.editedIndex], this.editedItem)
             this.fillImgInfo()
         } else {//caso esteja adicionando algo em vez de editando
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
+            this.editUserInputs()
             this.fillImgInfo(0)
         }
+        //ajeita os inputs que foram validados
         this.close()      
       },
       getDate(data){//pega as datas formatadas no componente filho 'datas.vue'
@@ -352,7 +356,7 @@
         this.defaultDatesValues.Rdata_i = this.editedItem.data_i
         this.defaultDatesValues.Rdata_f = this.editedItem.data_f
         this.defaultDatesValues.flag = 1//p garantir que, na hr de criar o item, apos o user interagir com uma data, volte a validacao default (msg vermelha feia e irritante xD)
-
+        this.validate()
       },
       getDateStatus(info){//se o componente filho viu que a data é invalida ( fora do range), adiciona um item a pilha de erros
           //lembre, as datas só serao validadas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha ('#'))
@@ -363,9 +367,8 @@
             info.status === obj.status && info.caller === obj.caller )
          
           if(duplicates === undefined && info.status !== 0 ){//status 0 é pq n teve erro, só quero preencher se foi error ( 1)
-            if(info.caller !== -1){// se caller != -1 é pq sao datas difs e invalidas
+            if(info.caller !== -1)// se caller != -1 é pq sao datas difs e invalidas
                 this.datesErrors.unshift(info)
-            }
             else{//se caller = -1 é pq sao datas iguais e invalidas
               if(this.datesErrors.length < 3){//se é  3 é pq ambas as invalidas ja tao na pilha, entao nada devo fazer, caso contrário devo adicionar as 2 datas a pilha de erro
                 var i
@@ -389,8 +392,6 @@
               })
             }  
           }
-          console.log(" siz ", this.datesErrors.length)//p debug
-         this.datesErrors.forEach(i => console.log(i))
           this.validate()//tenta validar
       },
       resetDateErrorStack(){//validacao só fará sentido qd o dialog tiver aberto, qd fechado, limpar a pilha
@@ -445,15 +446,10 @@
       validate(){
         const valid = []//verá quantos itens passarão no teste de validade ( excluindo datas, quem te validacao particular e diferenciada )
         let datesValid = this.datesErrors.length === 1 ? true : false//checa validade para das datas, que tem uma logica particular
-        console.log("AAAAteste ", datesValid, " ", this.datesErrors.length)
-          if(datesValid && this.editedItem.data_i !== '' && this.editedItem.data_f !== ''){
-            console.log(" DAT val ")
+          if(datesValid && this.editedItem.data_i !== '' && this.editedItem.data_f !== '')
             datesValid = true
-          }  
-          else{
-            console.log(" DAT inval ")
+          else
             datesValid = false
-          } 
         //checando a validade dos campos obrigatórios que nao sejam datas    
         Object.keys(this.editedItem).forEach((f,index) => {
           if(index !== 0 && index !== 5 && index !== 6){//se n for data nem img, de boa usar o metodo validate
@@ -468,6 +464,56 @@
           console.log(" Form valido!")
           this.valid  = true
         }  
+      },
+      //RULES:
+      nomeRule(v){
+          return !!v || "é preciso escolher um nome para o produto. "
+      },
+      qtdadeRule(v){
+       
+         return !!v || 'a quantidade é obrigatória'
+      },
+      preco_cRule(v){
+
+        return  !!v || 'o preço de compra e é obrigatório'
+      },
+      preco_vRule(v){
+  
+        return !!v || 'o preço de venda e é obrigatório'
+      },
+      marlucRule(v){
+        return !!v || 'a margem de lucro e é obrigatória'
+      },
+      editUserInputs(){//ajeitando inputs
+        this.editedItem.qtdade = this.editedItem.qtdade.replace(/\D/g,'')
+       
+       this.editedItem.preco_c =  this.editedItem.preco_c.replace(/\D/g,'')
+        this.editedItem.preco_c = parseFloat(this.editedItem.preco_c).toLocaleString('pt-BR', {
+            style:'decimal',
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2
+        });
+        console.log(this.editedItem.preco_c === 'NaN', " v ", this.editedItem.preco_c)
+        if(this.editedItem.preco_c === 'NaN'){
+          console.log("entro no if")
+          this.editedItem.preco_c.replace('NaN','0,00')
+        }  
+        this.editedItem.preco_c = 'R$ ' + this.editedItem.preco_c
+
+        this.editedItem.preco_v =  this.editedItem.preco_v.replace(/\D/g,'')
+        this.editedItem.preco_v = parseFloat(this.editedItem.preco_v).toLocaleString('pt-BR', {
+            style:'decimal',
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2
+        });
+        if(this.editedItem.preco_v === 'NaN')
+          this.editedItem.preco_v.replace('NaN','0,00')
+        this.editedItem.preco_v = 'R$ ' + this.editedItem.preco_v
+        
+        this.editedItem.marluc=  this.editedItem.marluc.replace(/\D/g,'')
+        this.editedItem.marluc = parseFloat(this.editedItem.marluc)
+        this.editedItem.marluc = this.editedItem.marluc / 100
+        this.editedItem.marluc += '%'
       }
     }
   }

@@ -122,7 +122,6 @@
             this.dateFormatted_termino = temp_data_f
           }
           else{
-            console.log("MUSUUUUU ",this.defaultDatesValues.flag)
             this.dateFormatted_inicio = ''
             this.dateFormatted_termino = ''
           }
@@ -131,15 +130,14 @@
     },
     methods: {
       formatDate (date) {
-        if (!date) return null
-
-        const [year, month, day] = date.split('-')
-      
+        if (!date)
+          return null
+        const [year, month, day] = date.split('-') 
         return `${day}/${month}/${year}`//ajustado pro padrao que quero
       },
       parseDate (date) {
-        if (!date) return null
-
+        if (!date) 
+          return null
         const [month, day, year] = date.split('/')//n sei qd isso e'chamado, n mexerei ainda
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
       },
@@ -147,6 +145,7 @@
       //true se a data for ok( dentro do range), false caso contrário
         if(dateCheck === undefined)
           return
+          
         var d1 = dateFrom.split("/")
         var d2 = dateTo.split("/")
         var c = dateCheck.split("/")
@@ -187,15 +186,12 @@
             return status || "a data precisa estar entre " + this.checkDataRange.Pdata_i
                               + " e " + this.checkDataRange.Pdata_f + "."
           } 
-          else{//funciona mas lembra q esse true indica q é valido, e n quero isso. por isso, lembre de checar na validacao o caso em q data vale ''
-            console.log("Lallal samu")
-            return true
-          }      
+          else//funciona mas lembra q esse true indica q é valido, e n quero isso. por isso, lembre que foi fundamental checar na validacao o caso em q data vale ''
+            return true     
         }  
         return !!v || 'É preciso escolher uma data'
       },
       getFlag(input){//n posso passar como argumento pra rules pq congela a f e d stack overflow sl pq (semp q eu passar uma f com mais de 1 arg pra rule rola isso o.O)...
-      console.log("Input padrao: ", input)
         if(this.dateFormatted_inicio === this.dateFormatted_termino)//precisa ser a primeira condicao
           return -1
         else if(input === this.dateFormatted_inicio)

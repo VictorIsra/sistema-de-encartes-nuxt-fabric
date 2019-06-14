@@ -103,6 +103,7 @@
       }
     },
     watch: {
+      
       valid: {
         handler(){
           if(!this.valid )//controla se o botao de 'proximo' no componente pai ficará habilitado ou nao
