@@ -161,12 +161,12 @@
       dialog: false,
       search: '',
       valid: true,
-      datesErrors: ['#'],//é uma pilha que checa os erros nas datas. nao terá erro qd ela só tiver o elemento base(''), ou seja, se datesErros.length ===1
+      datesErrors: ['#'],//é uma pilha que checa os erros nas datas. nao terá erro qd ela só tiver o elemento base('#'), ou seja, se datesErros.length ===1
       //PROPS (lembrar que, na verdade, são props para um componente filho
         checkDataRange: {
           checkRange: true,
-          Pdata_i: '1/1/18',//virá da etapa um 
-          Pdata_f: '2/2/2099'
+          Pdata_i: '1/1/2019',//virá da etapa um 
+          Pdata_f: '6/4/2019'
         },
         //fim de info relativa a validacao de datas.^
         defaultDatesValues: {//valor das datas em uma linha em particular da tabela. É uma prop
@@ -174,7 +174,7 @@
           Rdata_f: '',
           flag: 0
         },
-        //prop que indicará pro componente filho (image_upload) as img que devem ser mostradas qd um dialog/form abrir
+        //prop' que indicará pro componente filho (image_upload) as img que devem ser mostradas qd um dialog/form abrir
         imgInfo: {
           imgName: '',
           imgURL: '',
@@ -335,7 +335,6 @@
             this.editUserInputs()
             this.fillImgInfo(0)
         }
-        //ajeita os inputs que foram validados
         this.close()      
       },
       getDate(data){//pega as datas formatadas no componente filho 'datas.vue'
@@ -395,9 +394,7 @@
           this.validate()//tenta validar
       },
       resetDateErrorStack(){//validacao só fará sentido qd o dialog tiver aberto, qd fechado, limpar a pilha
-        //console.log("resetnado ")
         this.datesErrors = ['#']
-       // console.log("size rset ", this.datesErrors.length)
       },
       fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
@@ -485,19 +482,23 @@
         return !!v || 'a margem de lucro e é obrigatória'
       },
       editUserInputs(){//ajeitando inputs
+        var divide = false
+        
+        if(this.editedItem.qtdade.includes('.')|| this.editedItem.qtdade.includes(','))
+          divide = true
         this.editedItem.qtdade = this.editedItem.qtdade.replace(/\D/g,'')
+        this.editedItem.qtdade = parseFloat(this.editedItem.qtdade,10)
+        if(divide)
+          this.editedItem.qtdade = this.editedItem.qtdade / 100
        
-       this.editedItem.preco_c =  this.editedItem.preco_c.replace(/\D/g,'')
+        this.editedItem.preco_c =  this.editedItem.preco_c.replace(/\D/g,'')
         this.editedItem.preco_c = parseFloat(this.editedItem.preco_c).toLocaleString('pt-BR', {
             style:'decimal',
             maximumFractionDigits: 2,
             minimumFractionDigits: 2
         });
-        console.log(this.editedItem.preco_c === 'NaN', " v ", this.editedItem.preco_c)
-        if(this.editedItem.preco_c === 'NaN'){
-          console.log("entro no if")
-          this.editedItem.preco_c.replace('NaN','0,00')
-        }  
+        if(this.editedItem.preco_c === 'NaN')
+          this.editedItem.preco_c = this.editedItem.preco_c.replace('NaN','0,00') 
         this.editedItem.preco_c = 'R$ ' + this.editedItem.preco_c
 
         this.editedItem.preco_v =  this.editedItem.preco_v.replace(/\D/g,'')
@@ -507,12 +508,16 @@
             minimumFractionDigits: 2
         });
         if(this.editedItem.preco_v === 'NaN')
-          this.editedItem.preco_v.replace('NaN','0,00')
+          this.editedItem.preco_v = this.editedItem.preco_v.replace('NaN','0,00')
         this.editedItem.preco_v = 'R$ ' + this.editedItem.preco_v
         
-        this.editedItem.marluc=  this.editedItem.marluc.replace(/\D/g,'')
+       
+        if(this.editedItem.marluc.includes('.')|| this.editedItem.marluc.includes(','))
+          divide = true
+        this.editedItem.marluc =  this.editedItem.marluc.replace(/\D/g,'')
         this.editedItem.marluc = parseFloat(this.editedItem.marluc)
-        this.editedItem.marluc = this.editedItem.marluc / 100
+        if(divide)
+          this.editedItem.marluc = this.editedItem.marluc / 100
         this.editedItem.marluc += '%'
       }
     }
