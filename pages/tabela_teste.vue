@@ -215,7 +215,7 @@
       editedItem: {
         img:  '',
         nome: '',
-        qtdade: '0',
+        qtdade: '0.00',
         unidade: '',
         obs: '',
         data_i: '',
@@ -223,12 +223,12 @@
         preco_c: '0,00',
         preco_v: '0,00',
         selout: '',
-        marluc: '0'
+        marluc: '0.00'
       },
       defaultItem: {//aqui seto os valores defaults
         img:  '',
         nome: '',
-        qtdade: '0',
+        qtdade: '0.00',
         unidade: '',
         obs: '',
         data_i: '',
@@ -236,7 +236,7 @@
         preco_c: '0,00',
         preco_v: '0,00',
         selout: '',
-        marluc: '0'
+        marluc: '0.00'
       }
     }),
     computed: {
@@ -309,6 +309,7 @@
         this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
         this.sendDefaultDates(1)//pro componente filho mostrar as dates referentes a linha correspondente ao se abrir o dialog
         this.prepareImgInfo(this.editedItem)
+        this.editUserInputs(false)
         this.dialog = true  
       },
       deleteItem (item) {
@@ -484,46 +485,17 @@
       marlucRule(v){
         return !!v || 'a margem de lucro e é obrigatória'
       },
-      editUserInputs(){//ajeitando inputs
-        var divide = false
-        if(this.editedItem.qtdade % 1 != 0)//sabe se numbero tem virgula
-          console.log("NUMBERO COM VIRGULA ", this.editedItem.qtdade)
-        else
-          console.log("sem virgula ", this.editedItem.qtdade)  
-        // if(this.editedItem.qtdade.includes('.')|| this.editedItem.qtdade.includes(','))
-        //   divide = true
-        // this.editedItem.qtdade = this.editedItem.qtdade.replace(/\D/g,'')
-        // this.editedItem.qtdade = parseFloat(this.editedItem.qtdade,10)
-        // if(divide)
-        //   this.editedItem.qtdade = this.editedItem.qtdade / 100
-       
-       // this.editedItem.preco_c =  this.editedItem.preco_c.replace(/\D/g,'')
-        this.editedItem.preco_c = parseFloat(this.editedItem.preco_c).toLocaleString('pt-BR', {
-            style:'decimal',
-            maximumFractionDigits: 2,
-            minimumFractionDigits: 2
-        });
-        if(this.editedItem.preco_c === 'NaN'){
-          console.log("Not nn vixi")
-          this.editedItem.preco_c = this.editedItem.preco_c.replace('NaN','0,00') 
-        }  
-        this.editedItem.preco_c = 'R$ ' + this.editedItem.preco_c
-
-        //this.editedItem.preco_v =  this.editedItem.preco_v.replace(/\D/g,'')
+      editUserInputs(addUnit = true){//addUnit para botar o R$ e afins. quero isso pra salvar na tabela, mas nao quero isso ( addUnit = false) qd abrir uma form/dialog pra edicao
+        this.editedItem.qtdade = this.parsePtBr(this.editedItem.qtdade)
+        this.editedItem.preco_c = this.parsePtBr(this.editedItem.preco_c)
         this.editedItem.preco_v = this.parsePtBr(this.editedItem.preco_v)
-        
-        // if(this.editedItem.preco_v === 'NaN')
-        //   this.editedItem.preco_v = this.editedItem.preco_v.replace('NaN','0,00')
-        // this.editedItem.preco_v = 'R$ ' + this.editedItem.preco_v
-        
-       
-        if(this.editedItem.marluc.includes('.')|| this.editedItem.marluc.includes(','))
-          divide = true
-        this.editedItem.marluc =  this.editedItem.marluc.replace(/\D/g,'')
-        this.editedItem.marluc = parseFloat(this.editedItem.marluc)
-        if(divide)
-          this.editedItem.marluc = this.editedItem.marluc / 100
-        this.editedItem.marluc += '%'
+        this.editedItem.marluc = this.parsePtBr(this.editedItem.marluc)
+
+        if(addUnit){
+          this.editedItem.preco_c = 'R$ ' + this.editedItem.preco_c
+          this.editedItem.preco_v = 'R$ ' + this.editedItem.preco_v
+          this.editedItem.marluc += '%'
+        }
       }
     }
   }
