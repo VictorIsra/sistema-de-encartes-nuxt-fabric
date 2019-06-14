@@ -150,13 +150,16 @@
 //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
   import imgUpload from '../components/campanhas/generalUseComponents/image_upload.vue'
   import datas from  '../components/campanhas/generalUseComponents/datas.vue'
- 
+  import formatInput from '../components/campanhas/campanhaMixins/FormatInputMixin.js'
+
   export default {
     components: {
       'img-upload': imgUpload,
       datas
     },
-  
+    mixins: [
+      formatInput
+    ],
     data: () => ({
       dialog: false,
       search: '',
@@ -483,33 +486,35 @@
       },
       editUserInputs(){//ajeitando inputs
         var divide = false
-        
-        if(this.editedItem.qtdade.includes('.')|| this.editedItem.qtdade.includes(','))
-          divide = true
-        this.editedItem.qtdade = this.editedItem.qtdade.replace(/\D/g,'')
-        this.editedItem.qtdade = parseFloat(this.editedItem.qtdade,10)
-        if(divide)
-          this.editedItem.qtdade = this.editedItem.qtdade / 100
+        if(this.editedItem.qtdade % 1 != 0)//sabe se numbero tem virgula
+          console.log("NUMBERO COM VIRGULA ", this.editedItem.qtdade)
+        else
+          console.log("sem virgula ", this.editedItem.qtdade)  
+        // if(this.editedItem.qtdade.includes('.')|| this.editedItem.qtdade.includes(','))
+        //   divide = true
+        // this.editedItem.qtdade = this.editedItem.qtdade.replace(/\D/g,'')
+        // this.editedItem.qtdade = parseFloat(this.editedItem.qtdade,10)
+        // if(divide)
+        //   this.editedItem.qtdade = this.editedItem.qtdade / 100
        
-        this.editedItem.preco_c =  this.editedItem.preco_c.replace(/\D/g,'')
+       // this.editedItem.preco_c =  this.editedItem.preco_c.replace(/\D/g,'')
         this.editedItem.preco_c = parseFloat(this.editedItem.preco_c).toLocaleString('pt-BR', {
             style:'decimal',
             maximumFractionDigits: 2,
             minimumFractionDigits: 2
         });
-        if(this.editedItem.preco_c === 'NaN')
+        if(this.editedItem.preco_c === 'NaN'){
+          console.log("Not nn vixi")
           this.editedItem.preco_c = this.editedItem.preco_c.replace('NaN','0,00') 
+        }  
         this.editedItem.preco_c = 'R$ ' + this.editedItem.preco_c
 
-        this.editedItem.preco_v =  this.editedItem.preco_v.replace(/\D/g,'')
-        this.editedItem.preco_v = parseFloat(this.editedItem.preco_v).toLocaleString('pt-BR', {
-            style:'decimal',
-            maximumFractionDigits: 2,
-            minimumFractionDigits: 2
-        });
-        if(this.editedItem.preco_v === 'NaN')
-          this.editedItem.preco_v = this.editedItem.preco_v.replace('NaN','0,00')
-        this.editedItem.preco_v = 'R$ ' + this.editedItem.preco_v
+        //this.editedItem.preco_v =  this.editedItem.preco_v.replace(/\D/g,'')
+        this.editedItem.preco_v = this.parsePtBr(this.editedItem.preco_v)
+        
+        // if(this.editedItem.preco_v === 'NaN')
+        //   this.editedItem.preco_v = this.editedItem.preco_v.replace('NaN','0,00')
+        // this.editedItem.preco_v = 'R$ ' + this.editedItem.preco_v
         
        
         if(this.editedItem.marluc.includes('.')|| this.editedItem.marluc.includes(','))

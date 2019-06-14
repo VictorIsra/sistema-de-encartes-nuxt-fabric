@@ -154,7 +154,7 @@
         var to   = new Date(d2[2], parseInt(d2[1])-1, d2[0])
         var check = new Date(c[2], parseInt(c[1])-1, c[0])    
         //console.log(check > from && check < to)
-        var dataInRange = check > from && check < to
+        var dataInRange = check >= from && check <= to
        // console.log("chamei d novo caler: ", flag)
         this.sendDateStatus(dataInRange,flag)
         return dataInRange
