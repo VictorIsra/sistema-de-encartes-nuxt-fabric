@@ -4,7 +4,7 @@
       <v-toolbar flat color="grey lighten-4">
         <v-toolbar-title>
           <v-layout align-center class="mr-2">
-            <v-img class="mr-2" width="40" src="/icones/campanhas.png"></v-img>
+            <v-img class="mr-2" width="40" src="/icones/campanhas2.0.png"></v-img>
             Campanhas
           </v-layout>
         </v-toolbar-title>
@@ -17,9 +17,9 @@
         <v-spacer></v-spacer>
         <v-fade-transition hide-on-leave>
           <nuxt-link v-if="isMain" to="/campanhas/adicionar">
-            <v-btn color="success">
-              <v-icon class="mr-2">far fa-plus-square</v-icon>
-              <span>Adicionar campanha</span>
+            <v-btn color="info">
+              <v-icon class="mr-2">flag</v-icon>
+              <span>Criar nova campanha</span>
             </v-btn>
           </nuxt-link>
         </v-fade-transition>

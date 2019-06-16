@@ -1,5 +1,6 @@
 <template>
   <v-stepper  v-model="e1">
+   <!-- <v-btn color="success" @click="printFormInputs">CHECK INPUTS</v-btn>-->
     <v-stepper-header>
       <v-stepper-step :complete="e1 > 1" step="1">Dados da Campanha</v-stepper-step>
 
@@ -9,7 +10,7 @@
 
       <v-divider></v-divider>
 
-      <v-stepper-step step="3">Aprovação do Diretor</v-stepper-step>
+      <v-stepper-step step="3">Análise da concorrência</v-stepper-step>
 
        <v-divider></v-divider>
 
@@ -23,7 +24,7 @@
          <formulario @statusform="validarForm" @getinputs="getFormInputs" :send_form_data="send_form_data"/>
        </v-container>
         
-      
+        <div class="text-xs-right">
         <v-btn
           color="primary"
           :disabled="!form_validated"
@@ -31,20 +32,22 @@
         >
           Próximo
         </v-btn>
+        </div>
       </v-stepper-content>
 
       <v-stepper-content step="2">
         <v-container grid-list-xs>
-           <escolha-produtos/>
+           <escolha-produtos :campanhaDates="form_inputs"/>
         </v-container>
        
-
-        <v-btn
-          color="primary"
-          @click="e1 = 3"
-        >
-          Próximo
-        </v-btn>
+        <div class="text-xs-right">
+          <v-btn
+            color="primary"
+            @click="e1 = 3"
+          >
+            Próximo
+          </v-btn>
+        </div>  
       </v-stepper-content>
 
       <v-stepper-content step="3">
@@ -53,14 +56,15 @@
           color="grey lighten-1"
           height="200px"
         ></v-card>
-
-        <v-btn
-          color="primary"
-          @click="e1 = 4"
-        >
-          Próximo
-        </v-btn>
-
+          
+        <div class="text-xs-right">
+          <v-btn
+            color="primary"
+            @click="e1 = 4"
+          >
+            Próximo
+          </v-btn>
+        </div>
         <v-btn flat @click="e1 = e1 - 1">Voltar</v-btn>
       </v-stepper-content>
       
@@ -102,7 +106,7 @@
       return {
         e1: 0,
         form_validated: false,//controla se o botao de 'proximo' ficará habilitado ou nao
-        form_inputs: '',//componente filho (formulario.vue) irá preencher isso na hora correta
+        form_inputs: {},//componente filho (formulario.vue) irá preencher isso na hora correta
         send_form_data: false //prop/flag para avisar ao componente filho ( formulario.vue) que ele pode retornar os inputs passados pelo user
       }
     },

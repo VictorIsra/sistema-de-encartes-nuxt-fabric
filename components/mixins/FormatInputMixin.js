@@ -3,7 +3,7 @@ export default{
         parsePtBr(input){
             console.log("entrou ",input)
             if(input === '')//a principio minha logica n permite esse caso, mas n custa nada, vai q esqueci de algo...
-                input = '0'
+                input = '0,00'
             //remover qqr coisa que nao seja numero '.' ou ','
             input = input.replace(/[^0-9.,]/gi,'')//
             input = input.replace(/[.](?=.*[,.])/g, "")//"remover qqr '.' com excecao do ultimo"
@@ -14,8 +14,8 @@ export default{
                 maximumFractionDigits: 2,
                 minimumFractionDigits: 2
             });
-            if(input === "NaN")//caso o cara passe somente um caracter nao numérico
-                input = "0"
+            if(input === "NaN")//caso o cara passe somente  caracteres nao numéricos
+                input = "0,00"
             console.log("input parseado: ",input)
             return input
         }

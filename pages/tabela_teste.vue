@@ -24,10 +24,10 @@
           <v-card-text v-model.lazy="valid" ref="editedItem"> <!-- informacoes de adicionar e deletar (é um form)-->
             <v-container grid-list-md >
               <v-layout wrap>
-                 <v-flex >
+                 <v-flex xs12>
                  <img-upload @blur="editUserInputs(false)" :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
                 </v-flex>
-                 <v-flex xs12 sm6 md4>
+                 <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.nome"
                                 @blur="editUserInputs(false)"
                                 v-model.trim="editedItem.nome"
@@ -35,7 +35,7 @@
                                 label="Produto">
                   </v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6 md4>
+                <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.qtdade" 
                                 :rules="[qtdadeRule]"
                                 @blur="editUserInputs(false)"
@@ -43,13 +43,13 @@
                                 label="Estoque">
                   </v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6 md4>
+                <v-flex xs12 sm6>
                   <v-text-field @blur="editUserInputs(false)" 
                                 ref="editedItem.unidade"
                                 v-model.trim="editedItem.unidade" 
                                 label="Unidade"></v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6 md4>
+                <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.obs" v-model="editedItem.obs" label="Observação"></v-text-field>
                 </v-flex>
                 <v-flex>
@@ -60,7 +60,7 @@
                            @dateStatusInfo="getDateStatus"           
                     />              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
                 </v-flex>
-                <v-flex xs12 sm6 md4>
+                <v-flex xs12 sm6>
                   <v-text-field  ref="editedItem.preco_c"
                                  min="1" step="any"
                                  @blur="editUserInputs(false)"
@@ -71,7 +71,7 @@
                                  >
                   </v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6 md4>
+                <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.preco_v"
                                 @blur="editUserInputs(false)"
                                 v-model.trim="editedItem.preco_v" 
@@ -81,7 +81,7 @@
                                 label="Preço de venda">
                   </v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6 md4>
+                <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.selout" v-model="editedItem.selout" label="Sell out"></v-text-field>
                 </v-flex>
                 <v-flex >
@@ -89,7 +89,6 @@
                                 v-model.trim="editedItem.marluc" 
                                 :rules="[marlucRule]"
                                  @blur="editUserInputs(false)"
-                                suffix="%"
                                 label="Margem de lucro"></v-text-field>
                 </v-flex>
                 

@@ -3,48 +3,48 @@
     ref="form"
     v-model="valid"
   > 
-    <v-btn @click="teste" color="success">text</v-btn>
+    <v-flex  sm6>
+      <v-text-field 
+        v-model.trim="form_inputs.empresa"
+        :rules="[empresaRules]"
+        label="Empresa:"
+        required
+      ></v-text-field>
+    </v-flex>
+    <v-flex  sm6>
 
-    <v-text-field
-      v-model.trim="form_inputs.empresa"
-      :rules="[empresaRules]"
-      label="Empresa:"
-      required
-    ></v-text-field>
-  
-    <v-text-field
-      v-model.trim="form_inputs.campanha"
-      :rules="[campanhaRules]"
-      label="Nome da campanha:"
-      required
-    ></v-text-field>
+      <v-text-field
+        v-model.trim="form_inputs.campanha"
+        :rules="[campanhaRules]"
+        label="Nome da campanha:"
+        required
+      ></v-text-field>
+    </v-flex>
 
-    <v-select
-      v-model="form_inputs.tipos_campanhas"
-      :items="tipos_campanhas"
-      @blur="teste"
-      :rules="[v => !!v || 'É preciso escolher um tipo de campanha!']"
-      label="Tipo de campanha:"
-      required
-    ></v-select>
-    
-    <v-text-field
-      v-model.trim="form_inputs.mlucro"
-      @blur="parseMlucro"
-      :rules="[mlucroRules]"
-      label="Margem de lucro mínima (%)"
-      required
-      suffix="%"
-    ></v-text-field>
+    <v-flex  sm6>
+      <v-select
+        v-model="form_inputs.tipos_campanhas"
+        :items="tipos_campanhas"
+        :rules="[v => !!v || 'É preciso escolher um tipo de campanha!']"
+        label="Tipo de campanha:"
+        required
+      ></v-select>
+    </v-flex>
 
-    <datas @datechanged="getDate"/>
-    
-    <v-btn
-      color="info"
-      @click="reset"
-    >
-      Limpar informações
-    </v-btn>
+    <v-flex sm6>
+      <v-text-field
+        v-model.trim="form_inputs.mlucro"
+        @blur="parseMlucro"
+        :rules="[mlucroRules]"
+        label="Margem de lucro mínima (%)"
+        required
+        suffix="%"
+      ></v-text-field>
+    </v-flex>
+
+    <v-flex sm6>
+      <datas @datechanged="getDate"/>
+    </v-flex>
   </v-form>
 </template>
 
@@ -99,17 +99,8 @@
         else
           console.log("erro ocorreu na funcao getData")    
       },
-      reset () {
-        this.$refs.form.reset()
-      },
-      resetValidation () {
-        this.$refs.form.resetValidation()
-      },
       parseMlucro(){
         this.form_inputs.mlucro = this.parsePtBr(this.form_inputs.mlucro)
-      },
-      teste(){
-      console.log(this.form_inputs)
       }
     },
     watch: { 
