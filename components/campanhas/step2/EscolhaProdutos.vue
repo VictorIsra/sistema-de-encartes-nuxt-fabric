@@ -89,6 +89,7 @@
                                 v-model.trim="editedItem.marluc" 
                                 :rules="[marlucRule]"
                                  @blur="editUserInputs(false)"
+                                suffix="%"
                                 label="Margem de lucro"></v-text-field>
                 </v-flex>
                 
@@ -176,8 +177,8 @@
       //PROPS (lembrar que, na verdade, são props para um componente filho
         checkDataRange: {
           checkRange: true,
-          Pdata_i: '1/1/2019',//virá da etapa um 
-          Pdata_f: '6/4/2019'
+          Pdata_i: '22/3/2019',//virá da etapa um 
+          Pdata_f: '12/12/2019'
         },
         //fim de info relativa a validacao de datas.^
         defaultDatesValues: {//valor das datas em uma linha em particular da tabela. É uma prop
@@ -267,44 +268,7 @@
     },
     methods: {
       initialize () {
-  
-        this.itens = [
-          // {
-          //   img:  {
-          //     src: '',
-          //     name: 'hehe.jpg',
-          //     url: ''
-          //   },
-          //   nome: 'Arroz',
-          //   qtdade: 409,
-          //   unidade: 'kg',
-          //   obs: 'nada a declarar',
-          //   data_i: '23/06/2019',
-          //   data_f: '23/06/2019',
-          //   preco_c: '130$',
-          //   preco_v: '303$',
-          //   selout: '--',
-          //   marluc: '10%'
-          // },
-          //  {
-          //   img:  {
-          //     src: '',
-          //     name: 'xd.jpg',
-          //     url: ''
-          //   },
-          //   nome: 'feijao',
-          //   qtdade: 1000,
-          //   unidade: 'kg',
-          //   obs: 'nada a declarar',
-          //   data_i: '11/05/2019',
-          //   data_f: '23/06/2019',
-          //   preco_c: '1300',
-          //   preco_v: '3033',
-          //   selout: '--',
-          //   marluc: '130%'
-          // }
-         
-        ]
+        this.itens = []
       },
       prepareImgInfo(currentItem){//envia pro componente filho image_uload.vue os valores ( sao props no comp filho) a serem colocados ao abrir a aba/form de edit
         this.imgInfo.imgFile = currentItem.img.src
@@ -321,7 +285,7 @@
         this.dialog = true  
       },
       addItem(flag){
-        this.imgInfo.flag = 1//garante q nao vai ter uma img pre definida ao abrir o dialog
+        this.imgInfo.flag = flag//garante q nao vai ter uma img pre definida ao abrir o dialog
         this.sendDefaultDates(flag)
       },
       deleteItem (item) {
@@ -462,11 +426,11 @@
           }
         })
         if(valid.includes(false) || !datesValid){//se os campos ou alguma data for inválida, invalide o form/dialog
-          console.log(" FORM invalido")
+         // console.log(" FORM invalido")
           this.valid = false
         }  
         else if(!valid.includes(false) && datesValid){//caso contrário, valide
-          console.log(" Form valido!")
+         // console.log(" Form valido!")
           this.valid  = true
         }  
       },

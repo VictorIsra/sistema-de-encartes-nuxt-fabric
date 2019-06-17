@@ -115,10 +115,9 @@
           let temp_data_i = ''
           let temp_data_f = ''
           if( this.defaultDatesValues.flag === 1){//p n auterar a prop no comp filho
-          console.log("MANDO FLAG")
             temp_data_i = this.defaultDatesValues.Rdata_i
             temp_data_f = this.defaultDatesValues.Rdata_f
-            console.log("datas: ", temp_data_i, "<< e ", temp_data_f)
+            
             this.dateFormatted_inicio = temp_data_i
             this.dateFormatted_termino = temp_data_f
           }

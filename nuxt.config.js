@@ -52,6 +52,8 @@ module.exports = {
   modules: [
   ],
 
+  //SERVER SIDE CONFIG:::: XD
+  serverMiddleware: ['~/backend/index.js'],
   /*
   ** Build configuration
   */
