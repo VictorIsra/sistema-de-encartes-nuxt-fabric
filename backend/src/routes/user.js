@@ -68,11 +68,22 @@ router.post('/users', async (req, res, next) => {
     
     try{
         await user.save()
-       res.send(user)
+        res.send(user)
      }
     catch(e){
         res.status(404).send(e)
     }      
 })
 
+router.post('/users/login', async (req,res) => {
+    //achar user pelas credenciais
+    //retornará um token de autenticacao
+    try{
+        const user = await User.findByCredentials(req.body.email, req.body.password)//f q eu irei definir
+        const token = await user.generateAuthToken()//criarei esse metodo a lvl de instancia
+        res.status(202).send(token)
+    }catch(e){
+        res.status(404).send("" + e )//n sei pq, se passo só send(e), ele n printa nada
+    }
+})
 module.exports = router

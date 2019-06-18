@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcrypt')
+const jwt =require('jsonwebtoken')
 
 const userSchema = new mongoose.Schema({
     userType: {
@@ -12,9 +13,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    email: {
+    email: {//como mudei o unique dps, preciso dropar o bd p faze funcionar
         type: String,
-      //  required: true,
+        required: true,
+        unique: true,//email será unico, logo posso usa-lo como criterio p login
         trim: true,
         lowercase: true,
         validate(value){
@@ -32,6 +34,27 @@ const userSchema = new mongoose.Schema({
         }
     }
 })
+//metodos a lvl de instancia
+userSchema.methods.generateAuthToken = async function(){
+    const user = this//só por questao semantica
+    const secret = 'lobodomar'  //tostring pq repare q no bd o _id é um objectId, mas quero le-la como string
+    const token = jwt.sign({_id: user._id.toString()},secret)
+    return token
+}
+//metodos a lvl de model
+userSchema.statics.findByCredentials = async function(email,password){//td q é . static sao f minhas q posso executar a nivel de model
+
+    const user = await User.findOne({email:email})
+
+    if(!user){
+        throw new Error('o login nao pode ser feito.')
+    }    
+    const isMatch = await bcrypt.compare(password,user.password)
+
+    if(!isMatch)
+        throw new Error('o login nao pode ser feito. ')
+    return user
+}
 //executar midwarees antes de salvar, por ex
 //ha varios metodos/queries q eu podia executar o midware antes, no caso, farei com o 'save'
 userSchema.pre('save', async function(next){//uso f normal pq arrow f nao faz bind do this
