@@ -9,7 +9,8 @@ const auth = async (req,res,next) => {
         if(!user){
             throw new Error()
         }//n precisa de else, poiss o throw retorna um error
-       // else{
+       // else
+        req.token = token
         req.user = user //pro next poder passar pra prox rota o user logado
         next()
         //}    

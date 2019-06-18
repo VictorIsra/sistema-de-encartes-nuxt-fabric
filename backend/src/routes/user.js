@@ -5,40 +5,34 @@ const auth = require('../middleware/auth')//p user um midware em uma rota especi
 //n preciso do router.use express json pq ja o fiz no index.js
 const router = new express.Router()
 
+
 router.get('/users/me',auth,async(req,res) => {
     res.send(req.user)//req.user foi passado pela funcao auth qd o user foi autenticado xD
 })
-router.get('/users/:id', async (req,res) => {
-    
-    const _id = req.params.id
+// router.get('/users/:id', async (req,res) => { //n precisa mais
+//     const _id = req.params.id
+//     try{
+//         const user = await User.findById(_id)
+//         if(!user)
+//             res.status(404).send()
+//         else
+//             res.status(202).send(user)
+//     }catch(e){
+//         res.status(500).send(e)
+//     } 
+// })
+router.delete('/users/me', auth, async (req,res)=>{
+        
     try{
-        const user = await User.findById(_id)
-        if(!user)
-            res.status(404).send()
-        else
-            res.status(202).send(user)
-    }catch(e){
-        res.status(500).send(e)
-    } 
-})
-router.delete('/users/:id',async (req,res)=>{
-    
-    const _id = req.params.id
-    
-    try{
-        const deletedUser = await User.findByIdAndDelete(_id)
-        if(!deletedUser)
-            res.status(404).send()
-        else
-            res.status(202).send(deletedUser)
+        await req.user.remove()//remove o usuario autenticado, msm efeito das linhas acima
+        res.send(req.user)//retorna o profile deletado
     }catch(e){
         res.status(500).send(e)
     }
 })
-router.patch('/users/:id', async (req,res) => {
+router.patch('/users/me', auth, async (req,res) => {
     
     const allowedUpdates = [ "name","password","userType"]
-    const _id = req.params.id
     const updates = Object.keys(req.body)
     const filtro = updates.every(field => allowedUpdates.includes(field))
      
@@ -46,18 +40,17 @@ router.patch('/users/:id', async (req,res) => {
         res.status(404).send("invalid updates...")
     
     try{ 
-        const user = await User.findById(_id)//findByIdAndUpdate(_id,req.body,{new: true})//retorna o user atualizado, em vez do antigo
-        updates.forEach(update => user[update] = req.body[update])
-        await user.save()//hook pro midware será executado imediatamente antes de chamar .save()
-   
-        if(!user) 
-            res.status(404).send() 
-        else                              
-            res.status(202).send(user)   
+       // const user = await User.findById(_id)//findByIdAndUpdate(_id,req.body,{new: true})//retorna o user atualizado, em vez do antigo
+        updates.forEach(update => req.user[update] = req.body[update])
+        await req.user.save()//hook pro midware será executado imediatamente antes de chamar .save()                    
+        const msg = "usuário atualizado: " + req.user
+        res.status(202).send(msg)//como ja salvou. mostra o usuario atual(modificado/atualizado)
     }catch(e){
         res.status(500).send(e)
     }
 })
+
+
 
 router.post('/users/signin', async (req,res) => {
     //achar user pelas credenciais
@@ -75,7 +68,27 @@ router.post('/users/signin', async (req,res) => {
         res.status(404).send("" + e )//n sei pq, se passo só send(e), ele n printa nada
     }
 })
-
+//desloga um login parituclar: pc/cel etc...
+router.post('/users/logoutParticular', auth,async (req,res)=> {
+    try{                                                //token.token pq é um array d objeto
+        req.user.tokens =[ req.user.tokens.filter(token => token.token !== req.token)]
+        await req.user.save()
+        res.status(202).send()
+    }catch(e){
+        res.status(404).send()
+    } 
+})
+//deslogad o user de tds as paradas: fb, cel etc
+router.post('/users/logout', auth,async (req,res)=> {
+    try{                                                //token.token pq é um array d objeto
+        req.user.tokens = []
+        await req.user.save()
+        const msg = "user " + req.user.name + " deslogado com sucesso. "
+        res.status(202).send(msg)
+    }catch(e){
+        res.status(404).send()
+    } 
+})
 router.post('/users/login', async (req,res) => {
     //achar user pelas credenciais
     //retornará um token de autenticacao

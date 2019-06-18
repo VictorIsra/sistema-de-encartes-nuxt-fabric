@@ -49,6 +49,16 @@ userSchema.methods.generateAuthToken = async function(){
     await user.save()//salvar as alteracoes no bd
     return token
 }
+//em vez de definir getPulicProfile, vou far um override no metodo toJSON, pois esse metodo semp é chamado e afetara td xD
+userSchema.methods.toJSON = function(){ //..methods.getPublicProfile
+    const user = this
+    const userObject = user.toObject()//converte do formato doido do mongo pra um objeto
+    delete  userObject.password
+    delete userObject.tokens
+    delete userObject.email
+
+    return userObject
+}
 //metodos a lvl de model
 userSchema.statics.findByCredentials = async function(email,password){//td q é . static sao f minhas q posso executar a nivel de model
 
