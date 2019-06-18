@@ -32,13 +32,21 @@ const userSchema = new mongoose.Schema({
             if(!validator.isLength(value,{min: 6}) || validator.matches(value,/password/i))
                 throw new Error("senha precisa ter 6 digitos")
         }
-    }
+    },
+    tokens: [{//array d objetos, onde cada objeto é um token, que é uma string
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 })
 //metodos a lvl de instancia
 userSchema.methods.generateAuthToken = async function(){
     const user = this//só por questao semantica
     const secret = 'lobodomar'  //tostring pq repare q no bd o _id é um objectId, mas quero le-la como string
     const token = jwt.sign({_id: user._id.toString()},secret)
+    user.tokens = user.tokens.concat({token:token})//concatenar um novo item
+    await user.save()//salvar as alteracoes no bd
     return token
 }
 //metodos a lvl de model

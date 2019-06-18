@@ -1,16 +1,12 @@
 const express = require('express')
 const User = require('../models/user')
+const auth = require('../middleware/auth')//p user um midware em uma rota especifica/particular
+//basta eu passar o midware como segundo argumento xD
 //n preciso do router.use express json pq ja o fiz no index.js
 const router = new express.Router()
 
-router.get('/users',async(req,res) => {
-    
-    try{
-        const users = await User.find({}, '_id name')
-        res.status(202).send(users)
-    }catch(e){
-        res.status(404).send(e)
-    }
+router.get('/users/me',auth,async(req,res) => {
+    res.send(req.user)//req.user foi passado pela funcao auth qd o user foi autenticado xD
 })
 router.get('/users/:id', async (req,res) => {
     
@@ -62,17 +58,22 @@ router.patch('/users/:id', async (req,res) => {
         res.status(500).send(e)
     }
 })
-router.post('/users', async (req, res, next) => {
-    
-    const user = new User(req.body)
-    
+
+router.post('/users/signin', async (req,res) => {
+    //achar user pelas credenciais
+    //retornará um token de autenticacao
+    const new_user = new User(req.body)
+
     try{
-        await user.save()
-        res.send(user)
-     }
-    catch(e){
-        res.status(404).send(e)
-    }      
+        await new_user.save()
+     //   if(new_user){//n precisa pois a operacao assima retorna uma promise
+            //const user = await User.findByCredentials(req.body.email, req.body.password)//f q eu irei definir
+        const token = await new_user.generateAuthToken()//criarei esse metodo a lvl de instancia
+        res.status(202).send({new_user,token})
+       
+    }catch(e){
+        res.status(404).send("" + e )//n sei pq, se passo só send(e), ele n printa nada
+    }
 })
 
 router.post('/users/login', async (req,res) => {
@@ -81,7 +82,7 @@ router.post('/users/login', async (req,res) => {
     try{
         const user = await User.findByCredentials(req.body.email, req.body.password)//f q eu irei definir
         const token = await user.generateAuthToken()//criarei esse metodo a lvl de instancia
-        res.status(202).send(token)
+        res.status(202).send({user,token})
     }catch(e){
         res.status(404).send("" + e )//n sei pq, se passo só send(e), ele n printa nada
     }
