@@ -1,23 +1,15 @@
 const express = require('express')
 require('./src/db/mongoose')//garante que vai conectar ao bd
-const User = require('./src/models/user')
+const userRoute = require('./src/routes/user')
+
 const app = express()
 
 app.use(express.json())//parsea automaticamente os json pra objeto, dai posso acessar no body
-
-app.post('/users', (req, res, next) => {
-  console.log("opa ", req.body)
-  const user = new User(req.body)
-  user.save().then( () =>
-    res.send(user)
-  ).catch((e) =>  res.status(400).send(e))
-   
-})
-
+app.use(userRoute)
 
 
 // export the server middleware
-module.exports = {
+module.exports = {//em vez de escutar uma porta, exporto isso pro nuxt.config que ele irá 'escutar'
   path: '/backend',
   handler: app
 }

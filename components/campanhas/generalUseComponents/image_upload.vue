@@ -86,7 +86,7 @@ export default {
 				fr.addEventListener('load', () => {
 					this.imageUrl = fr.result
 					this.imageFile = files[0] // arquivo da img que posso mandar pro server/bd/back-end...
-                    console.log("ARQ Q SALVO NO BD: ", this.imageFile)
+                    console.log("ARQ Q SALVO NO BD: ", this.imageFile, " tipo ", typeof(this.imageFile))
                     this.$emit('imgUploaded',{
                         file: this.imageFile,
                         name: this.imageName,

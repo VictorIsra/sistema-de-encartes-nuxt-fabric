@@ -27,7 +27,8 @@ const User =  mongoose.model('User',{
         }
     },
     userType: {
-        type: String//admin(root/god),diretor,clientes
+        type: String,//admin(root/god),diretor,clientes,
+        require: true
     }
 })
 
