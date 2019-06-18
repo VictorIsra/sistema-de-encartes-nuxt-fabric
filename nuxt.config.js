@@ -50,13 +50,13 @@ module.exports = {
   ** Nuxt.js modules
   */
   modules: [
-  '@nuxtjs/axios',
-  '@nuxtjs/auth'
+  // '@nuxtjs/axios', AINDA N
+  // '@nuxtjs/auth'
   ],
 
-  auth: {
-  // Options
-  },
+  // auth: {
+  // // Options AINDA N
+  // },
 
   //SERVER SIDE CONFIG:::: XD
   serverMiddleware: ['~/backend/index.js'],

@@ -41,7 +41,7 @@ router.delete('/users/:id',async (req,res)=>{
 })
 router.patch('/users/:id', async (req,res) => {
     
-    const allowedUpdates = [ "name","password"]
+    const allowedUpdates = [ "name","password","userType"]
     const _id = req.params.id
     const updates = Object.keys(req.body)
     const filtro = updates.every(field => allowedUpdates.includes(field))
@@ -50,11 +50,14 @@ router.patch('/users/:id', async (req,res) => {
         res.status(404).send("invalid updates...")
     
     try{ 
-        const new_user = await User.findByIdAndUpdate(_id,req.body,{new: true})//retorna o user atualizado, em vez do antigo
-        if(!new_user) 
+        const user = await User.findById(_id)//findByIdAndUpdate(_id,req.body,{new: true})//retorna o user atualizado, em vez do antigo
+        updates.forEach(update => user[update] = req.body[update])
+        await user.save()//hook pro midware será executado imediatamente antes de chamar .save()
+   
+        if(!user) 
             res.status(404).send() 
         else                              
-            res.status(202).send(new_user)   
+            res.status(202).send(user)   
     }catch(e){
         res.status(500).send(e)
     }
@@ -65,10 +68,10 @@ router.post('/users', async (req, res, next) => {
     
     try{
         await user.save()
-       res.send(req.body)
+       res.send(user)
      }
     catch(e){
-        res.statu(404).send(e)
+        res.status(404).send(e)
     }      
 })
 
