@@ -5,6 +5,6 @@ export function setAuthToken (token) {//bota o token no header das requisicoes
   axios.defaults.headers.common['x-access-token'] = token
 }
 export function resetAuthToken () {
-  console.log("vagabundo resetou")
+//  console.log("vagabundo resetou")
   delete axios.defaults.headers.common['x-access-token']//limpa o header ( delelta)
 }

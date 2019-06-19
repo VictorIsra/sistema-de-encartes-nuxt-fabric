@@ -85,7 +85,8 @@ router.post('/users/logoutParticular', auth,async (req,res)=> {
 })
 //deslogad o user de tds as paradas: fb, cel etc
 router.post('/users/logout', auth,async (req,res)=> {
-    try{                                                //token.token pq é um array d objeto
+    try{ 
+        console.log("ENTRO ROTA LOGOUT")                                               //token.token pq é um array d objeto
         req.user.tokens = []
         await req.user.save()
         const msg = "user " + req.user.name + " deslogado com sucesso. "

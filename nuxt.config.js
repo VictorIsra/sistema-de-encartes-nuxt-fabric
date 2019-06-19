@@ -44,7 +44,7 @@ module.exports = {
   */
   plugins: [
     '@/plugins/vuetify',
-    '~/api/init.js'
+    '~/api/init.js',
   ],
 
   /*

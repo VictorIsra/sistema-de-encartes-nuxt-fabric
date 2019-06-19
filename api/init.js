@@ -10,6 +10,6 @@ if(token){
     setAuthToken(token)
 }    
 else{
-    console.log("resetou")
+    console.log("resetou auth token init.js ou ele nao foi setado ainda xd")
     resetAuthToken()   
 }     

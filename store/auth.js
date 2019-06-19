@@ -20,6 +20,7 @@ export const state = () => ({
   
   export const actions = {
     fetch ({commit}) {
+      console.log("me chamaram")
       return api.auth.me()
         .then(response => {
           console.log("RESPOSTAS ANTES DO COMMIT: response.data: " , response.data ,
@@ -49,11 +50,13 @@ export const state = () => ({
 
         
     },
-    reset ({commit}) {
-      console.log("toma no cu, resetei")
-      commit('reset_user')
-      resetAuthToken()//limpo o token dos headers
-      cookies.remove('x-access-token')//delete o cookie com o token
-      return Promise.resolve()
+    logout ({commit},data) {
+      return api.auth.logout(data)
+      .then(response => {
+        console.log("toma no cu, resetei")
+        commit('reset_user')
+        resetAuthToken()//limpo o token dos headers
+        cookies.remove('x-access-token')//delete o cookie com o token
+      }).catch(e => console.log("logout falhou: ", e))
     }
   }

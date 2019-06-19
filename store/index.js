@@ -9,12 +9,10 @@ export const actions = {
         setAuthToken(cookies['x-access-token'])
         dispatch('auth/fetch')
           .then(result => {
-              console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
             resolve(true)
           })
           .catch(error => {
-              console.log("bbbbbbbbbbbbbbbbbbbb")
-            console.log('Provided token is invalid:', error)                       
+            console.log("token invalido", error)                       
             resetAuthToken()
             resolve(false)
           })
