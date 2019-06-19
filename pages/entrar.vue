@@ -6,12 +6,21 @@
   >
     <v-card class="login-card elevation-12">
       <v-toolbar dark color="primary">
-        <v-toolbar-title>Acessar sistema</v-toolbar-title>
+  
+        <v-toolbar-title >Acesso ao sistema</v-toolbar-title>
       </v-toolbar>
       <v-card-text>
         <v-form>
-          <v-text-field prepend-icon="person" v-model="user" label="Usuário" type="text"></v-text-field>
-          <v-text-field prepend-icon="lock" v-model="senha" label="Senha" id="password" type="password"></v-text-field>
+           <v-alert
+            :value="erroStatus"
+            type="error"
+          > usuário ou senha inválidos </v-alert>
+          <v-text-field  prepend-icon="person" v-model="user" label="Usuário" type="text"></v-text-field>
+          <v-text-field  :append-icon="showPws ? 'visibility' : 'visibility_off'"
+                         prepend-icon="lock" v-model="senha" label="Senha"
+                         @click:append="showPws = ! showPws"
+                         :type="showPws ? 'text' : 'password'"
+                         id="password"></v-text-field>
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -35,22 +44,27 @@ export default {
   },
   data: () => ({
     user:'',
-    senha:''
+    senha:'',
+    erroStatus: false,
+    showPws: false,
   }),
   methods: {
     doLogin(){
-      //this.$router.push('/')
         this.$store.dispatch('auth/login', {
-         email: this.user,
+         user: this.user,
           password: this.senha
         }).then(result => {
-          // this.alert = {type: 'success', message: result.data.message}
-          // this.loading = false
-          this.$router.push('/')
+          if(!result)//se result for undefined
+            throw new Error()//vai pro catch, importantissimo se nao ele iria redirecionar anyway
+          console.log("resultadO : ", result.data)//aqui que retorna bags maneiros!!, o result em si é perigoso, retorna senha em plaintext e tal
+          this.$router.push('/admin')
         }).catch(error => {
         //this.loading = false
-        console.log(error)
+        this.erroStatus = true
       })
+    },
+    logInRules(){
+      
     }
   }
 }

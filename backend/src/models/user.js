@@ -46,7 +46,9 @@ userSchema.methods.generateAuthToken = async function(){
     const secret = 'lobodomar'  //tostring pq repare q no bd o _id é um objectId, mas quero le-la como string
     const token = jwt.sign({_id: user._id.toString()},secret)
     user.tokens = user.tokens.concat({token:token})//concatenar um novo item
+  //  console.log("achou token e user associado")
     await user.save()//salvar as alteracoes no bd
+    //console.log("salvo token: ", user._id)
     return token
 }
 //em vez de definir getPulicProfile, vou far um override no metodo toJSON, pois esse metodo semp é chamado e afetara td xD
@@ -60,17 +62,21 @@ userSchema.methods.toJSON = function(){ //..methods.getPublicProfile
     return userObject
 }
 //metodos a lvl de model
-userSchema.statics.findByCredentials = async function(email,password){//td q é . static sao f minhas q posso executar a nivel de model
+userSchema.statics.findByCredentials = async function(name,password){//td q é . static sao f minhas q posso executar a nivel de model
+    console.log("procurando user pelo nome: ", name , " senha ", password)    
 
-    const user = await User.findOne({email:email})
+    const user = await User.findOne({name})
 
     if(!user){
+        console.log(" n acho user ")
         throw new Error('o login nao pode ser feito.')
     }    
     const isMatch = await bcrypt.compare(password,user.password)
 
-    if(!isMatch)
+    if(!isMatch){
+        console.log("senha n bateu")
         throw new Error('o login nao pode ser feito. ')
+    }    
     return user
 }
 //executar midwarees antes de salvar, por ex

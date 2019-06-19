@@ -7,7 +7,12 @@ const router = new express.Router()
 
 
 router.get('/users/me',auth,async(req,res) => {
-    res.send(req.user)//req.user foi passado pela funcao auth qd o user foi autenticado xD
+    const user = { 
+        name:req.user.name,
+        _id: req.user._id,
+        userType: req.user.userType
+    }
+    res.send({user,token: req.token})//req.user foi passado pela funcao auth qd o user foi autenticado xD
 })
 // router.get('/users/:id', async (req,res) => { //n precisa mais
 //     const _id = req.params.id
@@ -93,12 +98,13 @@ router.post('/users/login', async (req,res) => {
     //achar user pelas credenciais
     //retornará um token de autenticacao
     try{
-        const user = await User.findByCredentials(req.body.email, req.body.password)//f q eu irei definir
+        const user = await User.findByCredentials(req.body.user, req.body.password)//f q eu irei definir
         const token = await user.generateAuthToken()//criarei esse metodo a lvl de instancia
+        console.log("ACHOA")
         res.status(202).send({user,token})
     }catch(e){
-        const msg = "Não foi possível efetuar o login" + e 
-        res.status(404).send(msg )//n sei pq, se passo só send(e), ele n printa nada
+        console.log("N ACHOU")
+        res.status(404).send(e)//n sei pq, se passo só send(e), ele n printa nada
     }
 })
 module.exports = router
