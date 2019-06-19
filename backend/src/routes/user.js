@@ -97,7 +97,8 @@ router.post('/users/login', async (req,res) => {
         const token = await user.generateAuthToken()//criarei esse metodo a lvl de instancia
         res.status(202).send({user,token})
     }catch(e){
-        res.status(404).send("" + e )//n sei pq, se passo só send(e), ele n printa nada
+        const msg = "Não foi possível efetuar o login" + e 
+        res.status(404).send(msg )//n sei pq, se passo só send(e), ele n printa nada
     }
 })
 module.exports = router
