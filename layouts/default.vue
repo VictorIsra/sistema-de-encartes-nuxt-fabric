@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer
+    <v-navigation-drawer 
       v-model="drawer"
       :mini-variant="miniVariant"
       :clipped="true"
@@ -9,7 +9,7 @@
       :mobile-break-point="600"
       class="box-shadow"
     >
-      <v-list >
+      <v-list>
         <v-tooltip :close-delay="0" :open-delay="0" v-for="(item, i) in items" :key="i" right>
           <template v-slot:activator="{ on }">
 
@@ -126,7 +126,7 @@ export default {
         {
           icon: 'fas fa-users-cog',
           title: 'Usuários',
-          to: '/usuarios'
+          to: '/admin'
         },
         {
           icon: 'fas fa-sign-out-alt',

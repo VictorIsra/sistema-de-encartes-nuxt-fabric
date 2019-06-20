@@ -1,26 +1,18 @@
-import cookie from 'cookie'
-import {setAuthToken, resetAuthToken} from '~/utils/auth'
-  
-export default function ({dispatch}, context) {
-  // return new Promise((resolve, reject) => {
-  //   console.log("aaaaddsads")
+export default function ({store, redirect, route}) {
 
-  //   const cookies = cookie.parse(context.req.headers.cookie || '')
-  //   if (cookies.hasOwnProperty('x-access-token')) {
-  //   setAuthToken(cookies['x-access-token'])
-  //   dispatch('auth/fetch')
-  //   .then(result => {
-  //     resolve(true)
-  //   })
-  //   .catch(error => {
-  //     console.log('waeaeaew', error)                       
-  //     resetAuthToken()
-  //     resolve(false)
-  //   })
-  //   } else {
-  //   console.log("aaaaddsads")
-  //   resetAuthToken()
-  //   resolve(false)
-  //   }
-  //   })
+ //route.fullPath retorna o path da pag: ex /entrar, /produtos etc...
+ //console.log(route.fullpath)
+  const userIsLoggedIn = !!store.state.auth.user
+  if(userIsLoggedIn)
+    console.log("tipo de user: ", store.state.auth.user.userType)
+    //lembre, pra dividir criterios com um OR logico, faco: (criterio)|(criterio) xD
+  const urlRequiresAuth = /(^\/campanhas(\/|$))|(^\/produtos(\/|$))|(^\/(\/|$))|(^\/tabloides(\/|$))|(^\/admin(\/|$))/i.test(route.fullPath)//restringe qq coisa que comece com '/campanhas/'
+  const urlRequiresNonAuth = /^\/login(\/|$)/.test(route.fullPath)
+  if (!userIsLoggedIn && urlRequiresAuth) {
+    return redirect('/login')
+  }
+  if (userIsLoggedIn && urlRequiresNonAuth) {//se o doidao tiver logado e ir pra uma pag q n requer autenticacao e comece com 'login',redirecione pra pagp rincipal
+    return redirect('/')
+  }
+  return Promise.resolve()
 }

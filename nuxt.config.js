@@ -57,9 +57,9 @@ module.exports = {
   // '@nuxtjs/auth'
   ],
 
-  // auth: {
-  // // Options AINDA N
-  // },
+  router: {
+    middleware: ['auth']
+  },
 
   //SERVER SIDE CONFIG:::: XD
   serverMiddleware: ['~/backend/index.js'],
