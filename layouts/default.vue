@@ -13,13 +13,13 @@
         <v-tooltip :close-delay="0" :open-delay="0" v-for="(item, i) in items" :key="i" right>
           <template v-slot:activator="{ on }">
 
-            <v-list-tile
+            <v-list-tile v-if="item.showMe"
               :class="{'auto-height': item.divider}"
               :to="item.to"
               v-on="(miniVariant == false) ? {} : on"
               router
               exact
-            >
+            > 
               <v-divider class="my-1 pa-0" v-if="item.divider"></v-divider>
               <v-list-tile-action>
                 <v-icon>{{ item.icon }}</v-icon>
@@ -31,10 +31,20 @@
           </template>
           <span>{{item.title}}</span>
         </v-tooltip>
+        <div class="text-xs-center">
+          <v-tooltip right>
+          <template v-slot:activator="{ on }">
+            <v-btn @click="logOut" icon v-on="on" >
+              <v-icon color="blue-grey darken-1">fas fa-sign-out-alt</v-icon>
+            </v-btn> 
+            </template>
+            <span>Sair/Logout</span>
+          </v-tooltip>
+        </div>  
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar v-if="$store.state.auth.show_lateral_menu"
+    <v-toolbar  v-if="$store.state.auth.show_lateral_menu"
       :clipped-left="true"
       fixed
       app
@@ -44,6 +54,7 @@
       :dark="color.dark"
       
     >
+   
         <v-btn
           icon
           @click.stop="changeVariant"
@@ -55,7 +66,7 @@
             <v-icon v-if="miniVariant == false && drawer == true">arrow_back</v-icon>
           </v-fade-transition>
         </v-btn>
-
+        
       <nuxt-link to="/">
         <v-toolbar-title class="white--text" v-text="title" />
       </nuxt-link>
@@ -67,6 +78,16 @@
       >
         <v-icon>menu</v-icon>
       </v-btn>
+
+       <v-tooltip bottom> 
+          <template v-slot:activator="{ on }">
+          <v-btn flat v-on="on" @click="logOut">
+            <span>Sair/Logout</span>
+            <v-icon right>exit_to_app</v-icon>
+          </v-btn>
+          </template>
+           <span>Sair/Logout</span>
+       </v-tooltip> 
     </v-toolbar>
 
     <v-content>
@@ -106,40 +127,42 @@ export default {
         {
           icon: 'apps',
           title: 'Início',
-          to: '/'
+          to: '/',
+          showMe: true
         },
         {divider: true},
         {
           icon: 'fa fa-bullhorn',
           title: 'Campanhas',
-          to: '/campanhas'
+          to: '/campanhas',
+          showMe: true
         },
         {
           icon: 'record_voice_over',
           title: 'Demandas',
-          to: '/demandas'
+          to: '/demandas',
+          showMe: true
         },
         {
           icon: 'fas fa-table',
           title: 'Tablóides',
-          to: '/tabloides'
+          to: '/tabloides',
+          showMe: true
         },
         {
           icon: 'fa fa-puzzle-piece',
           title: 'Produtos',
-          to: '/produtos'
+          to: '/produtos',
+          showMe: true
         },
         {divider: true},
         {
           icon: 'fas fa-users-cog',
           title: 'Usuários',
-          to: '/admin'
+          to: '/admin',
+          showMe: true
         },
-        {
-          icon: 'fas fa-sign-out-alt',
-          title: 'Sair',
-          to: '/sair'
-        },
+        
       ],
       miniVariant: true,
       right: true,
@@ -150,7 +173,9 @@ export default {
         dark: true
       }
     }
-  },
+  },/*<v-btn  icon>
+              <v-icon>fas fa-sign-out-alt</v-icon>
+            </v-btn>  */
   watch: {
     $route(to, from){
       this.miniVariant = true
@@ -181,6 +206,7 @@ export default {
   },
 
   methods: {
+    
     changeVariant(){
       if(window.innerWidth < 600){
         this.miniVariant = false
@@ -189,7 +215,16 @@ export default {
         this.miniVariant = !this.miniVariant
       }
     },
-
+    logOut () {
+      console.log("teste")
+      this.$store.dispatch('auth/logout').then(() => {
+        console.log("logout realizado")
+        this.$router.push('/login')
+      })
+    },
+    getUserType(){
+      //dependendo do tipo de usuario mostrará/escondera um item
+    },
     defineColor(path){
       console.log(path)
       if(path.includes('campanhas')){
