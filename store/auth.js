@@ -4,7 +4,9 @@ import {setAuthToken, resetAuthToken} from '~/utils/auth'//pode setar/deletar o 
 import cookies from 'js-cookie'//js-cookie lida com cookies no cliente side
 
 export const state = () => ({
-    user: null//vai guardar um objeto, que é meu user. nesse objeto terei o id,nome, tipo de user etc
+    user: null,//vai guardar um objeto, que é meu user. nesse objeto terei o id,nome, tipo de user etc
+    show_lateral_menu: true //só nas pag n existentes q quero q esse menu n apareça ( seja false)
+    //logo, no arquivo error.vue eu commito isso pra falso atraves de uma action, mas, em todo resto, será true ;D
   })
   
   export const mutations = {
@@ -13,10 +15,16 @@ export const state = () => ({
     },
     reset_user (store) {
       store.user = null
+    },
+    set_menu_status(store,status){
+      store.show_lateral_menu = status
     }
   }
   
   export const actions = {
+    show_menu({commit},status){
+      commit('set_menu_status',status)
+    },
     fetch ({commit}) {
       console.log("me chamaram")
       return api.auth.me()
@@ -48,6 +56,7 @@ export const state = () => ({
       return api.auth.logout(data)
       .then(response => {
         commit('reset_user')
+
         resetAuthToken()//limpo o token dos headers
         cookies.remove('x-access-token')//delete o cookie com o token
       }).catch(e => console.log("logout falhou: ", e))

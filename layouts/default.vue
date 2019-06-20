@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer 
+    <v-navigation-drawer v-if="$store.state.auth.show_lateral_menu"
       v-model="drawer"
       :mini-variant="miniVariant"
       :clipped="true"
@@ -34,7 +34,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar
+    <v-toolbar v-if="$store.state.auth.show_lateral_menu"
       :clipped-left="true"
       fixed
       app
@@ -95,11 +95,13 @@
 
 <script>
 export default {
+
   data() {
     return {
       clipped: false,
       drawer: true,
       fixed: false,
+      user: '',
       items: [
         {
           icon: 'apps',
@@ -111,6 +113,11 @@ export default {
           icon: 'fa fa-bullhorn',
           title: 'Campanhas',
           to: '/campanhas'
+        },
+        {
+          icon: 'record_voice_over',
+          title: 'Demandas',
+          to: '/demandas'
         },
         {
           icon: 'fas fa-table',
@@ -144,13 +151,24 @@ export default {
       }
     }
   },
-
   watch: {
     $route(to, from){
       this.miniVariant = true
+      
+     
+      
+      console.log("Olhando rota xD e status ", this.$store.state.auth.status)
 
+      if(this.$store.state.auth.user !== null)
+        console.log("tipo de user: ", this.$store.state.auth.user.userType)
+      else
+        console.log("Nul ainda")  
       this.defineColor(to.path)
-    }
+    },
+    '$store.state.auth.user': function(){
+        console.log("eeeita")
+    }            
+
   },
 
   created(){
@@ -159,7 +177,6 @@ export default {
     // }else{
     //   this.drawer = true
     // }
-
     this.defineColor(this.$route.path)
   },
 

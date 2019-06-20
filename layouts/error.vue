@@ -19,6 +19,7 @@ export default {
   },
     computed: {
         errorPage() {
+          this.$store.dispatch('auth/show_menu',false)
             return error404
     }   
   }

@@ -57,6 +57,8 @@ export default {
           if(!result)//se result for undefined
             throw new Error()//vai pro catch, importantissimo se nao ele iria redirecionar anyway
           console.log("resultadO : ", result.data)//aqui que retorna bags maneiros!!, o result em si é perigoso, retorna senha em plaintext e tal
+        // console.log("tipo de user ", $store.state.auth.user)
+          
           this.$router.push('/')
         }).catch(error => {
         //this.loading = false

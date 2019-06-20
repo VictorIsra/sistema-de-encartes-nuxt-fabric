@@ -10,10 +10,11 @@ export const actions = {
         setAuthToken(cookies['x-access-token'])
         dispatch('auth/fetch')
           .then(result => {
+
             resolve(true)
           })
           .catch(error => {
-            console.log('waeaeaew', error)                       
+            console.log('erro ao tentar auth/fetch no store: index.js ', error)                       
             resetAuthToken()
             resolve(false)
           })
