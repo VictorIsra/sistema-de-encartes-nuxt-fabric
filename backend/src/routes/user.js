@@ -14,18 +14,6 @@ router.get('/users/me',auth,async(req,res) => {
     }
     res.send({user,token: req.token})//req.user foi passado pela funcao auth qd o user foi autenticado xD
 })
-// router.get('/users/:id', async (req,res) => { //n precisa mais
-//     const _id = req.params.id
-//     try{
-//         const user = await User.findById(_id)
-//         if(!user)
-//             res.status(404).send()
-//         else
-//             res.status(202).send(user)
-//     }catch(e){
-//         res.status(500).send(e)
-//     } 
-// })
 router.delete('/users/me', auth, async (req,res)=>{
         
     try{
@@ -86,7 +74,7 @@ router.post('/users/logoutParticular', auth,async (req,res)=> {
 //deslogad o user de tds as paradas: fb, cel etc
 router.post('/users/logout', auth,async (req,res)=> {
     try{ 
-        console.log("ENTRO ROTA LOGOUT")                                               //token.token pq é um array d objeto
+      //  console.log("ENTRO ROTA LOGOUT")                                               //token.token pq é um array d objeto
         req.user.tokens = []
         await req.user.save()
         const msg = "user " + req.user.name + " deslogado com sucesso. "
@@ -101,10 +89,10 @@ router.post('/users/login', async (req,res) => {
     try{
         const user = await User.findByCredentials(req.body.user, req.body.password)//f q eu irei definir
         const token = await user.generateAuthToken()//criarei esse metodo a lvl de instancia
-        console.log("ACHOA")
+        //console.log("ACHOA")
         res.status(202).send({user,token})
     }catch(e){
-        console.log("N ACHOU")
+       // console.log("N ACHOU")
         res.status(404).send(e)//n sei pq, se passo só send(e), ele n printa nada
     }
 })

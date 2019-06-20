@@ -9,11 +9,9 @@ export const state = () => ({
   
   export const mutations = {
     set_user (store, data) {
-      console.log("SETANDO para: ", data)
       store.user = data
     },
     reset_user (store) {
-      console.log("RESETAND BADA")
       store.user = null
     }
   }
@@ -49,7 +47,6 @@ export const state = () => ({
     logout ({commit},data) {
       return api.auth.logout(data)
       .then(response => {
-        console.log("toma no cu, resetei")
         commit('reset_user')
         resetAuthToken()//limpo o token dos headers
         cookies.remove('x-access-token')//delete o cookie com o token

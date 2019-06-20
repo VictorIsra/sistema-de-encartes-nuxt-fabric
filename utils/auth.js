@@ -1,7 +1,6 @@
 import axios from 'axios'
 //fundamental pois precisarei ler o token em cada nova requisicao. Nesse arq eu o guardo ou o deleteo
 export function setAuthToken (token) {//bota o token no header das requisicoes
-  console.log("BOTEI PORRA DO HEADER COM TOKEN VALENDO: ", token)
   axios.defaults.headers.common['x-access-token'] = token
 }
 export function resetAuthToken () {

@@ -63,18 +63,18 @@ userSchema.methods.toJSON = function(){ //..methods.getPublicProfile
 }
 //metodos a lvl de model
 userSchema.statics.findByCredentials = async function(name,password){//td q é . static sao f minhas q posso executar a nivel de model
-    console.log("procurando user pelo nome: ", name , " senha ", password)    
+    //console.log("procurando user pelo nome: ", name , " senha ", password)    
 
     const user = await User.findOne({name})
 
     if(!user){
-        console.log(" n acho user ")
+       // console.log(" n acho user ")
         throw new Error('o login nao pode ser feito.')
     }    
     const isMatch = await bcrypt.compare(password,user.password)
 
     if(!isMatch){
-        console.log("senha n bateu")
+        //console.log("senha n bateu")
         throw new Error('o login nao pode ser feito. ')
     }    
     return user
