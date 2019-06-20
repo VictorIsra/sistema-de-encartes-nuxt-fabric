@@ -154,11 +154,11 @@ export default {
   },
 
   created(){
-    if(window.innerWidth < 600){
-      this.drawer = false
-    }else{
-      this.drawer = true
-    }
+    // if(window.innerWidth < 600){
+    //   this.drawer = false
+    // }else{
+    //   this.drawer = true
+    // }
 
     this.defineColor(this.$route.path)
   },

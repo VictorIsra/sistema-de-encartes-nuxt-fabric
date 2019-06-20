@@ -2,7 +2,7 @@ const pkg = require('./package')
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 module.exports = {
-  mode: 'spa',
+  mode: 'universal',
 
   /*
   ** Headers of the page
@@ -26,7 +26,9 @@ module.exports = {
       }
     ]
   },
-
+  // router: {//esquece por hr, mas é uma solucao
+  //   middleware: ['auth']
+  // },
   /*
   ** Customize the progress-bar color
   */

@@ -23,8 +23,7 @@ export const state = () => ({
       console.log("me chamaram")
       return api.auth.me()
         .then(response => {
-          console.log("RESPOSTAS ANTES DO COMMIT: response.data: " , response.data ,
-          " response.data.result: " , response.data.result, " response: ", response)
+          
           commit('set_user', response.data.user)
 
 
@@ -32,7 +31,6 @@ export const state = () => ({
           return response
         })
         .catch(error => {
-          console.log("acho algum erro e resetou o.o")
           commit('reset_user')
           return error
         })
@@ -41,8 +39,6 @@ export const state = () => ({
       return api.auth.login(data)
         .then(response => {
           commit('set_user', response.data.user)//seto a variavel de state 'user' como o objeto resposta
-          console.log("res do logi ", response.data.user)
-          console.log("tipo de resposta no login: ", typeof(response.data.user))
           setAuthToken(response.data.token)//coloco o token no header de todas as req
           cookies.set('x-access-token',response.data.token)//guardo o token num cookie do lado do cliente
           return response
