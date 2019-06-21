@@ -12,7 +12,7 @@
       <v-list>
         <v-tooltip :close-delay="0" :open-delay="0" v-for="(item, i) in items" :key="i" right>
           <template v-slot:activator="{ on }">
-
+            
             <v-list-tile v-if="item.showMe"
               :class="{'auto-height': item.divider}"
               :to="item.to"
@@ -54,7 +54,6 @@
       :dark="color.dark"
       
     >
-   
         <v-btn
           icon
           @click.stop="changeVariant"
@@ -70,6 +69,7 @@
       <nuxt-link to="/">
         <v-toolbar-title class="white--text" v-text="title" />
       </nuxt-link>
+      
       <v-spacer />
       <v-btn
         icon
@@ -78,16 +78,12 @@
       >
         <v-icon>menu</v-icon>
       </v-btn>
-
-       <v-tooltip bottom> 
-          <template v-slot:activator="{ on }">
-          <v-btn flat v-on="on" @click="logOut">
-            <span>Sair/Logout</span>
-            <v-icon right>exit_to_app</v-icon>
-          </v-btn>
-          </template>
-           <span>Sair/Logout</span>
-       </v-tooltip> 
+        <v-container fill-height>
+          <v-flex class="text-xs-center">
+            <v-btn flat>Bem vindo {{userName}}, tenha um ótimo de dia de trabalho!</v-btn>
+          </v-flex>  
+        </v-container>
+      <user-profile/>
     </v-toolbar>
 
     <v-content>
@@ -111,18 +107,24 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
+    
   </v-app>
 </template>
 
 <script>
+import userProfile from '../components/perfil/user'
 export default {
-
+  
+  components: {
+    'user-profile':userProfile
+  },
   data() {
     return {
       clipped: false,
       drawer: true,
       fixed: false,
       user: '',
+      userName: '',
       items: [
         {
           icon: 'apps',
@@ -194,7 +196,7 @@ export default {
     this.defineColor(this.$route.path)
   },
   mounted(){
-    console.log("Monteii")
+    this.userName = this.$store.state.auth.user.name
     this.getUserType()
   },
   methods: {
