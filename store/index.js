@@ -10,7 +10,8 @@ export const actions = {
         setAuthToken(cookies['x-access-token'])
         dispatch('auth/fetch')
           .then(result => {
-
+            //garantir q sempre vou poder acessar o tipo de user em default.vue pra saber quais menus mostrar/esconder
+            dispatch('auth/set_user_type', result.data.user.userType)
             resolve(true)
           })
           .catch(error => {

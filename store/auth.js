@@ -5,7 +5,8 @@ import cookies from 'js-cookie'//js-cookie lida com cookies no cliente side
 
 export const state = () => ({
     user: null,//vai guardar um objeto, que é meu user. nesse objeto terei o id,nome, tipo de user etc
-    show_lateral_menu: true //só nas pag n existentes q quero q esse menu n apareça ( seja false)
+    show_lateral_menu: true, //só nas pag n existentes q quero q esse menu n apareça ( seja false)
+    userType: ''//vai vim de 'user', mas achei mais facil referenciar por aki msm
     //logo, no arquivo error.vue eu commito isso pra falso atraves de uma action, mas, em todo resto, será true ;D
   })
   
@@ -18,12 +19,19 @@ export const state = () => ({
     },
     set_menu_status(store,status){
       store.show_lateral_menu = status
+    },
+    set_user_type(store,tipo){
+      store.userType = tipo
     }
   }
   
   export const actions = {
     show_menu({commit},status){
       commit('set_menu_status',status)
+    },
+    set_user_type({commit},userType){
+      console.log("comite user de tipo: ", userType)
+      commit('set_user_type',userType)
     },
     fetch ({commit}) {
       console.log("me chamaram")

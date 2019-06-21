@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
+        unique: true,
         trim: true
     },
     email: {//como mudei o unique dps, preciso dropar o bd p faze funcionar
@@ -26,7 +27,7 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        require: true,
+        required: true,
         trim: true,
         validate(value){
             if(!validator.isLength(value,{min: 6}) || validator.matches(value,/password/i))
@@ -46,7 +47,7 @@ userSchema.methods.generateAuthToken = async function(){
     const secret = 'lobodomar'  //tostring pq repare q no bd o _id é um objectId, mas quero le-la como string
     const token = jwt.sign({_id: user._id.toString()},secret)
     user.tokens = user.tokens.concat({token:token})//concatenar um novo item
-  //  console.log("achou token e user associado")
+   // console.log("achou token e user associado ", token)
     await user.save()//salvar as alteracoes no bd
     //console.log("salvo token: ", user._id)
     return token

@@ -144,13 +144,13 @@ export default {
           showMe: true
         },
         {
-          icon: 'fas fa-table',
+          icon: 'fa-table',//Analisar campanhas fas fa-table
           title: 'Tablóides',
           to: '/tabloides',
           showMe: true
         },
         {
-          icon: 'fa fa-puzzle-piece',
+          icon: 'shopping_cart',
           title: 'Produtos',
           to: '/produtos',
           showMe: true
@@ -160,6 +160,12 @@ export default {
           icon: 'fas fa-users-cog',
           title: 'Usuários',
           to: '/admin',
+          showMe: true
+        },
+         {
+          icon: 'gavel',
+          title: 'Analisar campanhas',
+          to: '/analise',
           showMe: true
         },
         
@@ -179,32 +185,18 @@ export default {
   watch: {
     $route(to, from){
       this.miniVariant = true
-      
-     
-      
-      console.log("Olhando rota xD e status ", this.$store.state.auth.status)
-
-      if(this.$store.state.auth.user !== null)
-        console.log("tipo de user: ", this.$store.state.auth.user.userType)
-      else
-        console.log("Nul ainda")  
       this.defineColor(to.path)
-    },
-    '$store.state.auth.user': function(){
-        console.log("eeeita")
-    }            
-
+    }
+    
   },
 
   created(){
-    // if(window.innerWidth < 600){
-    //   this.drawer = false
-    // }else{
-    //   this.drawer = true
-    // }
     this.defineColor(this.$route.path)
   },
-
+  mounted(){
+    console.log("Monteii")
+    this.getUserType()
+  },
   methods: {
     
     changeVariant(){
@@ -224,6 +216,47 @@ export default {
     },
     getUserType(){
       //dependendo do tipo de usuario mostrará/escondera um item
+      console.log("tipo de user: ", this.$store.state.auth.userType, " <--")
+      this.user = this.$store.state.auth.userType
+      this.items.forEach(it => {
+        if(it.title){//pois  divider e afins sao aprte da lista, mas só to itneressado nos itens, e otdo item tem um title
+          if(this.user === 'client'){
+            if( it.title === 'Início')
+              it.showMe = true
+            else if( it.title === 'Demandas')
+              it.showMe = true
+            else
+              it.showMe = false
+          }
+          else if(this.user === 'diretor'){
+            if( it.title === 'Início')
+              it.showMe = true
+            else if( it.title === 'Demandas')
+              it.showMe = true
+            else if( it.title === 'Produtos')
+              it.showMe = true
+            else if(it.title == 'Analisar campanhas')    
+              it.showMe = true
+            else
+              it.showMe = false 
+          }
+          else if(this.user === 'tabloide'){
+            if( it.title === 'Início')
+              it.showMe = true
+            else if( it.title === 'Demandas')
+              it.showMe = true
+            else if( it.title === 'Produtos')
+              it.showMe = true
+            else if(it.title === 'Tablóides')    
+              it.showMe = true
+            else if(it.title === 'Campanhas')
+              it.showMe = true  
+            else
+              it.showMe = false 
+          }
+          //user admin é deus e pode tudo
+        }
+      })
     },
     defineColor(path){
       console.log(path)

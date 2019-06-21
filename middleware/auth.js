@@ -7,7 +7,7 @@ export default function ({store, redirect, route}) {
    // console.log("tipo de user: ", store.state.auth.user.userType)
     //lembre, pra dividir criterios com um OR logico, faco: (criterio)|(criterio) xD
     //qq pagina que comece com essas palavras ( ou subpagina delas) serão restritras a users cadastrados
-  const urlRequiresAuth = /(^\/campanhas(\/|$))|(^\/produtos(\/|$))|(^\/(\/|$))|(^\/tabloides(\/|$))|(^\/admin(\/|$))/i.test(route.fullPath)//restringe qq coisa que comece com '/campanhas/'
+  const urlRequiresAuth = /(^\/campanhas(\/|$))|(^\/produtos(\/|$))|(^\/(\/|$))|(^\/tabloides(\/|$))|(^\/admin(\/|$))|(^\/analise(\/|$))|(^\/users(\/|$))/i.test(route.fullPath)//restringe qq coisa que comece com '/campanhas/'
   const urlRequiresNonAuth = /^\/login(\/|$)/.test(route.fullPath)
   if (!userIsLoggedIn && urlRequiresAuth) {
     return redirect('/login')
