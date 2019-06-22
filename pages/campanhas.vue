@@ -25,10 +25,16 @@
         </v-fade-transition>
         <v-fade-transition hide-on-leave>
           <nuxt-link v-if="!isMain" to="/campanhas">
-            <v-btn>
-              <v-icon class="mr-2">fas fa-angle-left</v-icon>
-              <span>Voltar</span>
-            </v-btn>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn v-on="on" round class="blue-grey lighten-5"
+                @click="$store.dispatch('campanhas/reset_campanha')">
+                <v-icon class="mr-2" color="red">cancel</v-icon>
+                <span class="red--text">Abandonar campanha</span>
+              </v-btn>
+            </template>
+            <span>Clique aqui se desistiu dessa campanha e deseja criar outra.</span>
+          </v-tooltip>
           </nuxt-link>
         </v-fade-transition>
         

@@ -25,31 +25,12 @@
           <v-card-text v-model.lazy="valid" ref="editedItem"> <!-- informacoes de adicionar e deletar (é um form)-->
             <v-container grid-list-md >
               <v-layout wrap>
-                 <v-flex xs12>
-                 <img-upload @blur="editUserInputs(false)" :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
-                </v-flex>
-                 <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.nome"
-                                @blur="editUserInputs(false)"
-                                v-model.trim="editedItem.nome"
-                                :rules="[nomeRule]" 
-                                label="Produto">
-                  </v-text-field>
-                </v-flex>
+                 
+               
             
-                <v-flex xs12 sm6>
-                  <v-text-field  ref="editedItem.preco_c"
-                                 min="1" step="any"
-                                 @blur="editUserInputs(false)"
-                                 v-model.trim="editedItem.preco_c" 
-                                 :rules="[preco_cRule]" 
-                                 label="Preço de compra"
-                                 prefix="R$"
-                                 >
-                  </v-text-field>
-                </v-flex>
-                <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.preco_v"
+              
+                 <v-flex xs12 sm6>
+                  <v-text-field ref="editedItem.preco_v_c1"
                                 @blur="editUserInputs(false)"
                                 v-model.trim="editedItem.preco_v" 
                                 min="1" step="any"
@@ -59,7 +40,7 @@
                   </v-text-field>
                 </v-flex>
                  <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.preco_v"
+                  <v-text-field ref="editedItem.preco_v_c2"
                                 @blur="editUserInputs(false)"
                                 v-model.trim="editedItem.preco_v" 
                                 min="1" step="any"
@@ -69,7 +50,7 @@
                   </v-text-field>
                 </v-flex>
                  <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.preco_v"
+                  <v-text-field ref="editedItem.preco_v_c3"
                                 @blur="editUserInputs(false)"
                                 v-model.trim="editedItem.preco_v" 
                                 min="1" step="any"
@@ -78,25 +59,6 @@
                                 label="Preço de venda">
                   </v-text-field>
                 </v-flex>
-                 <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.preco_v"
-                                @blur="editUserInputs(false)"
-                                v-model.trim="editedItem.preco_v" 
-                                min="1" step="any"
-                                :rules="[preco_vRule]" 
-                                prefix="R$"
-                                label="Preço de venda">
-                  </v-text-field>
-                </v-flex>
-                <v-flex >
-                  <v-text-field ref="editedItem.marluc" justify-center 
-                                v-model.trim="editedItem.marluc" 
-                                :rules="[marlucRule]"
-                                 @blur="editUserInputs(false)"
-                                suffix="%"
-                                label="Margem de lucro"></v-text-field>
-                </v-flex>
-                
               </v-layout>
             </v-container>
             <v-card-actions>

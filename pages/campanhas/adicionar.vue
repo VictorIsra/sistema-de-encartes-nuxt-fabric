@@ -137,16 +137,17 @@
       },
       filterProdutos(produtos){
         const filtered = []//vetor com os produtos da etapa 2 filtrados
-
-        produtos.forEach(p => {
-          filtered.push({
-            img: p.img,
-            nome: p.nome,
-            preco_c: p.preco_c,
-            preco_v: p.preco_v,
-            marluc: p.marluc
+        if(produtos !== ''){//se n dá erro. mas só ocorre isso se o doidao n escolher nenhum prpduto, mas enfim. dps penso se restringo isso ou n
+          produtos.forEach(p => {
+            filtered.push({
+              img: p.img,
+              nome: p.nome,
+              preco_c: p.preco_c,
+              preco_v: p.preco_v,
+              marluc: p.marluc
+            })
           })
-        })
+        }  
         //salva no store os produtos filtrados para pré propularem colunas da etapa3
         this.$store.dispatch('campanhas/set_filtered_produtos',filtered)
       }
