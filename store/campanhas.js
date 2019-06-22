@@ -14,8 +14,9 @@ export const mutations = {
         console.log("comitei produtos: ", produtos)
         store.produtos = produtos
     },
-    filter_produtos(store,produtos){//pega só os itens referentes aos produtos que sao relevantes pra etapa3
-        produtos.forEach(p => console.log(p))
+    set_filtered_produtos(store,filteredProdutos){//pega só os itens referentes aos produtos que sao relevantes pra etapa3
+        store.filtered_protudos = filteredProdutos
+        console.log("filtrados (camapnhas.js ): ", filteredProdutos)
     }
 }
 export const actions = {
@@ -24,6 +25,8 @@ export const actions = {
     },
     set_produtos({commit},inputs){
         commit('set_produtos',inputs)
+    },
+    set_filtered_produtos({commit},filteredProdutos){
+        commit('set_filtered_produtos',filteredProdutos)
     }
-
 }

@@ -248,7 +248,10 @@
       getFilteredProdutos: {
         handler(){
             console.log("mudei xddd e chamei oq quero")
-            this.$emit('resetFlag')//aviso ao pai pra ele resetar a flag d getFilteredProdutos, pro watch sempre funfar
+            //$store.state.auth.show_lateral_menu
+            this.itens = this.$store.state.campanhas.filtered_protudos
+            console.log("alimentei a table, checando os input dela: ",this.itens)
+            //n preciso resetar a flag (getFilteredProdutos) apos esse handler executar, pois qd clico em 'prox' da etapa 2 pra etapa 3, flag= !flag, e como flag = 0 nesse componente incialmente, isso sempre funfará
         }
       }
     },

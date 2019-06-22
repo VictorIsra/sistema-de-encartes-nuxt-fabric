@@ -43,8 +43,8 @@
         <div class="text-xs-right">
           <v-btn
             color="primary"
-            @click="sendPartialProdutosInput"
-          >
+            @click="sendFilteredProdutosInput"
+          ><!-- etapa 3 recebera só os inputs filtrados da etapa 2 ( inputs de interesses) -->
             Próximo
           </v-btn>
         </div>  
@@ -125,14 +125,30 @@
       saveFormInputs(){
         //let inputs = Object.values(this.form_inputs)
         this.e1 = 2
-        this.$store.dispatch('campanhas/set_form_inputs',this.form_inputs)
-        console.log("inputs: ", this.$store.state.campanhas.formInputs)
+        this.$store.dispatch('campanhas/set_form_inputs',this.form_inputs)//alimenta o store com os inputs da etapa 1 das campanhas
       },
-      sendPartialProdutosInput(){//envia pra etapa 3 os inputs referentes aos produtos, mas só os q serao usados de fato na etapa 3
+      sendFilteredProdutosInput(){//envia pra etapa 3 os inputs referentes aos produtos, mas só os q serao usados de fato na etapa 3
         this.e1 = 3
-        console.log("inputs completo ", this.$store.state.campanhas.produtos[0])
+        const produtos = this.$store.state.campanhas.produtos
+        this.filterProdutos(produtos)
+        //so mandarei o flag qd a f acima terminar d executar,pra ter consistencia os dados
         this.getFilteredProdutos = !this.getFilteredProdutos
-        console.log("Muedei valor do get bllab ", this.getFilteredProdutos)
+
+      },
+      filterProdutos(produtos){
+        const filtered = []//vetor com os produtos da etapa 2 filtrados
+
+        produtos.forEach(p => {
+          filtered.push({
+            img: p.img,
+            nome: p.nome,
+            preco_c: p.preco_c,
+            preco_v: p.preco_v,
+            marluc: p.marluc
+          })
+        })
+        //salva no store os produtos filtrados para pré propularem colunas da etapa3
+        this.$store.dispatch('campanhas/set_filtered_produtos',filtered)
       }
     }
   }
