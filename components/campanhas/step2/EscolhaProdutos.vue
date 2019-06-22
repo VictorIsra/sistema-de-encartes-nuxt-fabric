@@ -3,6 +3,7 @@
 <template>
   <div>
     <v-toolbar flat color="white">
+      <v-btn @click="debug" color="success">ver items tabela</v-btn>
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -315,7 +316,11 @@
             this.editUserInputs()
             this.fillImgInfo(0)
         }
+        this.saveProdutos()
         this.close()      
+      },
+      saveProdutos(){
+        this.$store.dispatch('campanhas/set_produtos',this.itens)//salva os valores da tabela globalmente
       },
       getDate(data){//pega as datas formatadas no componente filho 'datas.vue'
         //será chamado antes do método save, aqui, devo associar o valor do item editado com data
@@ -461,6 +466,9 @@
           this.editedItem.preco_v = 'R$ ' + this.editedItem.preco_v
           this.editedItem.marluc += '%'
         }
+      },
+      debug(){
+        console.log("ITEMS: ", this.itens)
       }
     }
   }

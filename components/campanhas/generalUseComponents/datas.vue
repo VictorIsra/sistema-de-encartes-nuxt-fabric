@@ -125,6 +125,9 @@
             this.dateFormatted_inicio = ''
             this.dateFormatted_termino = ''
           }
+          //sei q só precisava checar isso
+          this.checkDataRange.Pdata_i = this.$store.state.campanhas.formInputs.data_inicio
+          this.checkDataRange.Pdata_f = this.$store.state.campanhas.formInputs.data_termino
         }
       }
     },
@@ -181,6 +184,7 @@
           console.log("sou data rule e n checo range :)")
         else{//só no caso da data precisar estar entre um intervalo 
           if(v !== '' && this.defaultDatesValues.flag !== -1){
+            console.log("chamei f")
             var flag = this.getFlag(v)
             var status = this.dataRange(this.checkDataRange.Pdata_i,this.checkDataRange.Pdata_f,v,flag)
             return status || "a data precisa estar entre " + this.checkDataRange.Pdata_i

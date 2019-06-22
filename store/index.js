@@ -1,5 +1,6 @@
 import cookie from 'cookie'
 import {setAuthToken, resetAuthToken} from '~/utils/auth'
+export const strict = false//com isso, nao rola o erro de 'n mudar mutation without mutatiom handler e mimimi'
 
 export const actions = {
   nuxtServerInit ({dispatch}, context) {

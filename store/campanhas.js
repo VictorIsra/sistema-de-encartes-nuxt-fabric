@@ -8,8 +8,9 @@ export const mutations = {
         console.log("comitei form intpus: ", inputs)
         store.formInputs = inputs
     },
-    set_produtos(store,inputs){
-        store.produtos = inputs
+    set_produtos(store,produtos){
+        console.log("comitei produtos: ", produtos)
+        store.produtos = produtos
     }
 }
 export const actions = {
