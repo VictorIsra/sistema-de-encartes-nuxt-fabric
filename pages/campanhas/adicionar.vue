@@ -43,7 +43,7 @@
         <div class="text-xs-right">
           <v-btn
             color="primary"
-            @click="e1 = 3"
+            @click="sendPartialProdutosInput"
           >
             Próximo
           </v-btn>
@@ -51,11 +51,10 @@
       </v-stepper-content>
 
       <v-stepper-content step="3">
-        <v-card
-          class="mb-5"
-          color="grey lighten-1"
-          height="200px"
-        ></v-card>
+    
+         <v-container grid-list-xs>
+           <concorrencia :getFilteredProdutos="getFilteredProdutos"/>
+        </v-container>
           
         <div class="text-xs-right">
           <v-btn
@@ -95,19 +94,22 @@
   import formulario from '../../components/campanhas/step1/formulario.vue';
   //import da etapa 2 ( step2):
   import escolhaProdutos from '../../components/campanhas/step2/EscolhaProdutos.vue'
+  //impor etapa 3 ( step 3):
+  import concorrencia from '../../components/campanhas/step3/concorrencia.vue'
 
   export default {
 
     components: {
       formulario,
-      'escolha-produtos': escolhaProdutos
+      'escolha-produtos': escolhaProdutos,
+      concorrencia
     },
     data () {
       return {
         e1: 0,
         form_validated: false,//controla se o botao de 'proximo' ficará habilitado ou nao
         form_inputs: {},//componente filho (formulario.vue) irá preencher isso na hora correta
-      //  send_form_data: false //prop/flag para avisar ao componente filho ( formulario.vue) que ele pode retornar os inputs passados pelo user
+        getFilteredProdutos: false//avisa ao step 3 (componente filgo concorrencia.vue) q ele deve alimentar a tabela com os valores dos produtos da etapa 2 filtrados
       }
     },
     methods: {
@@ -125,6 +127,12 @@
         this.e1 = 2
         this.$store.dispatch('campanhas/set_form_inputs',this.form_inputs)
         console.log("inputs: ", this.$store.state.campanhas.formInputs)
+      },
+      sendPartialProdutosInput(){//envia pra etapa 3 os inputs referentes aos produtos, mas só os q serao usados de fato na etapa 3
+        this.e1 = 3
+        console.log("inputs completo ", this.$store.state.campanhas.produtos[0])
+        this.getFilteredProdutos = !this.getFilteredProdutos
+        console.log("Muedei valor do get bllab ", this.getFilteredProdutos)
       }
     }
   }

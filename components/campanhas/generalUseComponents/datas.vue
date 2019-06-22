@@ -125,13 +125,17 @@
             this.dateFormatted_inicio = ''
             this.dateFormatted_termino = ''
           }
-          //sei q só precisava checar isso
-          this.checkDataRange.Pdata_i = this.$store.state.campanhas.formInputs.data_inicio
-          this.checkDataRange.Pdata_f = this.$store.state.campanhas.formInputs.data_termino
+          //sei q só precisava checar isso sempre q abre um dialog,
+          //mas no mounted n rola ja q o codigo executa-o antes de, de fato, chegar na etapa 2, entao o ptei por aqui msm
+          this.setDatesRange()
         }
       }
     },
     methods: {
+      setDatesRange(){//seta o intervalo de datas em que os produtos devem estar ( datas form definidas na etapa 1)
+        this.checkDataRange.Pdata_i = this.$store.state.campanhas.formInputs.data_inicio
+        this.checkDataRange.Pdata_f = this.$store.state.campanhas.formInputs.data_termino
+      },
       formatDate (date) {
         if (!date)
           return null

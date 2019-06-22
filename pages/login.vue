@@ -56,7 +56,7 @@ export default {
         }).then(result => {
           if(!result)//se result for undefined
             throw new Error()//vai pro catch, importantissimo se nao ele iria redirecionar anyway
-       //   console.log("resultadO : ", result.data)//aqui que retorna bags maneiros!!, o result em si é perigoso, retorna senha em plaintext e tal
+          console.log("resultadO : ", result.data)//aqui que retorna bags maneiros!!, o result em si é perigoso, retorna senha em plaintext e tal
           this.$store.dispatch('auth/set_user_type',result.data.user.userType)//chamo isso no nuxtServerInit tb, mas inicialmente chamo aqui
           this.$router.push('/')
         }).catch(error => {
