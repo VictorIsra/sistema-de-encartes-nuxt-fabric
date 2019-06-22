@@ -80,10 +80,18 @@
       </v-btn>
         <v-container fill-height>
           <v-flex class="text-xs-center">
-            <v-btn flat>Bem vindo {{userName}}, tenha um ótimo de dia de trabalho!</v-btn>
+            <span class="title font-weight-light">Bem vindo {{userName}}, tenha um ótimo de dia de trabalho!</span>
           </v-flex>  
         </v-container>
-      <user-profile/>
+        <!-- trecho com avat + nome do user..ate podia ser um compoennte aparte mas n tem pq xD -->
+        <v-layout justify-center fill-height>
+          <v-divider  vertical
+                      class="white"
+          ></v-divider>
+        </v-layout>
+        <user-profile/>
+        <span class="subheading font-weight-light">{{userName}}</span>
+    
     </v-toolbar>
 
     <v-content>

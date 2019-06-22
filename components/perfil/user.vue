@@ -6,7 +6,6 @@
       :nudge-width="200"
       offset-x
     >
-    
         <template v-slot:activator="{ on }">
             <v-btn fab dark small color="primary" v-on="on">
                 <v-avatar size="40px">
@@ -15,14 +14,13 @@
             </v-btn>
         </template>
         
-
       <v-card>
         <v-list>
           <v-list-tile avatar>
             <v-list-tile-avatar size="50px">
               <img src="https://i.ytimg.com/vi/RyiikNewgX4/maxresdefault.jpg">
             </v-list-tile-avatar>
-
+            <v-spacer></v-spacer>
             <v-list-tile-content>
               <v-list-tile-title>{{user.userName}}</v-list-tile-title>
               <v-list-tile-sub-title>Tipo de usuário: {{user.userType}}</v-list-tile-sub-title>
@@ -30,31 +28,42 @@
             
           </v-list-tile>
         </v-list>
-
-        <v-divider></v-divider>
+        <v-divider class="primary"></v-divider>
 
         <v-list>
-          <v-list-tile
+          <v-list-tile 
           >
             <v-tooltip bottom> 
                 <template v-slot:activator="{ on }">
                     <div>
-                        <v-btn round v-on="on" @click="logOut" color="primary">
-                            <span>Sair/Logout</span>
-                            <v-icon right>exit_to_app</v-icon>
+                        <v-btn fab dark small color="primary" v-on="on" @click="logOut" >
+                          <v-icon dark>exit_to_app</v-icon>
                         </v-btn>
+                        <span>sair/logout</span>
                     </div>
                 </template>
                 <span>Sair/Logout</span>
             </v-tooltip> 
           </v-list-tile>
         </v-list>
+        <v-divider class="primary"></v-divider>
+        <v-list>
+          <v-list-tile
+          >
+            <v-tooltip bottom> 
+                <template v-slot:activator="{ on }">
+                    <div>
+                        <v-btn fab dark small color="primary" v-on="on" @click="menu = false" >
+                          <v-icon dark>close</v-icon>
+                        </v-btn>
+                        <span>Fechar</span>
+                    </div>
+                </template>
+                <span>Fechar</span>
+            </v-tooltip> 
+          </v-list-tile>
+        </v-list>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" flat @click="menu = false">Fechar</v-btn>
-        </v-card-actions>
-      
       </v-card>
 
     </v-menu>
