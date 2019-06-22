@@ -21,14 +21,14 @@
 
       <v-stepper-content step="1">  
        <v-container grid-list-xs>
-         <formulario @statusform="validarForm" @getinputs="getFormInputs" :send_form_data="send_form_data"/>
+         <formulario @statusform="validarForm" @getinputs="printFormInputs"/>
        </v-container>
         
         <div class="text-xs-right">
         <v-btn
           color="primary"
           :disabled="!form_validated"
-          @click="send_form_data = true"
+          @click="printFormInputs"
         >
           Próximo
         </v-btn>
@@ -107,25 +107,31 @@
         e1: 0,
         form_validated: false,//controla se o botao de 'proximo' ficará habilitado ou nao
         form_inputs: {},//componente filho (formulario.vue) irá preencher isso na hora correta
-        send_form_data: false //prop/flag para avisar ao componente filho ( formulario.vue) que ele pode retornar os inputs passados pelo user
+      //  send_form_data: false //prop/flag para avisar ao componente filho ( formulario.vue) que ele pode retornar os inputs passados pelo user
       }
     },
     methods: {
-      validarForm(flag){
-        if(flag)//inputs passados no componete formulario.vue sao validos, logo habilite o botao de 'proximo' neste componente (adcionar.vue)
+      validarForm(flag,inputs){
+        if(flag){//inputs passados no componete formulario.vue sao validos, logo habilite o botao de 'proximo' neste componente (adcionar.vue)
           this.form_validated = true
+          console.log("passei os inputs: ", inputs)
+          this.form_inputs = inputs
+        }  
         else{
           this.form_validated = false
         }
       },
-      getFormInputs(inputs){//ao validar o form, o botao de prox ficara ativado e, ao clicar nele, os inputs serao passados pra cá
-       this.form_inputs = inputs
-       this.e1 = 2
-       this.printFormInputs()//p debug
-      },
+      // getFormInputs(inputs){//ao validar o form, o botao de prox ficara ativado e, ao clicar nele, os inputs serao passados pra cá
+      //  this.form_inputs = inputs
+      //  this.e1 = 2
+      //  this.printFormInputs()//p debug
+      // },
       printFormInputs(){
-        let inputs = Object.values(this.form_inputs)
-        console.log("inputs: ", inputs)
+        //let inputs = Object.values(this.form_inputs)
+        console.log("hahahahaha")
+        this.e1 = 2
+        this.$store.dispatch('campanhas/set_form_inputs',this.form_inputs)
+        console.log("inputs: ", this.$store.state.campanhas.formInputs)
       }
     }
   }

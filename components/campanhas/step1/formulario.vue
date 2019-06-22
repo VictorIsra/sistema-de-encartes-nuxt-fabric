@@ -109,16 +109,7 @@
           if(!this.valid )//controla se o botao de 'proximo' no componente pai ficará habilitado ou nao
             this.$emit('statusform', this.valid)
           else
-            this.$emit('statusform',this.valid)
-        }
-      },
-      send_form_data: {
-        handler(){
-          if(this.send_form_data){//envia os inputs preenchidos para o componente pai ( adicionar.vue)
-            //console.log("enviarei os inputs ")
-            this.parseMlucro()
-            this.$emit('getinputs',this.form_inputs)
-          }  
+            this.$emit('statusform',this.valid,this.form_inputs)
         }
       }
     }
