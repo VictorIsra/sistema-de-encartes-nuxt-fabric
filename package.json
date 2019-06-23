@@ -18,6 +18,7 @@
     "@nuxtjs/axios": "^5.5.4",
     "cookie": "^0.4.0",
     "cross-env": "^5.2.0",
+    "fabric": "^3.2.0",
     "js-cookie": "^2.2.0",
     "nuxt": "^2.4.0",
     "vee-validate": "^2.2.10",
@@ -25,9 +26,10 @@
     "vuetify-loader": "^1.2.1"
   },
   "devDependencies": {
-    "nodemon": "^1.18.9",
+    "eslint": "^6.0.0",
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-prettier": "^3.0.1",
+    "nodemon": "^1.18.9",
     "prettier": "^1.16.4",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2"
