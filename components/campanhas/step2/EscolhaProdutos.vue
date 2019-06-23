@@ -127,19 +127,33 @@
         <td class="text-xs-center">{{ props.item.marluc}}</td>
 
         <td class="justify-center layout px-0">
-          <v-icon
-            small
-            class="mr-2"
-            @click="editItem(props.item)"
-          >
-            edit
-          </v-icon>
-          <v-icon
-            small
-            @click="deleteItem(props.item)"
-          >
-            delete
-          </v-icon>
+          <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-icon
+              small
+              class="mr-2"
+              @click="editItem(props.item)"
+              v-on="on"
+            >
+              edit
+            </v-icon>
+          </template>
+          <span>Clique aqui para editar esta linha da tabela</span>
+          </v-tooltip>
+         
+         <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-icon
+              small
+              @click="deleteItem(props.item)"
+              v-on="on"
+            >
+              delete
+            </v-icon>
+          </template>
+          <span>Clique aqui para excluir esta linha da tabela</span>
+          </v-tooltip>
+        
         </td>
       </template>
      <!-- <template v-slot:no-data>

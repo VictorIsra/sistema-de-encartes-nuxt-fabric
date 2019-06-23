@@ -80,7 +80,7 @@
       </v-btn>
         <v-container fill-height>
           <v-flex class="text-xs-center">
-            <span class="title font-weight-light">Bem vindo {{userName}}, tenha um ótimo de dia de trabalho!</span>
+            <span>Bem vindo {{userName}}, tenha um ótimo de dia de trabalho!</span>
           </v-flex>  
         </v-container>
         <!-- trecho com avat + nome do user..ate podia ser um compoennte aparte mas n tem pq xD -->

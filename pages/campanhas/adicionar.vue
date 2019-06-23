@@ -1,92 +1,109 @@
 <template>
-  <v-stepper  v-model="e1">
-   <!-- <v-btn color="success" @click="printFormInputs">CHECK INPUTS</v-btn>-->
-    <v-stepper-header>
-      <v-stepper-step :complete="e1 > 1" step="1">Dados da Campanha</v-stepper-step>
+  <div>
+    <!--<v-divider></v-divider>
+     <v-footer class="pa-3" v-if="e1>1">
+      <v-spacer></v-spacer>
+      <v-layout
+      justify-center
+      row
+      wrap
+      > 
+      <div>TESTE</div>
+            <div>TESTE</div>
+      <div>TESTE</div>
 
-      <v-divider></v-divider>
+       </v-layout>
+    </v-footer>  DPS EU FACO ESSE FOOTER..TO SEM SACO-->
+    <v-stepper  v-model="e1">
+    <!-- <v-btn color="success" @click="printFormInputs">CHECK INPUTS</v-btn>-->
+      <v-stepper-header>
+        <v-stepper-step :complete="e1 > 1" step="1">Dados da Campanha</v-stepper-step>
 
-      <v-stepper-step :complete="e1 > 2" step="2">Escolha de Produtos</v-stepper-step>
+        <v-divider></v-divider>
 
-      <v-divider></v-divider>
+        <v-stepper-step :complete="e1 > 2" step="2">Escolha de Produtos</v-stepper-step>
 
-      <v-stepper-step step="3">Análise da concorrência</v-stepper-step>
+        <v-divider></v-divider>
 
-       <v-divider></v-divider>
+        <v-stepper-step step="3">Análise da concorrência</v-stepper-step>
 
-      <v-stepper-step step="4">Criação das Demandas</v-stepper-step>
-    </v-stepper-header>
+        <v-divider></v-divider>
 
-    <v-stepper-items>
+        <v-stepper-step step="4">Criação das Demandas</v-stepper-step>
+      </v-stepper-header>
 
-      <v-stepper-content step="1">  
-       <v-container grid-list-xs>
-         <formulario @statusform="validarForm"/>
-       </v-container>
-        
-        <div class="text-xs-right">
-        <v-btn
-          color="primary"
-          :disabled="!form_validated"
-          @click="saveFormInputs"
-        >
-          Próximo
-        </v-btn>
-        </div>
-      </v-stepper-content>
+      <v-stepper-items>
 
-      <v-stepper-content step="2">
+        <v-stepper-content step="1">  
         <v-container grid-list-xs>
-           <escolha-produtos :campanhaDates="form_inputs"/>
-        </v-container>
-       
-        <div class="text-xs-right">
-          <v-btn
-            color="primary"
-            @click="sendFilteredProdutosInput"
-          ><!-- etapa 3 recebera só os inputs filtrados da etapa 2 ( inputs de interesses) -->
-            Próximo
-          </v-btn>
-        </div>  
-      </v-stepper-content>
-
-      <v-stepper-content step="3">
-    
-         <v-container grid-list-xs>
-           <concorrencia :getFilteredProdutos="getFilteredProdutos"/>
+          <formulario @statusform="validarForm"/>
         </v-container>
           
-        <div class="text-xs-right">
+          <div class="text-xs-right">
           <v-btn
             color="primary"
-            @click="e1 = 4"
+            :disabled="!form_validated"
+            @click="saveFormInputs"
           >
             Próximo
           </v-btn>
-        </div>
-        <v-btn flat @click="e1 = e1 - 1">Voltar</v-btn>
-      </v-stepper-content>
-      
-      <v-stepper-content step="4">
-        <v-card
-          class="mb-5"
-          color="grey lighten-1"
-          height="200px"
-        ></v-card>
+          </div>
+        </v-stepper-content>
 
-        <v-btn
-          color="primary"
-          @click="e1 = 3"
-        > 
-          Cadastrar campanha
-        </v-btn>
+        <v-stepper-content step="2">
+          <v-container grid-list-xs>
+            <escolha-produtos :campanhaDates="form_inputs"/>
+          </v-container>
+        
+          <div class="text-xs-right">
+            <v-btn
+              color="primary"
+              @click="sendFilteredProdutosInput"
+            ><!-- etapa 3 recebera só os inputs filtrados da etapa 2 ( inputs de interesses) -->
+              Próximo
+            </v-btn>
+          </div>  
+        </v-stepper-content>
 
-        <v-btn flat @click="e1 = e1 - 1">Voltar</v-btn>
-     
-      </v-stepper-content>
+        <v-stepper-content step="3">
       
-    </v-stepper-items>
-  </v-stepper>
+          <v-container grid-list-xs>
+            <concorrencia :getFilteredProdutos="getFilteredProdutos"/>
+          </v-container>
+            
+          <div class="text-xs-right">
+            <v-btn
+              color="primary"
+              @click="e1 = 4"
+            >
+              Próximo
+            </v-btn>
+          </div>
+          <v-btn flat @click="e1 = e1 - 1">Voltar</v-btn>
+        </v-stepper-content>
+        
+        <v-stepper-content step="4">
+          <v-card
+            class="mb-5"
+            color="grey lighten-1"
+            height="200px"
+          ></v-card>
+
+          <v-btn
+            color="primary"
+            @click="e1 = 3"
+          > 
+            Cadastrar campanha
+          </v-btn>
+
+          <v-btn flat @click="e1 = e1 - 1">Voltar</v-btn>
+      
+        </v-stepper-content>
+        
+      </v-stepper-items>
+    </v-stepper>
+    
+  </div>
 </template>
 
 <script>
@@ -122,6 +139,7 @@
           this.form_validated = false
         }
       },
+      //$store.state.auth.show_lateral_menu
       saveFormInputs(){
         //let inputs = Object.values(this.form_inputs)
         this.e1 = 2
