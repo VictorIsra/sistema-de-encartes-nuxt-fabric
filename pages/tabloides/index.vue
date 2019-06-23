@@ -1,10 +1,10 @@
 <template>
-    <div>
-        <v-btn color="success" @click="criaRet">testa</v-btn>
+    <div >
+        <v-btn round color="primary" @click="criaRet">testando tabloide funcionalidade basica (debug mode )</v-btn>
         <div class="text-xs-center">
             <canvas id="c" class="canvas" width="700px" height="900px"></canvas>
         </div>    
-        <img ref="img" src="https://upload.wikimedia.org/wikipedia/pt/thumb/a/ab/Scorpion.png/200px-Scorpion.png">
+        <img ref="img" height="42" width="42" src="https://mambo.vteximg.com.br/arquivos/ids/236351/139860_Cha-Matte-Leao-100g.jpg?v=636741824864830000">
 
     </div>
 </template>
@@ -51,9 +51,7 @@ export default {
 <style scoped>
 .canvas {
     border:1px solid black;
-   	position: absolute;
-    margin-left: 200px; /* This is half the width */
-	margin-top: -50px; /* This is half the height */
+   
 	
 }
 

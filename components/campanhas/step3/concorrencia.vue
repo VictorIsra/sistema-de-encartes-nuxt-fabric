@@ -3,7 +3,7 @@
 <template>
   <div>
     <v-toolbar flat color="white">
-      <v-btn @click="debug" color="success">ver items tabela</v-btn>
+     
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -201,7 +201,6 @@
         this.dialog = true  
       },
       close () {
-        this.resetFlags()
         this.dialog = false
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)

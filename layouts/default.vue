@@ -90,7 +90,7 @@
           ></v-divider>
         </v-layout>
         <user-profile/>
-        <span class="subheading font-weight-light">{{userName}}</span>
+        <span class="white--text font-weight-light">{{ userName }}</span>
     
     </v-toolbar>
 
