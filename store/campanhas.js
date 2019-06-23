@@ -11,7 +11,7 @@ export const mutations = {
         console.log("comitei form intpus: ", inputs)
         store.formInputs = inputs
     },
-    //nem preciso de set_produtos dps, ja q o set_filtered faz o msm e no momento realmente necessario  
+    //set produtos diz respeito aos produtos todos, sem criterio/filtro
     set_produtos(store,produtos){
         console.log("comitei produtos: ", produtos)
         store.produtos = produtos
@@ -31,8 +31,7 @@ export const mutations = {
         store.formInputs = '',
         store.filtered_demandas = ''
         console.log("campanha resetada :)")
-    }
-    
+    }   
 }
 export const actions = {
     set_form_inputs({commit},inputs){
