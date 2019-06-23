@@ -145,12 +145,13 @@
         this.e1 = 2
         this.$store.dispatch('campanhas/set_form_inputs',this.form_inputs)//alimenta o store com os inputs da etapa 1 das campanhas
       },
-      sendFilteredProdutosInput(){//envia pra etapa 3 os inputs referentes aos produtos, mas só os q serao usados de fato na etapa 3
+      sendFilteredProdutosInput(){//envia pra etapa 3 e 4 os inputs referentes aos produtos, mas só os q serao usados de fato na etapa 3/4
         this.e1 = 3
-        const produtos = this.$store.state.campanhas.produtos
+        const produtos = this.$store.state.campanhas.produtos//produtos bases q serao fitrados pra serem usados na etapa 3 e 4
         this.filterProdutos(produtos)
+        this.filterDemandas(produtos)
         //so mandarei o flag qd a f acima terminar d executar,pra ter consistencia os dados
-        this.getFilteredProdutos = !this.getFilteredProdutos
+        this.getFilteredProdutos = !this.getFilteredProdutos//ajuda na etapa 3 só a principio, ver dps p 4 tb
 
       },
       filterProdutos(produtos){
@@ -168,9 +169,33 @@
               preco_v_c3: 'R$ 0,00'
             })
           })
+           //salva no store os produtos filtrados para pré propularem colunas da etapa3
+          this.$store.dispatch('campanhas/set_filtered_produtos',filtered)
+        }     
+      },//filtra da etapa 2 os produtos de interesse p etapa 4, totalmente análogo ao metodo filteredProdutos acima
+      filterDemandas(demandas){
+         const filtered = []//vetor com os produtos da etapa 2 filtrados
+        if(demandas !== ''){//se n dá erro. mas só ocorre isso se o doidao n escolher nenhum prpduto, mas enfim. dps penso se restringo isso ou n
+          demandas.forEach(d => {
+            filtered.push({
+              img: d.img,
+              nome: d.nome,
+              data_i: d.data_i,
+              data_f: d.data_f,
+              preco_v: d.preco_v,//fundamental adicionar essas propriedades ao objeto aqui se nao, ele 'funciona',mas sem getters e setters, o que fode td! xD
+              tabloide: false,
+              cartaz: false,
+              fb: false,
+              tv: false,
+              radio_i: false,
+              radio_e: false,
+              jornais: false,
+              pdv: false
+            })
+          })
+           //salva no store os produtos filtrados para pré propularem colunas da etapa4
+         this.$store.dispatch('campanhas/set_filtered_demandas',filtered)
         }  
-        //salva no store os produtos filtrados para pré propularem colunas da etapa3
-        this.$store.dispatch('campanhas/set_filtered_produtos',filtered)
       }
     }
   }
