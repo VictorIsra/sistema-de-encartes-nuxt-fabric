@@ -144,7 +144,10 @@
               nome: p.nome,
               preco_c: p.preco_c,
               preco_v: p.preco_v,
-              marluc: p.marluc
+              marluc: p.marluc,//fundamental adicionar essas propriedades ao objeto aqui se nao, ele 'funciona',mas sem getters e setters, o que fode td! xD
+              preco_v_c1: 'R$ 0,00',
+              preco_v_c2: 'R$ 0,00',
+              preco_v_c3: 'R$ 0,00'
             })
           })
         }  

@@ -27,7 +27,7 @@
           <nuxt-link v-if="!isMain" to="/campanhas">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <v-btn v-on="on" round class="blue-grey lighten-5"
+              <v-btn v-on="on" round class="red lighten-4"
                 @click="$store.dispatch('campanhas/reset_campanha')">
                 <v-icon class="mr-2" color="red">cancel</v-icon>
                 <span class="red--text">Abandonar campanha</span>
