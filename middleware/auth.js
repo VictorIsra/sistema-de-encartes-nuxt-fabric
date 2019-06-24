@@ -11,9 +11,9 @@ export default function ({store, redirect, route}) {
   const urlRequiresAuth = /(^\/campanhas(\/|$))|(^\/produtos(\/|$))|(^\/(\/|$))|(^\/tabloides(\/|$))|(^\/admin(\/|$))|(^\/analise(\/|$))|(^\/users(\/|$))|(^\/demandas(\/|$))/i.test(route.fullPath)//restringe qq coisa que comece com '/campanhas/'
   const urlRequiresNonAuth = /^\/login(\/|$)/.test(route.fullPath)
   //criterios pra restringir acesso a pag/subpaginas baseado no tipo de user:
-  const urlForbiddenForClients = /(^\/campanhas(\/|$))|(^\/produtos(\/|$))|(^\/tabloides(\/|$))|(^\/admin(\/|$))|(^\/analise(\/|$))|(^\/users(\/|$))/i.test(route.fullPath)
+  const urlForbiddenForCompradores = /(^\/admin(\/|$))|(^\/analise(\/|$))|(^\/users(\/|$))/i.test(route.fullPath)
   const urlForbiddenForDirector = /(^\/campanhas(\/|$))|(^\/tabloides(\/|$))|(^\/admin(\/|$))|(^\/users(\/|$))/i.test(route.fullPath)
-  const urlForbiddenForTabloideUser = /(^\/admin(\/|$))|(^\/analise(\/|$))|(^\/users(\/|$))/i.test(route.fullPath)
+  const urlForbiddenForTabloideUser = /(^\/campanhas(\/|$))|(^\/admin(\/|$))|(^\/analise(\/|$))|(^\/users(\/|$))/i.test(route.fullPath)
   
   if (!userIsLoggedIn && urlRequiresAuth) {
     return redirect('/login')
@@ -24,7 +24,7 @@ export default function ({store, redirect, route}) {
   //restringe o acesso a paginas/subpaginas baseado no tipo de user
   if(userIsLoggedIn){
     console.log("opa to logado e estou em ", route.fullPath, " e sou user do tipo: ", userType)
-    if(userType === 'client' && urlForbiddenForClients){
+    if(userType === 'client' && urlForbiddenForCompradores){
       console.log("vaza cliente..")
       return redirect('/')
     }

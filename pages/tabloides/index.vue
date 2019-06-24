@@ -4,7 +4,7 @@
         <div class="text-xs-center">
             <canvas id="c" class="canvas" width="700px" height="900px"></canvas>
         </div>    
-        <img ref="img" height="42" width="42" src="https://mambo.vteximg.com.br/arquivos/ids/236351/139860_Cha-Matte-Leao-100g.jpg?v=636741824864830000">
+        <img ref="img"  src="https://mambo.vteximg.com.br/arquivos/ids/236351/139860_Cha-Matte-Leao-100g.jpg?v=636741824864830000">
 
     </div>
 </template>

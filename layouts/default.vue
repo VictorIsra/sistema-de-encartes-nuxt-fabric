@@ -230,11 +230,15 @@ export default {
       this.user = this.$store.state.auth.userType
       this.items.forEach(it => {
         if(it.title){//pois  divider e afins sao aprte da lista, mas só to itneressado nos itens, e otdo item tem um title
-          if(this.user === 'client'){
+          if(this.user === 'comprador'){
             if( it.title === 'Início')
               it.showMe = true
             else if( it.title === 'Demandas')
               it.showMe = true
+            else if(it.title === 'Campanhas')
+              it.showMe = true
+            else if(it.title === 'Tablóides')    
+              it.showMe = true    
             else
               it.showMe = false
           }
@@ -253,14 +257,10 @@ export default {
           else if(this.user === 'tabloide'){
             if( it.title === 'Início')
               it.showMe = true
-            else if( it.title === 'Demandas')
-              it.showMe = true
             else if( it.title === 'Produtos')
               it.showMe = true
             else if(it.title === 'Tablóides')    
               it.showMe = true
-            else if(it.title === 'Campanhas')
-              it.showMe = true  
             else
               it.showMe = false 
           }
