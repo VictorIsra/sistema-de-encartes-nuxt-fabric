@@ -2,8 +2,8 @@
 -->
 <template>
   <div>
-    <v-toolbar flat color="white">
-      <v-btn @click="debug" color="success">ver items tabela</v-btn>
+    <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
+    <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span>
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -188,6 +188,7 @@
       dialog: false,
       search: '',
       valid: true,
+      metaProdutos: '',//qtdade minima de produtos na campanha
       datesErrors: ['#'],//é uma pilha que checa os erros nas datas. nao terá erro qd ela só tiver o elemento base('#'), ou seja, se datesErros.length ===1
       //PROPS (lembrar que, na verdade, são props para um componente filho
         checkDataRange: {

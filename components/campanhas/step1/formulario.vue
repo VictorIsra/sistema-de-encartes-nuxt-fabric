@@ -41,6 +41,16 @@
         suffix="%"
       ></v-text-field>
     </v-flex>
+    
+    <v-flex sm4>
+      <v-text-field
+        v-model.trim.number="form_inputs.qtdade"
+        :rules="[qtdadeRules]"
+        @blur="truncNumber"
+        label="Quantidade mínima de produtos"
+        required
+      ></v-text-field>
+    </v-flex>
 
     <v-flex sm6>
       <datas @datechanged="getDate"/>
@@ -75,6 +85,9 @@
         v = v.trim(v)
         return !!v || 'É preciso entrar com uma margem de lucro mínima de pelo menos 0%'
       },
+      qtdadeRules(v){
+        return (!!v && v > 0) || 'É preciso estabelecer uma quantidade mínima de produtos para a campanha.'
+      },
       tipos_campanhas: [
         'campanha semanal',
         'campanha mensal'
@@ -85,7 +98,8 @@
         tipos_campanhas: '', 
         mlucro: '',
         data_inicio: '',
-        data_termino: ''
+        data_termino: '',
+        qtdade: ''//meta minima de produtos a serme cadastrados pra poder criar a campanha
       },
       checkbox: false
     }),
@@ -101,6 +115,9 @@
       },
       parseMlucro(){
         this.form_inputs.mlucro = this.parsePtBr(this.form_inputs.mlucro)
+      },
+      truncNumber(){
+        this.form_inputs.qtdade = Math.trunc(this.form_inputs.qtdade)
       }
     },
     watch: { 
