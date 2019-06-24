@@ -186,6 +186,8 @@
               this.itens = this.$store.state.campanhas.filtered_protudos
             }
             console.log("alimentei a table, checando os input dela ",this.itens)
+            console.log("tipo do itens ", typeof(this.itens))
+            console.log("tipo do item na posicao 0 ", typeof(this.itens[0]))
             //n preciso resetar a flag (getFilteredProdutos) apos esse handler executar, pois qd clico em 'prox' da etapa 2 pra etapa 3, flag= !flag, e como flag = 0 nesse componente incialmente, isso sempre funfará
         }
       }

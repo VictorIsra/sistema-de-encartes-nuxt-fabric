@@ -1,6 +1,7 @@
 const express = require('express')
 require('./src/db/mongoose')//garante que vai conectar ao bd
 const userRoute = require('./src/routes/user')
+const campanhaRoute = require('./src/routes/campanhas')
 
 const app = express()
 
@@ -17,7 +18,7 @@ const app = express()
 
 app.use(express.json())//parsea automaticamente os json pra objeto, dai posso acessar no body
 app.use(userRoute)
-
+app.use(campanhaRoute)
 
 // export the server middleware
 module.exports = {//em vez de escutar uma porta, exporto isso pro nuxt.config que ele irá 'escutar'
