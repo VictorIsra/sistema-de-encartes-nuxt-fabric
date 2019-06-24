@@ -53,7 +53,12 @@ router.post('/campanhas/criar', async (req,res) => {
         await new_campanha.save()
      //   if(new_user){//n precisa pois a operacao assima retorna uma promise
             //const user = await User.findByCredentials(req.body.email, req.body.password)//f q eu irei defini
-        res.status(202).send(new_campanha)
+        new_campanha.produtos.forEach(p => console.log(" id do prod ", p._id))
+        res.status(202).send({
+            // id_campanha:new_campanha._id,
+            // produtos:new_campanha.produtos
+            new_campanha
+        })
        
     }catch(e){
         console.log("se fudeu")
