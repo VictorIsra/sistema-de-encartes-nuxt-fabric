@@ -60,21 +60,31 @@ router.post('/campanhas/create', async (req,res) => {//cria campanha
 })
 router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
     const campanha_id = req.body.campanha_id//id da CAMPANHA
-    const row_id = req.body_row_id //id da linha que tou atualizando
+    const row_id = req.body.row_id //id da linha que tou atualizando
     const produtos = req.body.produtos//linha a ser atualizada ao array de produtos
-
+    
     try{
         const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
-        
-        var targetIndex =  campanha.produtos.findIndex( (it,i) =>{
-               return it._id.equals(row_id)
-        })  
-        campanha.produtos[targetIndex] = {
-            _id:campanha.produtos[targetIndex]._id,
-            marluc:'10,00%',
-            data_i:'1//2/201'
-        }
+        //me dá o index da linha que estou tentando atualizar:
+        console.log("acho campanha")
+        var targetIndex =  campanha.produtos.findIndex( it =>{
+            return it._id.equals(row_id)
+        }) 
+        console.log("achou tg index")
+        //atualiza os produtos
+        const keys = Object.keys(produtos)
+        keys.forEach(key => {
+            //[key] é analogo a .proriedade no contexto que to usando:
+            campanha.produtos[targetIndex][key] = produtos[key]
+        })
+        console.log("fez update")
+        // campanha.produtos[targetIndex] = {
+        //     _id:campanha.produtos[targetIndex]._id,
+        //     marluc:'10,00%',
+        //     data_i:'1//2/201'
+        // }
         try{
+            //salva alterações
             await campanha.save()
             res.status(202).send("0k")
         }catch(e){
