@@ -58,6 +58,18 @@ router.post('/campanhas/create', async (req,res) => {//cria campanha
         res.status(500).send("n rolou de criar campanha" + e )//n sei pq, se passo só send(e), ele n printa nada
     }
 })
+router.delete('/campanhas/removeRow',async(req,res)=>{
+    //rempve uma linha da tabela
+    const campanha_id = req.body.campanha_id
+    const row_id = req.body.row_id
+    Campanha.findOneAndUpdate({_id: campanha_id}, { $pull: {produtos:{_id:row_id}}},(err,doc)=>{
+        if(err){
+            console.log("deu merda")
+            res.status(500).send(err)
+        }
+        res.status(202).send("removido! xD")
+    })
+})
 router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const row_id = req.body.row_id //id da linha que tou atualizando
@@ -66,23 +78,18 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
     try{
         const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
         //me dá o index da linha que estou tentando atualizar:
-        console.log("acho campanha")
+        //console.log("acho campanha")
         var targetIndex =  campanha.produtos.findIndex( it =>{
             return it._id.equals(row_id)
         }) 
-        console.log("achou tg index")
+        //console.log("achou tg index")
         //atualiza os produtos
         const keys = Object.keys(produtos)
         keys.forEach(key => {
             //[key] é analogo a .proriedade no contexto que to usando:
             campanha.produtos[targetIndex][key] = produtos[key]
         })
-        console.log("fez update")
-        // campanha.produtos[targetIndex] = {
-        //     _id:campanha.produtos[targetIndex]._id,
-        //     marluc:'10,00%',
-        //     data_i:'1//2/201'
-        // }
+        //console.log("fez update")
         try{
             //salva alterações
             await campanha.save()
@@ -94,10 +101,8 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
         res.status(404).send(e)
     } 
 })
-
-
 router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de produtos a campanha
-    console.log("entrou")
+   // console.log("entrou")
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const produtos = req.body.produtos//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
     
@@ -105,13 +110,12 @@ router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de pr
     
     Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
         if(err){
-            console.log("deu ruim")
+            //console.log("deu ruim")
             res.status(500).send(err)
         }    
         const addedItensIndex = doc.produtos.length - 1//indice da linha adicionada, usarei no codigo pra ref    
         res.status(202).send(doc.produtos[addedItensIndex]._id)//pra eu ter a ref dessa linha em particular   
     });   
 })   
- 
 
 module.exports = router
