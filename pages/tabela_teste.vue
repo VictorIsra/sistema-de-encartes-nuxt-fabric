@@ -268,17 +268,22 @@
           this.editedIndex = -1
         }, 300)
       },
-      create(editedItem){//vai virar um mixin
-        api.campanha.create(
-              {produtos:editedItem}
+      addRow(editedItem){//vai virar um mixin
+        api.campanha.addRow(
+              {produtos:editedItem,
+              campanha_id:"5d126668d0428d506c18cdaf"}
         ).then(
-              r => console.log("response: ",r)
+              r => {editedItem._id = r
+              console.log("editeitem: ",editedItem)}
+              //pra ref esse id farei: editedItem._id.data pois me retorna um objeto xD
         )
         .catch(e => console.log("erro: ",e))
       },
-      UpdateRow(editedItem){//a lvl de bd, serve tano pra editar uma linha qt pra criar uma, ja q uma linha é um objeto dentro de uma campanha
-        api.campanha.update(
-              {produtos:editedItem}
+      updateRow(editedItem){//a lvl de bd, serve tano pra editar uma linha qt pra criar uma, ja q uma linha é um objeto dentro de uma campanha
+        api.campanha.updateRow(
+              {produtos:editedItem,
+              campanha_id:"5d126668d0428d506c18cdaf",
+              row_id:editedItem._id.data}
         ).then(
               r => console.log("response: ",r)
         )
@@ -289,14 +294,13 @@
             this.editUserInputs()
             Object.assign(this.itens[this.editedIndex], this.editedItem)
             const keys = Object.keys(this.editedItem)
-            console.log("keys: ",keys)
-            console.log("salvei ja, itens edited: ", this.editedItem['marluc'])
+            this.updateRow(this.editedItem)
            
            
         } else {//caso esteja adicionando algo em vez de editando
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
-            this.Addrow(this.editedItem)//na real nem precisava passa isso como arg mas foda-se
+            this.addRow(this.editedItem)//na real nem precisava passa isso como arg mas foda-se
         }
         this.saveProdutos()
         this.close()      
