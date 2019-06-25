@@ -6,9 +6,9 @@ const router = new express.Router()
 
 router.get('/campanhas/produtos',async(req,res) => {
     //pega todos os produtos de uma campanha
-    console.log("req data ", req.query.campanha_id)//passo como params mas ele bota pra query..wtf, mas que seja xD
+   // console.log("req data ", req.query.campanha_id)//passo como params mas ele bota pra query..wtf, mas que seja xD
     const campanha_id = req.query.campanha_id
-    console.log("entro com id ", campanha_id)
+    //console.log("entro com id ", campanha_id)
     try{
         const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
         res.status(202).send(campanha.produtos)
@@ -18,12 +18,9 @@ router.get('/campanhas/produtos',async(req,res) => {
     }    
 })
 router.post('/campanhas/createCampanha', async (req,res) => {//cria campanha
-    //achar user pelas credenciais
-    //retornará um token de autenticacao
-    console.log("vai dar um new no body")
     const new_campanha = new Campanha(req.body)
     try{
-        console.log("tentooou")
+        //console.log("tentooou")
         await new_campanha.save()
         //gambiarra pra salvar o id gerado numa propriedade a parte e manipular no codigo xD
         new_campanha.campanha_id = new_campanha._id
@@ -34,7 +31,6 @@ router.post('/campanhas/createCampanha', async (req,res) => {//cria campanha
         })
        
     }catch(e){
-        console.log("se fudeu")
         res.status(500).send("n rolou de criar campanha" + e )//n sei pq, se passo só send(e), ele n printa nada
     }
 })
@@ -53,7 +49,6 @@ router.put('/campanhas/removeRow',async(req,res)=>{
     const row_id = req.body.row_id
     Campanha.findOneAndUpdate({_id: campanha_id}, { $pull: {produtos:{_id:row_id}}},(err,doc)=>{
         if(err){
-            console.log("deu merda")
             res.status(500).send(err)
         }
         res.status(202).send(doc)
@@ -66,18 +61,15 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
     try{
         const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
         //me dá o index da linha que estou tentando atualizar:
-        //console.log("acho campanha")
         var targetIndex =  campanha.produtos.findIndex( it =>{
             return it._id.equals(row_id)
         }) 
-        //console.log("achou tg index")
         //atualiza os produtos
         const keys = Object.keys(produtos)
         keys.forEach(key => {
             //[key] é analogo a .proriedade no contexto que to usando:
             campanha.produtos[targetIndex][key] = produtos[key]
         })
-        //console.log("fez update")
         try{
             //salva alterações
             await campanha.save()
