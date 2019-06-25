@@ -90,6 +90,9 @@ const campanhaSchema = new mongoose.Schema({
             preco_v_c3:{
                 type:String
             },
+            Rid: {
+                type: mongoose.Schema.Types.ObjectId
+            }
         }
     ],
     status: {//aprovada/reprovada/pendente

@@ -208,7 +208,8 @@
         preco_c: '0,00',
         preco_v: '0,00',
         selout: '',
-        marluc: '0.00'
+        marluc: '0.00',
+        Rid: ''//'row id' id unica que caracteriza uma linha da tabela ( db setara isso ao criar)
       },
       defaultItem: {//aqui seto os valores defaults
         img:  '',
@@ -221,7 +222,8 @@
         preco_c: '0,00',
         preco_v: '0,00',
         selout: '',
-        marluc: '0.00'
+        marluc: '0.00',
+        Rid: ''//id unica que caracteriza uma linha da tabela ( db setara isso ao criar)
       }
     }),
     computed: {
@@ -266,8 +268,16 @@
           this.editedIndex = -1
         }, 300)
       },
-      criar(editedItem){
-        api.campanha.criar(
+      create(editedItem){//vai virar um mixin
+        api.campanha.create(
+              {produtos:editedItem}
+        ).then(
+              r => console.log("response: ",r)
+        )
+        .catch(e => console.log("erro: ",e))
+      },
+      UpdateRow(editedItem){//a lvl de bd, serve tano pra editar uma linha qt pra criar uma, ja q uma linha é um objeto dentro de uma campanha
+        api.campanha.update(
               {produtos:editedItem}
         ).then(
               r => console.log("response: ",r)
@@ -281,11 +291,12 @@
             const keys = Object.keys(this.editedItem)
             console.log("keys: ",keys)
             console.log("salvei ja, itens edited: ", this.editedItem['marluc'])
-            this.criar(this.editedItem)
+           
            
         } else {//caso esteja adicionando algo em vez de editando
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
+            this.Addrow(this.editedItem)//na real nem precisava passa isso como arg mas foda-se
         }
         this.saveProdutos()
         this.close()      

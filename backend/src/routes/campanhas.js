@@ -21,9 +21,9 @@ router.get('/campanhas/me',async(req,res) => {
 //         res.status(500).send(e)
 //     }
 // })
-// router.patch('/campanhas/me', auth, async (req,res) => {
+// router.patch('/campanhas/update', async (req,res) => {
     
-//     const allowedUpdates = [ "name","password","userType"]
+//    // const allowedUpdates = [ "name","password","userType"]
 //     const updates = Object.keys(req.body)
 //     const filtro = updates.every(field => allowedUpdates.includes(field))
      
@@ -40,10 +40,7 @@ router.get('/campanhas/me',async(req,res) => {
 //         res.status(500).send(e)
 //     }
 // })
-
-
-
-router.post('/campanhas/criar', async (req,res) => {
+router.post('/campanhas/create', async (req,res) => {//cria campanha
     //achar user pelas credenciais
     //retornará um token de autenticacao
     console.log("vai dar um new no body")
@@ -51,13 +48,8 @@ router.post('/campanhas/criar', async (req,res) => {
     try{
         console.log("tentooou")
         await new_campanha.save()
-     //   if(new_user){//n precisa pois a operacao assima retorna uma promise
-            //const user = await User.findByCredentials(req.body.email, req.body.password)//f q eu irei defini
-        new_campanha.produtos.forEach(p => console.log(" id do prod ", p._id))
         res.status(202).send({
-            // id_campanha:new_campanha._id,
-            // produtos:new_campanha.produtos
-            new_campanha
+           campanhaID: new_campanha._id//retorna o _id pra eu poder ref/identificar uma campanha no codigo
         })
        
     }catch(e){
@@ -65,5 +57,52 @@ router.post('/campanhas/criar', async (req,res) => {
         res.status(500).send("n rolou de criar campanha" + e )//n sei pq, se passo só send(e), ele n printa nada
     }
 })
+router.patch('/campanhas/updateRow',(req,res) => {
+    const campanha_id = req.body.campanha_id//id da CAMPANHA
+    const produtos = req.body.produtos//linha a ser adicionada ao array de produtos
+        //adiciona uma linha ao array de produtos de uma campanha ja existente
+    Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
+        if(err)
+            res.status(500).send(err)
+        res.status(202).send(doc)   
+    });   
+})
+router.post('/campanhas/addRow',(req,res) => {//adiciona linha de produtos a campanha
+    const campanha_id = req.body.campanha_id//id da CAMPANHA
+    const produtos = req.body.produtos//linha a ser adicionada ao array de produtos
+        //adiciona uma linha ao array de produtos de uma campanha ja existente
+    Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
+        if(err)
+            res.status(500).send(err)
+        const addedItensIndex = doc.produtos.length - 1//indice da linha adicionada, usarei no codigo pra ref    
+        res.status(202).send(doc.produtos[addedItensIndex]._id)//pra eu ter a ref dessa linha em particular   
+    });   
+})   
+   // console.log("req.body ", req.body, " req.body.produtos ", req.body.produtos)
+   // const new_campanha = new Campanha(req.body)
+//    Campanha.findByIdAndUpdate(
+       
+//    )
+//     try{
+//         console.log("tentooou")
+//         await new_campanha.save()
+//      //   if(new_user){//n precisa pois a operacao assima retorna uma promise
+//             //const user = await User.findByCredentials(req.body.email, req.body.password)//f q eu irei defini
+//         new_campanha.produtos.forEach(p => console.log(" id do prod ", ))
+//         const x = new_campanha.produtos.length -1
+//         console.log("leng dos prod ",new_campanha.produtos.length,
+//         " posicao do mais novo",new_campanha.produtos[x]._id )
+//         res.status(202).send({
+//             // id_campanha:new_campanha._id,
+//             // produtos:new_campanha.produtos
+//             teste:new_campanha._id,
+//             ida:new_campanha.produtos[new_campanha.produtos.length]
+//         })
+       
+//     }catch(e){
+//         console.log("se fudeu")
+//         res.status(500).send("n rolou de criar campanha" + e )//n sei pq, se passo só send(e), ele n printa nada
+//     }
+
 
 module.exports = router
