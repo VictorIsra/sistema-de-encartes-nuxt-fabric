@@ -68,27 +68,27 @@ router.patch('/campanhas/updateRow',async(req,res) => {
       //  const tid = mongoose.Types.ObjectId('5d118cdaedeca362ba32a474')
         
      //  const index = campanha.produtos.find((it,i)=>{
-          const ind =  campanha.produtos.findIndex( (it,i) =>{
+          var ind =  campanha.produtos.findIndex( (it,i) =>{
                //const id = mongoose.Types.ObjectId(it._id)
-               return it._id.equals('5d118cdaedeca362ba32a474')
+               return it._id.equals('5d117a92a42ad9547a12b74f')
                 //    return i
                 //else return false
             })
             //aeeeeeee
-            console.log("Indice q quero: ", ind)
-        // const query = {'produtos._id':'5d118cdaedeca362ba32a474'}
-        // Campanha.findOneAndUpdate(query,
-        // )
-        // campanha.find({produtos: {$in: ['5d118cdaedeca362ba32a474']}})
-        // console.log("chegoo aki")
-        // campanha.findOneAndUpdate({_id:'5d118cdaedeca362ba32a474'},{new:true},
-        // (err,doc)=>{
-        //     if(err)
-        //         res.status(500).send(err)
-        //     console.log("ACHO")    
-        //         res.status(202).send(doc)
-   
-        // })
+           console.log("Indice q quero: ", typeof(ind))
+           //console.log("veja ", campanha.produtos[ind])
+            campanha.produtos[ind] = {
+                _id:campanha.produtos[ind]._id,
+                marluc:'10,00%',
+                data_i:'1//2/201'
+            }
+            try{
+                await campanha.save()
+
+            }catch(e){
+                console.log(e)
+            }
+           res.status(202).send("0k")
     }catch(e){
         res.status(404).send(e)
     } 
