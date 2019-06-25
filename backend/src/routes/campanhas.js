@@ -4,7 +4,6 @@ const filterInput = require('../middleware/filterInput')//filtro body pra tirar 
 //n preciso do router.use express json pq ja o fiz no index.js
 const router = new express.Router()
 
-
 router.get('/campanhas/produtos',async(req,res) => {
     //pega todos os produtos de uma campanha
     const campanha_id = req.body.campanha_id
@@ -15,7 +14,7 @@ router.get('/campanhas/produtos',async(req,res) => {
         res.status(500).send(err)
     }    
 })
-router.post('/campanhas/create', async (req,res) => {//cria campanha
+router.post('/campanhas/createCampanha', async (req,res) => {//cria campanha
     //achar user pelas credenciais
     //retornará um token de autenticacao
     console.log("vai dar um new no body")
@@ -23,14 +22,27 @@ router.post('/campanhas/create', async (req,res) => {//cria campanha
     try{
         console.log("tentooou")
         await new_campanha.save()
+        //gambiarra pra salvar o id gerado numa propriedade a parte e manipular no codigo xD
+        new_campanha.campanha_id = new_campanha._id
+        await new_campanha.save()
         res.status(202).send({
-           campanhaID: new_campanha._id//retorna o _id pra eu poder ref/identificar uma campanha no codigo
+           campanha_id: new_campanha._id,
+           atributoid: new_campanha.campanha_id//retorna o _id pra eu poder ref/identificar uma campanha no codigo
         })
        
     }catch(e){
         console.log("se fudeu")
         res.status(500).send("n rolou de criar campanha" + e )//n sei pq, se passo só send(e), ele n printa nada
     }
+})
+router.delete('/campanhas/removeCampanha',(req,res)=>{
+    //deleta campanha por id
+    const campanha_id =  req.body.campanha_id
+    Campanha.findByIdAndDelete(campanha_id,(err,doc)=>{
+        if(err)
+            res.status(404).send(err)
+        res.status(202).send(doc)    
+    })
 })
 router.delete('/campanhas/removeRow',async(req,res)=>{
     //rempve uma linha da tabela
@@ -79,8 +91,7 @@ router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de pr
    // console.log("entrou")
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const produtos = req.body.produtos//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
-    
-    console.log("req.body.produtos apos o middleware: ", produtos)
+    // console.log("req.body.produtos apos o middleware: ", produtos)
     
     Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
         if(err){

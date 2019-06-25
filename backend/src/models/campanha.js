@@ -42,6 +42,10 @@ const campanhaSchema = new mongoose.Schema({
         //unique: true,
         trim: true
     },
+    campanha_id: {
+        //vai receber o valor de _id gerado automaticamente p eu poder ref no codigo
+        type: String
+    },
     // produtos: {    //ai posso passar um array de objetos [ {obj1},{obj2}] etc
     //     type: Array,
     //     "default":[]
@@ -89,9 +93,6 @@ const campanhaSchema = new mongoose.Schema({
             },
             preco_v_c3:{
                 type:String
-            },
-            Rid: {
-                type: mongoose.Schema.Types.ObjectId
             }
         }
     ],
