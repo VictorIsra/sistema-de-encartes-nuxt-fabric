@@ -3,7 +3,7 @@ import {setAuthToken, resetAuthToken} from '~/utils/auth'
 export const strict = false//com isso, nao rola o erro de 'n mudar mutation without mutatiom handler e mimimi'
 
 export const actions = {
-  nuxtServerInit ({dispatch}, context) {
+  nuxtServerInit ({dispatch, router}, context) {
 
     return new Promise((resolve, reject) => {
       const cookies = cookie.parse(context.req.headers.cookie || '')
@@ -16,7 +16,8 @@ export const actions = {
             resolve(true)
           })
           .catch(error => {
-            console.log('erro ao tentar auth/fetch no store: index.js ', error)                       
+            console.log('erro ao tentar auth/fetch no store: index.js ', error)
+            router.push('/')                       
             resetAuthToken()
             resolve(false)
           })

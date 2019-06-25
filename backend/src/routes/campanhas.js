@@ -57,23 +57,52 @@ router.post('/campanhas/create', async (req,res) => {//cria campanha
         res.status(500).send("n rolou de criar campanha" + e )//n sei pq, se passo só send(e), ele n printa nada
     }
 })
-router.patch('/campanhas/updateRow',(req,res) => {
+router.patch('/campanhas/updateRow',async(req,res) => {
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const produtos = req.body.produtos//linha a ser adicionada ao array de produtos
         //adiciona uma linha ao array de produtos de uma campanha ja existente
-    Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
-        if(err)
-            res.status(500).send(err)
-        res.status(202).send(doc)   
-    });   
+    try{
+        const campanha = await Campanha.findById(campanha_id)
+        console.log("ueeee")
+      
+      //  const tid = mongoose.Types.ObjectId('5d118cdaedeca362ba32a474')
+        
+     //  const index = campanha.produtos.find((it,i)=>{
+          const ind =  campanha.produtos.findIndex( (it,i) =>{
+               //const id = mongoose.Types.ObjectId(it._id)
+               return it._id.equals('5d118cdaedeca362ba32a474')
+                //    return i
+                //else return false
+            })
+            //aeeeeeee
+            console.log("Indice q quero: ", ind)
+        // const query = {'produtos._id':'5d118cdaedeca362ba32a474'}
+        // Campanha.findOneAndUpdate(query,
+        // )
+        // campanha.find({produtos: {$in: ['5d118cdaedeca362ba32a474']}})
+        // console.log("chegoo aki")
+        // campanha.findOneAndUpdate({_id:'5d118cdaedeca362ba32a474'},{new:true},
+        // (err,doc)=>{
+        //     if(err)
+        //         res.status(500).send(err)
+        //     console.log("ACHO")    
+        //         res.status(202).send(doc)
+   
+        // })
+    }catch(e){
+        res.status(404).send(e)
+    } 
 })
 router.post('/campanhas/addRow',(req,res) => {//adiciona linha de produtos a campanha
+    console.log("entrou")
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const produtos = req.body.produtos//linha a ser adicionada ao array de produtos
         //adiciona uma linha ao array de produtos de uma campanha ja existente
     Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
-        if(err)
+        if(err){
+            console.log("deu ruim")
             res.status(500).send(err)
+        }    
         const addedItensIndex = doc.produtos.length - 1//indice da linha adicionada, usarei no codigo pra ref    
         res.status(202).send(doc.produtos[addedItensIndex]._id)//pra eu ter a ref dessa linha em particular   
     });   

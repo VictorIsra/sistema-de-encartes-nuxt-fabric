@@ -15,6 +15,7 @@ export default function ({store, redirect, route}) {
   const urlForbiddenForDirector = /(^\/campanhas(\/|$))|(^\/tabloides(\/|$))|(^\/admin(\/|$))|(^\/users(\/|$))/i.test(route.fullPath)
   const urlForbiddenForTabloideUser = /(^\/campanhas(\/|$))|(^\/admin(\/|$))|(^\/analise(\/|$))|(^\/users(\/|$))/i.test(route.fullPath)
   
+  console.log("to akiii")
   if (!userIsLoggedIn && urlRequiresAuth) {
     return redirect('/login')
   }
