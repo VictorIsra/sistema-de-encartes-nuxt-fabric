@@ -2,7 +2,7 @@ const express = require('express')
 require('./src/db/mongoose')//garante que vai conectar ao bd
 const userRoute = require('./src/routes/user')
 const campanhaRoute = require('./src/routes/campanhas')
-const cors = require('cors');//ESSENCIAL, NÃO ESQUECER!
+const bodyParser = require('body-parser')//ESSENCIAL, NÃO ESQUECER!
 const app = express()
 
 // app.use((req,res,next) => { //teste midware geral
@@ -17,7 +17,9 @@ const app = express()
 //se quisesse um midware mais restrito, especificava um path como primeiro argumento
 
 app.use(express.json())//parsea automaticamente os json pra objeto, dai posso acessar no body
-app.use(cors());//n precisa na real
+//achei q n precisava mas..precisa sim rs. estranho q os metodos q tem um midware q eu fiz, n precisaram..mas enfim
+app.use(bodyParser.urlencoded({ extended: true }));//passagem principal, nao esquecer
+//
 app.use(userRoute)
 app.use(campanhaRoute)
 

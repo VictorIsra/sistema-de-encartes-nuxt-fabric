@@ -6,12 +6,15 @@ const router = new express.Router()
 
 router.get('/campanhas/produtos',async(req,res) => {
     //pega todos os produtos de uma campanha
-    const campanha_id = req.body.campanha_id
+    console.log("req data ", req.query.campanha_id)//passo como params mas ele bota pra query..wtf, mas que seja xD
+    const campanha_id = req.query.campanha_id
+    console.log("entro com id ", campanha_id)
     try{
         const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
         res.status(202).send(campanha.produtos)
     }catch(e){
-        res.status(500).send(err)
+        console.log("zik")
+        res.status(500).send(e)
     }    
 })
 router.post('/campanhas/createCampanha', async (req,res) => {//cria campanha
