@@ -5,42 +5,16 @@ const filterInput = require('../middleware/filterInput')//filtro body pra tirar 
 const router = new express.Router()
 
 
-router.get('/campanhas/me',async(req,res) => {
-    // const user = { 
-    //     name:req.user.name,
-    //     _id: req.user._id,
-    //     userType: req.user.userType
-    // }
-    res.send("mandei")//req.user foi passado pela funcao auth qd o user foi autenticado xD
+router.get('/campanhas/produtos',async(req,res) => {
+    //pega todos os produtos de uma campanha
+    const campanha_id = req.body.campanha_id
+    try{
+        const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
+        res.status(202).send(campanha.produtos)
+    }catch(e){
+        res.status(500).send(err)
+    }    
 })
-// router.delete('/campanhas/me', auth, async (req,res)=>{
-        
-//     try{
-//         await req.user.remove()//remove o usuario autenticado, msm efeito das linhas acima
-//         res.send(req.user)//retorna o profile deletado
-//     }catch(e){
-//         res.status(500).send(e)
-//     }
-// })
-// router.patch('/campanhas/update', async (req,res) => {
-    
-//    // const allowedUpdates = [ "name","password","userType"]
-//     const updates = Object.keys(req.body)
-//     const filtro = updates.every(field => allowedUpdates.includes(field))
-     
-//     if(!filtro)
-//         res.status(404).send("invalid updates...")
-    
-//     try{ 
-//        // const user = await User.findById(_id)//findByIdAndUpdate(_id,req.body,{new: true})//retorna o user atualizado, em vez do antigo
-//         updates.forEach(update => req.user[update] = req.body[update])
-//         await req.user.save()//hook pro midware será executado imediatamente antes de chamar .save()                    
-//         const msg = "usuário atualizado: " + req.user
-//         res.status(202).send(msg)//como ja salvou. mostra o usuario atual(modificado/atualizado)
-//     }catch(e){
-//         res.status(500).send(e)
-//     }
-// })
 router.post('/campanhas/create', async (req,res) => {//cria campanha
     //achar user pelas credenciais
     //retornará um token de autenticacao
