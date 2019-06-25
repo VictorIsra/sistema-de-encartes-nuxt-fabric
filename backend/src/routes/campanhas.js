@@ -44,7 +44,7 @@ router.delete('/campanhas/removeCampanha',(req,res)=>{
         res.status(202).send(doc)    
     })
 })
-router.delete('/campanhas/removeRow',async(req,res)=>{
+router.put('/campanhas/removeRow',async(req,res)=>{
     //rempve uma linha da tabela
     const campanha_id = req.body.campanha_id
     const row_id = req.body.row_id
@@ -53,14 +53,13 @@ router.delete('/campanhas/removeRow',async(req,res)=>{
             console.log("deu merda")
             res.status(500).send(err)
         }
-        res.status(202).send("removido! xD")
+        res.status(202).send(doc)
     })
 })
 router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const row_id = req.body.row_id //id da linha que tou atualizando
     const produtos = req.body.produtos//linha a ser atualizada ao array de produtos
-    
     try{
         const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
         //me dá o index da linha que estou tentando atualizar:
@@ -91,7 +90,6 @@ router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de pr
    // console.log("entrou")
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const produtos = req.body.produtos//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
-    // console.log("req.body.produtos apos o middleware: ", produtos)
     
     Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
         if(err){

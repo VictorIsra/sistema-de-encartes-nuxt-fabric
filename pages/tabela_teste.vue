@@ -259,8 +259,11 @@
       },
       deleteItem (item) {
         const index = this.itens.indexOf(item)
-        confirm('Você tem certeza de que deseja remover este item?') && this.itens.splice(index, 1)
-      },
+        this.editedItem = Object.assign({}, item)
+        const targetId = this.editedItem._id.data//n adianta passa o this.edited msm mudando a ordem pois ele perderá a ref e passará o id como undefined
+        console.log("target: ", targetId, typeof(targetId))
+        confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.removeRow(targetId))
+     },
       close () {
         this.dialog = false
         setTimeout(() => {
@@ -280,14 +283,25 @@
         .catch(e => console.log("erro: ",e))
       },
       updateRow(editedItem){//a lvl de bd, serve tano pra editar uma linha qt pra criar uma, ja q uma linha é um objeto dentro de uma campanha
-        api.campanha.updateRow(
-              {produtos:editedItem,
+        console.log(" te ",typeof(editedItem._id.data))
+        api.campanha.updateRow({
+              produtos:editedItem,
               campanha_id:"5d126668d0428d506c18cdaf",
-              row_id:editedItem._id.data}
-        ).then(
+              row_id:editedItem._id.data
+        }).then(
               r => console.log("response: ",r)
         )
         .catch(e => console.log("erro: ",e))
+      },
+      removeRow(row_id){
+        console.log("entrou app ", row_id)
+        api.campanha.removeRow({
+            campanha_id:"5d126668d0428d506c18cdaf",
+            row_id: row_id
+        }).then(
+          r => console.log("removido com sucesso: ",r)
+        )
+        .catch(e => console.log(e))
       },
       save () {
         if (this.editedIndex > -1) {//na edicao, preciso editar antes do assign, se nao vou modificar uma copia q nao é mais usada
@@ -295,8 +309,6 @@
             Object.assign(this.itens[this.editedIndex], this.editedItem)
             const keys = Object.keys(this.editedItem)
             this.updateRow(this.editedItem)
-           
-           
         } else {//caso esteja adicionando algo em vez de editando
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
