@@ -209,7 +209,7 @@
         preco_v: '0,00',
         selout: '',
         marluc: '0.00',
-        Rid: ''//'row id' id unica que caracteriza uma linha da tabela ( db setara isso ao criar)
+        _id: ''//'row id' id unica que caracteriza uma linha da tabela ( db setara isso ao criar)
       },
       defaultItem: {//aqui seto os valores defaults
         img:  '',
@@ -223,7 +223,7 @@
         preco_v: '0,00',
         selout: '',
         marluc: '0.00',
-        Rid: ''//id unica que caracteriza uma linha da tabela ( db setara isso ao criar)
+        _id: ''//id unica que caracteriza uma linha da tabela ( db setara isso ao criar)
       }
     }),
     computed: {

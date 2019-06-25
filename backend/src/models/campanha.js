@@ -102,7 +102,6 @@ const campanhaSchema = new mongoose.Schema({
         //trim: true
     }
 })
-
 const Campanha =  mongoose.model('Campanha',campanhaSchema)
 
 module.exports = Campanha

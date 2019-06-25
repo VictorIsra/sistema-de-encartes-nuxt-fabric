@@ -1,5 +1,6 @@
 const express = require('express')
 const Campanha = require('../models/campanha')
+const filterInput = require('../middleware/filterInput')//filtro body pra tirar o campo '_id'
 //n preciso do router.use express json pq ja o fiz no index.js
 const router = new express.Router()
 
@@ -57,47 +58,41 @@ router.post('/campanhas/create', async (req,res) => {//cria campanha
         res.status(500).send("n rolou de criar campanha" + e )//n sei pq, se passo só send(e), ele n printa nada
     }
 })
-router.patch('/campanhas/updateRow',async(req,res) => {
+router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
     const campanha_id = req.body.campanha_id//id da CAMPANHA
-    const produtos = req.body.produtos//linha a ser adicionada ao array de produtos
-        //adiciona uma linha ao array de produtos de uma campanha ja existente
-    try{
-        const campanha = await Campanha.findById(campanha_id)
-        console.log("ueeee")
-      
-      //  const tid = mongoose.Types.ObjectId('5d118cdaedeca362ba32a474')
-        
-     //  const index = campanha.produtos.find((it,i)=>{
-          var ind =  campanha.produtos.findIndex( (it,i) =>{
-               //const id = mongoose.Types.ObjectId(it._id)
-               return it._id.equals('5d117a92a42ad9547a12b74f')
-                //    return i
-                //else return false
-            })
-            //aeeeeeee
-           console.log("Indice q quero: ", typeof(ind))
-           //console.log("veja ", campanha.produtos[ind])
-            campanha.produtos[ind] = {
-                _id:campanha.produtos[ind]._id,
-                marluc:'10,00%',
-                data_i:'1//2/201'
-            }
-            try{
-                await campanha.save()
+    const row_id = req.body_row_id //id da linha que tou atualizando
+    const produtos = req.body.produtos//linha a ser atualizada ao array de produtos
 
-            }catch(e){
-                console.log(e)
-            }
-           res.status(202).send("0k")
+    try{
+        const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
+        
+        var targetIndex =  campanha.produtos.findIndex( (it,i) =>{
+               return it._id.equals(row_id)
+        })  
+        campanha.produtos[targetIndex] = {
+            _id:campanha.produtos[targetIndex]._id,
+            marluc:'10,00%',
+            data_i:'1//2/201'
+        }
+        try{
+            await campanha.save()
+            res.status(202).send("0k")
+        }catch(e){
+            res.status(500).send(e)
+        }
     }catch(e){
         res.status(404).send(e)
     } 
 })
-router.post('/campanhas/addRow',(req,res) => {//adiciona linha de produtos a campanha
+
+
+router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de produtos a campanha
     console.log("entrou")
     const campanha_id = req.body.campanha_id//id da CAMPANHA
-    const produtos = req.body.produtos//linha a ser adicionada ao array de produtos
-        //adiciona uma linha ao array de produtos de uma campanha ja existente
+    const produtos = req.body.produtos//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
+    
+    console.log("req.body.produtos apos o middleware: ", produtos)
+    
     Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
         if(err){
             console.log("deu ruim")
@@ -107,31 +102,6 @@ router.post('/campanhas/addRow',(req,res) => {//adiciona linha de produtos a cam
         res.status(202).send(doc.produtos[addedItensIndex]._id)//pra eu ter a ref dessa linha em particular   
     });   
 })   
-   // console.log("req.body ", req.body, " req.body.produtos ", req.body.produtos)
-   // const new_campanha = new Campanha(req.body)
-//    Campanha.findByIdAndUpdate(
-       
-//    )
-//     try{
-//         console.log("tentooou")
-//         await new_campanha.save()
-//      //   if(new_user){//n precisa pois a operacao assima retorna uma promise
-//             //const user = await User.findByCredentials(req.body.email, req.body.password)//f q eu irei defini
-//         new_campanha.produtos.forEach(p => console.log(" id do prod ", ))
-//         const x = new_campanha.produtos.length -1
-//         console.log("leng dos prod ",new_campanha.produtos.length,
-//         " posicao do mais novo",new_campanha.produtos[x]._id )
-//         res.status(202).send({
-//             // id_campanha:new_campanha._id,
-//             // produtos:new_campanha.produtos
-//             teste:new_campanha._id,
-//             ida:new_campanha.produtos[new_campanha.produtos.length]
-//         })
-       
-//     }catch(e){
-//         console.log("se fudeu")
-//         res.status(500).send("n rolou de criar campanha" + e )//n sei pq, se passo só send(e), ele n printa nada
-//     }
-
+ 
 
 module.exports = router
