@@ -2,9 +2,25 @@ const express = require('express')
 require('./src/db/mongoose')//garante que vai conectar ao bd
 const userRoute = require('./src/routes/user')
 const campanhaRoute = require('./src/routes/campanhas')
-const bodyParser = require('body-parser')//ESSENCIAL, NÃO ESQUECER!
+const multer = require('multer')
 const app = express()
 
+ 
+const upload = multer({
+  dest:'backend/uploads/fotos',//pasta q guardará imgs
+  limits:{
+    fileSize: 1000000//max 1mb o tamanho a img
+  },
+  fileFilter(req,file,cb){
+    // cb(new Error('Arquivo precisa ser uma imagem'))//se der erro
+    // cb(undefined,true)//td ok
+  }
+})
+//endpoint p upload:
+app.post('/upload',upload.single('upload'),(req,res)=> {
+  console.log(res)
+  res.send()
+})
 // app.use((req,res,next) => { //teste midware geral
 //   if(req.method === 'GET'){
 //     res.send("nao pode viado")
@@ -17,9 +33,6 @@ const app = express()
 //se quisesse um midware mais restrito, especificava um path como primeiro argumento
 
 app.use(express.json())//parsea automaticamente os json pra objeto, dai posso acessar no body
-//achei q n precisava mas..precisa sim rs. estranho q os metodos q tem um midware q eu fiz, n precisaram..mas enfim
-app.use(bodyParser.urlencoded({ extended: true }));//passagem principal, nao esquecer
-//
 app.use(userRoute)
 app.use(campanhaRoute)
 
