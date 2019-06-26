@@ -7,7 +7,7 @@ export default {
     logout: (data) => axios.post('users/logout',data)
   },
   campanha: {
-    getProdutos: (campanha_id) => axios.get('/campanhas/produtos',campanha_id),//pega vetor de produtos de uma campanha particular
+    getProdutos: (data) => axios.get('/campanhas/produtos',data),//pega vetor de produtos de uma campanha particular
     createCampanha:(data) => axios.post('/campanhas/createCampanha',data),//cria CAMPANHA
     removeCampanha:(data) => axios.post('/campanhas/removeCampanha',data),
     updateRow: (data) => axios.patch('campanhas/updateRow',data),//faz update de uma row de produtos de uma campanha

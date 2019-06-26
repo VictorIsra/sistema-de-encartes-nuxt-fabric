@@ -2,14 +2,48 @@ const express = require('express')
 const Campanha = require('../models/campanha')
 const filterInput = require('../middleware/filterInput')//filtro body pra tirar o campo '_id'
 //n preciso do router.use express json pq ja o fiz no index.js
+//td necessario pro upload d imgs
+const multer = require('multer')//p faze uploado da img pra um folder
+const fs = require('fs')//p deletar a img de um folder ( path)
+const crypto = require('crypto')
+const path = require('path')
+
 const router = new express.Router()
 
+const storage = multer.diskStorage({
+    destination: 'backend/uploads/fotos',
+    filename: function (req, file, cb) {
+      crypto.pseudoRandomBytes(16, function (err, raw) {
+        if (err) return cb(err)
+        //p salvar o path com formato correto
+        cb(null, raw.toString('hex') + path.extname(file.originalname))
+      })
+    }
+  })
+
+const upload = multer({ storage: storage })
+
+router.post('/campanhas/removeImg',(req,res)=>{
+    const path = req.file.path//path q usarei pra salvar pro bd, inclusive  
+    fs.unlink(path,(err)=>{
+        if(err)
+            throw err
+        console.log("removido!")
+        res.status(202).send()  
+    })
+})
+  //endpoint p upload d img:
+router.post('/campanhas/uploadImg',upload.single('upload'),(req,res)=> {
+    console.log(res)//o path que irei retornar
+    res.send()
+})
 router.get('/campanhas/produtos',async(req,res) => {
     //pega todos os produtos de uma campanha
    // console.log("req data ", req.query.campanha_id)//passo como params mas ele bota pra query..wtf, mas que seja xD
     const campanha_id = req.query.campanha_id
-    //console.log("entro com id ", campanha_id)
+    console.log("entro com id ", campanha_id)
     try{
+        console.log(" q passa")
         const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
         res.status(202).send(campanha.produtos)
     }catch(e){

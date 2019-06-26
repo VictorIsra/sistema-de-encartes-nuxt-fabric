@@ -2,25 +2,29 @@ const express = require('express')
 require('./src/db/mongoose')//garante que vai conectar ao bd
 const userRoute = require('./src/routes/user')
 const campanhaRoute = require('./src/routes/campanhas')
-const multer = require('multer')
+// const multer = require('multer')//p faze uploado da img pra um folder
+// const fs = require('fs')//p deletar a img de um folder ( path)
+// const crypto = require('crypto')
+// const path = require('path')
 const app = express()
 
- 
-const upload = multer({
-  dest:'backend/uploads/fotos',//pasta q guardará imgs
-  limits:{
-    fileSize: 1000000//max 1mb o tamanho a img
-  },
-  fileFilter(req,file,cb){
-    // cb(new Error('Arquivo precisa ser uma imagem'))//se der erro
-    // cb(undefined,true)//td ok
-  }
-})
-//endpoint p upload:
-app.post('/upload',upload.single('upload'),(req,res)=> {
-  console.log(res)
-  res.send()
-})
+
+
+// app.post('/teste',(req,res)=>{
+//     const path = req.body.path   
+//     fs.unlink(path,(err)=>{
+//         if(err)
+//             throw err
+//         console.log("removido!")
+//         res.status(202).send()  
+//     })
+// })
+//   //endpoint p upload d img:
+// app.post('/upload',upload.single('upload'),(req,res)=> {
+//     console.log(res)//o path que irei retornar
+
+//     res.send(req.file)
+// })
 // app.use((req,res,next) => { //teste midware geral
 //   if(req.method === 'GET'){
 //     res.send("nao pode viado")
