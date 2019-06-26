@@ -84,4 +84,4 @@ dist
 sw.*
 
 #arquivo de uploads
-backend/uploads/*
+/backend/uploads/*
