@@ -170,10 +170,10 @@
 
 <script>
 //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
-  import imgUpload from '../generalUseComponents/image_upload.vue'
-  import datas from  '../generalUseComponents/datas.vue'
-  import formatInputMixin from '../../mixins/FormatInputMixin.js'
-  import imgMixin from '../../mixins/ImgMixin.js'
+  import imgUpload from '../components/campanhas/generalUseComponents/image_upload.vue'
+  import datas from  './datas_teste.vue'
+  import formatInputMixin from '../components/mixins/FormatInputMixin.js'
+  import imgMixin from '../components/mixins/ImgMixin.js'
 
   export default {
     components: {
