@@ -53,7 +53,7 @@ const campanhaSchema = new mongoose.Schema({
     produtos: [//a principio deixarei assim pois gera um ID pra cada elemento do array
         {
             img:{
-                type:String
+                type:Object
             },
             nome:{
                 type:String

@@ -119,10 +119,10 @@ router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de pr
    // console.log("entrou")
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const produtos = req.body.produtos//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
-    
+    console.log("entro com: ", produtos, " id: ", campanha_id)
     Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
         if(err){
-            //console.log("deu ruim")
+            console.log("deu ruim")
             res.status(500).send(err)
         }    
         const addedItensIndex = doc.produtos.length - 1//indice da linha adicionada, usarei no codigo pra ref    

@@ -174,6 +174,8 @@
   import datas from  './datas_teste.vue'
   import formatInputMixin from '../components/mixins/FormatInputMixin.js'
   import imgMixin from '../components/mixins/ImgMixin.js'
+  import api from '~/api'//pra eu poder fazer as req pro axios com uma sintaxe enxugada
+
 
   export default {
     components: {
@@ -204,8 +206,8 @@
         },
         //prop' que indicará pro componente filho (image_upload) as img que devem ser mostradas qd um dialog/form abrir
         imgInfo: {
-          imgName: '',
-          imgURL: '',
+      //    imgName: '',
+       //   imgURL: '',
           imgFile: '',
           flag: 0
         },
@@ -215,9 +217,9 @@
       // Faco um cache em vez de assimilar a variavel 'itens'
       //diretamente pois só quero associa-la se o usuário salvar as alterações, se não, nao. :)
       cachedImgInfo: {
-        imgName: '',//só o nome da img
+     //   imgName: '',//só o nome da img
         imgFile: '',//objeto que pode ser salvo no db e posteriormente renderizado em uma img,inclusive
-        imgURL: ''
+      //  imgURL: ''
       },
       //fim info relativas ao uplode e img ^
       headers: [
@@ -288,8 +290,8 @@
       },
       prepareImgInfo(currentItem){//envia pro componente filho image_uload.vue os valores ( sao props no comp filho) a serem colocados ao abrir a aba/form de edit
         this.imgInfo.imgFile = currentItem.img.src
-        this.imgInfo.imgURL = currentItem.img.url
-        this.imgInfo.imgName = currentItem.img.name
+    //    this.imgInfo.imgURL = currentItem.img.url
+     //   this.imgInfo.imgName = currentItem.img.name
         this.imgInfo.flag = 1
       },
       editItem (item) {
@@ -304,10 +306,16 @@
         this.imgInfo.flag = flag//garante q nao vai ter uma img pre definida ao abrir o dialog
         this.sendDefaultDates(flag)
       },
-      deleteItem (item) {
+       deleteItem (item) {
         const index = this.itens.indexOf(item)
-        confirm('Você tem certeza de que deseja remover este item?') && this.itens.splice(index, 1)
-      },
+        this.editedItem = Object.assign({}, item)
+        // let targetId = this.editedItem._id.data//qt crio manualmente, o _id é um objeto cuso _id de interesse tá no atributo dat
+        // if(targetId === undefined)//mas qt dou um get do bd, ele seta o _id direto como um atributo, esse if vai ajustar pra ambos os casos xD
+        //   targetId = this.editedItem._id
+       // console.log("target: ", targetId, typeof(targetId))
+        confirm('Você tem certeza de que deseja remover este item?') &&  this.itens.splice(index, 1) 
+        //confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.removeRow(targetId))
+     },
       close () {
         this.resetFlags()
         this.resetDateErrorStack()
@@ -316,6 +324,39 @@
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         }, 300)
+      },
+       addRow(editedItem){//vai virar um mixin
+       console.log("entrada: ",editedItem)
+        api.campanha.addRow(
+              {produtos:editedItem,
+              campanha_id:"5d126668d0428d506c18cdaf"}
+        ).then(
+              r => {editedItem._id = r
+              console.log("editeitem: ",editedItem)}
+              //pra ref esse id farei: editedItem._id.data pois me retorna um objeto xD
+        )
+        .catch(e => console.log("erro: ",e))
+      },
+      updateRow(editedItem){//a lvl de bd, serve tano pra editar uma linha qt pra criar uma, ja q uma linha é um objeto dentro de uma campanha
+        console.log(" te ",typeof(editedItem._id.data))
+        api.campanha.updateRow({
+              produtos:editedItem,
+              campanha_id:"5d126668d0428d506c18cdaf",
+              row_id:editedItem._id.data
+        }).then(
+              r => console.log("response: ",r)
+        )
+        .catch(e => console.log("erro: ",e))
+      },
+      removeRow(row_id){
+        console.log("entrou app ", row_id)
+        api.campanha.removeRow({
+            campanha_id:"5d126668d0428d506c18cdaf",
+            row_id: row_id
+        }).then(
+          r => console.log("removido com sucesso: ",r)
+        )
+        .catch(e => console.log(e))
       },
       resetFlags(){//reseta as flags que sao props em componentes filhos, pra que o watch sempre observe mudanca
         this.defaultDatesValues.flag = 0
@@ -326,10 +367,13 @@
             this.editUserInputs()
             Object.assign(this.itens[this.editedIndex], this.editedItem)
             this.fillImgInfo()
+          //  this.updateRow(this.editedItem)
         } else {//caso esteja adicionando algo em vez de editando
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
             this.fillImgInfo(0)
+          //  this.addRow(this.editedItem)//na real nem precisava passa isso como arg mas foda-se
+
         }
         this.saveProdutos()
         this.close()      
@@ -398,39 +442,41 @@
       },
       fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
-        this.cachedImgInfo.imgName = data.name
+       // this.cachedImgInfo.imgName = data.name
         this.cachedImgInfo.imgFile = data.file
-        this.cachedImgInfo.imgURL = data.url
+       // this.cachedImgInfo.imgURL = data.url
       },
       fillImgInfo(newItemIndex = ''){   
          //só guardarei a foto escolhida se ele salvou algo, se nao, nao
         //sera chamada se o user de fato quis salvar uma img e ela nao for em branco, pois caso seja, n tem objeto pra criar e daria erro!
         if(this.cachedImgInfo.imgFile !== '' && newItemIndex === ''){//caso editando algo existente c img
+          //renderiza o arquivo em uma img de fato:
           this.createImage(this.cachedImgInfo.imgFile,this.editedItem)
-          this.editedItem.img.name = this.cachedImgInfo.imgName
-          this.editedItem.img.url = this.cachedImgInfo.imgURL         
+         // this.editedItem.img.name = this.cachedImgInfo.imgName
+         // this.editedItem.img.url = this.cachedImgInfo.imgURL         
         }
         else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){//caso criando algo novo  que contenha img
           this.itens[newItemIndex].img = {
             src:  this.cachedImgInfo.imgFile,
-            name: this.cachedImgInfo.imgName,
-            url:  this.cachedImgInfo.imgURL
+          //  name: this.cachedImgInfo.imgName,
+          //  url:  this.cachedImgInfo.imgURL
           }
+          //renderiza o arquivo em uma img de fato:
           this.createImage(this.itens[newItemIndex].img.src,this.itens[newItemIndex])
         }
         else{//caso criando algo novo e sem img ou editando algo sem img
           if(newItemIndex !== ''){//só sera dif se já tiver sido criado
             this.itens[newItemIndex].img = {
               src:  this.cachedImgInfo.imgFile,
-              name: this.cachedImgInfo.imgName,
-              url:  this.cachedImgInfo.imgURL
+           //   name: this.cachedImgInfo.imgName,
+           //   url:  this.cachedImgInfo.imgURL
             }
           }    
         }
         //esvazia p uso futuro. lembre que só é possivel editar uma linha por vez :)
-        this.cachedImgInfo.imgName = ''
+      //  this.cachedImgInfo.imgName = ''
         this.cachedImgInfo.imgFile = ''
-        this.cachedImgInfo.imgURL = ''
+       // this.cachedImgInfo.imgURL = ''
       },
       validate(){
         const valid = []//verá quantos itens passarão no teste de validade ( excluindo datas, quem te validacao particular e diferenciada )
