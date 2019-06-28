@@ -34,8 +34,9 @@ router.post('/campanhas/removeImg',(req,res)=>{
 })
   //endpoint p upload d img:
 router.post('/campanhas/uploadImg',upload.single('upload'),(req,res)=> {
-    console.log(res)//o path que irei retornar
-    res.send()
+    console.log("até entrei!?")
+    console.log(req.file)//o path que irei retornar
+    res.send(req.file.path)
 })
 router.get('/campanhas/produtos',async(req,res) => {
     //pega todos os produtos de uma campanha

@@ -24,6 +24,7 @@
 export default {
      data: () => ({
         dialog: false,
+        /*msm parecendo 'inutil' a lvl de bd, é legal passar url e name pro usuario itneragir/ver a nivel de app, apenas xD */
         imageUrl: '',
 		imageName: '',
         imageFile: '',//arquivo que irei salvar no bd e q é capaz de
@@ -34,8 +35,8 @@ export default {
             type: Object,
             default: function(){
                 return {
-                 //   imgName: '',
-                 //   imgURL: '',
+                    imgName: '',
+                    imgURL: '',
                     imgFile: '',
                     flag: 0
                 }
@@ -89,8 +90,8 @@ export default {
                     console.log("ARQ Q SALVO NO BD: ", this.imageFile, " tipo ", typeof(this.imageFile))
                     this.$emit('imgUploaded',{
                         file: this.imageFile,
-                      //  name: this.imageName,
-                      //  url: this.imageUrl
+                        name: this.imageName,
+                        url: this.imageUrl
                     })      
                 })
 			} else {

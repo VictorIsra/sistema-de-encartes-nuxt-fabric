@@ -206,8 +206,8 @@
         },
         //prop' que indicará pro componente filho (image_upload) as img que devem ser mostradas qd um dialog/form abrir
         imgInfo: {
-      //    imgName: '',
-       //   imgURL: '',
+          imgName: '',
+          imgURL: '',
           imgFile: '',
           flag: 0
         },
@@ -219,7 +219,7 @@
       cachedImgInfo: {
      //   imgName: '',//só o nome da img
         imgFile: '',//objeto que pode ser salvo no db e posteriormente renderizado em uma img,inclusive
-      //  imgURL: ''
+        imgURL: ''
       },
       //fim info relativas ao uplode e img ^
       headers: [
@@ -290,8 +290,8 @@
       },
       prepareImgInfo(currentItem){//envia pro componente filho image_uload.vue os valores ( sao props no comp filho) a serem colocados ao abrir a aba/form de edit
         this.imgInfo.imgFile = currentItem.img.src
-    //    this.imgInfo.imgURL = currentItem.img.url
-     //   this.imgInfo.imgName = currentItem.img.name
+        this.imgInfo.imgURL = currentItem.img.url
+        this.imgInfo.imgName = currentItem.img.name
         this.imgInfo.flag = 1
       },
       editItem (item) {
@@ -442,25 +442,36 @@
       },
       fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
-       // this.cachedImgInfo.imgName = data.name
+        this.cachedImgInfo.imgName = data.name
         this.cachedImgInfo.imgFile = data.file
-       // this.cachedImgInfo.imgURL = data.url
+        this.cachedImgInfo.imgURL = data.url
+      },
+      imgUpload(file){//faz o upload da img a lvl de bd
+        console.log("entrouuu com file: ",file)
+        const formData = new FormData()
+        formData.append('upload',file)
+        api.campanha.uploadImg(formData).then(
+          r => console.log("td certo ")
+        ).catch(e => console.log("bad ;/: ",e))
       },
       fillImgInfo(newItemIndex = ''){   
+        //LEMBRE: img name e url parecem inuteis a lvl de bd, mas sao fundamentais pro usuario interagir/ver a lvl de app!
          //só guardarei a foto escolhida se ele salvou algo, se nao, nao
         //sera chamada se o user de fato quis salvar uma img e ela nao for em branco, pois caso seja, n tem objeto pra criar e daria erro!
         if(this.cachedImgInfo.imgFile !== '' && newItemIndex === ''){//caso editando algo existente c img
           //renderiza o arquivo em uma img de fato:
           this.createImage(this.cachedImgInfo.imgFile,this.editedItem)
-         // this.editedItem.img.name = this.cachedImgInfo.imgName
-         // this.editedItem.img.url = this.cachedImgInfo.imgURL         
+          this.editedItem.img.name = this.cachedImgInfo.imgName
+          this.editedItem.img.url = this.cachedImgInfo.imgURL
+          this.imgUpload(this.cachedImgInfo.imgFile)
         }
         else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){//caso criando algo novo  que contenha img
           this.itens[newItemIndex].img = {
             src:  this.cachedImgInfo.imgFile,
-          //  name: this.cachedImgInfo.imgName,
-          //  url:  this.cachedImgInfo.imgURL
+            name: this.cachedImgInfo.imgName,
+            url:  this.cachedImgInfo.imgURL
           }
+          this.imgUpload(this.cachedImgInfo.imgFile)
           //renderiza o arquivo em uma img de fato:
           this.createImage(this.itens[newItemIndex].img.src,this.itens[newItemIndex])
         }
@@ -468,15 +479,16 @@
           if(newItemIndex !== ''){//só sera dif se já tiver sido criado
             this.itens[newItemIndex].img = {
               src:  this.cachedImgInfo.imgFile,
-           //   name: this.cachedImgInfo.imgName,
-           //   url:  this.cachedImgInfo.imgURL
+              name: this.cachedImgInfo.imgName,
+              url:  this.cachedImgInfo.imgURL
             }
+            this.imgUpload(this.cachedImgInfo.imgFile)
           }    
         }
         //esvazia p uso futuro. lembre que só é possivel editar uma linha por vez :)
-      //  this.cachedImgInfo.imgName = ''
+        this.cachedImgInfo.imgName = ''
         this.cachedImgInfo.imgFile = ''
-       // this.cachedImgInfo.imgURL = ''
+        this.cachedImgInfo.imgURL = ''
       },
       validate(){
         const valid = []//verá quantos itens passarão no teste de validade ( excluindo datas, quem te validacao particular e diferenciada )
