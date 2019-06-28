@@ -11,7 +11,7 @@ const path = require('path')
 const router = new express.Router()
 
 const storage = multer.diskStorage({
-    destination: 'backend/uploads/fotos',
+    destination: 'static/uploads/fotos',
     filename: function (req, file, cb) {
       crypto.pseudoRandomBytes(16, function (err, raw) {
         if (err) return cb(err)
@@ -36,7 +36,8 @@ router.post('/campanhas/removeImg',(req,res)=>{
 router.post('/campanhas/uploadImg',upload.single('upload'),(req,res)=> {
     console.log("até entrei!?")
     console.log(req.file)//o path que irei retornar
-    res.send(req.file.path)
+    res.send({  path:req.file.path,
+                nome: req.file.filename})
 })
 router.get('/campanhas/produtos',async(req,res) => {
     //pega todos os produtos de uma campanha

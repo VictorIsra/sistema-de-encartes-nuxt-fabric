@@ -2,6 +2,8 @@
 -->
 <template>
   <div>
+    <img src="../static/uploads/fotos/8e27f605d7e44f9fc9c4c10b4502cf53.png" width="50px" heigth="50px">
+    <p>dsd</p>
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
     <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span>
       <v-spacer></v-spacer>
@@ -114,7 +116,7 @@
       :search="search"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
-        <td class="text-xs-center"><img :src="props.item.img.src" width="50px" height="50px" alt=""></td>
+        <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
         <td class="text-xs-center">{{ props.item.qtdade }}</td>
         <td class="text-xs-center">{{ props.item.unidade }}</td>
@@ -175,7 +177,6 @@
   import formatInputMixin from '../components/mixins/FormatInputMixin.js'
   import imgMixin from '../components/mixins/ImgMixin.js'
   import api from '~/api'//pra eu poder fazer as req pro axios com uma sintaxe enxugada
-
 
   export default {
     components: {
@@ -446,34 +447,53 @@
         this.cachedImgInfo.imgFile = data.file
         this.cachedImgInfo.imgURL = data.url
       },
-      imgUpload(file){//faz o upload da img a lvl de bd
-        console.log("entrouuu com file: ",file)
+      async imgUpload(file,item){//faz o upload da img a lvl de bd
+        //file é o this.editeItem.img, o item é a ref real: this.editeItem
         const formData = new FormData()
+        console.log("entrada item: ", item)
         formData.append('upload',file)
-        api.campanha.uploadImg(formData).then(
-          r => console.log("td certo ")
-        ).catch(e => console.log("bad ;/: ",e))
+        try{
+          const data = await api.campanha.uploadImg(formData)//.then(
+          console.log("sucesso: ", data)
+          item.img = {
+            src: data.data.path,//path pro bd
+            name: data.data.nome 
+          }
+          console.log("item ref dento do try ", item)
+        }catch(e){
+          console.log("erro ", e)
+        } 
+        //   r =>{
+        //     //this.item.img.src = r//recebe o path
+        //     console.log("td azul")
+        //     return r
+        //     //console.log("vejamos ", this.item.img.src)
+        //   }
+        // ).catch(e => console.log("bad ;/: ",e))
       },
-      fillImgInfo(newItemIndex = ''){   
+      async fillImgInfo(newItemIndex = ''){   
         //LEMBRE: img name e url parecem inuteis a lvl de bd, mas sao fundamentais pro usuario interagir/ver a lvl de app!
          //só guardarei a foto escolhida se ele salvou algo, se nao, nao
         //sera chamada se o user de fato quis salvar uma img e ela nao for em branco, pois caso seja, n tem objeto pra criar e daria erro!
         if(this.cachedImgInfo.imgFile !== '' && newItemIndex === ''){//caso editando algo existente c img
           //renderiza o arquivo em uma img de fato:
-          this.createImage(this.cachedImgInfo.imgFile,this.editedItem)
+         this.imgUpload(this.cachedImgInfo.imgFile,this.editedItem)
+         console.log("x1 : ", this.editedItem.img)
+         // this.createImage(this.cachedImgInfo.imgFile,this.editedItem)
           this.editedItem.img.name = this.cachedImgInfo.imgName
           this.editedItem.img.url = this.cachedImgInfo.imgURL
-          this.imgUpload(this.cachedImgInfo.imgFile)
         }
         else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){//caso criando algo novo  que contenha img
-          this.itens[newItemIndex].img = {
-            src:  this.cachedImgInfo.imgFile,
-            name: this.cachedImgInfo.imgName,
-            url:  this.cachedImgInfo.imgURL
-          }
-          this.imgUpload(this.cachedImgInfo.imgFile)
+          // this.itens[newItemIndex].img = {
+          //   src:  this.cachedImgInfo.imgFile,
+          //   name: this.cachedImgInfo.imgName,
+          //   url:  this.cachedImgInfo.imgURL
+          // }
+          //com async/await garant q o console.log só sera ex dps da promise retornar
+          await this.imgUpload(this.cachedImgInfo.imgFile, this.itens[newItemIndex])
+          console.log("img: ", this.itens[newItemIndex])
           //renderiza o arquivo em uma img de fato:
-          this.createImage(this.itens[newItemIndex].img.src,this.itens[newItemIndex])
+         
         }
         else{//caso criando algo novo e sem img ou editando algo sem img
           if(newItemIndex !== ''){//só sera dif se já tiver sido criado
@@ -483,6 +503,7 @@
               url:  this.cachedImgInfo.imgURL
             }
             this.imgUpload(this.cachedImgInfo.imgFile)
+            console.log("x3 : ", this.editedItem.img)
           }    
         }
         //esvazia p uso futuro. lembre que só é possivel editar uma linha por vez :)
@@ -511,6 +532,16 @@
          // console.log(" Form valido!")
           this.valid  = true
         }  
+      },
+      getImgURL(item){
+        // console.log("entrada ", item)
+        console.log(" item e imgname ", item , " imgname: ", item.img.name, " <-direto do ref: ", item.img ," <- ")
+        // var image = require.context('~/static')
+        // console.log("contexto ", image, " imgsrc ", imgsrc)
+        //return path
+        console.log("................................")
+      // return require('~/static/uploads/fotos/'+ imgname)
+
       },
       //RULES:
       nomeRule(v){
