@@ -114,7 +114,7 @@
       :search="search"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
-        <td class="text-xs-center"><img :src="require(`static/uploads/fotos/${props.item.img.name}`)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
+        <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
         <td class="text-xs-center">{{ props.item.qtdade }}</td>
         <td class="text-xs-center">{{ props.item.unidade }}</td>
@@ -459,8 +459,7 @@
           console.log("sucesso: ", data)
           item.img = {
             src: data.data.path,//path pro bd
-            name: data.data.nome,
-            relsrc: '~/' + data.data.path 
+            name: data.data.nome
           }
           console.log("item ref dento do try ", item)
         }catch(e){
@@ -538,17 +537,7 @@
         }  
       },
       getImgURL(item){
-        console.log("ME CHAMARAM")
-        console.log(" item e imgname ", item , " imgname: ", item.img.name, " <-direto do ref: ", item.img ," <- ")
-       // var image = require.context('~/static/uploads/fotos/')
-        // console.log("contexto ", image, " imgsrc ", imgsrc)
-        // const path = "~/static/uploads/fotos" + '4fac7aa267f3e842a30ed8b60a02d228.jpg'
-        //  //console.log(" vamos v ", item.img.name)
-        // return require.context("~/static/uploads/fotos/4fac7aa267f3e842a30ed8b60a02d228.jpg")
-       
-        console.log("................................")
-      // return require('~/' + item.img.src)
-
+        return "uploads/fotos/" + item.img.name
       },
       //RULES:
       nomeRule(v){
