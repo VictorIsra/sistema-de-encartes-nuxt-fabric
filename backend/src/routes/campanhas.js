@@ -37,7 +37,8 @@ router.post('/campanhas/uploadImg',upload.single('upload'),(req,res)=> {
     console.log("até entrei!?")
     console.log(req.file)//o path que irei retornar
     res.send({  path:req.file.path,
-                nome: req.file.filename})
+                nome: req.file.filename,//é o nome gerado e é o que será salvo
+                originalName: req.file.originalname})//nome amigavel pra display pro usuário
 })
 router.get('/campanhas/produtos',async(req,res) => {
     //pega todos os produtos de uma campanha

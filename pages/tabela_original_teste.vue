@@ -216,7 +216,7 @@
       // Faco um cache em vez de assimilar a variavel 'itens'
       //diretamente pois só quero associa-la se o usuário salvar as alterações, se não, nao. :)
       cachedImgInfo: {
-     //   imgName: '',//só o nome da img
+        imgName: '',//só o nome da img
         imgFile: '',//objeto que pode ser salvo no db e posteriormente renderizado em uma img,inclusive
         imgURL: ''
       },
@@ -288,9 +288,10 @@
         this.itens = []
       },
       prepareImgInfo(currentItem){//envia pro componente filho image_uload.vue os valores ( sao props no comp filho) a serem colocados ao abrir a aba/form de edit
+        //é dif do cached info, pois aqui, é alimentado com info do db, e o db n salva a url ( pq é um buffer) e tal
         this.imgInfo.imgFile = currentItem.img.src
-        this.imgInfo.imgURL = currentItem.img.url
-        this.imgInfo.imgName = currentItem.img.name
+        //this.imgInfo.imgURL = currentItem.img.url//funciona mas n quero salva no bd pq iso é um arraybuffer, se pa é bad practice
+        this.imgInfo.imgName = currentItem.img.originalName
         this.imgInfo.flag = 1
       },
       editItem (item) {
@@ -365,8 +366,8 @@
         if (this.editedIndex > -1) {//na edicao, preciso editar antes do assign, se nao vou modificar uma copia q nao é mais usada
             this.editUserInputs()
             console.log("vai chamar")
+            await this.fillImgInfo('',this.editedItem)
             Object.assign(this.itens[this.editedIndex], this.editedItem)
-            await this.fillImgInfo()
           //  this.updateRow(this.editedItem)
         } else {//caso esteja adicionando algo em vez de editando
             await this.fillImgInfo(0,this.editedItem)
@@ -450,64 +451,32 @@
         this.cachedImgInfo.imgURL = data.url
       },
       async imgUpload(file,item){//faz o upload da img a lvl de bd
-        //file é o this.editeItem.img, o item é a ref real: this.editeItem
+        //file é o this.editeItem.img.imgfile, o item é a ref real: this.editeItem
         const formData = new FormData()
-        console.log("entrada item: ", item)
         formData.append('upload',file)
         try{
           const data = await api.campanha.uploadImg(formData)//.then(
-          console.log("sucesso: ", data)
+          console.log("sucesso: ")
           item.img = {
             src: data.data.path,//path pro bd
-            name: data.data.nome
+            name: data.data.nome,//name pro bd, tá contido no path, mas quero salvar separado tb, por precaucao
+          //  url,//vem do cached msm e que se foda, é uma string xD
+            originalName: data.data.originalName
           }
-          console.log("item ref dento do try ", item)
         }catch(e){
           console.log("erro ", e)
         } 
-        //   r =>{
-        //     //this.item.img.src = r//recebe o path
-        //     console.log("td azul")
-        //     return r
-        //     //console.log("vejamos ", this.item.img.src)
-        //   }
-        // ).catch(e => console.log("bad ;/: ",e))
       },
       async fillImgInfo(newItemIndex = '', editedItem){   
         //LEMBRE: img name e url parecem inuteis a lvl de bd, mas sao fundamentais pro usuario interagir/ver a lvl de app!
          //só guardarei a foto escolhida se ele salvou algo, se nao, nao
         //sera chamada se o user de fato quis salvar uma img e ela nao for em branco, pois caso seja, n tem objeto pra criar e daria erro!
         if(this.cachedImgInfo.imgFile !== '' && newItemIndex === ''){//caso editando algo existente c img
-          //renderiza o arquivo em uma img de fato:
-         this.imgUpload(this.cachedImgInfo.imgFile,this.editedItem)
-         console.log("x1 : ", this.editedItem.img)
-         // this.createImage(this.cachedImgInfo.imgFile,this.editedItem)
-          this.editedItem.img.name = this.cachedImgInfo.imgName
-          this.editedItem.img.url = this.cachedImgInfo.imgURL
+         await this.imgUpload(this.cachedImgInfo.imgFile,editedItem)
         }
         else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){//caso criando algo novo  que contenha img
-          // this.itens[newItemIndex].img = {
-          //   src:  this.cachedImgInfo.imgFile,
-          //   name: this.cachedImgInfo.imgName,
-          //   url:  this.cachedImgInfo.imgURL
-          // }
-          console.log("item editando: ", editedItem)
           //com async/await garant q o console.log só sera ex dps da promise retornar
           await this.imgUpload(this.cachedImgInfo.imgFile, editedItem)
-          console.log("img: ",editedItem)
-          //renderiza o arquivo em uma img de fato:
-         
-        }
-        else{//caso criando algo novo e sem img ou editando algo sem img
-          if(newItemIndex !== ''){//só sera dif se já tiver sido criado
-            this.itens[newItemIndex].img = {
-              src:  this.cachedImgInfo.imgFile,
-              name: this.cachedImgInfo.imgName,
-              url:  this.cachedImgInfo.imgURL
-            }
-            this.imgUpload(this.cachedImgInfo.imgFile)
-            console.log("x3 : ", this.editedItem.img)
-          }    
         }
         //esvazia p uso futuro. lembre que só é possivel editar uma linha por vez :)
         this.cachedImgInfo.imgName = ''
@@ -537,7 +506,9 @@
         }  
       },
       getImgURL(item){
-        return "uploads/fotos/" + item.img.name
+        //se uma img nao tiver sido escolhida, retorne enm branco
+        const path = item.img.name === undefined ? "" : "uploads/fotos/" + item.img.name
+        return path
       },
       //RULES:
       nomeRule(v){
