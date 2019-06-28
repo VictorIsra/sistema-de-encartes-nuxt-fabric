@@ -21,8 +21,8 @@
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
           </v-card-title>
-          
-          <v-card-text v-model.lazy="valid" ref="editedItem"> <!-- informacoes de adicionar e deletar (é um form)-->
+            <!-- v-model.lazy="valid"  botava no v-vartext abaixo, mas por hr, ignoro isso-->
+          <v-card-text  ref="editedItem"> <!-- informacoes de adicionar e deletar (é um form)-->
             <v-container grid-list-md >
               <v-layout wrap>
                  <v-flex xs12>
@@ -188,7 +188,7 @@
     data: () => ({
       dialog: false,
       search: '',
-      valid: true,
+      valid: false,
       metaProdutos: '',//qtdade minima de produtos na campanha
       datesErrors: ['#'],//é uma pilha que checa os erros nas datas. nao terá erro qd ela só tiver o elemento base('#'), ou seja, se datesErros.length ===1
       //PROPS (lembrar que, na verdade, são props para um componente filho
@@ -276,7 +276,8 @@
       },
       valid:{
         handler(){
-          this.validate()
+          console.log("VOU VALIDAR ", this.valid)
+          //this.validate()
         }
       }
     },
@@ -309,12 +310,11 @@
        deleteItem (item) {
         const index = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)
-        // let targetId = this.editedItem._id.data//qt crio manualmente, o _id é um objeto cuso _id de interesse tá no atributo dat
-        // if(targetId === undefined)//mas qt dou um get do bd, ele seta o _id direto como um atributo, esse if vai ajustar pra ambos os casos xD
-        //   targetId = this.editedItem._id
+        let targetId = this.editedItem._id.data//qt crio manualmente, o _id é um objeto cuso _id de interesse tá no atributo dat
+        if(targetId === undefined)//mas qt dou um get do bd, ele seta o _id direto como um atributo, esse if vai ajustar pra ambos os casos xD
+          targetId = this.editedItem._id
        // console.log("target: ", targetId, typeof(targetId))
-        confirm('Você tem certeza de que deseja remover este item?') &&  this.itens.splice(index, 1) 
-        //confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.removeRow(targetId))
+        confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.removeRow(targetId))
      },
       close () {
         this.resetFlags()
@@ -365,18 +365,14 @@
       async save () {
         if (this.editedIndex > -1) {//na edicao, preciso editar antes do assign, se nao vou modificar uma copia q nao é mais usada
             this.editUserInputs()
-            console.log("vai chamar")
             await this.fillImgInfo('',this.editedItem)
             Object.assign(this.itens[this.editedIndex], this.editedItem)
-          //  this.updateRow(this.editedItem)
+            this.updateRow(this.editedItem)
         } else {//caso esteja adicionando algo em vez de editando
             await this.fillImgInfo(0,this.editedItem)
-            console.log("vai chamar HONRa")
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
-          
-          //  this.addRow(this.editedItem)//na real nem precisava passa isso como arg mas foda-se
-
+            this.addRow(this.editedItem)//na real nem precisava passa isso como arg mas foda-se
         }
         console.log("FUI CHAMADO SÓ DPS DE RESOLVER OA ASYNC")
         this.saveProdutos()
@@ -485,6 +481,7 @@
       },
       validate(){
         const valid = []//verá quantos itens passarão no teste de validade ( excluindo datas, quem te validacao particular e diferenciada )
+        var teste = ''
         let datesValid = this.datesErrors.length === 1 ? true : false//checa validade para das datas, que tem uma logica particular
           if(datesValid && this.editedItem.data_i !== '' && this.editedItem.data_f !== '')
             datesValid = true
@@ -492,16 +489,18 @@
             datesValid = false
         //checando a validade dos campos obrigatórios que nao sejam datas    
         Object.keys(this.editedItem).forEach((f,index) => {
+          console.log(f, index)
           if(index !== 0 && index !== 5 && index !== 6){//se n for data nem img, de boa usar o metodo validate
-            valid.push(this.$refs["editedItem." + f.toString()].validate(true))                           // console.log("!this.editemItem[f]: ", !this.editedItem)//se n tiver nada prenchido
+            teste = valid.push(this.$refs["editedItem." + f.toString()].validate(true))
+            console.log(teste, index)                           // console.log("!this.editemItem[f]: ", !this.editedItem)//se n tiver nada prenchido
           }
         })
         if(valid.includes(false) || !datesValid){//se os campos ou alguma data for inválida, invalide o form/dialog
-         // console.log(" FORM invalido")
+          console.log(" FORM invalido")
           this.valid = false
         }  
         else if(!valid.includes(false) && datesValid){//caso contrário, valide
-         // console.log(" Form valido!")
+          console.log(" Form valido!")
           this.valid  = true
         }  
       },
@@ -537,6 +536,7 @@
           this.editedItem.preco_v = 'R$ ' + this.editedItem.preco_v
           this.editedItem.marluc += '%'
         }
+        this.validate()
       },
       debug(){
         console.log("ITEMS: ", this.itens)
