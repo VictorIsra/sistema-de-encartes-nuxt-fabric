@@ -2,8 +2,6 @@
 -->
 <template>
   <div>
-    <img src="../static/uploads/fotos/8e27f605d7e44f9fc9c4c10b4502cf53.png" width="50px" heigth="50px">
-    <p>dsd</p>
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
     <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span>
       <v-spacer></v-spacer>
@@ -116,7 +114,7 @@
       :search="search"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
-        <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
+        <td class="text-xs-center"><img :src="require(`static/uploads/fotos/${props.item.img.name}`)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
         <td class="text-xs-center">{{ props.item.qtdade }}</td>
         <td class="text-xs-center">{{ props.item.unidade }}</td>
@@ -363,19 +361,23 @@
         this.defaultDatesValues.flag = 0
         this.imgInfo.flag = 0
       },
-      save () {
+      async save () {
         if (this.editedIndex > -1) {//na edicao, preciso editar antes do assign, se nao vou modificar uma copia q nao é mais usada
             this.editUserInputs()
+            console.log("vai chamar")
             Object.assign(this.itens[this.editedIndex], this.editedItem)
-            this.fillImgInfo()
+            await this.fillImgInfo()
           //  this.updateRow(this.editedItem)
         } else {//caso esteja adicionando algo em vez de editando
+            await this.fillImgInfo(0,this.editedItem)
+            console.log("vai chamar HONRa")
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
-            this.fillImgInfo(0)
+          
           //  this.addRow(this.editedItem)//na real nem precisava passa isso como arg mas foda-se
 
         }
+        console.log("FUI CHAMADO SÓ DPS DE RESOLVER OA ASYNC")
         this.saveProdutos()
         this.close()      
       },
@@ -457,7 +459,8 @@
           console.log("sucesso: ", data)
           item.img = {
             src: data.data.path,//path pro bd
-            name: data.data.nome 
+            name: data.data.nome,
+            relsrc: '~/' + data.data.path 
           }
           console.log("item ref dento do try ", item)
         }catch(e){
@@ -471,7 +474,7 @@
         //   }
         // ).catch(e => console.log("bad ;/: ",e))
       },
-      async fillImgInfo(newItemIndex = ''){   
+      async fillImgInfo(newItemIndex = '', editedItem){   
         //LEMBRE: img name e url parecem inuteis a lvl de bd, mas sao fundamentais pro usuario interagir/ver a lvl de app!
          //só guardarei a foto escolhida se ele salvou algo, se nao, nao
         //sera chamada se o user de fato quis salvar uma img e ela nao for em branco, pois caso seja, n tem objeto pra criar e daria erro!
@@ -489,9 +492,10 @@
           //   name: this.cachedImgInfo.imgName,
           //   url:  this.cachedImgInfo.imgURL
           // }
+          console.log("item editando: ", editedItem)
           //com async/await garant q o console.log só sera ex dps da promise retornar
-          await this.imgUpload(this.cachedImgInfo.imgFile, this.itens[newItemIndex])
-          console.log("img: ", this.itens[newItemIndex])
+          await this.imgUpload(this.cachedImgInfo.imgFile, editedItem)
+          console.log("img: ",editedItem)
           //renderiza o arquivo em uma img de fato:
          
         }
@@ -534,13 +538,16 @@
         }  
       },
       getImgURL(item){
-        // console.log("entrada ", item)
+        console.log("ME CHAMARAM")
         console.log(" item e imgname ", item , " imgname: ", item.img.name, " <-direto do ref: ", item.img ," <- ")
-        // var image = require.context('~/static')
+       // var image = require.context('~/static/uploads/fotos/')
         // console.log("contexto ", image, " imgsrc ", imgsrc)
-        //return path
+        // const path = "~/static/uploads/fotos" + '4fac7aa267f3e842a30ed8b60a02d228.jpg'
+        //  //console.log(" vamos v ", item.img.name)
+        // return require.context("~/static/uploads/fotos/4fac7aa267f3e842a30ed8b60a02d228.jpg")
+       
         console.log("................................")
-      // return require('~/static/uploads/fotos/'+ imgname)
+      // return require('~/' + item.img.src)
 
       },
       //RULES:
