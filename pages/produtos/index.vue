@@ -155,7 +155,7 @@
   import imgUpload from '../../components/campanhas/generalUseComponents/image_upload.vue'
   import datas from  '../../components/campanhas/generalUseComponents/datas.vue'
   import formatInputMixin from '../../components/mixins/FormatInputMixin.js'
-  import imgMixin from '../../components/mixins/ImgMixin.js'
+  import crudMixin from '../../components/mixins/CRUD.js'
   
   export default {
     components: {
@@ -175,7 +175,7 @@
     },
     mixins: [
       formatInputMixin,
-      imgMixin
+      crudMixin
     ],
     mounted: function(){
       // console.log("Iii ")

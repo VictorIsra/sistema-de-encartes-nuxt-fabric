@@ -175,8 +175,7 @@
   import imgUpload from '../components/campanhas/generalUseComponents/image_upload.vue'
   import datas from  './datas_teste.vue'
   import formatInputMixin from '../components/mixins/FormatInputMixin.js'
-  import imgMixin from '../components/mixins/ImgMixin.js'
-  import api from '~/api'//pra eu poder fazer as req pro axios com uma sintaxe enxugada
+  import crudMixin from '../components/mixins/CRUD.js'
 
   export default {
     components: {
@@ -185,7 +184,7 @@
     },
     mixins: [
       formatInputMixin,
-      imgMixin
+      crudMixin
     ],
     data: () => ({
       inputsValidation: {//usarei isso pra definir a validade dos inputs de forma eficaz
@@ -342,39 +341,6 @@
           this.editedIndex = -1
         }, 300)
       },
-       addRow(editedItem){//vai virar um mixin
-       console.log("entrada: ",editedItem)
-        api.campanha.addRow(
-              {produtos:editedItem,
-              campanha_id:"5d126668d0428d506c18cdaf"}
-        ).then(
-              r => {editedItem._id = r
-              console.log("editeitem: ",editedItem)}
-              //pra ref esse id farei: editedItem._id.data pois me retorna um objeto xD
-        )
-        .catch(e => console.log("erro: ",e))
-      },
-      updateRow(editedItem){//a lvl de bd, serve tano pra editar uma linha qt pra criar uma, ja q uma linha é um objeto dentro de uma campanha
-        console.log(" te ",typeof(editedItem._id.data))
-        api.campanha.updateRow({
-              produtos:editedItem,
-              campanha_id:"5d126668d0428d506c18cdaf",
-              row_id:editedItem._id.data
-        }).then(
-              r => console.log("response: ",r)
-        )
-        .catch(e => console.log("erro: ",e))
-      },
-      removeRow(row_id){
-        console.log("entrou app ", row_id)
-        api.campanha.removeRow({
-            campanha_id:"5d126668d0428d506c18cdaf",
-            row_id: row_id
-        }).then(
-          r => console.log("removido com sucesso: ",r)
-        )
-        .catch(e => console.log(e))
-      },
       resetFlags(){//reseta as flags que sao props em componentes filhos, pra que o watch sempre observe mudanca
         this.defaultDatesValues.flag = 0
         this.imgInfo.flag = 0
@@ -391,7 +357,6 @@
             this.editUserInputs()
             this.addRow(this.editedItem)//na real nem precisava passa isso como arg mas foda-se
         }
-        console.log("FUI CHAMADO SÓ DPS DE RESOLVER OA ASYNC")
         this.saveProdutos()
         this.close()      
       },
@@ -463,23 +428,6 @@
         this.cachedImgInfo.imgFile = data.file
         this.cachedImgInfo.imgURL = data.url
       },
-      async imgUpload(file,item){//faz o upload da img a lvl de bd
-        //file é o this.editeItem.img.imgfile, o item é a ref real: this.editeItem
-        const formData = new FormData()
-        formData.append('upload',file)
-        try{
-          const data = await api.campanha.uploadImg(formData)//.then(
-          console.log("sucesso: ")
-          item.img = {
-            src: data.data.path,//path pro bd
-            name: data.data.nome,//name pro bd, tá contido no path, mas quero salvar separado tb, por precaucao
-          //  url,//vem do cached msm e que se foda, é uma string xD
-            originalName: data.data.originalName
-          }
-        }catch(e){
-          console.log("erro ", e)
-        } 
-      },
       async fillImgInfo(newItemIndex = '', editedItem){   
         //LEMBRE: img name e url parecem inuteis a lvl de bd, mas sao fundamentais pro usuario interagir/ver a lvl de app!
          //só guardarei a foto escolhida se ele salvou algo, se nao, nao
@@ -488,7 +436,6 @@
          await this.imgUpload(this.cachedImgInfo.imgFile,editedItem)
         }
         else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){//caso criando algo novo  que contenha img
-          //com async/await garant q o console.log só sera ex dps da promise retornar
           await this.imgUpload(this.cachedImgInfo.imgFile, editedItem)
         }
         //esvazia p uso futuro. lembre que só é possivel editar uma linha por vez :)
@@ -572,7 +519,6 @@
           this.editedItem.preco_v = 'R$ ' + this.editedItem.preco_v
           this.editedItem.marluc += '%'
         }
-        //this.validate()
       }
     }
   }

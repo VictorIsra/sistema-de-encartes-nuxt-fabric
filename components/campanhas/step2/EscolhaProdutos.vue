@@ -173,7 +173,7 @@
   import imgUpload from '../generalUseComponents/image_upload.vue'
   import datas from  '../generalUseComponents/datas.vue'
   import formatInputMixin from '../../mixins/FormatInputMixin.js'
-  import imgMixin from '../../mixins/ImgMixin.js'
+  import crudMixin from '../../mixins/CRUD.js'
 
   export default {
     components: {
@@ -182,7 +182,7 @@
     },
     mixins: [
       formatInputMixin,
-      imgMixin
+      crudMixin
     ],
     data: () => ({
       dialog: false,
