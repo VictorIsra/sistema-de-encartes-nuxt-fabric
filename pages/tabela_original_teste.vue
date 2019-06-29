@@ -1,7 +1,8 @@
 <!-- //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
 -->
 <template>
-  <div>
+  <div> 
+    <v-btn color="success" @click=teste>text</v-btn>
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
     <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span>
       <v-spacer></v-spacer>
@@ -17,12 +18,13 @@
         <template v-slot:activator="{ on }">
           <v-btn color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >Adicionar item</v-btn> <!--v-on="on" -->
         </template>
+        
         <v-card > <!-- o form em si é esse v card! -->
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
           </v-card-title>
             <!-- v-model.lazy="valid"  botava no v-vartext abaixo, mas por hr, ignoro isso-->
-          <v-card-text  ref="editedItem"> <!-- informacoes de adicionar e deletar (é um form)-->
+          <v-card-text  > <!-- informacoes de adicionar e deletar (é um form)-->
             <v-container grid-list-md >
               <v-layout wrap>
                  <v-flex xs12>
@@ -72,6 +74,8 @@
                                  >
                   </v-text-field>
                 </v-flex>
+                    <v-btn @click="teste">text</v-btn>
+
                 <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.preco_v"
                                 @blur="editUserInputs(false)"
@@ -186,6 +190,14 @@
       imgMixin
     ],
     data: () => ({
+      inputsValidation: {
+        nome:     false,
+        qtdade:   false,
+        unidade:  false,
+        preco_c:  false,
+        preco_v:  false,
+        marluc:   false
+      },
       dialog: false,
       search: '',
       valid: false,
@@ -279,6 +291,12 @@
           console.log("VOU VALIDAR ", this.valid)
           //this.validate()
         }
+      },
+      inputsValidation: {
+        handler(val, oldVal){
+          console.log("MUDEI ALGO WATCH VALIDATION")
+        },
+        deep: true
       }
     },
     created () {
@@ -482,6 +500,7 @@
       validate(){
         const valid = []//verá quantos itens passarão no teste de validade ( excluindo datas, quem te validacao particular e diferenciada )
         var teste = ''
+        console.log("entrouuuuuuuuuuuuuuu")
         let datesValid = this.datesErrors.length === 1 ? true : false//checa validade para das datas, que tem uma logica particular
           if(datesValid && this.editedItem.data_i !== '' && this.editedItem.data_f !== '')
             datesValid = true
@@ -503,6 +522,7 @@
           console.log(" Form valido!")
           this.valid  = true
         }  
+        return this.valid
       },
       getImgURL(item){
         //se uma img nao tiver sido escolhida, retorne enm branco
@@ -511,19 +531,36 @@
       },
       //RULES:
       nomeRule(v){
-          return !!v || "é preciso escolher um nome para o produto. "
+               console.log("v : ", v , v === !!v , v === '')
+        return !!v || "é preciso escolher um nome para o produto. "
       },
       qtdadeRule(v){
+               console.log("v : ", v , v === !!v , v === '')
+
          return !!v || 'a quantidade é obrigatória'
       },
       preco_cRule(v){
+         if(!!v === false){
+          console.log("invalido")
+           this.teste()
+         }           
         return  !!v || 'o preço de compra e é obrigatório'
       },
       preco_vRule(v){
+               console.log("v : ", v , v === !!v , v === '')
+
         return !!v || 'o preço de venda e é obrigatório'
       },
       marlucRule(v){
+               console.log("v : ", v , v === !!v , v === '')
+
         return !!v || 'a margem de lucro e é obrigatória'
+      },
+      teste(){
+     //  this.inputsValidation['teste']//.push(true)
+       console.log("vetor:")
+       this.inputsValidation['nome'] = !this.inputsValidation['nome']
+       console.log(this.inputsValidation['nome'])
       },
       editUserInputs(addUnit = true){//addUnit para botar o R$ e afins. quero isso pra salvar na tabela, mas nao quero isso ( addUnit = false) qd abrir uma form/dialog pra edicao
         this.editedItem.qtdade = this.parsePtBr(this.editedItem.qtdade)
