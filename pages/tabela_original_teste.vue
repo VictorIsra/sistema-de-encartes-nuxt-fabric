@@ -2,7 +2,6 @@
 -->
 <template>
   <div> 
-    <v-btn color="success" @click=teste>text</v-btn>
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
     <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span>
       <v-spacer></v-spacer>
@@ -74,7 +73,6 @@
                                  >
                   </v-text-field>
                 </v-flex>
-                    <v-btn @click="teste">text</v-btn>
 
                 <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.preco_v"
@@ -190,13 +188,13 @@
       imgMixin
     ],
     data: () => ({
-      inputsValidation: {
-        nome:     false,
-        qtdade:   false,
-        unidade:  false,
-        preco_c:  false,
-        preco_v:  false,
-        marluc:   false
+      inputsValidation: {//usarei isso pra definir a validade dos inputs de forma eficaz
+        nome:     true,
+        qtdade:   true,
+        unidade:  true,
+        preco_c:  true,
+        preco_v:  true,
+        marluc:   true
       },
       dialog: false,
       search: '',
@@ -295,6 +293,7 @@
       inputsValidation: {
         handler(val, oldVal){
           console.log("MUDEI ALGO WATCH VALIDATION")
+          this.validate()
         },
         deep: true
       }
@@ -498,22 +497,15 @@
         this.cachedImgInfo.imgURL = ''
       },
       validate(){
-        const valid = []//verá quantos itens passarão no teste de validade ( excluindo datas, quem te validacao particular e diferenciada )
-        var teste = ''
-        console.log("entrouuuuuuuuuuuuuuu")
         let datesValid = this.datesErrors.length === 1 ? true : false//checa validade para das datas, que tem uma logica particular
           if(datesValid && this.editedItem.data_i !== '' && this.editedItem.data_f !== '')
             datesValid = true
           else
             datesValid = false
-        //checando a validade dos campos obrigatórios que nao sejam datas    
-        Object.keys(this.editedItem).forEach((f,index) => {
-          console.log(f, index)
-          if(index !== 0 && index !== 5 && index !== 6){//se n for data nem img, de boa usar o metodo validate
-            teste = valid.push(this.$refs["editedItem." + f.toString()].validate(true))
-            console.log(teste, index)                           // console.log("!this.editemItem[f]: ", !this.editedItem)//se n tiver nada prenchido
-          }
-        })
+      
+        const values = Object.values(this.inputsValidation)//
+        var valid = values.filter(v => { return v === false} )//checa validade de todos os inputs que nao sejam datas, pois estas tem validacao especial
+
         if(valid.includes(false) || !datesValid){//se os campos ou alguma data for inválida, invalide o form/dialog
           console.log(" FORM invalido")
           this.valid = false
@@ -531,36 +523,43 @@
       },
       //RULES:
       nomeRule(v){
-               console.log("v : ", v , v === !!v , v === '')
+        if(!!v === false)
+           this.inputsValidation['nome'] = false
+        else
+          this.inputsValidation['nome'] = true
         return !!v || "é preciso escolher um nome para o produto. "
       },
       qtdadeRule(v){
-               console.log("v : ", v , v === !!v , v === '')
+        if(!!v === false)
+           this.inputsValidation['qtdade'] = false
+        else
+          this.inputsValidation['qtdade'] = true
 
          return !!v || 'a quantidade é obrigatória'
       },
       preco_cRule(v){
-         if(!!v === false){
-          console.log("invalido")
-           this.teste()
-         }           
+        if(!!v === false)
+           this.inputsValidation['preco_c'] = false
+        else
+          this.inputsValidation['preco_c'] = true
+        
         return  !!v || 'o preço de compra e é obrigatório'
       },
       preco_vRule(v){
-               console.log("v : ", v , v === !!v , v === '')
+        if(!!v === false)
+           this.inputsValidation['preco_v'] = false
+        else
+          this.inputsValidation['preco_v'] = true
 
         return !!v || 'o preço de venda e é obrigatório'
       },
       marlucRule(v){
-               console.log("v : ", v , v === !!v , v === '')
+        if(!!v === false)
+           this.inputsValidation['marluc'] = false
+        else
+          this.inputsValidation['marluc'] = true
 
         return !!v || 'a margem de lucro e é obrigatória'
-      },
-      teste(){
-     //  this.inputsValidation['teste']//.push(true)
-       console.log("vetor:")
-       this.inputsValidation['nome'] = !this.inputsValidation['nome']
-       console.log(this.inputsValidation['nome'])
       },
       editUserInputs(addUnit = true){//addUnit para botar o R$ e afins. quero isso pra salvar na tabela, mas nao quero isso ( addUnit = false) qd abrir uma form/dialog pra edicao
         this.editedItem.qtdade = this.parsePtBr(this.editedItem.qtdade)
@@ -573,10 +572,7 @@
           this.editedItem.preco_v = 'R$ ' + this.editedItem.preco_v
           this.editedItem.marluc += '%'
         }
-        this.validate()
-      },
-      debug(){
-        console.log("ITEMS: ", this.itens)
+        //this.validate()
       }
     }
   }
