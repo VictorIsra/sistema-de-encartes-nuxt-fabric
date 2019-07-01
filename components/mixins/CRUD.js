@@ -10,10 +10,15 @@ export default {
              .catch(e => console.log("erro: ",e))
         },
         updateRow(editedItem){//a lvl de bd, serve tano pra editar uma linha qt pra criar uma, ja q uma linha é um objeto dentro de uma campanha
-             api.campanha.updateRow({
+            var img_id = ''
+            if(editedItem._id.data !== undefined)//primeira edicao apos criar algo existe um _id.data, nos outros casos apenas _id, entao cuidado
+                img_id = editedItem._id.data
+            else
+                img_id = editedItem._id    
+            api.campanha.updateRow({
                    produtos:editedItem,
                    campanha_id:"5d126668d0428d506c18cdaf",
-                   row_id:editedItem._id
+                   row_id:img_id
              }).then(
                    r => console.log("response: ",r)
              )

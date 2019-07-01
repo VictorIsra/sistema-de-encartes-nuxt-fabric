@@ -311,6 +311,7 @@
         this.imgInfo.imgFile = currentItem.img.src
         //this.imgInfo.imgURL = currentItem.img.url//funciona mas n quero salva no bd pq iso é um arraybuffer, se pa é bad practice
         this.imgInfo.imgName = currentItem.img.originalName
+        console.log(" preparimgAAAAAA ", this.imgInfo.imgName)
         this.imgInfo.flag = 1
       },
       editItem (item) {
@@ -455,6 +456,7 @@
         else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){//caso criando algo novo  que contenha img
           await this.imgUpload(this.cachedImgInfo.imgFile, editedItem)
         }
+        console.log(" original? ",  this.imgInfo.imgName, " novo ", editedItem.img.originalName)
         //esvazia p uso futuro. lembre que só é possivel editar uma linha por vez :)
         this.cachedImgInfo.imgName = ''
         this.cachedImgInfo.imgFile = ''
