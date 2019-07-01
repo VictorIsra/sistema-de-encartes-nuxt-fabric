@@ -53,6 +53,11 @@ export default {
             //file é o this.editeItem.img.imgfile, o item é a ref real: this.editeItem
             const formData = new FormData()
             formData.append('upload',file)
+            //se oldpath n for undefined, é pq tem uma img antiga que quero remover em paralelo de atuakizar nova xD
+            console.log("bora v no img uplo oq tem ", item.img.src === undefined)
+            if(item.img.src !== undefined)//se o item anteriormente n tinha foto, isso sera undefined e n tera setnido deletar, mas caso tenha uma img anterior, essa f removera o path antigo e no api.imgUpload ira salvar uma nova. isso evita que a pasta de fotos fique flodada com fotos desnecessarias/antigas xD
+                api.campanha.removeImg({path: item.img.src})
+
             try{
               const data = await api.campanha.uploadImg(formData)//.then(
               console.log("sucesso: ")

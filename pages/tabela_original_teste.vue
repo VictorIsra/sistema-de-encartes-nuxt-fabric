@@ -403,7 +403,6 @@
         //se flag == 1, irá fazer as dates no componente data.vue passarem o valor presente na linha atual da tabela 
         //se flag == 0, é o valor default, das datas ficarem em branco qd abrir um form/dialogo
         //flag == -1, msm comportamento do default, mas garante q será executado, pois as flags sao baseados em watch no componente filho
-        console.log("vejamos ",this.editedItem.data_i)
         this.defaultDatesValues.flag = flag
         this.defaultDatesValues.Rdata_i = this.editedItem.data_i
         this.defaultDatesValues.Rdata_f = this.editedItem.data_f
@@ -460,13 +459,14 @@
          //só guardarei a foto escolhida se ele salvou algo, se nao, nao
         //sera chamada se o user de fato quis salvar uma img e ela nao for em branco, pois caso seja, n tem objeto pra criar e daria erro!
         if(this.cachedImgInfo.imgFile !== '' && newItemIndex === ''){//caso editando algo existente c img
-         console.log("vejamos cached ", this.cachedImgInfo.imgFile, " outro ", this.imgInfo.imgFile)
-         await this.imgUpload(this.cachedImgInfo.imgFile,editedItem)
+          console.log("entreii com ",  this.imgInfo.imgFile, " novo ", editedItem.img.src)
+          await this.imgUpload(this.cachedImgInfo.imgFile,editedItem,)
         }
         else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){//caso criando algo novo  que contenha img
           await this.imgUpload(this.cachedImgInfo.imgFile, editedItem)
         }
-        console.log(" original? ",  this.imgInfo.imgFile, " novo ", editedItem.img.src)
+        //if(newItemIndex === '')
+          console.log(" original? ",  this.imgInfo.imgFile, " novo ", editedItem.img.src)
       },
       validate(){
         let datesValid = this.datesErrors.length === 1 ? true : false//checa validade para das datas, que tem uma logica particular

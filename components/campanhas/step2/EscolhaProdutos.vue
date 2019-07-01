@@ -4,7 +4,7 @@
   <div> 
     <v-btn color="success" @click="fetchProdutos">text</v-btn>
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
-   <!-- <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span> -->
+  <!--  <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span> -->
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -303,7 +303,6 @@
     },
     methods: {
       initialize () {
-        console.log("akii")
         this.itens = []
       },
       prepareImgInfo(currentItem){//envia pro componente filho image_uload.vue os valores ( sao props no comp filho) a serem colocados ao abrir a aba/form de edit
@@ -311,8 +310,8 @@
         this.imgInfo.imgFile = currentItem.img.src
         //this.imgInfo.imgURL = currentItem.img.url//funciona mas n quero salva no bd pq iso é um arraybuffer, se pa é bad practice
         this.imgInfo.imgName = currentItem.img.originalName
-        console.log(" preparimgAAAAAA ", this.imgInfo.imgName)
         this.imgInfo.flag = 1
+        console.log(" preparimgAAAAAA ", this.imgInfo.imgFile)
       },
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
@@ -354,6 +353,7 @@
         confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.removeRow(targetId,imgSrc))
      },
       close () {
+        this.resetImgCached()
         this.resetFlags()
         this.resetDateErrorStack()
         this.dialog = false
@@ -362,6 +362,13 @@
           this.editedIndex = -1
         }, 300)
       },
+      resetImgCached(){
+        //reseta os valores cacheados, pois ao se fechar, preciso setar eles pra '', se nao é possivel q eu atualize uma foto sem querer, simplesmente pq escolhi uma ( mas dps cancelei), com essa f, garanto que, se eu ecolher algo mas dps fechar o dialog sem salvar, nenhuma img nova sera salva xD
+       //eu ja fazia essa operacoa antes, mas o segredo é faze-la neste nesta f, no momento de fechar, e n apenas num save da vida
+        this.cachedImgInfo.imgName = ''
+        this.cachedImgInfo.imgFile = ''
+        this.cachedImgInfo.imgURL = ''
+      },
       resetFlags(){//reseta as flags que sao props em componentes filhos, pra que o watch sempre observe mudanca
         this.defaultDatesValues.flag = 0
         this.imgInfo.flag = 0
@@ -369,6 +376,7 @@
       async save () {
         if (this.editedIndex > -1) {//na edicao, preciso editar antes do assign, se nao vou modificar uma copia q nao é mais usada
             this.editUserInputs()
+            console.log(" imgs ", this.editedItem.img)
             await this.fillImgInfo('',this.editedItem)
             Object.assign(this.itens[this.editedIndex], this.editedItem)
             this.updateRow(this.editedItem)
@@ -378,6 +386,7 @@
             this.editUserInputs()
             this.addRow(this.editedItem)//na real nem precisava passa isso como arg mas foda-se
         }
+        //this.saveProdutos()
         this.close()      
       },
       getDate(data){//pega as datas formatadas no componente filho 'datas.vue'
@@ -394,7 +403,6 @@
         //se flag == 1, irá fazer as dates no componente data.vue passarem o valor presente na linha atual da tabela 
         //se flag == 0, é o valor default, das datas ficarem em branco qd abrir um form/dialogo
         //flag == -1, msm comportamento do default, mas garante q será executado, pois as flags sao baseados em watch no componente filho
-        console.log("vejamos ",this.editedItem.data_i)
         this.defaultDatesValues.flag = flag
         this.defaultDatesValues.Rdata_i = this.editedItem.data_i
         this.defaultDatesValues.Rdata_f = this.editedItem.data_f
@@ -451,16 +459,14 @@
          //só guardarei a foto escolhida se ele salvou algo, se nao, nao
         //sera chamada se o user de fato quis salvar uma img e ela nao for em branco, pois caso seja, n tem objeto pra criar e daria erro!
         if(this.cachedImgInfo.imgFile !== '' && newItemIndex === ''){//caso editando algo existente c img
-         await this.imgUpload(this.cachedImgInfo.imgFile,editedItem)
+          console.log("entreii com ",  this.imgInfo.imgFile, " novo ", editedItem.img.src)
+          await this.imgUpload(this.cachedImgInfo.imgFile,editedItem,)
         }
         else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){//caso criando algo novo  que contenha img
           await this.imgUpload(this.cachedImgInfo.imgFile, editedItem)
         }
-        console.log(" original? ",  this.imgInfo.imgName, " novo ", editedItem.img.originalName)
-        //esvazia p uso futuro. lembre que só é possivel editar uma linha por vez :)
-        this.cachedImgInfo.imgName = ''
-        this.cachedImgInfo.imgFile = ''
-        this.cachedImgInfo.imgURL = ''
+        //if(newItemIndex === '')
+          console.log(" original? ",  this.imgInfo.imgFile, " novo ", editedItem.img.src)
       },
       validate(){
         let datesValid = this.datesErrors.length === 1 ? true : false//checa validade para das datas, que tem uma logica particular
@@ -484,8 +490,6 @@
       },
       getImgURL(item){
         //se uma img nao tiver sido escolhida, retorne enm branco
-        console.log("testeee ", item.img)
-        //path relativo, n se esqueca do ../../../
         const path = item.img.name === undefined ? "" : "../../../uploads/fotos/" + item.img.name
         return path
       },
