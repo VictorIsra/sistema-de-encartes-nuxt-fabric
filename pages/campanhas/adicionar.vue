@@ -1,19 +1,5 @@
 <template>
   <div>
-    <!--<v-divider></v-divider>
-     <v-footer class="pa-3" v-if="e1>1">
-      <v-spacer></v-spacer>
-      <v-layout
-      justify-center
-      row
-      wrap
-      > 
-      <div>TESTE</div>
-            <div>TESTE</div>
-      <div>TESTE</div>
-
-       </v-layout>
-    </v-footer>  DPS EU FACO ESSE FOOTER..TO SEM SACO-->
     <v-stepper  v-model="e1">
     <!-- <v-btn color="success" @click="printFormInputs">CHECK INPUTS</v-btn>-->
       <v-stepper-header>
@@ -101,6 +87,9 @@
       'escolha-produtos': escolhaProdutos,
       concorrencia
     },
+    mounted() {
+      console.log("valor de e: ", this.e1)
+    },
     data () {
       return {
         e1: 0,
@@ -123,11 +112,11 @@
       saveFormInputs(){
         //let inputs = Object.values(this.form_inputs)
         this.e1 = 2
-        this.$store.dispatch('campanhas/set_form_inputs',this.form_inputs)//alimenta o store com os inputs da etapa 1 das campanhas
+        //this.$store.dispatch('campanhas/set_form_inputs',this.form_inputs)//alimenta o store com os inputs da etapa 1 das campanhas
       },
       sendFilteredProdutosInput(){//envia pra etapa 3 os inputs referentes aos produtos, mas só os q serao usados de fato na etapa 3
         this.e1 = 3
-        const produtos = this.$store.state.campanhas.produtos//produtos bases q serao fitrados pra serem usados na etapa 3 e 4
+       // const produtos = this.$store.state.campanhas.produtos//produtos bases q serao fitrados pra serem usados na etapa 3 e 4
         this.filterProdutos(produtos)
         //so mandarei o flag qd a f acima terminar d executar,pra ter consistencia os dados
         this.getFilteredProdutos = !this.getFilteredProdutos
@@ -149,7 +138,7 @@
             })
           })
            //salva no store os produtos filtrados para pré propularem colunas da etapa3
-          this.$store.dispatch('campanhas/set_filtered_produtos',filtered)
+          //this.$store.dispatch('campanhas/set_filtered_produtos',filtered)
         }     
       }
     }

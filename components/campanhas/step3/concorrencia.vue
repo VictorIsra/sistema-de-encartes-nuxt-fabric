@@ -3,7 +3,7 @@
 <template>
   <div>
     <v-toolbar flat color="white">
-      <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span>
+     <!-- <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span> -->
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -181,13 +181,13 @@
         handler(){
             console.log("mudei xddd e chamei oq quero")
             //alimenta com as informacoes vindo da etapa 2:
-            if(this.$store.state.campanhas.filtered_protudos !== ''){//n rola fz por length > 0 pq se n, se eu excluir em 2, n exluira na 3. assim é o ideal!
-              console.log("ADICIONAREI D FATO")
-              this.itens = this.$store.state.campanhas.filtered_protudos
-            }
-            console.log("alimentei a table, checando os input dela ",this.itens)
-            console.log("tipo do itens ", typeof(this.itens))
-            console.log("tipo do item na posicao 0 ", typeof(this.itens[0]))
+            // if(this.$store.state.campanhas.filtered_protudos !== ''){//n rola fz por length > 0 pq se n, se eu excluir em 2, n exluira na 3. assim é o ideal!
+            //   console.log("ADICIONAREI D FATO")
+            //   this.itens = this.$store.state.campanhas.filtered_protudos
+            // }
+            // console.log("alimentei a table, checando os input dela ",this.itens)
+            // console.log("tipo do itens ", typeof(this.itens))
+            // console.log("tipo do item na posicao 0 ", typeof(this.itens[0]))
             //n preciso resetar a flag (getFilteredProdutos) apos esse handler executar, pois qd clico em 'prox' da etapa 2 pra etapa 3, flag= !flag, e como flag = 0 nesse componente incialmente, isso sempre funfará
         }
       }
@@ -220,12 +220,12 @@
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
         }
-        this.saveProdutos()
+        //this.saveProdutos()
         this.close()      
       },
-      saveProdutos(){
-        this.$store.dispatch('campanhas/set_filtered_produtos',this.itens)//salva os valores da tabela globalmente
-      },
+      // saveProdutos(){
+      //   this.$store.dispatch('campanhas/set_filtered_produtos',this.itens)//salva os valores da tabela globalmente
+      // },
       validate(){
         const valid = []//verá quantos itens passarão no teste de validade
         //aqui tds os inputs precisam ser validas. sao poucos, sao só precos ref ao concorrente

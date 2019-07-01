@@ -60,7 +60,6 @@ router.get('/campanhas/produtos',async(req,res) => {
 router.post('/campanhas/createCampanha', async (req,res) => {//cria campanha
     const new_campanha = new Campanha(req.body)
     try{
-        //console.log("tentooou")
         await new_campanha.save()
         //gambiarra pra salvar o id gerado numa propriedade a parte e manipular no codigo xD
         new_campanha.campanha_id = new_campanha._id
@@ -106,6 +105,7 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const row_id = req.body.row_id //id da linha que tou atualizando
     const produtos = req.body.produtos//linha a ser atualizada ao array de produtos
+    console.log("entrei campanha_id ", campanha_id, " row id ", row_id, " prod ", produtos)
     try{
         const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
         //me dá o index da linha que estou tentando atualizar:
@@ -126,6 +126,7 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
             res.status(500).send(e)
         }
     }catch(e){
+        console.log("errorrr no be ", e)
         res.status(404).send(e)
     } 
 })

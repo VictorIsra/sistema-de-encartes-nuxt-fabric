@@ -133,8 +133,8 @@
     },
     methods: {
       setDatesRange(){//seta o intervalo de datas em que os produtos devem estar ( datas form definidas na etapa 1)
-        this.checkDataRange.Pdata_i = this.$store.state.campanhas.formInputs.data_inicio
-        this.checkDataRange.Pdata_f = this.$store.state.campanhas.formInputs.data_termino
+        this.checkDataRange.Pdata_i = '1/1/2019'//this.$store.state.campanhas.formInputs.data_inicio
+        this.checkDataRange.Pdata_f = '10/10/2019'//this.$store.state.campanhas.formInputs.data_termino
       },
       formatDate (date) {
         if (!date)

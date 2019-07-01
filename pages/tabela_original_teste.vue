@@ -4,7 +4,7 @@
   <div> 
     <v-btn color="success" @click="fetchProdutos">text</v-btn>
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
-    <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span>
+  <!--  <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span> -->
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -376,11 +376,8 @@
             this.editUserInputs()
             this.addRow(this.editedItem)//na real nem precisava passa isso como arg mas foda-se
         }
-        this.saveProdutos()
+        //this.saveProdutos()
         this.close()      
-      },
-      saveProdutos(){
-        this.$store.dispatch('campanhas/set_produtos',this.itens)//salva os valores da tabela globalmente
       },
       getDate(data){//pega as datas formatadas no componente filho 'datas.vue'
         //será chamado antes do método save, aqui, devo associar o valor do item editado com data

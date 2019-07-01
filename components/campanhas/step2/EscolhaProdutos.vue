@@ -1,9 +1,10 @@
 <!-- //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
 -->
 <template>
-  <div>
+  <div> 
+    <v-btn color="success" @click="fetchProdutos">text</v-btn>
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
-    <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span>
+   <!-- <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span> -->
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -17,12 +18,13 @@
         <template v-slot:activator="{ on }">
           <v-btn color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >Adicionar item</v-btn> <!--v-on="on" -->
         </template>
+        
         <v-card > <!-- o form em si é esse v card! -->
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
           </v-card-title>
-          
-          <v-card-text v-model.lazy="valid" ref="editedItem"> <!-- informacoes de adicionar e deletar (é um form)-->
+            <!-- v-model.lazy="valid"  botava no v-vartext abaixo, mas por hr, ignoro isso-->
+          <v-card-text  > <!-- informacoes de adicionar e deletar (é um form)-->
             <v-container grid-list-md >
               <v-layout wrap>
                  <v-flex xs12>
@@ -72,6 +74,7 @@
                                  >
                   </v-text-field>
                 </v-flex>
+
                 <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.preco_v"
                                 @blur="editUserInputs(false)"
@@ -114,7 +117,7 @@
       :search="search"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
-        <td class="text-xs-center"><img :src="props.item.img.src" width="50px" height="50px" alt=""></td>
+        <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
         <td class="text-xs-center">{{ props.item.qtdade }}</td>
         <td class="text-xs-center">{{ props.item.unidade }}</td>
@@ -185,9 +188,17 @@
       crudMixin
     ],
     data: () => ({
+      inputsValidation: {//usarei isso pra definir a validade dos inputs de forma eficaz
+        nome:     true,
+        qtdade:   true,
+        unidade:  true,
+        preco_c:  true,
+        preco_v:  true,
+        marluc:   true
+      },
       dialog: false,
       search: '',
-      valid: true,
+      valid: false,
       metaProdutos: '',//qtdade minima de produtos na campanha
       datesErrors: ['#'],//é uma pilha que checa os erros nas datas. nao terá erro qd ela só tiver o elemento base('#'), ou seja, se datesErros.length ===1
       //PROPS (lembrar que, na verdade, são props para um componente filho
@@ -275,8 +286,16 @@
       },
       valid:{
         handler(){
-          this.validate()
+          console.log("VOU VALIDAR ", this.valid)
+          //this.validate()
         }
+      },
+      inputsValidation: {
+        handler(val, oldVal){
+          console.log("MUDEI ALGO WATCH VALIDATION")
+          this.validate()
+        },
+        deep: true
       }
     },
     created () {
@@ -284,12 +303,14 @@
     },
     methods: {
       initialize () {
+        console.log("akii")
         this.itens = []
       },
       prepareImgInfo(currentItem){//envia pro componente filho image_uload.vue os valores ( sao props no comp filho) a serem colocados ao abrir a aba/form de edit
+        //é dif do cached info, pois aqui, é alimentado com info do db, e o db n salva a url ( pq é um buffer) e tal
         this.imgInfo.imgFile = currentItem.img.src
-        this.imgInfo.imgURL = currentItem.img.url
-        this.imgInfo.imgName = currentItem.img.name
+        //this.imgInfo.imgURL = currentItem.img.url//funciona mas n quero salva no bd pq iso é um arraybuffer, se pa é bad practice
+        this.imgInfo.imgName = currentItem.img.originalName
         this.imgInfo.flag = 1
       },
       editItem (item) {
@@ -301,13 +322,36 @@
         this.dialog = true  
       },
       addItem(flag){
+        this.resetValues()        
         this.imgInfo.flag = flag//garante q nao vai ter uma img pre definida ao abrir o dialog
         this.sendDefaultDates(flag)
       },
+      resetValues(){
+        //p dps de uma remocao, ao eu add um novo item, os campos n terem mais relacao com o que foi deletado
+        this.editedItem = {
+          img:  '',
+          nome: '--',
+          qtdade: '0.00',
+          unidade: '--',
+          obs: '--',
+          data_i: '',
+          data_f: '',
+          preco_c: '0,00',
+          preco_v: '0,00',
+          selout: '',
+          marluc: '0.00'
+        }
+      },
       deleteItem (item) {
         const index = this.itens.indexOf(item)
-        confirm('Você tem certeza de que deseja remover este item?') && this.itens.splice(index, 1)
-      },
+        this.editedItem = Object.assign({}, item)
+        let targetId = this.editedItem._id.data//qt crio manualmente, o _id é um objeto cuso _id de interesse tá no atributo dat
+        if(targetId === undefined)//mas qt dou um get do bd, ele seta o _id direto como um atributo, esse if vai ajustar pra ambos os casos xD
+          targetId = this.editedItem._id
+        const imgSrc = this.editedItem.img.src//path pra img que irei excluir
+       // console.log("target: ", targetId, typeof(targetId))
+        confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.removeRow(targetId,imgSrc))
+     },
       close () {
         this.resetFlags()
         this.resetDateErrorStack()
@@ -321,21 +365,19 @@
         this.defaultDatesValues.flag = 0
         this.imgInfo.flag = 0
       },
-      save () {
+      async save () {
         if (this.editedIndex > -1) {//na edicao, preciso editar antes do assign, se nao vou modificar uma copia q nao é mais usada
             this.editUserInputs()
+            await this.fillImgInfo('',this.editedItem)
             Object.assign(this.itens[this.editedIndex], this.editedItem)
-            this.fillImgInfo()
+            this.updateRow(this.editedItem)
         } else {//caso esteja adicionando algo em vez de editando
+            await this.fillImgInfo(0,this.editedItem)
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
-            this.fillImgInfo(0)
+            this.addRow(this.editedItem)//na real nem precisava passa isso como arg mas foda-se
         }
-        this.saveProdutos()
         this.close()      
-      },
-      saveProdutos(){
-        this.$store.dispatch('campanhas/set_produtos',this.itens)//salva os valores da tabela globalmente
       },
       getDate(data){//pega as datas formatadas no componente filho 'datas.vue'
         //será chamado antes do método save, aqui, devo associar o valor do item editado com data
@@ -351,6 +393,7 @@
         //se flag == 1, irá fazer as dates no componente data.vue passarem o valor presente na linha atual da tabela 
         //se flag == 0, é o valor default, das datas ficarem em branco qd abrir um form/dialogo
         //flag == -1, msm comportamento do default, mas garante q será executado, pois as flags sao baseados em watch no componente filho
+        console.log("vejamos ",this.editedItem.data_i)
         this.defaultDatesValues.flag = flag
         this.defaultDatesValues.Rdata_i = this.editedItem.data_i
         this.defaultDatesValues.Rdata_f = this.editedItem.data_f
@@ -402,30 +445,15 @@
         this.cachedImgInfo.imgFile = data.file
         this.cachedImgInfo.imgURL = data.url
       },
-      fillImgInfo(newItemIndex = ''){   
+      async fillImgInfo(newItemIndex = '', editedItem){   
+        //LEMBRE: img name e url parecem inuteis a lvl de bd, mas sao fundamentais pro usuario interagir/ver a lvl de app!
          //só guardarei a foto escolhida se ele salvou algo, se nao, nao
         //sera chamada se o user de fato quis salvar uma img e ela nao for em branco, pois caso seja, n tem objeto pra criar e daria erro!
         if(this.cachedImgInfo.imgFile !== '' && newItemIndex === ''){//caso editando algo existente c img
-          this.createImage(this.cachedImgInfo.imgFile,this.editedItem)
-          this.editedItem.img.name = this.cachedImgInfo.imgName
-          this.editedItem.img.url = this.cachedImgInfo.imgURL         
+         await this.imgUpload(this.cachedImgInfo.imgFile,editedItem)
         }
         else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){//caso criando algo novo  que contenha img
-          this.itens[newItemIndex].img = {
-            src:  this.cachedImgInfo.imgFile,
-            name: this.cachedImgInfo.imgName,
-            url:  this.cachedImgInfo.imgURL
-          }
-          this.createImage(this.itens[newItemIndex].img.src,this.itens[newItemIndex])
-        }
-        else{//caso criando algo novo e sem img ou editando algo sem img
-          if(newItemIndex !== ''){//só sera dif se já tiver sido criado
-            this.itens[newItemIndex].img = {
-              src:  this.cachedImgInfo.imgFile,
-              name: this.cachedImgInfo.imgName,
-              url:  this.cachedImgInfo.imgURL
-            }
-          }    
+          await this.imgUpload(this.cachedImgInfo.imgFile, editedItem)
         }
         //esvazia p uso futuro. lembre que só é possivel editar uma linha por vez :)
         this.cachedImgInfo.imgName = ''
@@ -433,41 +461,74 @@
         this.cachedImgInfo.imgURL = ''
       },
       validate(){
-        const valid = []//verá quantos itens passarão no teste de validade ( excluindo datas, quem te validacao particular e diferenciada )
         let datesValid = this.datesErrors.length === 1 ? true : false//checa validade para das datas, que tem uma logica particular
           if(datesValid && this.editedItem.data_i !== '' && this.editedItem.data_f !== '')
             datesValid = true
           else
             datesValid = false
-        //checando a validade dos campos obrigatórios que nao sejam datas    
-        Object.keys(this.editedItem).forEach((f,index) => {
-          if(index !== 0 && index !== 5 && index !== 6){//se n for data nem img, de boa usar o metodo validate
-            valid.push(this.$refs["editedItem." + f.toString()].validate(true))                           // console.log("!this.editemItem[f]: ", !this.editedItem)//se n tiver nada prenchido
-          }
-        })
+      
+        const values = Object.values(this.inputsValidation)//
+        var valid = values.filter(v => { return v === false} )//checa validade de todos os inputs que nao sejam datas, pois estas tem validacao especial
+
         if(valid.includes(false) || !datesValid){//se os campos ou alguma data for inválida, invalide o form/dialog
-         // console.log(" FORM invalido")
+          console.log(" FORM invalido")
           this.valid = false
         }  
         else if(!valid.includes(false) && datesValid){//caso contrário, valide
-         // console.log(" Form valido!")
+          console.log(" Form valido!")
           this.valid  = true
         }  
+        return this.valid
+      },
+      getImgURL(item){
+        //se uma img nao tiver sido escolhida, retorne enm branco
+        console.log("testeee ", item.img)
+        //path relativo, n se esqueca do ../../../
+        const path = item.img.name === undefined ? "" : "../../../uploads/fotos/" + item.img.name
+        return path
+      },
+      async fetchProdutos(){
+        this.itens = await this.getProdutos('5d126668d0428d506c18cdaf')
+        console.log("apos ",this.itens)
       },
       //RULES:
       nomeRule(v){
-          return !!v || "é preciso escolher um nome para o produto. "
+        if(!!v === false)
+           this.inputsValidation['nome'] = false
+        else
+          this.inputsValidation['nome'] = true
+        return !!v || "é preciso escolher um nome para o produto. "
       },
       qtdadeRule(v){
+        if(!!v === false)
+           this.inputsValidation['qtdade'] = false
+        else
+          this.inputsValidation['qtdade'] = true
+
          return !!v || 'a quantidade é obrigatória'
       },
       preco_cRule(v){
+        if(!!v === false)
+           this.inputsValidation['preco_c'] = false
+        else
+          this.inputsValidation['preco_c'] = true
+        
         return  !!v || 'o preço de compra e é obrigatório'
       },
       preco_vRule(v){
+        if(!!v === false)
+           this.inputsValidation['preco_v'] = false
+        else
+          this.inputsValidation['preco_v'] = true
+
         return !!v || 'o preço de venda e é obrigatório'
       },
       marlucRule(v){
+        if(!!v === false)
+           this.inputsValidation['marluc'] = false
+        else
+          this.inputsValidation['marluc'] = true
+
         return !!v || 'a margem de lucro e é obrigatória'
       },
       editUserInputs(addUnit = true){//addUnit para botar o R$ e afins. quero isso pra salvar na tabela, mas nao quero isso ( addUnit = false) qd abrir uma form/dialog pra edicao
@@ -481,9 +542,6 @@
           this.editedItem.preco_v = 'R$ ' + this.editedItem.preco_v
           this.editedItem.marluc += '%'
         }
-      },
-      debug(){
-        console.log("ITEMS: ", this.itens)
       }
     }
   }
