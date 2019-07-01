@@ -1,3 +1,4 @@
+const axios = require('axios')
 const express = require('express')
 const Campanha = require('../models/campanha')
 const filterInput = require('../middleware/filterInput')//filtro body pra tirar o campo '_id'
@@ -24,7 +25,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 router.post('/campanhas/removeImg',(req,res)=>{
-    const path = req.file.path//path q usarei pra salvar pro bd, inclusive  
+    console.log("entrei deleta img, req.body: ",req.body)
+    const path = req.body.path//path q usarei pra salvar pro bd, inclusive 
+   
     fs.unlink(path,(err)=>{
         if(err)
             throw err
@@ -34,7 +37,6 @@ router.post('/campanhas/removeImg',(req,res)=>{
 })
   //endpoint p upload d img:
 router.post('/campanhas/uploadImg',upload.single('upload'),(req,res)=> {
-    console.log("até entrei!?")
     console.log(req.file)//o path que irei retornar
     res.send({  path:req.file.path,
                 nome: req.file.filename,//é o nome gerado e é o que será salvo
@@ -44,11 +46,12 @@ router.get('/campanhas/produtos',async(req,res) => {
     //pega todos os produtos de uma campanha
    // console.log("req data ", req.query.campanha_id)//passo como params mas ele bota pra query..wtf, mas que seja xD
     const campanha_id = req.query.campanha_id
+    
     console.log("entro com id ", campanha_id)
     try{
         console.log(" q passa")
         const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
-        res.status(202).send(campanha.produtos)
+        res.status(202).send({ produtos:campanha.produtos})
     }catch(e){
         console.log("zik")
         res.status(500).send(e)
@@ -84,6 +87,14 @@ router.put('/campanhas/removeRow',async(req,res)=>{
     //rempve uma linha da tabela
     const campanha_id = req.body.campanha_id
     const row_id = req.body.row_id
+    const imgPath = req.body.path//path da img q irei excluir
+    if(imgPath !== undefined){//será undefined caso o item n tenha foto associada
+        axios.post('/campanhas/removeImg',{
+            path: imgPath
+        }).then(r => console.log("deleteeei"))
+        .catch(e => console.log("erro xd ", e))
+    }    
+    //excluo o path da img, dps excluo a linha em si, tanto faz a ordem ja q sao operacoes independentes
     Campanha.findOneAndUpdate({_id: campanha_id}, { $pull: {produtos:{_id:row_id}}},(err,doc)=>{
         if(err){
             res.status(500).send(err)

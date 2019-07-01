@@ -20,15 +20,30 @@ export default {
              )
              .catch(e => console.log("erro: ",e))
         },
-        removeRow(row_id){
-             console.log("entrou app ", row_id)
+        removeRow(row_id,path){
+             console.log("entrou app ", row_id, " e path ", path)
              api.campanha.removeRow({
                  campanha_id:"5d126668d0428d506c18cdaf",
-                 row_id: row_id
+                 row_id: row_id,
+                 path: path //path da img que vou excluir ( lembre q excluir a linha é dif de excluir o path da img, sao operacoes dif)
              }).then(
                r => console.log("removido com sucesso: ",r)
              )
              .catch(e => console.log(e))
+        },
+        async getProdutos(campanha_id){
+            console.log("entrei com ", campanha_id)
+            try{
+                const out = await api.campanha.getProdutos({
+                    params: {
+                        campanha_id
+                    }
+                })
+                console.log("td azul: ", out)
+                return out.data.produtos
+            }catch(e){
+                console.log("Erro: ",e)
+            }    
         },
         async imgUpload(file,item){//faz o upload da img a lvl de bd
             //file é o this.editeItem.img.imgfile, o item é a ref real: this.editeItem

@@ -2,6 +2,7 @@
 -->
 <template>
   <div> 
+    <v-btn color="success" @click="fetchProdutos">text</v-btn>
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
     <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span>
       <v-spacer></v-spacer>
@@ -320,17 +321,35 @@
         this.dialog = true  
       },
       addItem(flag){
+        this.resetValues()        
         this.imgInfo.flag = flag//garante q nao vai ter uma img pre definida ao abrir o dialog
         this.sendDefaultDates(flag)
       },
-       deleteItem (item) {
+      resetValues(){
+        //p dps de uma remocao, ao eu add um novo item, os campos n terem mais relacao com o que foi deletado
+        this.editedItem = {
+          img:  '',
+          nome: '--',
+          qtdade: '0.00',
+          unidade: '--',
+          obs: '--',
+          data_i: '',
+          data_f: '',
+          preco_c: '0,00',
+          preco_v: '0,00',
+          selout: '',
+          marluc: '0.00'
+        }
+      },
+      deleteItem (item) {
         const index = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)
         let targetId = this.editedItem._id.data//qt crio manualmente, o _id é um objeto cuso _id de interesse tá no atributo dat
         if(targetId === undefined)//mas qt dou um get do bd, ele seta o _id direto como um atributo, esse if vai ajustar pra ambos os casos xD
           targetId = this.editedItem._id
+        const imgSrc = this.editedItem.img.src//path pra img que irei excluir
        // console.log("target: ", targetId, typeof(targetId))
-        confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.removeRow(targetId))
+        confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.removeRow(targetId,imgSrc))
      },
       close () {
         this.resetFlags()
@@ -377,6 +396,7 @@
         //se flag == 1, irá fazer as dates no componente data.vue passarem o valor presente na linha atual da tabela 
         //se flag == 0, é o valor default, das datas ficarem em branco qd abrir um form/dialogo
         //flag == -1, msm comportamento do default, mas garante q será executado, pois as flags sao baseados em watch no componente filho
+        console.log("vejamos ",this.editedItem.data_i)
         this.defaultDatesValues.flag = flag
         this.defaultDatesValues.Rdata_i = this.editedItem.data_i
         this.defaultDatesValues.Rdata_f = this.editedItem.data_f
@@ -467,6 +487,10 @@
         //se uma img nao tiver sido escolhida, retorne enm branco
         const path = item.img.name === undefined ? "" : "uploads/fotos/" + item.img.name
         return path
+      },
+      async fetchProdutos(){
+        this.itens = await this.getProdutos('5d126668d0428d506c18cdaf')
+        console.log("apos ",this.itens)
       },
       //RULES:
       nomeRule(v){
