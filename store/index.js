@@ -6,6 +6,7 @@ export const actions = {
   nuxtServerInit ({dispatch, router}, context) {
 
     return new Promise((resolve, reject) => {
+      console.log("CHAMO SERVER INITI ERECE")
       const cookies = cookie.parse(context.req.headers.cookie || '')
       if (cookies.hasOwnProperty('x-access-token')) {
         setAuthToken(cookies['x-access-token'])

@@ -2,6 +2,9 @@
 -->
 <template>
   <div> 
+    <div v-if="loading">
+      <v-progress-linear :indeterminate="true"></v-progress-linear>
+    </div>
     <v-btn color="success" @click="fetchProdutos">text</v-btn>
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
   <!--  <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span> -->
@@ -196,6 +199,7 @@
         preco_v:  true,
         marluc:   true
       },
+      loading: false,
       dialog: false,
       search: '',
       valid: false,
@@ -361,6 +365,7 @@
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         }, 300)
+        this.loading = false
       },
       resetImgCached(){
         //reseta os valores cacheados, pois ao se fechar, preciso setar eles pra '', se nao é possivel q eu atualize uma foto sem querer, simplesmente pq escolhi uma ( mas dps cancelei), com essa f, garanto que, se eu ecolher algo mas dps fechar o dialog sem salvar, nenhuma img nova sera salva xD
@@ -374,6 +379,7 @@
         this.imgInfo.flag = 0
       },
       async save () {
+        this.loading = true
         if (this.editedIndex > -1) {//na edicao, preciso editar antes do assign, se nao vou modificar uma copia q nao é mais usada
             this.editUserInputs()
             console.log(" imgs ", this.editedItem.img)
@@ -460,7 +466,7 @@
         //sera chamada se o user de fato quis salvar uma img e ela nao for em branco, pois caso seja, n tem objeto pra criar e daria erro!
         if(this.cachedImgInfo.imgFile !== '' && newItemIndex === ''){//caso editando algo existente c img
           console.log("entreii com ",  this.imgInfo.imgFile, " novo ", editedItem.img.src)
-          await this.imgUpload(this.cachedImgInfo.imgFile,editedItem,)
+          await this.imgUpload(this.cachedImgInfo.imgFile,editedItem)
         }
         else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){//caso criando algo novo  que contenha img
           await this.imgUpload(this.cachedImgInfo.imgFile, editedItem)
@@ -494,8 +500,9 @@
         return path
       },
       async fetchProdutos(){
+        this.loading = true
         this.itens = await this.getProdutos('5d126668d0428d506c18cdaf')
-        console.log("apos ",this.itens)
+        this.loading = false
       },
       //RULES:
       nomeRule(v){

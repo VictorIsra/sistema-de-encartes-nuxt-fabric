@@ -16,26 +16,30 @@
         <span class="title-text grey--text">{{currentText}}</span>
         <v-spacer></v-spacer>
         <v-fade-transition hide-on-leave>
-          <nuxt-link v-if="isMain" to="/campanhas/adicionar">
-            <v-btn color="info">
+          <div v-if="isFlag">
+         <!-- <nuxt-link v-if="isMain" :to="{ path:'/campanhas/adicionar' ,query: {campanhaId:'1235' }}"> -->
+            <v-btn @click='teste' color="info">
               <v-icon class="mr-2">flag</v-icon>
               <span>Criar nova campanha</span>
             </v-btn>
-          </nuxt-link>
+          </div>  
+         <!-- </nuxt-link> -->
         </v-fade-transition>
         <v-fade-transition hide-on-leave>
-          <nuxt-link v-if="!isMain" to="/campanhas">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on" round class="red lighten-4"
-                @click="$store.dispatch('campanhas/reset_campanha')">
-                <v-icon class="mr-2" color="red">cancel</v-icon>
-                <span class="red--text">Abandonar campanha</span>
-              </v-btn>
-            </template>
-            <span>Clique aqui se desistiu dessa campanha e deseja criar outra.</span>
-          </v-tooltip>
-          </nuxt-link>
+        <!--   <nuxt-link v-if="!isMain" to="/campanhas"> -->
+         <!-- <div v-if='1>2'>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" round class="red lighten-4"
+                  @click="$store.dispatch('campanhas/reset_campanha')">
+                  <v-icon class="mr-2" color="red">cancel</v-icon>
+                  <span class="red--text">Abandonar campanha</span>
+                </v-btn>
+              </template>
+              <span>Clique aqui se desistiu dessa campanha e deseja criar outra.</span>
+            </v-tooltip>
+          </div>  -->
+       <!--   </nuxt-link> -->
         </v-fade-transition>
         
       </v-toolbar>
@@ -46,11 +50,12 @@
 
 <script>
   export default {
-    data: {
+    data: ()=> ({
       isMain: true,
       isAdding: false,
-      isEditing: false
-    },
+      isEditing: false,
+      isFlag: true
+    }),
 
     watch: {
       $route(to, from){
@@ -60,20 +65,31 @@
 
     created(){
       this.checkRoute()
+      console.log("checando ", this.$route.path)
     },
 
     methods: {
+      teste(){
+        this.isFlag = false
+        this.$router.push('/campanhas/adicionar')
+      },
       checkRoute(){
         if(this.$route.path.includes('adicionar')){
           this.isMain = false
           this.isAdding = true
+          this.isFlag = false
         }
         else if(this.$route.path.includes('editar')){
           this.isMain = false
           this.isEditing = true
+          this.isFlag = false
         }
         else{
+          console.log("caso elsse")
           this.isMain = true
+          this.isFlag = true
+          this.isAdding = false
+          this.isEditing = false
         }
       }
     },
@@ -81,10 +97,13 @@
     computed: {
       currentText(){
         if(this.isAdding){
+                    console.log("entroo2")
+
           return 'Adicionando nova campanha'
         }
 
         if(this.isEditing){
+          console.log("entroo")
           return 'Editando campanha'
         }
 

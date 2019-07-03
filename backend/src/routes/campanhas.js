@@ -101,6 +101,7 @@ router.put('/campanhas/removeRow',async(req,res)=>{
         res.status(202).send(doc)
     })
 })
+
 router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const row_id = req.body.row_id //id da linha que tou atualizando

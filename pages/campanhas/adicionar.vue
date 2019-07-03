@@ -88,7 +88,7 @@
       concorrencia
     },
     mounted() {
-      console.log("valor de e: ", this.e1)
+      console.log("valor de e: ", this.e1, " route: ", this.$route.params)
     },
     data () {
       return {
