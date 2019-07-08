@@ -45,7 +45,8 @@
       isMain: true,
       isAdding: false,
       isEditing: false,
-      isFlag: true
+      isFlag: true,
+      testev: '12345'
     }),
 
     watch: {
@@ -60,8 +61,8 @@
 
     methods: {
       criar(){
-        this.isFlag = false
-        this.$router.push('/campanhas/adicionar')
+        this.isFlag = false//checar o nome criado automaticamente na pasta .nuxt > router.js
+        this.$router.push({name: "campanhas-adicionar",params: {id:this.testev}})//{path:'/campanhas/adicionar',query: {campanhaId:this.testev}})
       },
       inicio(){
         this.isFlag = true
@@ -91,7 +92,7 @@
     computed: {
       currentText(){
         if(this.isAdding){
-                    console.log("entroo2")
+                    console.log("entroo2 isadding campanhas.vue")
 
           return 'Adicionando nova campanha'
         }

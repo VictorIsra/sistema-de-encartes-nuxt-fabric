@@ -1,7 +1,5 @@
 <template>
   <div>
-    <v-btn color="success" @click="fetchInfos" >text</v-btn>
-
     <v-toolbar flat color="white">
      <!-- <v-toolbar-title>My CRUD</v-toolbar-title>
       <v-divider
@@ -42,8 +40,8 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-            <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
+            <v-btn color="blue darken-1" flat @click="close">Fechar</v-btn>
+            <v-btn color="blue darken-1" flat @click="save">OK</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -53,6 +51,18 @@
       :items="infos"
       class="elevation-1"
     >
+    <template slot="headerCell" slot-scope="props">
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <span v-on="on">
+            {{ props.header.text }}
+          </span>
+        </template>
+        <span>
+          {{ props.header.info }}
+        </span>
+      </v-tooltip>
+    </template>
     <!-- indica o conteudo da linhas -->
       <template v-slot:items="props">
         <td class="text-xs-center">{{props.item.nome_empresa}}</td>
@@ -99,14 +109,14 @@
     data: () => ({
       dialog: false,
       headers: [
-        { text: 'Empresa', value: 'nome_empresa', align: 'center' },
-        { text: 'Nome da campanha', value: 'nome_campanha', align: 'center'  },
-        { text: 'Tipo de campanha', value: 'tipo_campanha' , align: 'center' },
-        { text: 'Margem de lucro', value: 'marluc', align: 'center' },
-        { text: 'Quantidade de produtos', value: 'qtdade', align: 'center' },
-        { text: 'Data da campanha', value: 'datas', align: 'center' },
-        { text: 'Status da campanha', value: 'status', align: 'center' },
-        { text: 'Ações', value: 'name', sortable: false }
+        { text: 'Empresa', value: 'nome_empresa',info:'nome da empresa'},
+        { text: 'Nome da campanha', value: 'nome_campanha',info:'nome da campanha'},
+        { text: 'Tipo de campanha', value: 'tipo_campanha',info:'tipo de campanha: mensal ou semanal'},
+        { text: 'Margem de lucro', value: 'marluc',info:'margem de lúcro mínima'},
+        { text: 'Quantidade de produtos', value: 'qtdade',info:'quantidade de produtos já cadastrados em uma dada campanha'},
+        { text: 'Data da campanha', value: 'datas',info:'intervalo de datas onde a campanha irá acontecer'},
+        { text: 'Status da campanha', value: 'status',info:'situação da campanha: pendente,aprovada,reprovada'},
+        { text: 'Ações', value: 'name', sortable: false ,info:'ações'}
       ],
       infos: [],//sao as informacoes relativas a uma campanha
       editedIndex: -1,
@@ -128,7 +138,7 @@
 
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+        return this.editedIndex === -1 ? 'New Item' : 'Opções de campanha:'
       }
     },
 
@@ -144,17 +154,7 @@
 
     methods: {
       initialize () {
-        // this.infos = [
-        //   {
-        //     empresa: 'Nasa',
-        //     campanha: 'campanha bolada',
-        //     tipos_campanhas: 'semanal',
-        //     m_lucro: '10%',
-        //     qtdade: 80,
-        //     datas: '11/2/2019 a 13/2/2019',
-        //     status: 'pendente'
-        //   },
-        // ]
+        this.fetchInfos()
       },
       editItem (item) {
         this.editedIndex = this.infos.indexOf(item)
@@ -163,7 +163,7 @@
       },
       deleteItem (item) {
         const index = this.infos.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.infos.splice(index, 1)
+        confirm('Tem certeza que deseja deletar essa campanha?') && this.infos.splice(index, 1)
       },
       close () {
         this.dialog = false
@@ -173,8 +173,10 @@
         }, 300)
       },
       async fetchInfos(){//pega as info relativas as campanhas
+        //pega info valiosas que nao aparecem na tabela. como o id da campanha por ex xD
         this.infos = await this.fetchCampanhas()
-        this.infos.forEach(el => console.log(el.campanha_id))
+        this.infos.forEach(infos => 
+        infos.datas = infos.data_i + ' até ' + infos.data_t )//sintetiza info das datas em um unico campo
       },
       save () {
         if (this.editedIndex > -1) {

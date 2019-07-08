@@ -76,7 +76,7 @@ router.get('/campanhas/generalInfo',async(req,res) => {
                 marluc: campanha.m_lucro,
                 data_i: campanha.data_inicio,
                 data_t: campanha.data_termino,
-                qtdade: campanha.qtdade,
+                qtdade: campanha.produtos.length + "/" + campanha.qtdade,
                 campanha_id: campanha.campanha_id,
                 status: campanha.status
             }))
