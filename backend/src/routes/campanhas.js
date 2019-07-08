@@ -57,8 +57,40 @@ router.get('/campanhas/produtos',async(req,res) => {
         res.status(500).send(e)
     }    
 })
+router.get('/campanhas/generalInfo',async(req,res) => {
+    //pega info gerais de uma campanha: nome,tipo,status,qtdade de produtos etc...
+   // console.log("req data ", req.query.campanha_id)//passo como params mas ele bota pra query..wtf, mas que seja xD
+    // let campanha_id = req.query.campanha_id//caso fazendo req pelo app
+    // if(!campanha_id)//caso esteja usando o postman
+    //     campanha_id = req.body.campanha_id
+    // console.log("entro com id ", campanha_id)
+    try{
+        console.log("filtrarei interesse")
+        const campanha = await Campanha.find({})
+        let campanhas = [] 
+        campanha.forEach(campanha => 
+            campanhas.unshift({//assim retorno só as info de interesse de cada campanha. Produtos, nesse caso, n é importartante
+                nome_empresa: campanha.empresa,
+                nome_campanha: campanha.campanha,
+                tipo_campanha: campanha.tipos_campanhas,
+                marluc: campanha.m_lucro,
+                data_i: campanha.data_inicio,
+                data_t: campanha.data_termino,
+                qtdade: campanha.qtdade,
+                campanha_id: campanha.campanha_id,
+                status: campanha.status
+            }))
+        res.status(202).send({
+            campanhas
+        })
+    }catch(e){
+        console.log("algo deu errado")
+        res.status(500).send(e)
+    }    
+})
 router.post('/campanhas/createCampanha', async (req,res) => {//cria campanha
     const new_campanha = new Campanha(req.body)
+    //cria uma campanha + preenche as info gerais ( qqr info q n seja relacionada com o produtos, q é feita numa etapa posterior xD)
     try{
         await new_campanha.save()
         //gambiarra pra salvar o id gerado numa propriedade a parte e manipular no codigo xD

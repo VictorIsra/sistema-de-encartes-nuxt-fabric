@@ -1,5 +1,7 @@
 <template>
   <div>
+    <v-btn color="success" @click="fetchInfos" >text</v-btn>
+
     <v-toolbar flat color="white">
      <!-- <v-toolbar-title>My CRUD</v-toolbar-title>
       <v-divider
@@ -16,7 +18,6 @@
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
           </v-card-title>
-
           <v-card-text>
             <v-container grid-list-md>
               <v-layout wrap>
@@ -49,17 +50,19 @@
     </v-toolbar>
     <v-data-table
       :headers="headers"
-      :items="desserts"
+      :items="infos"
       class="elevation-1"
     >
     <!-- indica o conteudo da linhas -->
       <template v-slot:items="props">
-        <td class="text-xs-center">{{ props.item.empresa }}</td>
-        <td class="text-xs-center">{{ props.item.campanha }}</td>
-        <td class="text-xs-center">{{ props.item.tipos_campanhas}}</td>
-        <td class="text-xs-center">{{ props.item.m_lucro }}</td>
-        <td class="text-xs-center">{{ props.item.qtdade }}</td>
-        <td class="text-xs-center">{{ props.item.datas }}</td>
+        <td class="text-xs-center">{{props.item.nome_empresa}}</td>
+        <td class="text-xs-center">{{props.item.nome_campanha}}</td>
+        <td class="text-xs-center">{{props.item.tipo_campanha}}</td>
+        <td class="text-xs-center">{{props.item.marluc}}</td>
+        <td class="text-xs-center">{{props.item.qtdade}}</td>
+        <td class="text-xs-center">{{props.item.datas}}</td>
+        <td class="text-xs-center">{{props.item.status}}</td>
+
 
         <td class="justify-center layout px-0">
           <template v-if="1===1"><!-- vai ser visivel só pro user diretor -->
@@ -87,25 +90,25 @@
 </template>
 
 <script>
+  import crudMixin from '../../components/mixins/CRUD.js'
+
   export default {
+     mixins: [
+      crudMixin
+    ],
     data: () => ({
       dialog: false,
       headers: [
-        // {
-        //   text: 'Dessert (100g serving)',
-        //   align: 'center',
-        //   sortable: false,
-        //   value: 'name'
-        // },
-        { text: 'Empresa', value: 'empresa', align: 'center' },
-        { text: 'Nome da campanha', value: 'campanha', align: 'center'  },
-        { text: 'Tipo de campanha', value: 'tipos_campanhas' , align: 'center' },
-        { text: 'Margem de lucro', value: 'm_lucro', align: 'center' },
+        { text: 'Empresa', value: 'nome_empresa', align: 'center' },
+        { text: 'Nome da campanha', value: 'nome_campanha', align: 'center'  },
+        { text: 'Tipo de campanha', value: 'tipo_campanha' , align: 'center' },
+        { text: 'Margem de lucro', value: 'marluc', align: 'center' },
         { text: 'Quantidade de produtos', value: 'qtdade', align: 'center' },
-        { text: 'Data', value: 'datas', align: 'center' },
-        { text: 'Actions', value: 'name', sortable: false }
+        { text: 'Data da campanha', value: 'datas', align: 'center' },
+        { text: 'Status da campanha', value: 'status', align: 'center' },
+        { text: 'Ações', value: 'name', sortable: false }
       ],
-      desserts: [],
+      infos: [],//sao as informacoes relativas a uma campanha
       editedIndex: -1,
       editedItem: {
         // name: '',
@@ -141,29 +144,27 @@
 
     methods: {
       initialize () {
-        this.desserts = [
-          {
-            empresa: 'Nasa',
-            campanha: 'campanha bolada',
-            tipos_campanhas: 'semanal',
-            m_lucro: '10%',
-            qtdade: 80,
-            datas: '11/2/2019 a 13/2/2019'
-          },
-        ]
+        // this.infos = [
+        //   {
+        //     empresa: 'Nasa',
+        //     campanha: 'campanha bolada',
+        //     tipos_campanhas: 'semanal',
+        //     m_lucro: '10%',
+        //     qtdade: 80,
+        //     datas: '11/2/2019 a 13/2/2019',
+        //     status: 'pendente'
+        //   },
+        // ]
       },
-
       editItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
+        this.editedIndex = this.infos.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
-
       deleteItem (item) {
-        const index = this.desserts.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+        const index = this.infos.indexOf(item)
+        confirm('Are you sure you want to delete this item?') && this.infos.splice(index, 1)
       },
-
       close () {
         this.dialog = false
         setTimeout(() => {
@@ -171,12 +172,15 @@
           this.editedIndex = -1
         }, 300)
       },
-
+      async fetchInfos(){//pega as info relativas as campanhas
+        this.infos = await this.fetchCampanhas()
+        this.infos.forEach(el => console.log(el.campanha_id))
+      },
       save () {
         if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
+          Object.assign(this.infos[this.editedIndex], this.editedItem)
         } else {
-          this.desserts.push(this.editedItem)
+          this.infos.push(this.editedItem)
         }
         this.close()
       }

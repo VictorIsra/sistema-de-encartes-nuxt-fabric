@@ -2,6 +2,16 @@ import api from '~/api'//pra eu poder fazer as req pro axios com uma sintaxe enx
 //fazer as req aqui, em vez de direto no componente. assim é mais organizado/modularizado
 export default {
     methods: {
+        async fetchCampanhas(){
+            console.log("caralho brother...-.- ")
+            try{
+                const infos = await api.campanha.getGeneralInfo()
+                console.log("veja ", infos.data.campanhas)
+                return infos.data.campanhas
+            }catch(e){
+                console.log("erro: ",e)
+            }
+        },
         addRow(editedItem){//vai virar um mixin
              api.campanha.addRow(
                    {produtos:editedItem,

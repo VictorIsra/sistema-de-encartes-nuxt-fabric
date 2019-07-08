@@ -4,41 +4,41 @@ const mongoose = require('mongoose')
 const campanhaSchema = new mongoose.Schema({
     empresa: {
         type: String,//admin(root/god),diretor,clientes,
-       // required: true
+        required: true
     },
     campanha: {//nome da campanha
         type: String,
-        //required: true,
+        required: true,
         //unique: true,
         trim: true
     },
     tipos_campanhas: {//semanal/mensal
         type: String,
-        //required: true,
+        required: true,
         //unique: true,
         trim: true
     },
     m_lucro: {//semanal/mensal
         type: String,
-        //required: true,
+        required: true,
         //unique: true,
         trim: true
     },
     data_inicio: {//semanal/mensal
         type: String,
-    //    required: true,
+        required: true,
         //unique: true,
         trim: true
     },
     data_termino: {//semanal/mensal
         type: String,
-      //  required: true,
+        required: true,
         //unique: true,
         trim: true
     },
     qtdade: {//qtdade de produtos minimo pra cafastra campanha
         type: String,
-    //    required: true,
+        required: true,
         //unique: true,
         trim: true
     },
@@ -98,7 +98,7 @@ const campanhaSchema = new mongoose.Schema({
     ],
     status: {//aprovada/reprovada/pendente
         type: String,
-        //required: true,
+        required: true,
         //unique: true,
         //trim: true
     }
