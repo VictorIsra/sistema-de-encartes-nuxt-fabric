@@ -18,30 +18,21 @@
         <v-fade-transition hide-on-leave>
           <div v-if="isFlag">
          <!-- <nuxt-link v-if="isMain" :to="{ path:'/campanhas/adicionar' ,query: {campanhaId:'1235' }}"> -->
-            <v-btn @click='teste' color="info">
+            <v-btn @click='criar' color="info">
               <v-icon class="mr-2">flag</v-icon>
               <span>Criar nova campanha</span>
             </v-btn>
-          </div>  
-         <!-- </nuxt-link> -->
+          </div>
         </v-fade-transition>
-        <v-fade-transition hide-on-leave>
-        <!--   <nuxt-link v-if="!isMain" to="/campanhas"> -->
-         <!-- <div v-if='1>2'>
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn v-on="on" round class="red lighten-4"
-                  @click="$store.dispatch('campanhas/reset_campanha')">
-                  <v-icon class="mr-2" color="red">cancel</v-icon>
-                  <span class="red--text">Abandonar campanha</span>
-                </v-btn>
-              </template>
-              <span>Clique aqui se desistiu dessa campanha e deseja criar outra.</span>
-            </v-tooltip>
-          </div>  -->
-       <!--   </nuxt-link> -->
-        </v-fade-transition>
-        
+         <v-fade-transition hide-on-leave>
+          <div v-if="!isFlag">
+         <!-- <nuxt-link v-if="isMain" :to="{ path:'/campanhas/adicionar' ,query: {campanhaId:'1235' }}"> -->
+            <v-btn @click='inicio' color="info">
+              <!-- <v-icon class="mr-2">flag</v-icon> -->
+              <span>Voltar para listagem de campanhas</span>
+            </v-btn>
+          </div>
+        </v-fade-transition>       
       </v-toolbar>
       <nuxt-child></nuxt-child>
     </div>
@@ -65,13 +56,16 @@
 
     created(){
       this.checkRoute()
-      console.log("checando ", this.$route.path)
     },
 
     methods: {
-      teste(){
+      criar(){
         this.isFlag = false
         this.$router.push('/campanhas/adicionar')
+      },
+      inicio(){
+        this.isFlag = true
+        this.$router.push('/campanhas')
       },
       checkRoute(){
         if(this.$route.path.includes('adicionar')){
