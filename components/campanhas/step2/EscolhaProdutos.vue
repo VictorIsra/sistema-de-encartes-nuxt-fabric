@@ -3,6 +3,8 @@
 <template>
   <div> 
     <v-btn color="success" @click="fetchProdutos">text</v-btn>
+        <div>{{campanha_id}}</div>
+
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
   <!--  <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span> -->
       <v-spacer></v-spacer>
@@ -187,6 +189,7 @@
       formatInputMixin,
       crudMixin
     ],
+    props:['campanha_id'],
     data: () => ({
       inputsValidation: {//usarei isso pra definir a validade dos inputs de forma eficaz
         nome:     true,
@@ -303,7 +306,7 @@
     },
     methods: {
       initialize () {
-        this.itens = []
+        this.fetchProdutos()
       },
       prepareImgInfo(currentItem){//envia pro componente filho image_uload.vue os valores ( sao props no comp filho) a serem colocados ao abrir a aba/form de edit
         //é dif do cached info, pois aqui, é alimentado com info do db, e o db n salva a url ( pq é um buffer) e tal
@@ -350,7 +353,7 @@
           targetId = this.editedItem._id
         const imgSrc = this.editedItem.img.src//path pra img que irei excluir
        // console.log("target: ", targetId, typeof(targetId))
-        confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.removeRow(targetId,imgSrc))
+        confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.removeRow(targetId,imgSrc,this.campanha_id))
      },
       close () {
         this.resetImgCached()
@@ -379,12 +382,12 @@
             console.log(" imgs ", this.editedItem.img)
             await this.fillImgInfo('',this.editedItem)
             Object.assign(this.itens[this.editedIndex], this.editedItem)
-            this.updateRow(this.editedItem)
+            this.updateRow(this.editedItem,this.campanha_id)
         } else {//caso esteja adicionando algo em vez de editando
             await this.fillImgInfo(0,this.editedItem)
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
-            this.addRow(this.editedItem)//na real nem precisava passa isso como arg mas foda-se
+            this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
         }
         //this.saveProdutos()
         this.close()      
@@ -494,7 +497,7 @@
         return path
       },
       async fetchProdutos(){
-        this.itens = await this.getProdutos('5d126668d0428d506c18cdaf')
+        this.itens = await this.getProdutos(this.campanha_id)
         console.log("apos ",this.itens)
       },
       //RULES:

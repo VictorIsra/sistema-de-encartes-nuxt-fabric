@@ -46,7 +46,7 @@
       isAdding: false,
       isEditing: false,
       isFlag: true,
-      testev: '12345'
+      default_id: "-1"//id de uma campanha que será criada, isso controlará as etapas da campanha que poderao ser vistas
     }),
 
     watch: {
@@ -62,7 +62,7 @@
     methods: {
       criar(){
         this.isFlag = false//checar o nome criado automaticamente na pasta .nuxt > router.js
-        this.$router.push({name: "campanhas-adicionar",params: {id:this.testev}})//{path:'/campanhas/adicionar',query: {campanhaId:this.testev}})
+        this.$router.push({name: "campanhas-adicionar",params: {campanha_id:this.default_id}})//{path:'/campanhas/adicionar',query: {campanhaId:this.testev}})
       },
       inicio(){
         this.isFlag = true

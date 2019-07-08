@@ -12,14 +12,14 @@ export default {
                 console.log("erro: ",e)
             }
         },
-        addRow(editedItem){//vai virar um mixin
+        addRow(editedItem,campanha_id){//vai virar um mixin
              api.campanha.addRow(
                    {produtos:editedItem,
-                   campanha_id:"5d126668d0428d506c18cdaf"}
+                   campanha_id}
              ).then(r => editedItem._id = r)
              .catch(e => console.log("erro: ",e))
         },
-        updateRow(editedItem){//a lvl de bd, serve tano pra editar uma linha qt pra criar uma, ja q uma linha é um objeto dentro de uma campanha
+        updateRow(editedItem,campanha_id){//a lvl de bd, serve tano pra editar uma linha qt pra criar uma, ja q uma linha é um objeto dentro de uma campanha
             var img_id = ''
             if(editedItem._id.data !== undefined)//primeira edicao apos criar algo existe um _id.data, nos outros casos apenas _id, entao cuidado
                 img_id = editedItem._id.data
@@ -27,17 +27,17 @@ export default {
                 img_id = editedItem._id    
             api.campanha.updateRow({
                    produtos:editedItem,
-                   campanha_id:"5d126668d0428d506c18cdaf",
+                   campanha_id,
                    row_id:img_id
              }).then(
                    r => console.log("response: ",r)
              )
              .catch(e => console.log("erro: ",e))
         },
-        removeRow(row_id,path){
+        removeRow(row_id,path,campanha_id){
              console.log("entrou app ", row_id, " e path ", path)
              api.campanha.removeRow({
-                 campanha_id:"5d126668d0428d506c18cdaf",
+                 campanha_id,
                  row_id: row_id,
                  path: path //path da img que vou excluir ( lembre q excluir a linha é dif de excluir o path da img, sao operacoes dif)
              }).then(

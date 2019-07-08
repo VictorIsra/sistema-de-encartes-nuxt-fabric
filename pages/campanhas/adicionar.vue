@@ -1,13 +1,12 @@
 <template>
   <div>
     <v-stepper  v-model="e1">
-    <!-- <v-btn color="success" @click="printFormInputs">CHECK INPUTS</v-btn>-->
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">Dados da Campanha</v-stepper-step>
 
         <v-divider></v-divider>
 
-        <v-stepper-step :complete="e1 > 2" step="2">Escolha de Produtos</v-stepper-step>
+        <v-stepper-step :complete="e1 >= 2" step="2">Escolha de Produtos</v-stepper-step>
 
         <v-divider></v-divider>
 
@@ -35,7 +34,7 @@
 
         <v-stepper-content step="2">
           <v-container grid-list-xs>
-            <escolha-produtos :campanhaDates="form_inputs"/>
+            <escolha-produtos :campanhaDates="form_inputs" :campanha_id="campanha_id"/>
           </v-container>
         
           <div class="text-xs-right">
@@ -87,18 +86,28 @@
       'escolha-produtos': escolhaProdutos,
       concorrencia
     },
-    mounted() {
-      console.log("valor de e: ", this.e1, " route: ", this.$route.params)
+    created() {//mounted dá zika: ele perde o valor correto ( ou será q o mounted rola antes do data ser setado? se pa...)
+      this.chooseStep()
     },
     data () {
       return {
         e1: 0,
         form_validated: false,//controla se o botao de 'proximo' ficará habilitado ou nao
         form_inputs: {},//componente filho (formulario.vue) irá preencher isso na hora correta
-        getFilteredProdutos: false//avisa ao step 3 (componente filgo concorrencia.vue) q ele deve alimentar a tabela com os valores dos produtos da etapa 2 filtrados
+        getFilteredProdutos: false,//avisa ao step 3 (componente filgo concorrencia.vue) q ele deve alimentar a tabela com os valores dos produtos da etapa 2 filtrados
+        campanha_id: undefined//será preenchido via route.params no mounted
       }
     },
     methods: {
+      chooseStep(){
+      //baseado no id da campanha (undefined se n existir ou -1 se for criar uma campanha nova, else caso ja exista),irei setar o valor da variavel e1
+      this.campanha_id = this.$route.params.campanha_id
+        if(this.campanha_id === undefined || this.campanha_id === '-1')
+          this.e1 = 0
+        else{//caso esteja editando uma campanha ( existente obviamente)
+          this.e1 = 2  
+        }  
+      },
       validarForm(flag,inputs){
         if(flag){//inputs passados no componete formulario.vue sao validos, logo habilite o botao de 'proximo' neste componente (adcionar.vue)
           this.form_validated = true
@@ -110,7 +119,6 @@
       },
       //$store.state.auth.show_lateral_menu
       saveFormInputs(){
-        //let inputs = Object.values(this.form_inputs)
         this.e1 = 2
         //this.$store.dispatch('campanhas/set_form_inputs',this.form_inputs)//alimenta o store com os inputs da etapa 1 das campanhas
       },
