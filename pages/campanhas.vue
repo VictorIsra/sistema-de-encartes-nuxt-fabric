@@ -69,6 +69,12 @@
         this.$router.push('/campanhas')
       },
       checkRoute(){
+        if(this.$route.params.edited !== undefined){
+          console.log("aaakkk")
+          this.isMain = false
+          this.isEditing = true
+          this.isFlag = false
+        }
         if(this.$route.path.includes('adicionar')){
           this.isMain = false
           this.isAdding = true
@@ -88,17 +94,14 @@
         }
       }
     },
-
     computed: {
       currentText(){
-        if(this.isAdding){
-          return 'Adicionando nova campanha'
-        }
-
         if(this.isEditing){
           return 'Editando campanha'
         }
-
+        if(this.isAdding){
+          return 'Adicionando nova campanha'
+        }
         return 'Listando campanhas'
       }
     }

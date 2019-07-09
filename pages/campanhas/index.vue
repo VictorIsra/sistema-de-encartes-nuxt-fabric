@@ -161,7 +161,7 @@
         this.editedItem = Object.assign({}, item)
         console.log("id: ", this.editedItem.campanha_id)
         //a principio redirecionará pra continuar a edicao/add de produtos, mas o diretor poderá alterar outras infos futuramente
-        this.$router.push({name: "campanhas-adicionar",params: {campanha_id:this.editedItem.campanha_id}})
+        this.$router.push({name: "campanhas-adicionar",params: {campanha_id:this.editedItem.campanha_id,edited:true}})
         //só quero passar o id correspondente, a principio, n quero abrir o dialog, mas quem sabe o diretor o fará no futuro..entao deixo comentado
        // this.dialog = true
       },
