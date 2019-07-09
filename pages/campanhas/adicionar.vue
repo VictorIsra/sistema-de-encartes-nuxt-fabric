@@ -78,9 +78,12 @@
   import escolhaProdutos from '../../components/campanhas/step2/EscolhaProdutos.vue'
   //impor etapa 3 ( step 3):
   import concorrencia from '../../components/campanhas/step3/concorrencia.vue'
+  import crudMixin from '../../components/mixins/CRUD.js'
 
   export default {
-
+    mixins: [
+      crudMixin
+    ],
     components: {
       formulario,
       'escolha-produtos': escolhaProdutos,
@@ -118,17 +121,14 @@
         }
       },
       //$store.state.auth.show_lateral_menu
-      saveFormInputs(){
+      async saveFormInputs(){//cria uma campanha neste momento
         this.e1 = 2
-        //this.$store.dispatch('campanhas/set_form_inputs',this.form_inputs)//alimenta o store com os inputs da etapa 1 das campanhas
+        this.campanha_id = await this.createCampanha(this.form_inputs)
       },
       sendFilteredProdutosInput(){//envia pra etapa 3 os inputs referentes aos produtos, mas só os q serao usados de fato na etapa 3
         this.e1 = 3
-       // const produtos = this.$store.state.campanhas.produtos//produtos bases q serao fitrados pra serem usados na etapa 3 e 4
         this.filterProdutos(produtos)
-        //so mandarei o flag qd a f acima terminar d executar,pra ter consistencia os dados
         this.getFilteredProdutos = !this.getFilteredProdutos
-
       },
       filterProdutos(produtos){
         const filtered = []//vetor com os produtos da etapa 2 filtrados

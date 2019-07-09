@@ -10,7 +10,7 @@ export default {
     getProdutos: (data) => axios.get('/campanhas/produtos',data),//pega vetor de produtos de uma campanha particular
     getGeneralInfo: () => axios.get('/campanhas/generalInfo'),//pega as tds as info das  campanhas ( com excecao dos produtos)
     createCampanha:(data) => axios.post('/campanhas/createCampanha',data),//cria CAMPANHA
-    removeCampanha:(data) => axios.post('/campanhas/removeCampanha',data),
+    removeCampanha:(data) => axios.put('/campanhas/removeCampanha',data),
     updateRow: (data) => axios.patch('campanhas/updateRow',data),//faz update de uma row de produtos de uma campanha
     addRow: (data) => axios.post('campanhas/addRow',data),//adiciona uma row de produtos em uma campanha
     removeRow: (data) => axios.put('/campanhas/removeRow',data),//remove uma row de produtos de uma campanha

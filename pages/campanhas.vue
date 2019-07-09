@@ -92,13 +92,10 @@
     computed: {
       currentText(){
         if(this.isAdding){
-                    console.log("entroo2 isadding campanhas.vue")
-
           return 'Adicionando nova campanha'
         }
 
         if(this.isEditing){
-          console.log("entroo")
           return 'Editando campanha'
         }
 

@@ -2,8 +2,23 @@ import api from '~/api'//pra eu poder fazer as req pro axios com uma sintaxe enx
 //fazer as req aqui, em vez de direto no componente. assim é mais organizado/modularizado
 export default {
     methods: {
+        removeCampanha(campanha_id){
+            console.log("irei remover campanah de id ", campanha_id)
+            api.campanha.removeCampanha({
+                campanha_id
+            })
+            .then(r => console.log("campanha removida com sucesso! "))
+            .catch(e => console.log("n pude remover campanha..."))
+        },
+        async createCampanha(campanhaInfos){
+            try{
+                const newCampanha = await api.campanha.createCampanha(campanhaInfos)
+                return newCampanha.data.campanha_id
+            }catch(e){
+                console.log("error: ",e)
+            }
+        },
         async fetchCampanhas(){
-            console.log("caralho brother...-.- ")
             try{
                 const infos = await api.campanha.getGeneralInfo()
                 console.log("veja ", infos.data.campanhas)
@@ -35,7 +50,6 @@ export default {
              .catch(e => console.log("erro: ",e))
         },
         removeRow(row_id,path,campanha_id){
-             console.log("entrou app ", row_id, " e path ", path)
              api.campanha.removeRow({
                  campanha_id,
                  row_id: row_id,
@@ -46,7 +60,6 @@ export default {
              .catch(e => console.log(e))
         },
         async getProdutos(campanha_id){
-            console.log("entrei com ", campanha_id)
             try{
                 const out = await api.campanha.getProdutos({
                     params: {

@@ -33,7 +33,7 @@
 
     <v-flex sm6>
       <v-text-field
-        v-model.trim="form_inputs.mlucro"
+        v-model.trim="form_inputs.marluc"
         @blur="parseMlucro"
         :rules="[mlucroRules]"
         label="Margem de lucro mínima (%)"
@@ -96,10 +96,11 @@
         empresa: '',
         campanha: '',
         tipos_campanhas: '', 
-        mlucro: '',
+        marluc: '',
         data_inicio: '',
         data_termino: '',
-        qtdade: ''//meta minima de produtos a serme cadastrados pra poder criar a campanha
+        qtdade: '',//meta minima de produtos a serme cadastrados pra poder criar a campanha
+        status:'pendente'
       },
       checkbox: false
     }),
@@ -114,7 +115,7 @@
           console.log("erro ocorreu na funcao getData")    
       },
       parseMlucro(){
-        this.form_inputs.mlucro = this.parsePtBr(this.form_inputs.mlucro)
+        this.form_inputs.marluc = this.parsePtBr(this.form_inputs.marluc)
       },
       truncNumber(){
         this.form_inputs.qtdade = Math.trunc(this.form_inputs.qtdade)

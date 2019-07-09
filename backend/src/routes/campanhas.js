@@ -90,6 +90,7 @@ router.get('/campanhas/generalInfo',async(req,res) => {
 })
 router.post('/campanhas/createCampanha', async (req,res) => {//cria campanha
     const new_campanha = new Campanha(req.body)
+    console.log("info da campanha: ", new_campanha)
     //cria uma campanha + preenche as info gerais ( qqr info q n seja relacionada com o produtos, q é feita numa etapa posterior xD)
     try{
         await new_campanha.save()
@@ -105,9 +106,10 @@ router.post('/campanhas/createCampanha', async (req,res) => {//cria campanha
         res.status(500).send("n rolou de criar campanha" + e )//n sei pq, se passo só send(e), ele n printa nada
     }
 })
-router.delete('/campanhas/removeCampanha',(req,res)=>{
+router.put('/campanhas/removeCampanha',(req,res)=>{
     //deleta campanha por id
-    const campanha_id =  req.body.campanha_id
+    const campanha_id = req.body.campanha_id
+    console.log("ID NA F ", campanha_id)
     Campanha.findByIdAndDelete(campanha_id,(err,doc)=>{
         if(err)
             res.status(404).send(err)

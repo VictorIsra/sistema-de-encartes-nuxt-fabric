@@ -18,7 +18,7 @@ const campanhaSchema = new mongoose.Schema({
         //unique: true,
         trim: true
     },
-    m_lucro: {//semanal/mensal
+    marluc: {//semanal/mensal
         type: String,
         required: true,
         //unique: true,

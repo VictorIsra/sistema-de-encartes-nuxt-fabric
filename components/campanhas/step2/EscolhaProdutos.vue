@@ -306,7 +306,10 @@
     },
     methods: {
       initialize () {
-        this.fetchProdutos()
+        if(this.campanha_id !== undefined && this.campanha_id !== '-1')
+          this.fetchProdutos()
+        else
+          console.log("escolhaprodutos.vue : nenhum id valido por hora ")  
       },
       prepareImgInfo(currentItem){//envia pro componente filho image_uload.vue os valores ( sao props no comp filho) a serem colocados ao abrir a aba/form de edit
         //é dif do cached info, pois aqui, é alimentado com info do db, e o db n salva a url ( pq é um buffer) e tal
@@ -314,7 +317,7 @@
         //this.imgInfo.imgURL = currentItem.img.url//funciona mas n quero salva no bd pq iso é um arraybuffer, se pa é bad practice
         this.imgInfo.imgName = currentItem.img.originalName
         this.imgInfo.flag = 1
-        console.log(" preparimgAAAAAA ", this.imgInfo.imgFile)
+        //console.log(" preparimgAAAAAA ", this.imgInfo.imgFile)
       },
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
@@ -379,7 +382,7 @@
       async save () {
         if (this.editedIndex > -1) {//na edicao, preciso editar antes do assign, se nao vou modificar uma copia q nao é mais usada
             this.editUserInputs()
-            console.log(" imgs ", this.editedItem.img)
+            //console.log(" imgs ", this.editedItem.img)
             await this.fillImgInfo('',this.editedItem)
             Object.assign(this.itens[this.editedIndex], this.editedItem)
             this.updateRow(this.editedItem,this.campanha_id)
@@ -462,14 +465,14 @@
          //só guardarei a foto escolhida se ele salvou algo, se nao, nao
         //sera chamada se o user de fato quis salvar uma img e ela nao for em branco, pois caso seja, n tem objeto pra criar e daria erro!
         if(this.cachedImgInfo.imgFile !== '' && newItemIndex === ''){//caso editando algo existente c img
-          console.log("entreii com ",  this.imgInfo.imgFile, " novo ", editedItem.img.src)
+          //console.log("entreii com ",  this.imgInfo.imgFile, " novo ", editedItem.img.src)
           await this.imgUpload(this.cachedImgInfo.imgFile,editedItem,)
         }
         else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){//caso criando algo novo  que contenha img
           await this.imgUpload(this.cachedImgInfo.imgFile, editedItem)
         }
         //if(newItemIndex === '')
-          console.log(" original? ",  this.imgInfo.imgFile, " novo ", editedItem.img.src)
+          //console.log(" original? ",  this.imgInfo.imgFile, " novo ", editedItem.img.src)
       },
       validate(){
         let datesValid = this.datesErrors.length === 1 ? true : false//checa validade para das datas, que tem uma logica particular
