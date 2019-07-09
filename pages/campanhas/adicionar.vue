@@ -34,7 +34,7 @@
 
         <v-stepper-content step="2">
           <v-container grid-list-xs>
-            <escolha-produtos :campanhaDates="form_inputs" :campanha_id="campanha_id"/>
+            <escolha-produtos :campanhaInfos="campanha_infos" :campanha_id="campanha_id"/>
           </v-container>
         
           <div class="text-xs-right">

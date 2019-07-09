@@ -61,14 +61,11 @@ router.get('/campanhas/generalInfo',async(req,res) => {
     const campanha_id = req.query.campanha_id
     try{
         let campanha = ''
-        if(campanha_id === undefined){//se undined pege as infos de tds as campanhas
-            campanha = await Campanha.find({})
-            console.log("case all", campanha)
-        }    
-        else{//se nao, pegue as info de uma campanha particular
+        if(campanha_id === undefined)//se undined pege as infos de tds as campanhas
+            campanha = await Campanha.find({})  
+        else//se nao, pegue as info de uma campanha particular
             campanha = await Campanha.findById(campanha_id)
-            console.log("case esp ", campanha_id, " campanha ", campanha)
-        }    
+            
         let campanhas = []
         //checa se é um objecto ou um array de objeto, lembre q no js, se eu usar o typeof em um arry de objeto, ele dirá q é objeto, por isso essa linha estranah xD
         let isArr = Object.prototype.toString.call(campanha) == '[object Array]';

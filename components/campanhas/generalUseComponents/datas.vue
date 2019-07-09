@@ -74,6 +74,9 @@
             }  
           }
         },
+        dateRange:{
+          
+        },
         defaultDatesValues:{//pra qd abrir um dialog, as datas serem iguais as das contidas na linha de uma tabela, em vez de em branco
           type: Object,
           default: function(){
@@ -133,8 +136,10 @@
     },
     methods: {
       setDatesRange(){//seta o intervalo de datas em que os produtos devem estar ( datas form definidas na etapa 1)
-        this.checkDataRange.Pdata_i = '1/1/2019'//this.$store.state.campanhas.formInputs.data_inicio
-        this.checkDataRange.Pdata_f = '10/10/2019'//this.$store.state.campanhas.formInputs.data_termino
+        //date range é outra prop que uso em auxiliar. na real, precisava só de uma, mas como há mt n mexo aqui e a prop checkDataRange é utilizada em varios lugares, optei por criar um prop extra só pra essa passagem. um dia limpo isso xD
+        this.checkDataRange.Pdata_i = this.dateRange.data_inicio
+        this.checkDataRange.Pdata_f = this.dateRange.data_termino
+        this.checkDataRange.checkRange = true
       },
       formatDate (date) {
         if (!date)

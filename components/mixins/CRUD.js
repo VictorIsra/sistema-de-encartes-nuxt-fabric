@@ -19,8 +19,7 @@ export default {
             }
         },
         async fetchCampanhas(campanha_id){
-            //se campanha_id for undefined, pegara info de tds as campanhas, se naom pegará de uma em particular
-            console.log("args: ", campanha_id , " <--")
+            //se campanha_id for undefined, pegara info de tds as campanhas, se naom pegará de uma em particular ( td isso ocorrerá a lvl de bd)
             try{
                 const infos = await api.campanha.getGeneralInfo({
                     params:{

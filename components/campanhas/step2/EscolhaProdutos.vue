@@ -58,8 +58,8 @@
                   <v-text-field ref="editedItem.obs" v-model="editedItem.obs" label="Observação"></v-text-field>
                 </v-flex>
                 <v-flex>
-                  <datas  :checkDataRange="checkDataRange" 
-                          :defaultDatesValues="defaultDatesValues" 
+                  <datas   :dateRange="campanhaInfos"
+                           :defaultDatesValues="defaultDatesValues" 
                            @datechanged="getDate"
                            @blur="editUserInputs(false)"
                            @dateStatusInfo="getDateStatus"           
@@ -189,7 +189,7 @@
       formatInputMixin,
       crudMixin
     ],
-    props:['campanha_id'],
+    props:['campanha_id','campanhaInfos'],
     data: () => ({
       inputsValidation: {//usarei isso pra definir a validade dos inputs de forma eficaz
         nome:     true,
@@ -204,12 +204,12 @@
       valid: false,
       datesErrors: ['#'],//é uma pilha que checa os erros nas datas. nao terá erro qd ela só tiver o elemento base('#'), ou seja, se datesErros.length ===1
       //PROPS (lembrar que, na verdade, são props para um componente filho
-        checkDataRange: {
-          checkRange: true,
-          Pdata_i: '',//virá da etapa um 
-          Pdata_f: ''
-        },
-        //fim de info relativa a validacao de datas.^
+        // checkDataRange: {
+        //   checkRange: true,
+        //   Pdata_i: '',//virá da etapa um 
+        //   Pdata_f: ''
+        // },
+        // //fim de info relativa a validacao de datas.^
         defaultDatesValues: {//valor das datas em uma linha em particular da tabela. É uma prop
           Rdata_i: '', //de 'row data inicio'
           Rdata_f: '',
@@ -285,12 +285,6 @@
     watch: {
       dialog (val) {
         val || this.close()
-      },
-      valid:{
-        handler(){
-          console.log("VOU VALIDAR ", this.valid)
-          //this.validate()
-        }
       },
       inputsValidation: {
         handler(val, oldVal){
@@ -497,7 +491,7 @@
       },
       async fetchProdutos(){
         this.itens = await this.getProdutos(this.campanha_id)
-        console.log("apos ",this.itens)
+        //console.log(" vejaaamos ", this.campanhaInfos)
       },
       //RULES:
       nomeRule(v){
