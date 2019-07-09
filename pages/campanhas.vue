@@ -70,7 +70,6 @@
       },
       checkRoute(){
         if(this.$route.params.edited !== undefined){
-          console.log("aaakkk")
           this.isMain = false
           this.isEditing = true
           this.isFlag = false
@@ -80,11 +79,11 @@
           this.isAdding = true
           this.isFlag = false
         }
-        else if(this.$route.path.includes('editar')){
-          this.isMain = false
-          this.isEditing = true
-          this.isFlag = false
-        }
+        // else if(this.$route.path.includes('editar')){
+        //   this.isMain = false
+        //   this.isEditing = true
+        //   this.isFlag = false
+        // }
         else{
           console.log("caso elsse")
           this.isMain = true

@@ -152,7 +152,7 @@
       //true se a data for ok( dentro do range), false caso contrário
         if(dateCheck === undefined)
           return
-          
+        console.log("ENTRAM COM ", dateFrom, dateTo, dateCheck)
         var d1 = dateFrom.split("/")
         var d2 = dateTo.split("/")
         var c = dateCheck.split("/")
@@ -162,6 +162,7 @@
         var check = new Date(c[2], parseInt(c[1])-1, c[0])    
         //console.log(check > from && check < to)
         var dataInRange = check >= from && check <= to
+        console.log("TA NO RANG: ", dataInRange)
        // console.log("chamei d novo caler: ", flag)
         this.sendDateStatus(dataInRange,flag)
         return dataInRange
@@ -205,8 +206,7 @@
         else if(input === this.dateFormatted_inicio)
           return 0
         else if (input === this.dateFormatted_termino)
-          return 1  
-        
+          return 1   
       }
     }
   }

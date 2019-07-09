@@ -47,9 +47,7 @@ router.get('/campanhas/produtos',async(req,res) => {
    // console.log("req data ", req.query.campanha_id)//passo como params mas ele bota pra query..wtf, mas que seja xD
     const campanha_id = req.query.campanha_id
     
-    console.log("entro com id ", campanha_id)
     try{
-        console.log(" q passa")
         const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
         res.status(202).send({ produtos:campanha.produtos})
     }catch(e){
@@ -59,38 +57,47 @@ router.get('/campanhas/produtos',async(req,res) => {
 })
 router.get('/campanhas/generalInfo',async(req,res) => {
     //pega info gerais de uma campanha: nome,tipo,status,qtdade de produtos etc...
-   // console.log("req data ", req.query.campanha_id)//passo como params mas ele bota pra query..wtf, mas que seja xD
-    // let campanha_id = req.query.campanha_id//caso fazendo req pelo app
-    // if(!campanha_id)//caso esteja usando o postman
-    //     campanha_id = req.body.campanha_id
-    // console.log("entro com id ", campanha_id)
+    //se req.query.campanha_id n existir, é pq n passei arg algum e por isso irei fetchar tds as campanhas, caso exista, fetcharei apenas a campanha de interesse ( cujo id eu passei)
+    const campanha_id = req.query.campanha_id
     try{
-        console.log("filtrarei interesse")
-        const campanha = await Campanha.find({})
-        let campanhas = [] 
-        campanha.forEach(campanha => 
-            campanhas.unshift({//assim retorno só as info de interesse de cada campanha. Produtos, nesse caso, n é importartante
-                nome_empresa: campanha.empresa,
-                nome_campanha: campanha.campanha,
-                tipo_campanha: campanha.tipos_campanhas,
-                marluc: campanha.m_lucro,
-                data_i: campanha.data_inicio,
-                data_t: campanha.data_termino,
-                qtdade: campanha.produtos.length + "/" + campanha.qtdade,
-                campanha_id: campanha.campanha_id,
-                status: campanha.status
+        let campanha = ''
+        if(campanha_id === undefined){//se undined pege as infos de tds as campanhas
+            campanha = await Campanha.find({})
+            console.log("case all", campanha)
+        }    
+        else{//se nao, pegue as info de uma campanha particular
+            campanha = await Campanha.findById(campanha_id)
+            console.log("case esp ", campanha_id, " campanha ", campanha)
+        }    
+        let campanhas = []
+        //checa se é um objecto ou um array de objeto, lembre q no js, se eu usar o typeof em um arry de objeto, ele dirá q é objeto, por isso essa linha estranah xD
+        let isArr = Object.prototype.toString.call(campanha) == '[object Array]';
+        if(isArr){//caso seja um arry of object
+            campanha.forEach(campanha => 
+                campanhas.unshift({//assim retorno só as info de interesse de cada campanha. Produtos, nesse caso, n é importartante
+                    nome_empresa: campanha.empresa,
+                    nome_campanha: campanha.campanha,
+                    tipo_campanha: campanha.tipos_campanhas,
+                    marluc: campanha.marluc,
+                    data_i: campanha.data_inicio,
+                    data_t: campanha.data_termino,
+                    qtdade: campanha.produtos.length + "/" + campanha.qtdade,
+                    campanha_id: campanha.campanha_id,
+                    status: campanha.status
             }))
+        }
+        else//se tiver um id, retornará um objeto, nao um array, aí n teria sentido usar foreach
+            campanhas = campanha//caso seja um unico objeto.    
         res.status(202).send({
             campanhas
         })
     }catch(e){
-        console.log("algo deu errado")
+        console.log("algo deu errado: ",e)
         res.status(500).send(e)
     }    
 })
 router.post('/campanhas/createCampanha', async (req,res) => {//cria campanha
     const new_campanha = new Campanha(req.body)
-    console.log("info da campanha: ", new_campanha)
     //cria uma campanha + preenche as info gerais ( qqr info q n seja relacionada com o produtos, q é feita numa etapa posterior xD)
     try{
         await new_campanha.save()
@@ -109,7 +116,6 @@ router.post('/campanhas/createCampanha', async (req,res) => {//cria campanha
 router.put('/campanhas/removeCampanha',(req,res)=>{
     //deleta campanha por id
     const campanha_id = req.body.campanha_id
-    console.log("ID NA F ", campanha_id)
     Campanha.findByIdAndDelete(campanha_id,(err,doc)=>{
         if(err)
             res.status(404).send(err)
@@ -139,7 +145,6 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const row_id = req.body.row_id //id da linha que tou atualizando
     const produtos = req.body.produtos//linha a ser atualizada ao array de produtos
-    console.log("entrei campanha_id ", campanha_id, " row id ", row_id, " prod ", produtos)
     try{
         const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
         //me dá o index da linha que estou tentando atualizar:
@@ -168,7 +173,6 @@ router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de pr
    // console.log("entrou")
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const produtos = req.body.produtos//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
-    console.log("entro com: ", produtos, " id: ", campanha_id)
     Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
         if(err){
             console.log("deu ruim")

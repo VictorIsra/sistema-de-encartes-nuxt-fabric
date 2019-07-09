@@ -202,13 +202,12 @@
       dialog: false,
       search: '',
       valid: false,
-      metaProdutos: '',//qtdade minima de produtos na campanha
       datesErrors: ['#'],//é uma pilha que checa os erros nas datas. nao terá erro qd ela só tiver o elemento base('#'), ou seja, se datesErros.length ===1
       //PROPS (lembrar que, na verdade, são props para um componente filho
         checkDataRange: {
           checkRange: true,
-          Pdata_i: '22/3/2019',//virá da etapa um 
-          Pdata_f: '12/12/2019'
+          Pdata_i: '',//virá da etapa um 
+          Pdata_f: ''
         },
         //fim de info relativa a validacao de datas.^
         defaultDatesValues: {//valor das datas em uma linha em particular da tabela. É uma prop
@@ -419,7 +418,6 @@
           //lembre, as datas só serao validadas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha ('#'))
             if(!this.dialog)//só quero checar e mexer na pilha se um form/dialog tiver aberto
               return
-          //console.log("ENTREweI COM caler ", info.caller ," e stat ", info.status)
           const duplicates = this.datesErrors.find(obj => //checa se nao estou adicionando um el repetido a pilha
             info.status === obj.status && info.caller === obj.caller )
          
@@ -471,8 +469,6 @@
         else if(this.cachedImgInfo.imgFile !== '' && newItemIndex !== ''){//caso criando algo novo  que contenha img
           await this.imgUpload(this.cachedImgInfo.imgFile, editedItem)
         }
-        //if(newItemIndex === '')
-          //console.log(" original? ",  this.imgInfo.imgFile, " novo ", editedItem.img.src)
       },
       validate(){
         let datesValid = this.datesErrors.length === 1 ? true : false//checa validade para das datas, que tem uma logica particular

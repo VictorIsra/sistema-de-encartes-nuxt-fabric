@@ -1,17 +1,7 @@
 <template>
   <div>
     <v-toolbar flat color="white">
-     <!-- <v-toolbar-title>My CRUD</v-toolbar-title>
-      <v-divider
-        class="mx-2"
-        inset
-        vertical
-      ></v-divider>
-      <v-spacer></v-spacer> -->
       <v-dialog v-model="dialog" max-width="500px">
-      <!--  <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark class="mb-2" v-on="on">New Item</v-btn>
-        </template> -->
         <v-card>
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
@@ -91,9 +81,6 @@
             delete
           </v-icon>
         </td>
-      </template>
-      <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">Reset</v-btn>
       </template>
     </v-data-table>
   </div>

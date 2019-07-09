@@ -98,17 +98,19 @@
         form_validated: false,//controla se o botao de 'proximo' ficará habilitado ou nao
         form_inputs: {},//componente filho (formulario.vue) irá preencher isso na hora correta
         getFilteredProdutos: false,//avisa ao step 3 (componente filgo concorrencia.vue) q ele deve alimentar a tabela com os valores dos produtos da etapa 2 filtrados
-        campanha_id: undefined//será preenchido via route.params no mounted
+        campanha_id: undefined,//será preenchido via route.params no mounted
+        campanha_infos: ''//virá do bd
       }
     },
     methods: {
-      chooseStep(){
+      async chooseStep(){
       //baseado no id da campanha (undefined se n existir ou -1 se for criar uma campanha nova, else caso ja exista),irei setar o valor da variavel e1
       this.campanha_id = this.$route.params.campanha_id
         if(this.campanha_id === undefined || this.campanha_id === '-1')
           this.e1 = 0
         else{//caso esteja editando uma campanha ( existente obviamente)
-          this.e1 = 2  
+          this.e1 = 2
+          this.campanha_infos = await this.fetchCampanhas(this.campanha_id)
         }  
       },
       validarForm(flag,inputs){

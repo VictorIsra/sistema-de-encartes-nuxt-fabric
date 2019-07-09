@@ -18,10 +18,15 @@ export default {
                 console.log("error: ",e)
             }
         },
-        async fetchCampanhas(){
+        async fetchCampanhas(campanha_id){
+            //se campanha_id for undefined, pegara info de tds as campanhas, se naom pegará de uma em particular
+            console.log("args: ", campanha_id , " <--")
             try{
-                const infos = await api.campanha.getGeneralInfo()
-                console.log("veja ", infos.data.campanhas)
+                const infos = await api.campanha.getGeneralInfo({
+                    params:{
+                        campanha_id
+                    }
+                })
                 return infos.data.campanhas
             }catch(e){
                 console.log("erro: ",e)
@@ -66,7 +71,6 @@ export default {
                         campanha_id
                     }
                 })
-                console.log("td azul: ", out)
                 return out.data.produtos
             }catch(e){
                 console.log("Erro: ",e)
@@ -77,7 +81,6 @@ export default {
             const formData = new FormData()
             formData.append('upload',file)
             //se oldpath n for undefined, é pq tem uma img antiga que quero remover em paralelo de atuakizar nova xD
-            console.log("bora v no img uplo oq tem ", item.img.src === undefined)
             if(item.img.src !== undefined)//se o item anteriormente n tinha foto, isso sera undefined e n tera setnido deletar, mas caso tenha uma img anterior, essa f removera o path antigo e no api.imgUpload ira salvar uma nova. isso evita que a pasta de fotos fique flodada com fotos desnecessarias/antigas xD
                 api.campanha.removeImg({path: item.img.src})
 

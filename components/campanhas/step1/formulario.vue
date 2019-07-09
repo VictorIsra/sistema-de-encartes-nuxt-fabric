@@ -116,6 +116,7 @@
       },
       parseMlucro(){
         this.form_inputs.marluc = this.parsePtBr(this.form_inputs.marluc)
+        this.form_inputs.marluc += '%'
       },
       truncNumber(){
         this.form_inputs.qtdade = Math.trunc(this.form_inputs.qtdade)
