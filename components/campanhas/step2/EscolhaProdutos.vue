@@ -18,7 +18,7 @@
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >Adicionar item</v-btn> <!--v-on="on" -->
+          <v-btn color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >Adicionar produto</v-btn> <!--v-on="on" -->
         </template>
         
         <v-card > <!-- o form em si é esse v card! -->
@@ -143,7 +143,7 @@
               edit
             </v-icon>
           </template>
-          <span>Clique aqui para editar esta linha da tabela</span>
+          <span class="subheading">Clique aqui para editar esta linha da tabela</span>
           </v-tooltip>
          
          <v-tooltip bottom>
@@ -156,7 +156,7 @@
               delete
             </v-icon>
           </template>
-          <span>Clique aqui para excluir esta linha da tabela</span>
+          <span class="subheading">Clique aqui para excluir esta linha da tabela</span>
           </v-tooltip>
         
         </td>
@@ -260,7 +260,7 @@
         data_f: '',
         preco_c: '0,00',
         preco_v: '0,00',
-        selout: '',
+        selout: '--',
         marluc: '0.00'
       },
       defaultItem: {//aqui seto os valores defaults
@@ -273,13 +273,13 @@
         data_f: '',
         preco_c: '0,00',
         preco_v: '0,00',
-        selout: '',
+        selout: '--',
         marluc: '0.00'
       }
     }),
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'Novo Item:' : 'Editando Item:'
+        return this.editedIndex === -1 ? 'Novo Produto:' : 'Editando Produto:'
       }
     },
     watch: {
@@ -337,7 +337,7 @@
           data_f: '',
           preco_c: '0,00',
           preco_v: '0,00',
-          selout: '',
+          selout: '--',
           marluc: '0.00'
         }
       },

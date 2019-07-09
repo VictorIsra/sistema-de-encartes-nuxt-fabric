@@ -40,7 +40,7 @@
           <div class="text-xs-right">
             <v-btn
               color="primary"
-              @click="sendFilteredProdutosInput"
+              @click="teste"
             ><!-- etapa 3 recebera só os inputs filtrados da etapa 2 ( inputs de interesses) -->
               Próximo
             </v-btn>
@@ -50,7 +50,7 @@
         <v-stepper-content step="3">
       
           <v-container grid-list-xs>
-            <concorrencia :getFilteredProdutos="getFilteredProdutos"/>
+            <concorrencia :flagC="concorrenceFlag" :campanha_id="campanha_id"/>
           </v-container>
             
           <div class="text-xs-right">
@@ -94,6 +94,7 @@
     },
     data () {
       return {
+        concorrenceFlag: false,
         e1: 0,
         form_validated: false,//controla se o botao de 'proximo' ficará habilitado ou nao
         form_inputs: {},//componente filho (formulario.vue) irá preencher isso na hora correta
@@ -111,7 +112,13 @@
         else{//caso esteja editando uma campanha ( existente obviamente)
           this.e1 = 2
           this.campanha_infos = await this.fetchCampanhas(this.campanha_id)
+          console.log("campanha info etapa 2 ", this.campanha_infos)
         }  
+      },
+      teste(){
+        this.e1 = 3
+        this.concorrenceFlag = !this.concorrenceFlag//assim evito ter que usar emit e afins
+        console.log("campanha info etapa 3 ", this.campanha_infos)
       },
       validarForm(flag,inputs){
         if(flag){//inputs passados no componete formulario.vue sao validos, logo habilite o botao de 'proximo' neste componente (adcionar.vue)
@@ -127,30 +134,6 @@
         this.e1 = 2
         this.campanha_id = await this.createCampanha(this.form_inputs)
       },
-      sendFilteredProdutosInput(){//envia pra etapa 3 os inputs referentes aos produtos, mas só os q serao usados de fato na etapa 3
-        this.e1 = 3
-        this.filterProdutos(produtos)
-        this.getFilteredProdutos = !this.getFilteredProdutos
-      },
-      filterProdutos(produtos){
-        const filtered = []//vetor com os produtos da etapa 2 filtrados
-        if(produtos !== ''){//se n dá erro. mas só ocorre isso se o doidao n escolher nenhum prpduto, mas enfim. dps penso se restringo isso ou n
-          produtos.forEach(p => {
-            filtered.push({
-              img: p.img,
-              nome: p.nome,
-              preco_c: p.preco_c,
-              preco_v: p.preco_v,
-              marluc: p.marluc,//fundamental adicionar essas propriedades ao objeto aqui se nao, ele 'funciona',mas sem getters e setters, o que fode td! xD
-              preco_v_c1: 'R$ 0,00',
-              preco_v_c2: 'R$ 0,00',
-              preco_v_c3: 'R$ 0,00'
-            })
-          })
-           //salva no store os produtos filtrados para pré propularem colunas da etapa3
-          //this.$store.dispatch('campanhas/set_filtered_produtos',filtered)
-        }     
-      }
     }
   }
 </script>

@@ -48,7 +48,7 @@
             {{ props.header.text }}
           </span>
         </template>
-        <span>
+        <span class="subheading">
           {{ props.header.info }}
         </span>
       </v-tooltip>
@@ -65,21 +65,31 @@
 
 
         <td class="justify-center layout px-0">
-          <template v-if="1===1"><!-- vai ser visivel só pro user diretor -->
-            <v-icon
-              small
-              class="mr-2"
-              @click="editItem(props.item)"
-            >
-              edit
-            </v-icon>
-          </template>  
-          <v-icon
-            small
-            @click="deleteItem(props.item)"
-          >
-            delete
-          </v-icon>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }" v-if="1===1"><!-- vai ser visivel só pro user diretor -->
+              <v-icon
+                small
+                class="mr-2"
+                @click="editItem(props.item)"
+                v-on="on"
+              >
+                edit
+              </v-icon>
+            </template>
+            <span class="subheading">Clique aqui para continuar a adicionar produtos a esta campanha</span>
+            </v-tooltip>  
+           <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-icon
+                small
+                @click="deleteItem(props.item)"
+                v-on="on"
+              >
+                delete
+              </v-icon>
+            </template>
+            <span class="subheading">Clique aqui para excluir esta campanha</span>
+            </v-tooltip> 
         </td>
       </template>
     </v-data-table>
@@ -102,7 +112,7 @@
         { text: 'Margem de lucro', value: 'marluc',info:'margem de lúcro mínima'},
         { text: 'Quantidade de produtos', value: 'qtdade',info:'quantidade de produtos já cadastrados em uma dada campanha'},
         { text: 'Data da campanha', value: 'datas',info:'intervalo de datas onde a campanha irá acontecer'},
-        { text: 'Status da campanha', value: 'status',info:'situação da campanha: pendente,aprovada,reprovada'},
+        { text: 'Status da campanha', value: 'status',info:"situação da campanha: pendente,aprovada,reprovada.Uma campanha recém criada ou que não atingiu a quantidade mínima de produtos estará numa situação 'pendente'. Uma campanha que bateu a meta de produtos e foi enviada para criação do tabloide estará no estado 'criação de tabloide'. Uma campanha que teve um tabloide criado e foi submetida a aprovação do diretor terá a situação 'em aprovação'. Uma campanha que foi reprovada pelo diretor estará na situação 'reprovada', e a que for aprovada estará em situação 'aprovada'."},
         { text: 'Ações', value: 'name', sortable: false ,info:'ações'}
       ],
       infos: [],//sao as informacoes relativas a uma campanha

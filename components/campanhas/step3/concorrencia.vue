@@ -74,7 +74,7 @@
       :search="search"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
-        <td class="text-xs-center"><img :src="props.item.img.src" width="50px" height="50px" alt=""></td>
+        <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
         <td class="text-xs-center">{{ props.item.preco_c }}</td>
         <td class="text-xs-center">{{ props.item.preco_v }}</td>
@@ -116,16 +116,16 @@
 //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
   
   import formatInputMixin from '../../mixins/FormatInputMixin.js'
+  import crudMixin from '../../mixins/CRUD.js'
 
 
   export default {
 
     mixins: [
-      formatInputMixin
+      formatInputMixin,
+      crudMixin
     ],
-    //prop que indica que a tabela de concorrencia deve ser aliemntada com os valores filtrados da etapa2
-    props:['getFilteredProdutos'],//vem de "adicionar.vue" (quem manda essa flag )
-    //usei prop pq o metodo 'initialize' é executado qd carrego adicionar.vue bem antes da etapa 3 chegar, entao, remediei assim...
+    props:['flagC','campanha_id'],
     data: () => ({
       dialog: false,
       search: '',
@@ -176,28 +176,29 @@
           this.validate()
         }
       },
-      getFilteredProdutos: {//alimenta a tabela com os itens de interesse vindos da etapa2 ( store é feito em adicionar.vue)
-  
+      flagC:{//flag sera enviada qd eu clicar em 'prox' p etapa 3, daí alimentará os itens com o bd
         handler(){
-            console.log("mudei xddd e chamei oq quero")
-            //alimenta com as informacoes vindo da etapa 2:
-            // if(this.$store.state.campanhas.filtered_protudos !== ''){//n rola fz por length > 0 pq se n, se eu excluir em 2, n exluira na 3. assim é o ideal!
-            //   console.log("ADICIONAREI D FATO")
-            //   this.itens = this.$store.state.campanhas.filtered_protudos
-            // }
-            // console.log("alimentei a table, checando os input dela ",this.itens)
-            // console.log("tipo do itens ", typeof(this.itens))
-            // console.log("tipo do item na posicao 0 ", typeof(this.itens[0]))
-            //n preciso resetar a flag (getFilteredProdutos) apos esse handler executar, pois qd clico em 'prox' da etapa 2 pra etapa 3, flag= !flag, e como flag = 0 nesse componente incialmente, isso sempre funfará
+          console.log("MUDEI HONRA")
+          if(this.campanha_id !== undefined && this.campanha_id !== '-1')
+            this.fetchProdutos()
+          else
+            console.log("escolhaprodutos.vue33 : nenhum id valido por hora ")  
         }
       }
     },
     created () {
-      this.initialize()//sera alimentado pelo bd eventualmente, tvz?
+     // this.initialize()//sera alimentado pelo bd eventualmente, tvz?
     },
     methods: {
-      initialize () {
-        this.itens = []
+      // initialize () {
+      //   if(this.campanha_id !== undefined && this.campanha_id !== '-1')
+      //     this.fetchProdutos()
+      //   else
+      //     console.log("escolhaprodutos.vue33 : nenhum id valido por hora ")  
+      // },
+      async fetchProdutos(){
+        this.itens = await this.getProdutos(this.campanha_id)
+        console.log(" vejaaamos ", this.itens)
       },
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
@@ -223,9 +224,11 @@
         //this.saveProdutos()
         this.close()      
       },
-      // saveProdutos(){
-      //   this.$store.dispatch('campanhas/set_filtered_produtos',this.itens)//salva os valores da tabela globalmente
-      // },
+      getImgURL(item){
+        //se uma img nao tiver sido escolhida, retorne enm branco
+        const path = item.img.name === undefined ? "" : "../../../uploads/fotos/" + item.img.name
+        return path
+      },
       validate(){
         const valid = []//verá quantos itens passarão no teste de validade
         //aqui tds os inputs precisam ser validas. sao poucos, sao só precos ref ao concorrente
