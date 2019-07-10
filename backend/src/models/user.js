@@ -8,7 +8,13 @@ const userSchema = new mongoose.Schema({
         type: String,//admin(root/god),diretor,clientes,
         required: true
     },
-    name: {
+    name: {//nome do user != login XD
+        type: String,
+        required: true,
+        //unique: true,
+        trim: true
+    },
+    login: {
         type: String,
         required: true,
         unique: true,
@@ -63,13 +69,13 @@ userSchema.methods.toJSON = function(){ //..methods.getPublicProfile
     return userObject
 }
 //metodos a lvl de model
-userSchema.statics.findByCredentials = async function(name,password){//td q é . static sao f minhas q posso executar a nivel de model
+userSchema.statics.findByCredentials = async function(login,password){//td q é . static sao f minhas q posso executar a nivel de model
     //console.log("procurando user pelo nome: ", name , " senha ", password)    
-
-    const user = await User.findOne({name})
+    //a principio é agnóstico, podia ser tanto login qt nome, mas vou optar por login
+    const user = await User.findOne({'login':login})
 
     if(!user){
-       // console.log(" n acho user ")
+        console.log(" n acho user ")
         throw new Error('o login nao pode ser feito.')
     }    
     const isMatch = await bcrypt.compare(password,user.password)
