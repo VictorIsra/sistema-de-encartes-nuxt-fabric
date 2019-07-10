@@ -50,14 +50,12 @@ router.post('/users/signin', async (req,res) => {
 
     try{
         await new_user.save()
-     //   if(new_user){//n precisa pois a operacao assima retorna uma promise
-            //const user = await User.findByCredentials(req.body.email, req.body.password)//f q eu irei definir
         const token = await new_user.generateAuthToken()//criarei esse metodo a lvl de instancia
-        res.status(202).send({new_user,token})
-       
+        //res.status(202).send({new_user,token})
+        res.send({msg:"Usuário " + req.body.login + " cadastrado com sucesso!",status:"sucess"})
     }catch(e){
-        console.log("vixi ",e)
-        res.send("login " + req.body.login + " já cadastrado.").status(404)//n sei pq, se passo só send(e), ele n printa nada
+        console.log("erro ",e)
+        res.send({msg:"Usuário ou E-mail já cadastrados.",status:"fail"})//n sei pq, se passo só send(e), ele n printa nada
     }
 })
 //desloga um login parituclar: pc/cel etc...

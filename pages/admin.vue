@@ -3,7 +3,7 @@
   <v-card >
     <v-card-title primary-title class="justify-center">
           <div>
-            <h3 class="title font-weight-regular primary--text">Cadastrando novo usuário</h3>
+            <h3 class="title font-weight-regular primary--text">Novo usuário:</h3>
           </div>
       </v-card-title>
       <v-divider class="title font-weight-regular primary--text"></v-divider>
@@ -41,7 +41,7 @@
               <v-text-field
                 v-model.trim="login"
                 :rules="nameRules"
-                label="Login"
+                label="Usuário/login"
                 required
               ></v-text-field>
             </v-flex>
@@ -66,12 +66,15 @@
             </v-flex>
           </v-layout>
           <v-layout class="justify-center">
-            <div> 
-              <v-btn color="primary" top round @click="validate">Cadastrar usuário</v-btn>
-            </div>  
+              <v-btn color="primary"  round @click="validate">Cadastrar usuário</v-btn>
           </v-layout>  
         </v-container>
       </v-form>
+       <v-card-title v-if="msg !== ''" primary-title class="justify-center" :class="{'success': color === 'sucess','red': color !== 'sucess'}">
+          <div >
+            <h3 class="title font-weight-regular white--text ">{{msg}}</h3>
+          </div>
+      </v-card-title>
    </v-card> 
 </v-flex>
 </template>
@@ -85,6 +88,8 @@
     ],
     data: () => ({
       valid: false,
+      msg:'',
+      color: '',
       show1: false,//mostrar/esconder senha. por default, esconde
       userTypes: [//opções de tipo de user
         'administrador',
@@ -116,9 +121,10 @@
           return true
         }    
       },
-      validate () {//validação bem simples, sem muita frescura, já que é um form mttt simples
+      async validate () {//validação bem simples, sem muita frescura, já que é um form mttt simples
         if(this.$refs.form.validate()) {
-          this.registrar({
+            let output = ''
+            output = await this.registrar({
             userType: this.userType,
             login: this.login,
             name: this.nome,
@@ -126,6 +132,8 @@
             email: this.email,
             empresa: this.empresa
           })
+          this.msg = output.msg
+          this.color = output.status
         }
         else
           console.log("invalido")
