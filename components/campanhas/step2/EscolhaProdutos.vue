@@ -2,8 +2,8 @@
 -->
 <template>
   <div> 
-    <v-btn color="success" @click="fetchProdutos">text</v-btn>
-        <div>{{campanha_id}}</div>
+  <!--  <v-btn color="success" @click="fetchProdutos">text</v-btn>
+        <div>{{campanha_id}}</div> -->
 
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
   <!--  <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span> -->
@@ -203,13 +203,6 @@
       search: '',
       valid: false,
       datesErrors: ['#'],//é uma pilha que checa os erros nas datas. nao terá erro qd ela só tiver o elemento base('#'), ou seja, se datesErros.length ===1
-      //PROPS (lembrar que, na verdade, são props para um componente filho
-        // checkDataRange: {
-        //   checkRange: true,
-        //   Pdata_i: '',//virá da etapa um 
-        //   Pdata_f: ''
-        // },
-        // //fim de info relativa a validacao de datas.^
         defaultDatesValues: {//valor das datas em uma linha em particular da tabela. É uma prop
           Rdata_i: '', //de 'row data inicio'
           Rdata_f: '',
@@ -310,7 +303,6 @@
         //this.imgInfo.imgURL = currentItem.img.url//funciona mas n quero salva no bd pq iso é um arraybuffer, se pa é bad practice
         this.imgInfo.imgName = currentItem.img.originalName
         this.imgInfo.flag = 1
-        //console.log(" preparimgAAAAAA ", this.imgInfo.imgFile)
       },
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
@@ -348,7 +340,6 @@
         if(targetId === undefined)//mas qt dou um get do bd, ele seta o _id direto como um atributo, esse if vai ajustar pra ambos os casos xD
           targetId = this.editedItem._id
         const imgSrc = this.editedItem.img.src//path pra img que irei excluir
-       // console.log("target: ", targetId, typeof(targetId))
         confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.removeRow(targetId,imgSrc,this.campanha_id))
      },
       close () {

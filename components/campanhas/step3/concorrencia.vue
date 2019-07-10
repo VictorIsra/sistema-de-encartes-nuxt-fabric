@@ -146,19 +146,19 @@
       itens: [],
       editedIndex: -1,
       editedItem: {
-        preco_v_c1: '0,00',
-        preco_v_c2: '0,00',
-        preco_v_c3: '0,00',
+        // preco_v_c1: '0,00',
+        // preco_v_c2: '0,00',
+        // preco_v_c3: '0,00',
       },
       defaultItem: {//aqui seto os valores defaults
-        img:  '',
-        nome: '--',
-        preco_c: '0,00',
-        preco_v: '0,00',
-        preco_v_c1: '0,00',
-        preco_v_c2: '0,00',
-        preco_v_c3: '0,00',
-        marluc: '0.00'
+        // img:  '',
+        // nome: '--',
+        // preco_c: '0,00',
+        // preco_v: '0,00',
+        // preco_v_c1: '0,00',
+        // preco_v_c2: '0,00',
+        // preco_v_c3: '0,00',
+        // marluc: '0.00'
       },
       cachedItens: []//itens relativos a concorrencia ficam nesse cache e sao concatenados ao itens ( pois itens aqui é alimentado parcialmente pela etapa 2)
     }),
@@ -171,14 +171,8 @@
       dialog (val) {
         val || this.close()
       },
-      valid:{
-        handler(){
-          this.validate()
-        }
-      },
       flagC:{//flag sera enviada qd eu clicar em 'prox' p etapa 3, daí alimentará os itens com o bd
         handler(){
-          console.log("MUDEI HONRA")
           if(this.campanha_id !== undefined && this.campanha_id !== '-1')
             this.fetchProdutos()
           else
@@ -186,19 +180,9 @@
         }
       }
     },
-    created () {
-     // this.initialize()//sera alimentado pelo bd eventualmente, tvz?
-    },
     methods: {
-      // initialize () {
-      //   if(this.campanha_id !== undefined && this.campanha_id !== '-1')
-      //     this.fetchProdutos()
-      //   else
-      //     console.log("escolhaprodutos.vue33 : nenhum id valido por hora ")  
-      // },
       async fetchProdutos(){
         this.itens = await this.getProdutos(this.campanha_id)
-        console.log(" vejaaamos ", this.itens)
       },
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
@@ -217,10 +201,12 @@
         if (this.editedIndex > -1) {//na edicao, preciso editar antes do assign, se nao vou modificar uma copia q nao é mais usada
             this.editUserInputs(true)
             Object.assign(this.itens[this.editedIndex], this.editedItem)
-        } else {//caso esteja adicionando algo em vez de editando
-            this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
-            this.editUserInputs()
-        }
+            this.updateRow(this.editedItem,this.campanha_id)
+        }    
+        // } else {//caso esteja adicionando algo em vez de editando
+        //     this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
+        //     this.editUserInputs()
+        // }
         //this.saveProdutos()
         this.close()      
       },
@@ -261,9 +247,6 @@
           this.editedItem.preco_v_c3 = 'R$ ' + this.editedItem.preco_v_c3
         }
       },
-      debug(){
-        console.log("ITEMS: ", this.itens)
-      }
     }
   }
 </script>

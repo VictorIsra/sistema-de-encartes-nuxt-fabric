@@ -54,15 +54,15 @@
           </v-container>
             
           <div class="text-xs-right">
+            <v-btn color="primary" @click="e1 = e1 - 1">Voltar para escolha de produtos</v-btn>
             <v-btn 
-              color="primary"
+              color="sucess"
               @click="e1 = e1"
               :disabled="1 < 2 ? true : false"
             >
               Criar campanha
             </v-btn>
           </div>
-          <v-btn flat @click="e1 = e1 - 1">Voltar</v-btn>
         </v-stepper-content>
         
       </v-stepper-items>
@@ -112,13 +112,11 @@
         else{//caso esteja editando uma campanha ( existente obviamente)
           this.e1 = 2
           this.campanha_infos = await this.fetchCampanhas(this.campanha_id)
-          console.log("campanha info etapa 2 ", this.campanha_infos)
         }  
       },
       teste(){
         this.e1 = 3
         this.concorrenceFlag = !this.concorrenceFlag//assim evito ter que usar emit e afins
-        console.log("campanha info etapa 3 ", this.campanha_infos)
       },
       validarForm(flag,inputs){
         if(flag){//inputs passados no componete formulario.vue sao validos, logo habilite o botao de 'proximo' neste componente (adcionar.vue)
@@ -129,11 +127,10 @@
           this.form_validated = false
         }
       },
-      //$store.state.auth.show_lateral_menu
       async saveFormInputs(){//cria uma campanha neste momento
         this.e1 = 2
         this.campanha_id = await this.createCampanha(this.form_inputs)
-      },
+      }
     }
   }
 </script>

@@ -149,16 +149,21 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
             return it._id.equals(row_id)
         }) 
         //atualiza os produtos
+        console.log("achou linha")
         const keys = Object.keys(produtos)
         keys.forEach(key => {
             //[key] é analogo a .proriedade no contexto que to usando:
             campanha.produtos[targetIndex][key] = produtos[key]
         })
+        console.log("atualizo")
+
         try{
             //salva alterações
+            console.log("tenteeeei salvar")
             await campanha.save()
             res.status(202).send("0k")
         }catch(e){
+            console.log("n consegui salva: ", e)
             res.status(500).send(e)
         }
     }catch(e){
@@ -167,9 +172,13 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
     } 
 })
 router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de produtos a campanha
-   // console.log("entrou")
     const campanha_id = req.body.campanha_id//id da CAMPANHA
-    const produtos = req.body.produtos//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
+    let produtos = req.body.produtos//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
+    //como o addrow é sempre feito em produtos, n em concorrencia, posso com seguranca setar o proce de concorrencia pra r$ 0,00 aqui. faco a lvl de bd em vez de app para garantir a existencia dos getters e setters ;)
+    produtos.preco_v_c1 = "R$ 0,00"
+    produtos.preco_v_c2 = "R$ 0,00"
+    produtos.preco_v_c3 = "R$ 0,00"
+    console.log("vejamos o produto bs ", produtos)
     Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
         if(err){
             console.log("deu ruim")
