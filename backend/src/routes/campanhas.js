@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 router.post('/campanhas/removeImg',(req,res)=>{
-    console.log("entrei deleta img, req.body: ",req.body)
+    //console.log("entrei deleta img, req.body: ",req.body)
     const path = req.body.path//path q usarei pra salvar pro bd, inclusive 
    
     fs.unlink(path,(err)=>{
@@ -80,7 +80,8 @@ router.get('/campanhas/generalInfo',async(req,res) => {
                     data_t: campanha.data_termino,
                     qtdade: campanha.produtos.length + "/" + campanha.qtdade,
                     campanha_id: campanha.campanha_id,
-                    status: campanha.status
+                    status: campanha.status,
+                    produtos: campanha.produtos
             }))
         }
         else//se tiver um id, retornará um objeto, nao um array, aí n teria sentido usar foreach
@@ -178,7 +179,6 @@ router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de pr
     produtos.preco_v_c1 = "R$ 0,00"
     produtos.preco_v_c2 = "R$ 0,00"
     produtos.preco_v_c3 = "R$ 0,00"
-    console.log("vejamos o produto bs ", produtos)
     Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
         if(err){
             console.log("deu ruim")

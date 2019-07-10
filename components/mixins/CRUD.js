@@ -2,13 +2,28 @@ import api from '~/api'//pra eu poder fazer as req pro axios com uma sintaxe enx
 //fazer as req aqui, em vez de direto no componente. assim é mais organizado/modularizado
 export default {
     methods: {
-        removeCampanha(campanha_id){
-            console.log("irei remover campanah de id ", campanha_id)
-            api.campanha.removeCampanha({
-                campanha_id
-            })
-            .then(r => console.log("campanha removida com sucesso! "))
-            .catch(e => console.log("n pude remover campanha..."))
+        removeImgs(produtos){//msm uma campanha recem criada terá o vetor de produtos como um array de lengh 0, e portante o foreach sera ignorado nesse caso
+            produtos.forEach(produto => {
+                if(produto.img.src !== undefined){//caso exista a img nesse objeto, remova-a
+                    api.campanha.dropImg({//n senti dif na performance mas, caso sinta, adaptar dropImg para iterar a lvl de server e n de app, assim evito multiplas req
+                        path: produto.img.src
+                    })
+                }
+            })        
+        },
+        async removeCampanha(campanha_id,produtos){
+            try{
+                await this.removeImgs(produtos)
+                console.log("imgs removidas,agora irei remover campanah de id ", campanha_id)
+                api.campanha.removeCampanha({
+                    campanha_id
+                })
+                .then(r => console.log("campanha removida com sucesso! "))
+                .catch(e => console.log("n pude remover campanha..."))
+            }
+            catch(e){
+                console.log("nao pude remove imgs")
+            }  
         },
         async createCampanha(campanhaInfos){
             try{

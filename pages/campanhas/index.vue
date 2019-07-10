@@ -165,7 +165,7 @@
       deleteItem (item) {
         const index = this.infos.indexOf(item)
         this.editedItem = Object.assign({}, item)
-        confirm('Tem certeza que deseja deletar essa campanha?') && ( this.infos.splice(index, 1) && this.removeCampanha(this.editedItem.campanha_id))
+        confirm('Tem certeza que deseja deletar essa campanha?') && ( this.infos.splice(index, 1) && this.removeCampanha(this.editedItem.campanha_id,this.editedItem.produtos))
       },
       close () {
         this.dialog = false
