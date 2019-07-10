@@ -40,7 +40,7 @@
           <div class="text-xs-right">
             <v-btn
               color="primary"
-              @click="teste"
+              @click="changeFlag"
             ><!-- etapa 3 recebera só os inputs filtrados da etapa 2 ( inputs de interesses) -->
               Próximo
             </v-btn>
@@ -107,14 +107,15 @@
       async chooseStep(){
       //baseado no id da campanha (undefined se n existir ou -1 se for criar uma campanha nova, else caso ja exista),irei setar o valor da variavel e1
       this.campanha_id = this.$route.params.campanha_id
-        if(this.campanha_id === undefined || this.campanha_id === '-1')
+        if(this.campanha_id === undefined || this.campanha_id === '-1'){
           this.e1 = 0
+        }  
         else{//caso esteja editando uma campanha ( existente obviamente)
           this.e1 = 2
           this.campanha_infos = await this.fetchCampanhas(this.campanha_id)
         }  
       },
-      teste(){
+      changeFlag(){
         this.e1 = 3
         this.concorrenceFlag = !this.concorrenceFlag//assim evito ter que usar emit e afins
       },
@@ -130,6 +131,7 @@
       async saveFormInputs(){//cria uma campanha neste momento
         this.e1 = 2
         this.campanha_id = await this.createCampanha(this.form_inputs)
+        this.campanha_infos = await this.fetchCampanhas(this.campanha_id)//garente q td vai funcionar corretamente msm sem ter que voltar pra pag inciial ( escolha de campanhas xD)
       }
     }
   }
