@@ -94,6 +94,7 @@
     },
     data () {
       return {
+        redirect: true,//semp q e1 = 0, ou seja, ainda n tiver registrado a campanha, irei redirecionar pra pag de listagens, a n ser que explicitamente eu tenha chegado a e1 = 0 via 'add nova campanha', q nesse caso redirect sera enviado como false
         concorrenceFlag: false,
         e1: 0,
         form_validated: false,//controla se o botao de 'proximo' ficará habilitado ou nao
@@ -113,7 +114,14 @@
         else{//caso esteja editando uma campanha ( existente obviamente)
           this.e1 = 2
           this.campanha_infos = await this.fetchCampanhas(this.campanha_id)
-        }  
+        }
+        this.checkRedirect()//irei redireciona pra pag de listagem de campanha caso e1 = 0 e directed = true
+      },
+      checkRedirect(){
+        if(this.e1 === 0 && this.$route.params.redirect === false)
+          this.redirect = false
+        if(this.redirect && this.e1 === 0)//se ainda assim for true, redireciono pra pag de listagem: ex caso de f5   
+          this.$router.push('/campanhas') 
       },
       changeFlag(){
         this.e1 = 3

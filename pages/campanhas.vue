@@ -62,7 +62,7 @@
     methods: {
       criar(){
         this.isFlag = false//checar o nome criado automaticamente na pasta .nuxt > router.js
-        this.$router.push({name: "campanhas-adicionar",params: {campanha_id:this.default_id}})//{path:'/campanhas/adicionar',query: {campanhaId:this.testev}})
+        this.$router.push({name: "campanhas-adicionar",params: {campanha_id:this.default_id,redirect: false}})//{path:'/campanhas/adicionar',query: {campanhaId:this.testev}})
       },
       inicio(){
         this.isFlag = true
