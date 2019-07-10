@@ -43,8 +43,6 @@ router.patch('/users/me', auth, async (req,res) => {
     }
 })
 
-
-
 router.post('/users/signin', async (req,res) => {
     //achar user pelas credenciais
     //retornará um token de autenticacao
@@ -58,7 +56,8 @@ router.post('/users/signin', async (req,res) => {
         res.status(202).send({new_user,token})
        
     }catch(e){
-        res.status(404).send("" + e )//n sei pq, se passo só send(e), ele n printa nada
+        console.log("vixi ",e)
+        res.send("login " + req.body.login + " já cadastrado.").status(404)//n sei pq, se passo só send(e), ele n printa nada
     }
 })
 //desloga um login parituclar: pc/cel etc...

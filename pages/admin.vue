@@ -7,7 +7,7 @@
           </div>
       </v-card-title>
       <v-divider class="title font-weight-regular primary--text"></v-divider>
-      <v-form v-model="valid">
+      <v-form v-model="valid" ref="form">
         <v-container>
           <v-layout class="justify-center">
             <v-flex xs12 md3>
@@ -48,31 +48,27 @@
             <v-flex xs10 md3>
               <v-text-field
                 v-model.trim="password"
-                :rules="nameRules"
+                :rules="[passwordRule]"
                 label="Senha"
+                :type="show1 ? 'text' : 'password'"
+                :append-icon="show1 ? 'visibility' : 'visibility_off'"
+                @click:append="show1 = !show1"
                 required
               ></v-text-field>
             </v-flex>
-            <v-flex xs12 md3>
-              <v-text-field
-                v-model.trim="passwordCheck"
-                :rules="nameRules"
-                label="Confirmar senha"
-                required
-              ></v-text-field>
-            </v-flex>
-          </v-layout>
-          <v-layout class="justify-center">
-            <v-flex  sm6>
+            <v-flex xs10 md3 >
               <v-select
                 v-model="userType"
                 :items="userTypes"
                 :rules="[v => !!v || 'É preciso escolher um tipo de usuário']"
                 label="Tipo de usuário"
-                required
               ></v-select>
             </v-flex>
-            <v-btn color="primary" top round >Cadastrar usuário</v-btn>
+          </v-layout>
+          <v-layout class="justify-center">
+            <div> 
+              <v-btn color="primary" top round @click="validate">Cadastrar usuário</v-btn>
+            </div>  
           </v-layout>  
         </v-container>
       </v-form>
@@ -81,10 +77,16 @@
 </template>
 
 <script>
+  import userMixin from '../components/mixins/userCRUD.js'
+  
   export default {
+    mixins:[
+      userMixin
+    ],
     data: () => ({
       valid: false,
-      userTypes: [
+      show1: false,//mostrar/esconder senha. por default, esconde
+      userTypes: [//opções de tipo de user
         'administrador',
         'tabloide',
         'comprador',
@@ -94,17 +96,40 @@
       login: '',
       nome: '',
       password: '',
-      passwordCheck: '',//confirmar senha
       email: '',
       empresa:'',
       nameRules: [
-        v => !!v || 'Name is required',
-        v => v.length <= 10 || 'Name must be less than 10 characters'
+        v => !!v || 'Este campo é obrigatório'
       ],
       emailRules: [
         v => !!v || 'O campo de E-mail é obrigatório.',
-        v => /.+@.+/.test(v) || 'Entre com um E-mail váido.'
+        v =>  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v) || 'Entre com um E-mail váido.'
       ]
-    })
+    }),
+    methods:{
+      passwordRule(v){
+        if(!v) 
+          return 'Este campo é obrigatório'
+        else if(this.password.length < 6)   
+          return 'A senha deve ter ao menos 6 dígitos'
+        else{
+          return true
+        }    
+      },
+      validate () {//validação bem simples, sem muita frescura, já que é um form mttt simples
+        if(this.$refs.form.validate()) {
+          this.registrar({
+            userType: this.userType,
+            login: this.login,
+            name: this.nome,
+            password: this.password,
+            email: this.email,
+            empresa: this.empresa
+          })
+        }
+        else
+          console.log("invalido")
+      },
+    }
   }
 </script>

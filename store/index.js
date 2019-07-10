@@ -17,8 +17,8 @@ export const actions = {
             resolve(true)
           })
           .catch(error => {
-            console.log('erro ao tentar auth/fetch no store: index.js ', error)
-            router.push('/')                       
+            console.log('erro ao tentar auth/fetch no store: index.js honra ', error)
+            this.$router.push('/login')                       
             resetAuthToken()
             resolve(false)
           })

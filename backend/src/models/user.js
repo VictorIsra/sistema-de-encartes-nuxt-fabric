@@ -31,6 +31,11 @@ const userSchema = new mongoose.Schema({
                 throw new Error("email passado não é valido")         
         }
     },
+    empresa:{
+        type: String,
+        required: true,
+        trim: true
+    },
     password: {
         type: String,
         required: true,
