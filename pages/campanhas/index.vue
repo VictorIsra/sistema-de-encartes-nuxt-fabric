@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-flex xl12>
     <v-toolbar flat color="white">
       <v-dialog v-model="dialog" max-width="500px">
         <v-card>
@@ -39,13 +39,14 @@
         <td class="text-xs-center">{{props.item.marluc}}</td>
         <td class="text-xs-center">{{props.item.qtdade}}</td>
         <td class="text-xs-center">{{props.item.datas}}</td>
-        <td class="text-xs-center">{{props.item.status}}</td>
+        <td class="text-xs-center" :class="{'green': props.item.status === 'aprovado', 'red':props.item.status === 'reprovado','yellow':props.item.status === 'em avaliação','light-blue lighten-4':props.item.status === 'enviado para tabloide' }">{{ props.item.status}}</td>
 
 
         <td class="justify-center layout px-0">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }" v-if="1===1"><!-- vai ser visivel só pro user diretor -->
-              <v-icon
+              <!-- comprador só poderá editar uma campanha se ela tiver pendente ou foi reprovada ( reciclada)-->
+              <v-icon v-if="props.item.status === 'reprovada '|| props.item.status === 'pendente'"
                 small
                 class="mr-2"
                 @click="editItem(props.item)"
@@ -71,7 +72,7 @@
         </td>
       </template>
     </v-data-table>
-  </div>
+  </v-flex>
 </template>
 
 <script>

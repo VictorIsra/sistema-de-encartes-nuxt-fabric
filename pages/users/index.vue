@@ -26,7 +26,8 @@
           <span class="subheading">Cadastrar novo usuário</span>
           </v-tooltip>  
         <v-dialog v-model="dialog" max-width="500px">
-          <v-card>
+
+          <v-card>  
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" flat @click="close">Fechar</v-btn>
@@ -62,9 +63,10 @@
           <td class="text-xs-center">{{props.item.userType}}</td>
       
           <td class="justify-center layout px-0">
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }" v-if="1===1"><!-- vai ser visivel só pro user diretor -->
-                 <!-- usuario padrao nao pode ser deletado nem alterado, ele é o root xD -->
+            <!-- n vou querer editar nada sobre um user, só deletr ou criar um novo e a vida segue -->
+          <!--  <v-tooltip bottom>
+              <template v-slot:activator="{ on }" >
+                  usuario padrao nao pode ser deletado nem alterado, ele é o root xD 
                 <v-icon
                   v-if="props.item._id !== '5d263e672aa73e5490e2325d'"
                   small
@@ -76,7 +78,7 @@
                 </v-icon>
               </template>
               <span class="subheading">Clique aqui para alterar a senha e o tipo de usuário</span>
-              </v-tooltip>  
+              </v-tooltip>  -->
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
                 <!-- usuario padrao nao pode ser deletado, ele é o root xD -->
@@ -119,24 +121,16 @@
       infos: [],//sao as informacoes relativas a uma campanha
       editedIndex: -1,
       editedItem: {
-        // name: '',
-        // calories: 0,
-        // fat: 0,
-        // carbs: 0,
-        // protein: 0
+
       },
       defaultItem: {
-        // name: '',
-        // calories: 0,
-        // fat: 0,
-        // carbs: 0,
-        // protein: 0
+
       }
     }),
 
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Opções de campanha:'
+        return this.editedIndex === -1 ? 'New Item' : 'Editando usuário'
       }
     },
 
@@ -157,11 +151,8 @@
       editItem (item) {
         this.editedIndex = this.infos.indexOf(item)
         this.editedItem = Object.assign({}, item)
-        //console.log("id: ", this.editedItem.campanha_id)
-        //a principio redirecionará pra continuar a edicao/add de produtos, mas o diretor poderá alterar outras infos futuramente
-        this.$router.push({name: "campanhas-adicionar",params: {campanha_id:this.editedItem.campanha_id,edited:true}})
-        //só quero passar o id correspondente, a principio, n quero abrir o dialog, mas quem sabe o diretor o fará no futuro..entao deixo comentado
-       // this.dialog = true
+       
+        this.dialog = true
       },
       deleteItem (item) {
         const index = this.infos.indexOf(item)

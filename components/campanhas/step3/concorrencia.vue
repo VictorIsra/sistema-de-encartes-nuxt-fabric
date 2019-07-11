@@ -82,7 +82,7 @@
         <td class="text-xs-center">{{ props.item.preco_v_c1 }}</td>
         <td class="text-xs-center">{{ props.item.preco_v_c2 }}</td>
         <td class="text-xs-center">{{ props.item.preco_v_c3 }}</td>
-        <td class="text-xs-center">{{ props.item.marluc}}</td>
+        <td class="text-xs-center" :class="{'green': props.item.marluc >= campanhaInfos.marluc, 'red':props.item.marluc < campanhaInfos.marluc}">{{ props.item.marluc}}</td>
 
         <td class="justify-center layout px-0">
           <v-tooltip bottom>

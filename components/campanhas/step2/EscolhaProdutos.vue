@@ -2,9 +2,6 @@
 -->
 <template>
   <div> 
-  <!--  <v-btn color="success" @click="fetchProdutos">text</v-btn>
-        <div>{{campanha_id}}</div> -->
-
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
     <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{produtosQtdadeInfo.qtdade}}/{{produtosQtdadeInfo.meta}}</span>
       <v-spacer></v-spacer>
@@ -129,7 +126,7 @@
         <td class="text-xs-center">{{ props.item.preco_c }}</td>
         <td class="text-xs-center">{{ props.item.preco_v }}</td>
         <td class="text-xs-center">{{ props.item.selout }}</td>
-        <td class="text-xs-center">{{ props.item.marluc}}</td>
+        <td class="text-xs-center" :class="{'green': props.item.marluc >= campanhaInfos.marluc, 'red':props.item.marluc < campanhaInfos.marluc}">{{ props.item.marluc}}</td>
 
         <td class="justify-center layout px-0">
           <v-tooltip bottom>
@@ -506,7 +503,6 @@
         }  
         else
           this.produtosQtdadeInfo.qtdade ++  
-        console.log("porra...................")  
       },
       //RULES:
       nomeRule(v){

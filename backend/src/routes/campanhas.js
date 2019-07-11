@@ -139,6 +139,28 @@ router.put('/campanhas/removeRow',async(req,res)=>{
         res.status(202).send(doc)
     })
 })
+router.patch('/campanhas/changeStatus', async (req,res)=>{
+    const campanha_id = req.body.id
+    const campanha_status = req.body.status//status da campanha: pendente, enviado para tabloide, em avaliacao, ap, reprovado
+    console.log("entrou: ",req.body)
+    try{
+       const campanha = await Campanha.findById(campanha_id)
+       campanha.status = campanha_status
+
+       try{
+        await campanha.save()
+        console.log("status modificad com sucesso ")
+        res.status(202).send(campanha)//envia a campanha atualizada
+       }catch(e){
+           console.log("n consegui salva update de status da campanha ",e)
+           res.status(500).send(e)
+       }
+    }
+    catch(e){
+        console.log("n pude mudar o status da campanah de id " + campanha_id + " erro: ",e)
+        res.status(500).send(e)
+    }
+})
 router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const row_id = req.body.row_id //id da linha que tou atualizando

@@ -61,7 +61,7 @@
             <v-btn color="primary" @click="e1 = e1 - 1">Voltar para escolha de produtos</v-btn>
             <v-btn 
               color="primary"
-              @click="e1 = e1"
+              @click="changeCampanhaStatus('enviado para tabloide')"
               :disabled="(produtosQtdadeInfo !== undefined && produtosQtdadeInfo.qtdade >= produtosQtdadeInfo.meta)  ? false : true"
             >
               Enviar produtos para criação de tablóide
@@ -109,6 +109,10 @@
       }
     },
     methods: {
+      async changeCampanhaStatus(status){//irá mudar o status da campanha
+        const xd = await this.updateStatus(this.campanha_id,status)
+        console.log("xd ",xd)
+      },
       produtoQtdadeChange(data){
         this.produtosQtdadeInfo = data//vem da etapa 2 ( escolhaprodutps.vue) e alimentará etapa 3 ( concorrencia.vue)
       },

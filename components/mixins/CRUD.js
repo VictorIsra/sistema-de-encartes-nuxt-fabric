@@ -46,6 +46,19 @@ export default {
                 console.log("erro: ",e)
             }
         },
+        async updateStatus(id,status){
+            try{
+                console.log("entrei id e status ", id , status)
+                const campanhaAtualizada = await api.campanha.updateStatus({
+                    id,
+                    status
+                })
+                console.log("saida ",campanhaAtualizada)
+                return campanhaAtualizada.data
+            }catch(e){
+                console.log("zika updatestauts ",e)
+            }
+        },
         addRow(editedItem,campanha_id){//vai virar um mixin
              api.campanha.addRow(
                    {produtos:editedItem,
@@ -64,7 +77,7 @@ export default {
                    campanha_id,
                    row_id:img_id
              }).then(
-                   r => console.log("response: ",r)
+                   r => console.log("linha atualizada com sucesso")
              )
              .catch(e => console.log("erro: ",e))
         },
@@ -74,7 +87,7 @@ export default {
                  row_id: row_id,
                  path: path //path da img que vou excluir ( lembre q excluir a linha é dif de excluir o path da img, sao operacoes dif)
              }).then(
-               r => console.log("removido com sucesso: ",r)
+               r => console.log("removido com sucesso: ")
              )
              .catch(e => console.log(e))
         },
