@@ -41,6 +41,7 @@
         :items="infos"
         :search="search"
         class="elevation-1"
+        :dense="dense"
       >
       <template slot="headerCell" slot-scope="props">
         <v-tooltip bottom>
@@ -63,22 +64,6 @@
           <td class="text-xs-center">{{props.item.userType}}</td>
       
           <td class="justify-center layout px-0">
-            <!-- n vou querer editar nada sobre um user, só deletr ou criar um novo e a vida segue -->
-          <!--  <v-tooltip bottom>
-              <template v-slot:activator="{ on }" >
-                  usuario padrao nao pode ser deletado nem alterado, ele é o root xD 
-                <v-icon
-                  v-if="props.item._id !== '5d263e672aa73e5490e2325d'"
-                  small
-                  class="mr-2"
-                  @click="editItem(props.item)"
-                  v-on="on"
-                >
-                  edit
-                </v-icon>
-              </template>
-              <span class="subheading">Clique aqui para alterar a senha e o tipo de usuário</span>
-              </v-tooltip>  -->
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
                 <!-- usuario padrao nao pode ser deletado, ele é o root xD -->

@@ -1,6 +1,15 @@
 <template>
   <v-flex xl12>
     <v-toolbar flat color="white">
+       <v-spacer></v-spacer>
+      <v-text-field
+        v-model="search"
+        append-icon="search"
+        label="Filtrar campanhas"
+        single-line
+        hide-details
+      ></v-text-field>
+      <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
         <v-card>
           <v-card-title>
@@ -18,6 +27,7 @@
       :headers="headers"
       :items="infos"
       class="elevation-1"
+      :search="search"
     >
     <template slot="headerCell" slot-scope="props">
       <v-tooltip bottom>
@@ -83,6 +93,7 @@
       crudMixin
     ],
     data: () => ({
+      search: '',
       dialog: false,
       headers: [
         { text: 'Empresa', value: 'nome_empresa',info:'nome da empresa'},

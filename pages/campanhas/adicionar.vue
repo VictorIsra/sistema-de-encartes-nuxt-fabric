@@ -64,7 +64,7 @@
               @click="changeCampanhaStatus('enviado para tabloide')"
               :disabled="(produtosQtdadeInfo !== undefined && produtosQtdadeInfo.qtdade >= produtosQtdadeInfo.meta)  ? false : true"
             >
-              Enviar produtos para criação de tablóide
+              Enviar campanha para criação de tablóide
             </v-btn>
           </div>
         </v-stepper-content>
@@ -110,8 +110,8 @@
     },
     methods: {
       async changeCampanhaStatus(status){//irá mudar o status da campanha
-        const xd = await this.updateStatus(this.campanha_id,status)
-        console.log("xd ",xd)
+        await this.updateStatus(this.campanha_id,status)
+        this.$router.push('/campanhas') 
       },
       produtoQtdadeChange(data){
         this.produtosQtdadeInfo = data//vem da etapa 2 ( escolhaprodutps.vue) e alimentará etapa 3 ( concorrencia.vue)
