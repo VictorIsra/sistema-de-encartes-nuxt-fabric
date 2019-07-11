@@ -1,10 +1,10 @@
 <template>
-<v-flex xs10> 
+<v-flex xs12> 
   <v-card >
     <v-card-title primary-title class="justify-center">
           <div>
-            <h3 class="title font-weight-regular primary--text">Novo usuário:</h3>
-          </div>
+            <h3 class="title font-weight-regular primary--text">Novo usuário</h3>
+          </div> 
       </v-card-title>
       <v-divider class="title font-weight-regular primary--text"></v-divider>
       <v-form v-model="valid" ref="form">
@@ -75,12 +75,20 @@
             <h3 class="title font-weight-regular white--text ">{{msg}}</h3>
           </div>
       </v-card-title>
+          <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-layout  class="justify-end">
+                <v-btn color="primary" round to="/users" v-on="on">Voltar</v-btn>
+            </v-layout>
+          </template>
+        <span class="subheading">Voltar para listagem de usuários</span>
+        </v-tooltip> 
    </v-card> 
 </v-flex>
 </template>
 
 <script>
-  import userMixin from '../components/mixins/userCRUD.js'
+  import userMixin from '../../components/mixins/userCRUD.js'
   
   export default {
     mixins:[

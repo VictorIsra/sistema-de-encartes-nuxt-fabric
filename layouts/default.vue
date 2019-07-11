@@ -169,7 +169,7 @@ export default {
         {
           icon: 'fas fa-users-cog',
           title: 'Usuários',
-          to: '/admin',
+          to: '/users',
           showMe: true
         },
          {

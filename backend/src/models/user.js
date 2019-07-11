@@ -69,7 +69,7 @@ userSchema.methods.toJSON = function(){ //..methods.getPublicProfile
     const userObject = user.toObject()//converte do formato doido do mongo pra um objeto
     delete  userObject.password
     delete userObject.tokens
-    delete userObject.email
+   // delete userObject.email
 
     return userObject
 }

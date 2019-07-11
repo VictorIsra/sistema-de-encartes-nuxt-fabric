@@ -14,6 +14,17 @@ router.get('/users/me',auth,async(req,res) => {
     }
     res.send({user,token: req.token})//req.user foi passado pela funcao auth qd o user foi autenticado xD
 })
+router.get('/users/all',async(req,res)=>{
+    try{
+        const users = await User.find({})
+        console.log(" ok ", users)
+        res.status(202).send(users)  
+    }
+    catch(e){
+        console.log("erro user all ",e)
+        res.status(500).send(e)
+    }    
+})
 router.delete('/users/me', auth, async (req,res)=>{
         
     try{
@@ -25,7 +36,7 @@ router.delete('/users/me', auth, async (req,res)=>{
 })
 router.patch('/users/me', auth, async (req,res) => {
     
-    const allowedUpdates = [ "name","password","userType"]
+    const allowedUpdates = [ "password","userType"]
     const updates = Object.keys(req.body)
     const filtro = updates.every(field => allowedUpdates.includes(field))
      
@@ -54,7 +65,7 @@ router.post('/users/signin', async (req,res) => {
         //res.status(202).send({new_user,token})
         res.send({msg:"Usuário " + req.body.login + " cadastrado com sucesso!",status:"sucess"})
     }catch(e){
-        console.log("erro ",e)
+        //console.log("erro ",e)
         res.send({msg:"Usuário ou E-mail já cadastrados.",status:"fail"})//n sei pq, se passo só send(e), ele n printa nada
     }
 })

@@ -9,6 +9,16 @@ export default {
             }catch(e){
                 console.log("erro ", e)
             }    
+        },
+        async fetchAll(){//pega tds os users cadastrados
+            try{
+                const users = await api.auth.fetch()
+                return users.data
+            }
+            catch(e){
+                console.log("erro ao tentar fetchar os users: ",e)
+            }
+
         }
     }
 }
