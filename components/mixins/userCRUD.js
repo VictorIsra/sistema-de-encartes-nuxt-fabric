@@ -19,6 +19,14 @@ export default {
                 console.log("erro ao tentar fetchar os users: ",e)
             }
 
+        },
+        removeUser(user_id){
+            api.auth.remove({
+                user_id
+            })
+            .then(r => console.log("user removido com sucesso! "))
+            .catch(e => console.log("n pude remover user..."))
         }
+
     }
 }

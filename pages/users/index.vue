@@ -64,7 +64,9 @@
           <td class="justify-center layout px-0">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }" v-if="1===1"><!-- vai ser visivel só pro user diretor -->
+                 <!-- usuario padrao nao pode ser deletado nem alterado, ele é o root xD -->
                 <v-icon
+                  v-if="props.item._id !== '5d263e672aa73e5490e2325d'"
                   small
                   class="mr-2"
                   @click="editItem(props.item)"
@@ -77,7 +79,9 @@
               </v-tooltip>  
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
+                <!-- usuario padrao nao pode ser deletado, ele é o root xD -->
                 <v-icon
+                  v-if="props.item._id !== '5d263e672aa73e5490e2325d'"
                   small
                   @click="deleteItem(props.item)"
                   v-on="on"
@@ -162,7 +166,8 @@
       deleteItem (item) {
         const index = this.infos.indexOf(item)
         this.editedItem = Object.assign({}, item)
-        confirm('Tem certeza que deseja deletar essa campanha?') && ( this.infos.splice(index, 1) && this.removeCampanha(this.editedItem.campanha_id,this.editedItem.produtos))
+        console.log("ID ", this.editedItem._id)
+        confirm('Tem certeza que deseja deletar esse usuário?') && ( this.infos.splice(index, 1) && this.removeUser(this.editedItem._id))
       },
       close () {
         this.dialog = false
@@ -173,6 +178,7 @@
       },
       async fetchInfos(){//pega as info relativas aos users
         this.infos = await this.fetchAll()
+        console.log("infos ", this.infos)
       },
       save () {
         if (this.editedIndex > -1) {

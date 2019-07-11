@@ -25,6 +25,15 @@ router.get('/users/all',async(req,res)=>{
         res.status(500).send(e)
     }    
 })
+router.put('/users/remove',(req,res)=>{
+    //deleta user por id
+    const user_id = req.body.user_id
+    User.findByIdAndDelete(user_id,(err,doc)=>{
+        if(err)
+            res.status(404).send(err)
+        res.status(202).send(doc)    
+    })
+})
 router.delete('/users/me', auth, async (req,res)=>{
         
     try{

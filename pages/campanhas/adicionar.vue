@@ -1,10 +1,5 @@
 <template>
   <div>
-     <v-card-title v-if="campanha_infos !== '' && e1 > 0" primary-title class="justify-center primary">
-          <div>
-            <span class="white--text font-weight-black">Empresa: <span>{{campanha_infos.empresa}} </span> <v-divider vertical></v-divider> Campanha: <span> {{campanha_infos.campanha}} </span> <v-divider vertical></v-divider> Tipo: <span> {{campanha_infos.tipos_campanhas}} </span> <v-divider vertical></v-divider> Data de início: <span> {{campanha_infos.data_inicio}} </span> <v-divider vertical></v-divider> Data de término: <span> {{campanha_infos.data_termino}} </span><v-divider vertical></v-divider>  Margem de lucro mínima: <span> {{campanha_infos.marluc}} </span></span>  
-          </div>
-    </v-card-title>
     <v-stepper  v-model="e1">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">Dados da Campanha</v-stepper-step>
@@ -20,7 +15,11 @@
       </v-stepper-header>
 
       <v-stepper-items>
-
+ <v-card-title v-if="campanha_infos !== '' && e1 > 0" primary-title class="justify-center primary">
+          <div>
+            <span class="white--text font-weight-black">Empresa: <span>{{campanha_infos.empresa}} </span> <v-divider vertical></v-divider> Campanha: <span> {{campanha_infos.campanha}} </span> <v-divider vertical></v-divider> Tipo: <span> {{campanha_infos.tipos_campanhas}} </span> <v-divider vertical></v-divider> Data de início: <span> {{campanha_infos.data_inicio}} </span> <v-divider vertical></v-divider> Data de término: <span> {{campanha_infos.data_termino}} </span><v-divider vertical></v-divider>  Margem de lucro mínima: <span> {{campanha_infos.marluc}} </span></span>  
+          </div>
+    </v-card-title>
         <v-stepper-content step="1">  
         <v-container grid-list-xs>
           <formulario @statusform="validarForm"/>

@@ -6,7 +6,8 @@ export default {
     login: (data) => axios.post('users/login', data),
     logout: (data) => axios.post('users/logout',data),
     signin: (data) => axios.post('/users/signin',data),
-    fetch: () => axios.get('/users/all')
+    fetch: () => axios.get('/users/all'),
+    remove: (data) => axios.put('/users/remove',data)
   },
   campanha: {
     getProdutos: (data) => axios.get('/campanhas/produtos',data),//pega vetor de produtos de uma campanha particular
