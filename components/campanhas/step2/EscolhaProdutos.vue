@@ -6,7 +6,7 @@
         <div>{{campanha_id}}</div> -->
 
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
-    <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{campanhaInfos.produtos.length}}/{{campanhaInfos.qtdade}}</span>
+    <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{produtosQtdadeInfo.qtdade}}/{{produtosQtdadeInfo.meta}}</span>
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -191,6 +191,10 @@
     ],
     props:['campanha_id','campanhaInfos'],
     data: () => ({
+      produtosQtdadeInfo: {//referente a qtdade de protudos cadastrados e metas, nao é o this.campanhaInfo.produtos ou this.campanhaInfo.qtdade pois este só da o fetch uma unica vez, vou mudar seu valor a lvl de app, e a lvl de bd somente atraves da pag de campanhas ;)
+        meta: '',
+        qtdade: ''
+      },
       inputsValidation: {//usarei isso pra definir a validade dos inputs de forma eficaz
         nome:     true,
         qtdade:   true,
@@ -285,6 +289,12 @@
           this.validate()
         },
         deep: true
+      },
+      produtosQtdadeInfo:{
+        handler(){
+          this.$emit('produtoQtdadeChange',this.produtosQtdadeInfo)
+        },
+        deep: true//fundamental ein!
       }
     },
     created () {
@@ -340,7 +350,7 @@
         if(targetId === undefined)//mas qt dou um get do bd, ele seta o _id direto como um atributo, esse if vai ajustar pra ambos os casos xD
           targetId = this.editedItem._id
         const imgSrc = this.editedItem.img.src//path pra img que irei excluir
-        confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.removeRow(targetId,imgSrc,this.campanha_id))
+        confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.decrementProdutos(true) && this.removeRow(targetId,imgSrc,this.campanha_id))
      },
       close () {
         this.resetImgCached()
@@ -375,6 +385,7 @@
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
             this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
+            this.decrementProdutos(false)//qd passo flag flase, eu INCREMENTO 
         }
         //this.saveProdutos()
         this.close()      
@@ -482,6 +493,20 @@
       },
       async fetchProdutos(){
         this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+        this.setMetasProdutos()
+      },
+      setMetasProdutos(){//seta o valor inicial da meta de produtos, dps, isso será controlado a lvl de app, e nao de bd. de bd somente vindo da pag campanhas. Ao interagir aqui dentro, será só a lvl de app ( incrementando e decrementando baseado nas acoes)
+        this.produtosQtdadeInfo.meta = this.campanhaInfos.qtdade
+        this.produtosQtdadeInfo.qtdade = this.campanhaInfos.produtos.length
+      },
+      decrementProdutos(flag){//muda a qtdade dep rodutos cadastradas indicada no painel a lvl de app
+        if(flag){
+          this.produtosQtdadeInfo.qtdade --
+          return true
+        }  
+        else
+          this.produtosQtdadeInfo.qtdade ++  
+        console.log("porra...................")  
       },
       //RULES:
       nomeRule(v){

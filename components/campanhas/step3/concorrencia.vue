@@ -3,7 +3,8 @@
 <template>
   <div>
     <v-toolbar flat color="white">
-    <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{campanhaInfos.produtos.length}}/{{campanhaInfos.qtdade}}</span>
+      <!-- aqui é uma prop passada pela etapa 2 (indiretamente, via o componente pai adicionar.vues) -->
+    <span v-if="campanhaInfos && produtosQtdadeInfo !== undefined" class="title font-weight-regular primary--text">Produtos cadastrados: {{produtosQtdadeInfo.qtdade}}/{{produtosQtdadeInfo.meta}}</span>
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -125,7 +126,7 @@
       formatInputMixin,
       crudMixin
     ],
-    props:['flagC','campanha_id','campanhaInfos'],
+    props:['flagC','campanha_id','campanhaInfos','produtosQtdadeInfo'],
     data: () => ({
       dialog: false,
       search: '',
@@ -182,8 +183,8 @@
     },
     methods: {
       async fetchProdutos(){
-        //posso fazer assim em vez de this.getPordutos blabla pq ja resolvi a promise na etapa aterior etal
-        this.itens = this.campanhaInfos.produtos//await this.getProdutos(this.campanha_id)
+        //uso await this.getProdutos em vez de this.campanhaInfos.produtos pois o this.getProdutos pega os novos produtos em tempo real(nova query), assim, ficará atualizado caso eu passe da etapa 2 p 3, oq n seria o caso com o this.campanhaInfo.produtos, pois este é um 'print' do estado do produtos em um momento anterior
+        this.itens = await this.getProdutos(this.campanha_id)
       },
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
@@ -204,11 +205,6 @@
             Object.assign(this.itens[this.editedIndex], this.editedItem)
             this.updateRow(this.editedItem,this.campanha_id)
         }    
-        // } else {//caso esteja adicionando algo em vez de editando
-        //     this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
-        //     this.editUserInputs()
-        // }
-        //this.saveProdutos()
         this.close()      
       },
       getImgURL(item){

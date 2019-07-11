@@ -38,7 +38,7 @@
 
         <v-stepper-content step="2">
           <v-container grid-list-xs>
-            <escolha-produtos :campanhaInfos="campanha_infos" :campanha_id="campanha_id"/>
+            <escolha-produtos  :campanhaInfos="campanha_infos" :campanha_id="campanha_id" @produtoQtdadeChange="produtoQtdadeChange"/>
           </v-container>
         
           <div class="text-xs-right">
@@ -54,17 +54,17 @@
         <v-stepper-content step="3">
       
           <v-container grid-list-xs>
-            <concorrencia :campanhaInfos="campanha_infos" :flagC="concorrenceFlag" :campanha_id="campanha_id"/>
+            <concorrencia :campanhaInfos="campanha_infos" :flagC="concorrenceFlag" :campanha_id="campanha_id" :produtosQtdadeInfo="produtosQtdadeInfo"/>
           </v-container>
             
           <div class="text-xs-right">
             <v-btn color="primary" @click="e1 = e1 - 1">Voltar para escolha de produtos</v-btn>
             <v-btn 
-              color="sucess"
+              color="primary"
               @click="e1 = e1"
-              :disabled="1 < 2 ? true : false"
+              :disabled="(produtosQtdadeInfo !== undefined && produtosQtdadeInfo.qtdade >= produtosQtdadeInfo.meta)  ? false : true"
             >
-              Criar campanha
+              Enviar produtos para criação de tablóide
             </v-btn>
           </div>
         </v-stepper-content>
@@ -97,6 +97,7 @@
     },
     data () {
       return {
+        produtosQtdadeInfo: undefined, //alimentada pela escolahdeprodutos.vue pra ser usada em concorrencia.vue, store pra que, né? xD
         redirect: true,//semp q e1 = 0, ou seja, ainda n tiver registrado a campanha, irei redirecionar pra pag de listagens, a n ser que explicitamente eu tenha chegado a e1 = 0 via 'add nova campanha', q nesse caso redirect sera enviado como false
         concorrenceFlag: false,
         e1: 0,
@@ -108,6 +109,9 @@
       }
     },
     methods: {
+      produtoQtdadeChange(data){
+        this.produtosQtdadeInfo = data//vem da etapa 2 ( escolhaprodutps.vue) e alimentará etapa 3 ( concorrencia.vue)
+      },
       async chooseStep(){
       //baseado no id da campanha (undefined se n existir ou -1 se for criar uma campanha nova, else caso ja exista),irei setar o valor da variavel e1
       this.campanha_id = this.$route.params.campanha_id
@@ -117,8 +121,6 @@
         else{//caso esteja editando uma campanha ( existente obviamente)
           this.e1 = 2
           this.campanha_infos = await this.fetchCampanhas(this.campanha_id)
-                  console.log(this.campanha_infos)
-
         }
         this.checkRedirect()//irei redireciona pra pag de listagem de campanha caso e1 = 0 e directed = true
       },
@@ -130,6 +132,7 @@
       },
       changeFlag(){
         this.e1 = 3
+        //console.log(" LALALALALALLA s")
         this.concorrenceFlag = !this.concorrenceFlag//assim evito ter que usar emit e afins
       },
       validarForm(flag,inputs){
