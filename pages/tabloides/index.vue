@@ -1,24 +1,29 @@
 <template>
   <v-flex xl12>
-    <v-toolbar flat color="white">
-      <v-dialog v-model="dialog" max-width="500px">
-        <v-card>
-          <v-card-title>
-            <span class="headline">{{ formTitle }}</span>
-          </v-card-title>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click="close">Fechar</v-btn>
-            <v-btn color="blue darken-1" flat @click="save">OK</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+     <v-toolbar flat color="grey lighten-4">
+        <v-toolbar-title>
+          <v-layout align-center class="mr-2 primary--text">
+            <v-img class="mr-2" width="40" src="icones/tabloides.png"></v-img>
+            Tablóides
+          </v-layout>
+        </v-toolbar-title>
+         <v-divider
+          class="mx-2"
+          inset
+          vertical
+        ></v-divider>
+        <v-card-title color="grey lighten-4" class="justify-center">
+            <div>
+                <h3 class="title font-weight-regular primary--text">Campanhas aptas a se montar um tablóide</h3>  
+            </div>
+        </v-card-title>
     </v-toolbar>
     <v-data-table
       :headers="headers"
       :items="infos"
       class="elevation-1"
     >
+    
     <template slot="headerCell" slot-scope="props">
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
@@ -46,7 +51,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on }" v-if="1===1"><!-- vai ser visivel só pro user diretor -->
               <!-- comprador só poderá editar uma campanha se ela tiver pendente ou foi reprovada ( reciclada)-->
-              <v-icon v-if="props.item.status === 'reprovada '|| props.item.status === 'pendente'"
+              <v-icon
                 small
                 class="mr-2"
                 @click="editItem(props.item)"
@@ -55,20 +60,8 @@
                 edit
               </v-icon>
             </template>
-            <span class="subheading">Clique aqui para continuar a adicionar produtos a esta campanha</span>
+            <span class="subheading">Clique aqui para montar um tablóide relativo a esta campanha</span>
             </v-tooltip>  
-           <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-icon
-                small
-                @click="deleteItem(props.item)"
-                v-on="on"
-              >
-                delete
-              </v-icon>
-            </template>
-            <span class="subheading">Clique aqui para excluir esta campanha</span>
-            </v-tooltip> 
         </td>
       </template>
     </v-data-table>
@@ -96,22 +89,9 @@
       ],
       infos: [],//sao as informacoes relativas a uma campanha
       editedIndex: -1,
-      editedItem: {
-        // name: '',
-        // calories: 0,
-        // fat: 0,
-        // carbs: 0,
-        // protein: 0
+      editedItem: {//precisa ter e será populado in time
       },
-      defaultItem: {
-        // name: '',
-        // calories: 0,
-        // fat: 0,
-        // carbs: 0,
-        // protein: 0
-      }
     }),
-
     computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Opções de campanha:'
@@ -123,11 +103,9 @@
         val || this.close()
       }
     },
-
     created () {
       this.initialize()
     },
-
     methods: {
       initialize () {
         this.fetchInfos()
@@ -135,26 +113,9 @@
       editItem (item) {
         this.editedIndex = this.infos.indexOf(item)
         this.editedItem = Object.assign({}, item)
-        //console.log("id: ", this.editedItem.campanha_id)
-        //a principio redirecionará pra continuar a edicao/add de produtos, mas o diretor poderá alterar outras infos futuramente
-        this.$router.push({name: "campanhas-adicionar",params: {campanha_id:this.editedItem.campanha_id,edited:true}})
-        //só quero passar o id correspondente, a principio, n quero abrir o dialog, mas quem sabe o diretor o fará no futuro..entao deixo comentado
-       // this.dialog = true
-      },
-      deleteItem (item) {
-        const index = this.infos.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        confirm('Tem certeza que deseja deletar essa campanha?') && ( this.infos.splice(index, 1) && this.removeCampanha(this.editedItem.campanha_id,this.editedItem.produtos))
-      },
-      close () {
-        this.dialog = false
-        setTimeout(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        }, 300)
+        this.$router.push({name: "tabloides-montar",params: {campanha_id:this.editedItem.campanha_id}}) 
       },
       async fetchInfos(){//pega as info relativas as campanhas
-        //pega info valiosas que nao aparecem na tabela. como o id da campanha por ex xD
         const preInfos = await this.fetchCampanhas()
         this.filtraStatus(preInfos)
       },
@@ -165,14 +126,6 @@
         this.infos.forEach(infos => 
         infos.datas = infos.data_i + ' até ' + infos.data_t )//sintetiza info das datas em um unico campo
       },
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.infos[this.editedIndex], this.editedItem)
-        } else {
-          this.infos.push(this.editedItem)
-        }
-        this.close()
-      }
     }
   }
 </script>

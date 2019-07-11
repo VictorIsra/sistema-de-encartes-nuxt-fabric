@@ -18,14 +18,22 @@ import {fabric}  from "fabric"
 
 export default {
    data: () => ({
-       canvas: '',
-       img: ''
+        canvas: '',
+        img: '',
+        campanha_id: undefined
     }),
     mounted() {
-       console.log("iii")
-       this.canvas = new fabric.Canvas('c');
+        this.checkRedirect()
+        this.canvas = new fabric.Canvas('c');
     },
     methods: {
+        checkRedirect(){//se tentar acessar essa pag sem existir uma campanha associada, redirecionar
+        this.campanha_id = this.$route.params.campanha_id
+        if(this.campanha_id === undefined)
+            this.$router.push('/tabloides')
+        else
+            console.log("ID: ", this.campanha_id)     
+        },
         criaRet(){
             var rect = new fabric.Rect({
                 left: 100,

@@ -292,6 +292,13 @@
           this.$emit('produtoQtdadeChange',this.produtosQtdadeInfo)
         },
         deep: true//fundamental ein!
+      },
+      campanhaInfos:{
+        handler(){
+          //só servirá pra indicar a qtdade caso o user crie a campanah e ja comece a ad produtos sem voltar pro painel de listagem de campanhas xD
+          this.setMetasProdutos()
+        },
+        deep: true
       }
     },
     created () {

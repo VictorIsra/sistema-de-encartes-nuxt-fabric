@@ -17,7 +17,7 @@
       <v-stepper-items>
  <v-card-title v-if="campanha_infos !== '' && e1 > 0" primary-title class="justify-center primary">
           <div>
-            <span class="white--text font-weight-black">Empresa: <span>{{campanha_infos.empresa}} </span> <v-divider vertical></v-divider> Campanha: <span> {{campanha_infos.campanha}} </span> <v-divider vertical></v-divider> Tipo: <span> {{campanha_infos.tipos_campanhas}} </span> <v-divider vertical></v-divider> Data de início: <span> {{campanha_infos.data_inicio}} </span> <v-divider vertical></v-divider> Data de término: <span> {{campanha_infos.data_termino}} </span><v-divider vertical></v-divider>  Margem de lucro mínima: <span> {{campanha_infos.marluc}} </span></span>  
+            <span class="white--text font-weight-black caption">Empresa: <span>{{campanha_infos.empresa}} </span> <v-divider vertical></v-divider> Campanha: <span> {{campanha_infos.campanha}} </span> <v-divider vertical></v-divider> Tipo: <span> {{campanha_infos.tipos_campanhas}} </span> <v-divider vertical></v-divider> Data de início: <span> {{campanha_infos.data_inicio}} </span> <v-divider vertical></v-divider> Data de término: <span> {{campanha_infos.data_termino}} </span><v-divider vertical></v-divider>  Margem de lucro mínima: <span> {{campanha_infos.marluc}} </span></span>  
           </div>
     </v-card-title>
         <v-stepper-content step="1">  
@@ -152,7 +152,7 @@
         this.e1 = 2
         this.campanha_id = await this.createCampanha(this.form_inputs)
         this.campanha_infos = await this.fetchCampanhas(this.campanha_id)//garente q td vai funcionar corretamente msm sem ter que voltar pra pag inciial ( escolha de campanhas xD)
-      }
+      },
     }
   }
 </script>
