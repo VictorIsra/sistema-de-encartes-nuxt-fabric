@@ -3,7 +3,7 @@
 <template>
   <div>
     <v-toolbar flat color="white">
-     <!-- <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span> -->
+    <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{campanhaInfos.produtos.length}}/{{campanhaInfos.qtdade}}</span>
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -125,7 +125,7 @@
       formatInputMixin,
       crudMixin
     ],
-    props:['flagC','campanha_id'],
+    props:['flagC','campanha_id','campanhaInfos'],
     data: () => ({
       dialog: false,
       search: '',
@@ -182,7 +182,8 @@
     },
     methods: {
       async fetchProdutos(){
-        this.itens = await this.getProdutos(this.campanha_id)
+        //posso fazer assim em vez de this.getPordutos blabla pq ja resolvi a promise na etapa aterior etal
+        this.itens = this.campanhaInfos.produtos//await this.getProdutos(this.campanha_id)
       },
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)

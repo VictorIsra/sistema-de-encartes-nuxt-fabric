@@ -54,7 +54,7 @@
         <v-stepper-content step="3">
       
           <v-container grid-list-xs>
-            <concorrencia :flagC="concorrenceFlag" :campanha_id="campanha_id"/>
+            <concorrencia :campanhaInfos="campanha_infos" :flagC="concorrenceFlag" :campanha_id="campanha_id"/>
           </v-container>
             
           <div class="text-xs-right">

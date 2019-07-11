@@ -6,7 +6,7 @@
         <div>{{campanha_id}}</div> -->
 
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
-  <!--  <span class="title font-weight-regular primary--text">Produtos cadastrados: {{itens.length}}/{{$store.state.campanhas.formInputs.qtdade}}</span> -->
+    <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{campanhaInfos.produtos.length}}/{{campanhaInfos.qtdade}}</span>
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -481,8 +481,7 @@
         return path
       },
       async fetchProdutos(){
-        this.itens = await this.getProdutos(this.campanha_id)
-        //console.log(" vejaaamos ", this.campanhaInfos)
+        this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
       },
       //RULES:
       nomeRule(v){
