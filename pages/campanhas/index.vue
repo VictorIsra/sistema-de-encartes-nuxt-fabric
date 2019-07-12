@@ -53,12 +53,11 @@
 
 
         <td class="justify-center layout px-0">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }" v-if="1===1"><!-- vai ser visivel só pro user diretor -->
+          <v-tooltip bottom v-if="props.item.status === 'reprovada '|| props.item.status === 'pendente'">
+            <template v-slot:activator="{ on }"><!-- vai ser visivel só pro user diretor -->
               <!-- comprador só poderá editar uma campanha se ela tiver pendente ou foi reprovada ( reciclada)-->
-              <v-icon v-if="props.item.status === 'reprovada '|| props.item.status === 'pendente'"
+              <v-icon 
                 small
-                class="mr-2"
                 @click="editItem(props.item)"
                 v-on="on"
               >
@@ -78,7 +77,7 @@
               </v-icon>
             </template>
             <span class="subheading">Clique aqui para excluir esta campanha</span>
-            </v-tooltip> 
+          </v-tooltip> 
         </td>
       </template>
     </v-data-table>

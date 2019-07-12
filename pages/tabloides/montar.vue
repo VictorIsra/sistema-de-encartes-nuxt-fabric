@@ -1,5 +1,6 @@
 <template>
     <div >
+        <v-btn round @click="submeterAvaliacao" color="primary">Submeter tablóide para avaliação</v-btn>
         <v-btn round color="primary" @click="criaRet">testando tabloide funcionalidade basica (debug mode )</v-btn>
         <div class="text-xs-center">
             <canvas id="c" class="canvas" width="700px" height="900px"></canvas>
@@ -10,6 +11,8 @@
 </template>
 
 <script>
+import crudMixin from '../../components/mixins/CRUD.js'
+
 import {fabric}  from "fabric"
 //const canvas = new fabric.Canvas('c')
 
@@ -17,6 +20,9 @@ import {fabric}  from "fabric"
 // "add" rectangle onto canvas
 
 export default {
+    mixins: [
+      crudMixin
+    ],
    data: () => ({
         canvas: '',
         img: '',
@@ -27,6 +33,13 @@ export default {
         this.canvas = new fabric.Canvas('c');
     },
     methods: {
+        submeterAvaliacao(){//envia tabloide/campanha para o diretor
+            this.changeCampanhaStatus('em avaliação')
+        },
+        async changeCampanhaStatus(status){//irá mudar o status da campanha
+            await this.updateStatus(this.campanha_id,status)
+            this.$router.push('/tabloides')
+        },
         checkRedirect(){//se tentar acessar essa pag sem existir uma campanha associada, redirecionar
         this.campanha_id = this.$route.params.campanha_id
         if(this.campanha_id === undefined)

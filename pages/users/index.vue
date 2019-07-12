@@ -41,7 +41,6 @@
         :items="infos"
         :search="search"
         class="elevation-1"
-        :dense="dense"
       >
       <template slot="headerCell" slot-scope="props">
         <v-tooltip bottom>
@@ -63,7 +62,7 @@
           <td class="text-xs-center">{{props.item.login}}</td>
           <td class="text-xs-center">{{props.item.userType}}</td>
       
-          <td class="justify-center layout px-0">
+          <td class="text-xs-center">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
                 <!-- usuario padrao nao pode ser deletado, ele é o root xD -->
