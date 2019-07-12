@@ -1,13 +1,37 @@
 <template>
-    <div >
-        <v-btn round @click="submeterAvaliacao" color="primary">Submeter tablóide para avaliação</v-btn>
-        <v-btn round color="primary" @click="criaRet">testando tabloide funcionalidade basica (debug mode )</v-btn>
-        <div class="text-xs-center">
-            <canvas id="c" class="canvas" width="700px" height="900px"></canvas>
-        </div>    
-        <img ref="img"  src="https://mambo.vteximg.com.br/arquivos/ids/236351/139860_Cha-Matte-Leao-100g.jpg?v=636741824864830000">
-
-    </div>
+        <v-card>
+            <v-toolbar flat color="grey lighten-4">
+                <v-toolbar-title>
+                    <v-layout align-center class="mr-2 primary--text">
+                        <v-btn round @click="voltar" color="primary">Voltar</v-btn>
+                    </v-layout>
+                </v-toolbar-title>
+                <v-divider
+                class="mx-2"
+                inset
+                vertical
+                ></v-divider>
+                <v-card-title color="grey lighten-4" class="justify-center">
+                    <div>
+                        <v-btn round color="primary" @click="criaRet">testar</v-btn>
+                    </div>
+                </v-card-title>
+                 <v-divider
+                class="mx-2"
+                inset
+                vertical
+                ></v-divider>
+                <v-card-title color="grey lighten-4" class="justify-center">
+                    <div>
+                        <v-btn round @click="submeterAvaliacao" color="success">Submeter para avaliação</v-btn>
+                    </div>
+                </v-card-title>    
+            </v-toolbar>
+            <div class="text-xs-center">
+                <canvas id="c" class="canvas" width="700px" height="900px"></canvas>
+            </div>    
+            <img ref="img"  src="https://mambo.vteximg.com.br/arquivos/ids/236351/139860_Cha-Matte-Leao-100g.jpg?v=636741824864830000">
+        </v-card>
 </template>
 
 <script>
@@ -38,6 +62,9 @@ export default {
         },
         async changeCampanhaStatus(status){//irá mudar o status da campanha
             await this.updateStatus(this.campanha_id,status)
+            this.$router.push('/tabloides')
+        },
+        voltar(){
             this.$router.push('/tabloides')
         },
         checkRedirect(){//se tentar acessar essa pag sem existir uma campanha associada, redirecionar

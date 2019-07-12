@@ -112,7 +112,7 @@
       editItem (item) {
         this.editedIndex = this.infos.indexOf(item)
         this.editedItem = Object.assign({}, item)
-        this.$router.push({name: "tabloides-montar",params: {campanha_id:this.editedItem.campanha_id}}) 
+        this.$router.push({name: "analise-adicionar",params: {campanha_id:this.editedItem.campanha_id}}) 
       },
       async fetchInfos(){//pega as info relativas as campanhas
         const preInfos = await this.fetchCampanhas()
