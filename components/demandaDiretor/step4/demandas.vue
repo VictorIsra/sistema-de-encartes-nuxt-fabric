@@ -64,7 +64,7 @@
           <td class="text-xs-center">{{ props.item.data_f }}</td>
           <td class="text-xs-center">{{ props.item.preco_v }}</td>
           <td  v-if="props.item.tabloide !== undefined" >
-            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.tabloide"></v-checkbox>   
+            <v-checkbox  color="success" class="justify-end layout px-1" v-model="props.item.tabloide"></v-checkbox>   
           </td>
           <td v-if="props.item.cartaz !== undefined" >
             <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.cartaz"></v-checkbox>   
@@ -82,10 +82,10 @@
             <v-checkbox color="success" class="justify-center" v-model="props.item.radio_externa"></v-checkbox>   
           </td>
           <td v-if="props.item.jornais !== undefined" >
-            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.jornais"></v-checkbox>   
+            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.jornais" ></v-checkbox>   
           </td>
            <td v-if="props.item.pov !== undefined" >
-            <v-checkbox color="success" class="justify-end layout px-0" v-model="props.item.pov"></v-checkbox>   
+            <v-checkbox color="success" class="justify-end layout px-0" v-model="props.item.pov" ></v-checkbox>   
           </td>
           <td class="justify-center layout px-0">
             <v-tooltip bottom>
@@ -100,6 +100,19 @@
               </v-icon>
             </template>
             <span span class="subheading">Clique aqui para escrever uma observação sobre essa demanda</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="saveTick(props.item)"
+                v-on="on"
+              >
+                save
+              </v-icon>
+            </template>
+            <span span class="subheading">Clique aqui para salvar alterações da demanda</span>
             </v-tooltip>
           </td>
         </tr>
@@ -151,7 +164,8 @@
         { text: 'RÁDIO EXTERNA', value: 'preco_v' ,align: 'center' },
         { text: 'JORNAIS', value: 'preco_v' ,align: 'center' },
         { text: 'POV', value: 'preco_v' ,align: 'center' },
-        { text: 'obs', value: 'obs' } 
+        { text: 'AÇÕES', value: 'obs',align: 'center' },
+ 
 
       ],
       itens: [],
@@ -192,6 +206,12 @@
       }
     },
     methods: {
+      saveTick(item){//faz o update só doq foi tikaco, se ba é menos custoso xd
+        this.editedIndex = this.itens.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.updateRow(this.editedItem,this.campanha_id)
+
+      },
       async fetchProdutos(){
         //uso await this.getProdutos em vez de this.campanhaInfos.produtos pois o this.getProdutos pega os novos produtos em tempo real(nova query), assim, ficará atualizado caso eu passe da etapa 2 p 3, oq n seria o caso com o this.campanhaInfo.produtos, pois este é um 'print' do estado do produtos em um momento anterior
         this.itens = await this.getProdutos(this.campanha_id)

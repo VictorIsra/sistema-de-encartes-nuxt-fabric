@@ -165,7 +165,6 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const row_id = req.body.row_id //id da linha que tou atualizando
     const produtos = req.body.produtos//linha a ser atualizada ao array de produtos
-    console.log(" veja ", produtos.facebook , " tipo ", typeof(produtos.facebook))
     try{
         const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
         //me dá o index da linha que estou tentando atualizar:
@@ -183,8 +182,6 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
 
         try{
             //salva alterações
-            console.log("tenteeeei salvar ver tipo ",typeof(campanha.produtos.facebook), campanha.produtos.facebook)
-
             await campanha.save()
             res.status(202).send("0k")
         }catch(e){
