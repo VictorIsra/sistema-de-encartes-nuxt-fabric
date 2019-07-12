@@ -7,7 +7,7 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step step="3">Análise da concorrência</v-stepper-step>
+        <v-stepper-step :complete="e1 >= 3" step="3">Análise da concorrência</v-stepper-step>
          
         <v-divider></v-divider>
 
@@ -57,11 +57,16 @@
         <v-stepper-content step="4">
       
           <v-container grid-list-xs>
-            <concorrencia :campanhaInfos="campanha_infos" :flagC="concorrenceFlag" :campanha_id="campanha_id" :produtosQtdadeInfo="produtosQtdadeInfo"/>
+            <demandas :campanhaInfos="campanha_infos" :flagC="concorrenceFlag" :campanha_id="campanha_id" :produtosQtdadeInfo="produtosQtdadeInfo"/>
           </v-container>
             
           <div class="text-xs-right">
             <v-btn color="primary" @click="e1 = e1 - 1">Voltar para análise da concorrência</v-btn>
+            <v-btn 
+              color="success"
+            >
+              Salvar demandas
+            </v-btn>
             <v-btn 
               color="success"
             >
@@ -82,6 +87,9 @@
   import escolhaProdutos from '../../components/demandaDiretor/step2/EscolhaProdutos.vue'
   //impor etapa 3 ( step 3):
   import concorrencia from '../../components/demandaDiretor/step3/concorrencia.vue'
+  //impor etapa 4 ( step 4):
+  import demandas from '../../components/demandaDiretor/step4/demandas.vue'
+  
   import crudMixin from '../../components/mixins/CRUD.js'
 
   export default {
@@ -91,7 +99,8 @@
     components: {
       formulario,
       'escolha-produtos': escolhaProdutos,
-      concorrencia
+      concorrencia,
+      demandas
     },
     created() {//mounted dá zika: ele perde o valor correto ( ou será q o mounted rola antes do data ser setado? se pa...)
       this.chooseStep()

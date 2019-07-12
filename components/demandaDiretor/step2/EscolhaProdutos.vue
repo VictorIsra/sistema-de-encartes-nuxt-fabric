@@ -501,7 +501,8 @@
       },
       setMetasProdutos(){//seta o valor inicial da meta de produtos, dps, isso será controlado a lvl de app, e nao de bd. de bd somente vindo da pag campanhas. Ao interagir aqui dentro, será só a lvl de app ( incrementando e decrementando baseado nas acoes)
         this.produtosQtdadeInfo.meta = this.campanhaInfos.qtdade
-        this.produtosQtdadeInfo.qtdade = this.campanhaInfos.produtos.length
+        if(this.campanhaInfos.produtos!== undefined)//erro estranho, q n muda nada, é tipo um warning mas q ocorre só qd ligo o server pela primeira vez no dia o.o
+          this.produtosQtdadeInfo.qtdade = this.campanhaInfos.produtos.length
       },
       decrementProdutos(flag){//muda a qtdade dep rodutos cadastradas indicada no painel a lvl de app
         if(flag){

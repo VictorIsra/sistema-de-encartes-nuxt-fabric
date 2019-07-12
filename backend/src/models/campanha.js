@@ -93,6 +93,34 @@ const campanhaSchema = new mongoose.Schema({
             },
             preco_v_c3:{
                 type:String
+            },
+            //info das demandas
+            tabloide: {//pq tem o status ( boolean) e a msg associada
+                type:Boolean
+            },
+            facebook: {
+                type:Boolean
+            },
+            cartaz: {
+                type:Boolean
+            },
+            tvindoor: {
+                type:Boolean
+            },
+            radio_interna: {
+                type:Boolean
+            },
+            radio_externa: {
+                type:Boolean
+            },
+            jornais: {
+                type:Boolean
+            },
+            pov: {
+                type:Boolean
+            },
+            obs:{
+                type:String
             }
         }
     ],

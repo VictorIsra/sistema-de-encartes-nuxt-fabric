@@ -25,36 +25,16 @@
           <v-card-text v-model.lazy="valid" ref="editedItem"> <!-- informacoes de adicionar e deletar (é um form)-->
             <v-container grid-list-md >
               <v-layout wrap>
-                 <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.preco_v_c1"
-                                @blur="editUserInputs(false)"
-                                v-model.trim="editedItem.preco_v_c1" 
-                                min="1" step="any"
-                                :rules="[preco_vRule]" 
-                                prefix="R$"
-                                label="Preço de venda do concorrente 1:">
-                  </v-text-field>
-                </v-flex>
-                 <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.preco_v_c2"
-                                @blur="editUserInputs(false)"
-                                v-model.trim="editedItem.preco_v_c2" 
-                                min="1" step="any"
-                                :rules="[preco_vRule]" 
-                                prefix="R$"
-                                label="Preço de venda do concorrente 2:">
-                  </v-text-field>
-                </v-flex>
-                 <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.preco_v_c3"
-                                @blur="editUserInputs(false)"
-                                v-model.trim="editedItem.preco_v_c3" 
-                                min="1" step="any"
-                                :rules="[preco_vRule]" 
-                                prefix="R$"
-                                label="Preço de venda do concorrente 3:">
-                  </v-text-field>
-                </v-flex>
+                 
+                <v-flex xs6>
+                  <v-textarea   class=".body-2 primary--text"
+                    outline
+                    name="input-7-4"
+                    label="Observação:"
+                    :value="editedItem.obs"
+                    hint="escreva uma observação sobre esta demanda."
+                  ></v-textarea>
+              </v-flex>
               </v-layout>
             </v-container>
             <v-card-actions>
@@ -73,37 +53,62 @@
       :items="itens"
       class="elevation-1"
       :search="search"
+      :expand="expand"
+      item-key="data_i"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
-        <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
-        <td class="text-xs-center">{{ props.item.nome }}</td>
-        <td class="text-xs-center">{{ props.item.preco_c }}</td>
-        <td class="text-xs-center">{{ props.item.preco_v }}</td>
-        <td class="text-xs-center">{{ props.item.preco_v_c1 }}</td>
-        <td class="text-xs-center">{{ props.item.preco_v_c2 }}</td>
-        <td class="text-xs-center">{{ props.item.preco_v_c3 }}</td>
-        <td class="text-xs-center" :class="{'green': props.item.marluc >= campanhaInfos.marluc, 'red':props.item.marluc < campanhaInfos.marluc}">{{ props.item.marluc}}</td>
-
-        <td class="justify-center layout px-0">
-          <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-icon
-              small
-              class="mr-2"
-              @click="editItem(props.item)"
-              v-on="on"
-            >
-              edit
-            </v-icon>
-          </template>
-          <span span class="subheading">Clique aqui para editar os preços de venda da concorrência</span>
-          </v-tooltip>
-
-        </td>
+        <tr @click="props.expanded = !props.expanded">
+          <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
+          <td class="text-xs-center">{{ props.item.nome }}</td>
+          <td class="text-xs-center">{{ props.item.data_i }}</td>
+          <td class="text-xs-center">{{ props.item.data_f }}</td>
+          <td class="text-xs-center">{{ props.item.preco_v }}</td>
+          <td  v-if="props.item.tabloide !== undefined" >
+            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.tabloide"></v-checkbox>   
+          </td>
+          <td v-if="props.item.cartaz !== undefined" >
+            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.cartaz"></v-checkbox>   
+          </td>
+          <td v-if="props.item.facebook !== undefined" >
+            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.facebook"></v-checkbox>   
+          </td>
+           <td v-if="props.item.tvindoor !== undefined" >
+            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.tvindoor"></v-checkbox>   
+          </td>
+          <td v-if="props.item.radio_interna !== undefined" >
+            <v-checkbox color="success" class="justify-center" v-model="props.item.radio_interna"></v-checkbox>   
+          </td>
+           <td v-if="props.item.radio_externa !== undefined" >
+            <v-checkbox color="success" class="justify-center" v-model="props.item.radio_externa"></v-checkbox>   
+          </td>
+          <td v-if="props.item.jornais !== undefined" >
+            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.jornais"></v-checkbox>   
+          </td>
+           <td v-if="props.item.pov !== undefined" >
+            <v-checkbox color="success" class="justify-end layout px-0" v-model="props.item.pov"></v-checkbox>   
+          </td>
+          <td class="justify-center layout px-0">
+            <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="editItem(props.item)"
+                v-on="on"
+              >
+                edit
+              </v-icon>
+            </template>
+            <span span class="subheading">Clique aqui para escrever uma observação sobre essa demanda</span>
+            </v-tooltip>
+          </td>
+        </tr>
       </template>
-     <!-- <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">Resetar</v-btn>
-      </template>-->
+      <template v-slot:expand="props">
+        <v-card flat>
+          <v-card-text>texto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kraltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiilho mano, puta que pariu varios tiro de fuziiil</v-card-text>
+        </v-card>
+      </template>
       <template v-slot:no-results>
         <v-alert :value="true" color="error" icon="warning">
           O produto "{{ search }}" não foi encontrado.
@@ -131,18 +136,23 @@
       dialog: false,
       search: '',
       valid: true,
-
+      expand: false,
       headers: [
-        
-        { text: 'IMAGEM', value: 'img' },
-        { text: 'PRODUTO', value: 'nome' },
-        { text: 'PREÇO DE COMPRA', value: 'preco_c' },
-        { text: 'PREÇO DE VENDA ', value: 'preco_v' },
-        { text: 'PREÇO DE VENDA DO CONCORRENTE 1', value: 'preco_v_c1' },
-        { text: 'PREÇO DE VENDA DO CONCORRENTE 2', value: 'preco_v_c2' },
-        { text: 'PREÇO DE VENDA DO CONCORRENTE 3', value: 'preco_v_c3' },
-        { text: 'MARGEM DE LUCRO', value: 'marluc' },  
-        { text: 'AÇÕES', value: 'acao' } 
+        { text: 'IMAGEM', value: 'img' ,align: 'center' },
+        { text: 'PRODUTO', value: 'nome',align: 'center' },
+        { text: 'DATA DE INÍCIO', value: 'data_i' ,align: 'center' },
+        { text: 'DATA DE TÉRMINO', value: 'data_f',align: 'center' },
+        { text: 'PREÇO DE VENDA', value: 'preco_v' ,align: 'center' },
+        { text: 'TABLÓIDE', value: 'preco_v' ,align: 'center' },
+        { text: 'CARTAZ', value: 'preco_v' ,align: 'center' },
+        { text: 'FACEBOOK', value: 'preco_v' ,align: 'center' },
+        { text: 'TV INDOOR', value: 'preco_v' ,align: 'center' },
+        { text: 'RÁDIO INTERNA', value: 'preco_v' ,align: 'center' },
+        { text: 'RÁDIO EXTERNA', value: 'preco_v' ,align: 'center' },
+        { text: 'JORNAIS', value: 'preco_v' ,align: 'center' },
+        { text: 'POV', value: 'preco_v' ,align: 'center' },
+        { text: 'obs', value: 'obs' } 
+
       ],
       itens: [],
       editedIndex: -1,
@@ -185,6 +195,7 @@
       async fetchProdutos(){
         //uso await this.getProdutos em vez de this.campanhaInfos.produtos pois o this.getProdutos pega os novos produtos em tempo real(nova query), assim, ficará atualizado caso eu passe da etapa 2 p 3, oq n seria o caso com o this.campanhaInfo.produtos, pois este é um 'print' do estado do produtos em um momento anterior
         this.itens = await this.getProdutos(this.campanha_id)
+        console.log(" intes fetados ", this.itens)
       },
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
