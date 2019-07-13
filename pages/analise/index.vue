@@ -16,6 +16,20 @@
                 <h3 class="title font-weight-regular primary--text">Campanhas prontas para avaliação</h3>  
             </div>
         </v-card-title>
+        <v-spacer></v-spacer>
+         <v-layout class="justify-end">
+          <v-layout align-center class="justify-end">
+            <h3 class="subheading font-weight-regular primary--text">Criar mini demanda</h3>  
+          </v-layout>  
+          <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn fab dark color="primary" v-on="on" to="/analise/demanda">
+              <v-icon dark>add</v-icon>
+            </v-btn>
+           </template>
+          <span class="subheading">Criar uma mini demanda</span>
+          </v-tooltip>   
+          </v-layout>
     </v-toolbar>
     <v-data-table
       :headers="headers"
@@ -50,7 +64,7 @@
             <template v-slot:activator="{ on }" v-if="1===1"><!-- vai ser visivel só pro user diretor -->
               <!-- comprador só poderá editar uma campanha se ela tiver pendente ou foi reprovada ( reciclada)-->
               <v-icon
-                medium
+                small
                 class="mr-2"
                 @click="editItem(props.item)"
                 v-on="on"
@@ -145,6 +159,7 @@
         this.editedIndex = this.infos.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.editedItem = await this.updateStatus(this.editedItem.campanha_id,status)
+        this.editedItem.qtdade = this.editedItem.produtos.length + "/" + this.editedItem.qtdade
         Object.assign(this.infos[this.editedIndex], this.editedItem)
 
       },

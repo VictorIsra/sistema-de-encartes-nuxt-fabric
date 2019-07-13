@@ -1,21 +1,19 @@
-<!-- //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
--->
 <template>
-  <div> 
-    <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
+  <div>
+       <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
     <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{produtosQtdadeInfo.qtdade}}/{{produtosQtdadeInfo.meta}}</span>
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
         append-icon="search"
-        label="Buscar produto"
+        label="Buscar demanda"
         single-line
         hide-details
       ></v-text-field>
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >Adicionar produto</v-btn> <!--v-on="on" -->
+          <v-btn color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >Adicionar demanda</v-btn> <!--v-on="on" -->
         </template>
         
         <v-card > <!-- o form em si é esse v card! -->
@@ -53,14 +51,6 @@
                 </v-flex>
                 <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.obs" v-model="editedItem.obs" label="Observação"></v-text-field>
-                </v-flex>
-                <v-flex>
-                  <datas   :dateRange="campanhaInfos"
-                           :defaultDatesValues="defaultDatesValues" 
-                           @datechanged="getDate"
-                           @blur="editUserInputs(false)"
-                           @dateStatusInfo="getDateStatus"           
-                    />              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
                 </v-flex>
                 <v-flex xs12 sm6>
                   <v-text-field  ref="editedItem.preco_c"
@@ -104,7 +94,6 @@
             <v-btn  color="primary" :disabled="!valid"  @click="save">Salvar</v-btn>
            </v-card-actions>
           </v-card-text>
-
         </v-card>
       </v-dialog>
     </v-toolbar>
@@ -114,53 +103,74 @@
       :items="itens"
       class="elevation-1"
       :search="search"
+      item-key="data_i"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
-        <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
-        <td class="text-xs-center">{{ props.item.nome }}</td>
-        <td class="text-xs-center">{{ props.item.qtdade }}</td>
-        <td class="text-xs-center">{{ props.item.unidade }}</td>
-        <td class="text-xs-center">{{ props.item.obs }}</td>
-        <td class="text-xs-center">{{ props.item.data_i }}</td>
-        <td class="text-xs-center">{{ props.item.data_f }}</td>
-        <td class="text-xs-center">{{ props.item.preco_c }}</td>
-        <td class="text-xs-center">{{ props.item.preco_v }}</td>
-        <td class="text-xs-center">{{ props.item.selout }}</td>
-        <td class="text-xs-center" :class="{'green': props.item.marluc >= campanhaInfos.marluc, 'red':props.item.marluc < campanhaInfos.marluc}">{{ props.item.marluc}}</td>
-
-        <td class="justify-center layout px-0">
-          <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-icon
-              small
-              class="mr-2"
-              @click="editItem(props.item)"
-              v-on="on"
-            >
-              edit
-            </v-icon>
-          </template>
-          <span class="subheading">Clique aqui para editar esta linha da tabela</span>
-          </v-tooltip>
-         
-         <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-icon
-              small
-              @click="deleteItem(props.item)"
-              v-on="on"
-            >
-              delete
-            </v-icon>
-          </template>
-          <span class="subheading">Clique aqui para excluir esta linha da tabela</span>
-          </v-tooltip>
-        
-        </td>
+        <tr @click="props.expanded = !props.expanded">
+          <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
+          <td class="text-xs-center">{{ props.item.nome }}</td>
+          <td class="text-xs-center">{{ props.item.data_i }}</td>
+          <td class="text-xs-center">{{ props.item.data_f }}</td>
+          <td class="text-xs-center">{{ props.item.preco_v }}</td>
+          <td  v-if="props.item.tabloide !== undefined" >
+            <v-checkbox  color="success" class="justify-end layout px-1" v-model="props.item.tabloide"></v-checkbox>   
+          </td>
+          <td v-if="props.item.cartaz !== undefined" >
+            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.cartaz"></v-checkbox>   
+          </td>
+          <td v-if="props.item.facebook !== undefined" >
+            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.facebook"></v-checkbox>   
+          </td>
+           <td v-if="props.item.tvindoor !== undefined" >
+            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.tvindoor"></v-checkbox>   
+          </td>
+          <td v-if="props.item.radio_interna !== undefined" >
+            <v-checkbox color="success" class="justify-center" v-model="props.item.radio_interna"></v-checkbox>   
+          </td>
+           <td v-if="props.item.radio_externa !== undefined" >
+            <v-checkbox color="success" class="justify-center" v-model="props.item.radio_externa"></v-checkbox>   
+          </td>
+          <td v-if="props.item.jornais !== undefined" >
+            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.jornais" ></v-checkbox>   
+          </td>
+           <td v-if="props.item.pov !== undefined" >
+            <v-checkbox color="success" class="justify-end layout px-0" v-model="props.item.pov" ></v-checkbox>   
+          </td>
+          <td class="justify-center layout px-0">
+            <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="editItem(props.item)"
+                v-on="on"
+              >
+                edit
+              </v-icon>
+            </template>
+            <span span class="subheading">Clique aqui para escrever uma observação sobre essa demanda</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="saveTick(props.item)"
+                v-on="on"
+              >
+                save
+              </v-icon>
+            </template>
+            <span span class="subheading">Clique aqui para salvar alterações da demanda</span>
+            </v-tooltip>
+          </td>
+        </tr>
       </template>
-     <!-- <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">Resetar</v-btn>
-      </template>-->
+      <template v-slot:expand="props">
+        <v-card flat>
+          <v-card-text>texto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kraltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiilho mano, puta que pariu varios tiro de fuziiil</v-card-text>
+        </v-card>
+      </template>
       <template v-slot:no-results>
         <v-alert :value="true" color="error" icon="warning">
           O produto "{{ search }}" não foi encontrado.
@@ -172,15 +182,16 @@
 
 <script>
 //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
-  import imgUpload from '../generalUseComponents/image_upload.vue'
-  import datas from  '../generalUseComponents/datas.vue'
-  import formatInputMixin from '../../mixins/FormatInputMixin.js'
-  import crudMixin from '../../mixins/CRUD.js'
+  import imgUpload from '../../components/campanhas/generalUseComponents/image_upload.vue'
+  import datas from  '../../components/campanhas/generalUseComponents/datas.vue'
+  import formatInputMixin from '../../components/mixins/FormatInputMixin.js'
+  import crudMixin from '../../components/mixins/CRUD.js'
+  import demandas from '../../components/demandaDiretor/step4/demandas.vue'
 
   export default {
     components: {
       'img-upload': imgUpload,
-      datas
+      datas,demandas
     },
     mixins: [
       formatInputMixin,
@@ -228,19 +239,20 @@
       },
       //fim info relativas ao uplode e img ^
       headers: [
-        
-        { text: 'IMAGEM', value: 'img' },
-        { text: 'PRODUTO', value: 'nome' },
-        { text: 'ESTOQUE', value: 'qtdade' },
-        { text: 'UNIDADE', value: 'unidade' },
-        { text: 'OBSERVAÇÃO', value: 'obs' },
-        { text: 'DATA DE INÍCIO', value: 'data_i' },
-        { text: 'DATA DE TÉRMINO', value: 'data_f' },
-        { text: 'PREÇO DE COMPRA', value: 'preco_c' },
-        { text: 'PREÇO DE VENDA', value: 'preco_v' },
-        { text: 'SELL OUT', value: 'selout' },
-        { text: 'MARGEM DE LUCRO', value: 'marluc' },  
-        { text: 'AÇÕES', value: 'acao' } 
+        { text: 'IMAGEM', value: 'img' ,align: 'center' },
+        { text: 'PRODUTO', value: 'nome',align: 'center' },
+        { text: 'DATA DE INÍCIO', value: 'data_i' ,align: 'center' },
+        { text: 'DATA DE TÉRMINO', value: 'data_f',align: 'center' },
+        { text: 'PREÇO DE VENDA', value: 'preco_v' ,align: 'center' },
+        { text: 'TABLÓIDE', value: 'preco_v' ,align: 'center' },
+        { text: 'CARTAZ', value: 'preco_v' ,align: 'center' },
+        { text: 'FACEBOOK', value: 'preco_v' ,align: 'center' },
+        { text: 'TV INDOOR', value: 'preco_v' ,align: 'center' },
+        { text: 'RÁDIO INTERNA', value: 'preco_v' ,align: 'center' },
+        { text: 'RÁDIO EXTERNA', value: 'preco_v' ,align: 'center' },
+        { text: 'JORNAIS', value: 'preco_v' ,align: 'center' },
+        { text: 'POV', value: 'preco_v' ,align: 'center' },
+        { text: 'AÇÕES', value: 'obs',align: 'center' },
       ],
       itens: [],
       editedIndex: -1,
@@ -321,7 +333,6 @@
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
-        this.sendDefaultDates(1)//pro componente filho mostrar as dates referentes a linha correspondente ao se abrir o dialog
         this.prepareImgInfo(this.editedItem)
         this.editUserInputs(false)
         this.dialog = true  
@@ -329,7 +340,6 @@
       addItem(flag){
         this.resetValues()        
         this.imgInfo.flag = flag//garante q nao vai ter uma img pre definida ao abrir o dialog
-        this.sendDefaultDates(flag)
       },
       resetValues(){
         //p dps de uma remocao, ao eu add um novo item, os campos n terem mais relacao com o que foi deletado
@@ -359,7 +369,6 @@
       close () {
         this.resetImgCached()
         this.resetFlags()
-        this.resetDateErrorStack()
         this.dialog = false
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
@@ -374,7 +383,6 @@
         this.cachedImgInfo.imgURL = ''
       },
       resetFlags(){//reseta as flags que sao props em componentes filhos, pra que o watch sempre observe mudanca
-        this.defaultDatesValues.flag = 0
         this.imgInfo.flag = 0
       },
       async save () {
@@ -393,64 +401,6 @@
         }
         //this.saveProdutos()
         this.close()      
-      },
-      getDate(data){//pega as datas formatadas no componente filho 'datas.vue'
-        //será chamado antes do método save, aqui, devo associar o valor do item editado com data
-        //que assim ele atualizará na tabela no save ;)
-        if(data.flag === 0)
-            this.editedItem.data_i = data.data 
-        else if(data.flag === 1)
-            this.editedItem.data_f = data.data
-        else
-          console.log("erro ocorreu na funcao getData(componente datas.vue)")    
-      },
-      sendDefaultDates(flag){//dps passarei 1 ou 0 como argumento, pra dif edicao de um item novo
-        //se flag == 1, irá fazer as dates no componente data.vue passarem o valor presente na linha atual da tabela 
-        //se flag == 0, é o valor default, das datas ficarem em branco qd abrir um form/dialogo
-        //flag == -1, msm comportamento do default, mas garante q será executado, pois as flags sao baseados em watch no componente filho
-        this.defaultDatesValues.flag = flag
-        this.defaultDatesValues.Rdata_i = this.editedItem.data_i
-        this.defaultDatesValues.Rdata_f = this.editedItem.data_f
-        this.defaultDatesValues.flag = 1//p garantir que, na hr de criar o item, apos o user interagir com uma data, volte a validacao default (msg vermelha feia e irritante xD)
-        this.validate()
-      },
-      getDateStatus(info){//se o componente filho viu que a data é invalida ( fora do range), adiciona um item a pilha de erros
-          //lembre, as datas só serao validadas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha ('#'))
-            if(!this.dialog)//só quero checar e mexer na pilha se um form/dialog tiver aberto
-              return
-          const duplicates = this.datesErrors.find(obj => //checa se nao estou adicionando um el repetido a pilha
-            info.status === obj.status && info.caller === obj.caller )
-         
-          if(duplicates === undefined && info.status !== 0 ){//status 0 é pq n teve erro, só quero preencher se foi error ( 1)
-            if(info.caller !== -1)// se caller != -1 é pq sao datas difs e invalidas
-                this.datesErrors.unshift(info)
-            else{//se caller = -1 é pq sao datas iguais e invalidas
-              if(this.datesErrors.length < 3){//se é  3 é pq ambas as invalidas ja tao na pilha, entao nada devo fazer, caso contrário devo adicionar as 2 datas a pilha de erro
-                var i
-                this.resetDateErrorStack()//reseto a pilha e adiciono as 2 datas invalidas e iguais, pois:
-                for(i = 0; i < 2;i++){//se length é menor que 3 e caller é -1, é pq ambas sao iguais e invalidas, logo adiciono ambas a pilha
-                  this.datesErrors.unshift({
-                    status: 1,
-                    caller: i
-                  })
-                }  
-              }
-            }   
-          }   
-          if(info.status === 0 ){//se a data nao é mais invalida, removo da  pilha o item que indicava que aquela data era invalida
-            if(info.caller === -1)//datas sao iguais e validas, esvazio a pilha
-              this.resetDateErrorStack()
-            else{//datas sao dif, mas alguma delas agora é valida, logo removo só uma data da pilha de erros  
-              this.datesErrors.forEach((obj,i) => {
-                if(info.caller === obj.caller)
-                  this.datesErrors.splice(i,1)//se removi algo é pq corrigiu algo, mas só sera valido totalmente qd a o tamanho da pilha for 1 (só ter a base dela)
-              })
-            }  
-          }
-          this.validate()//tenta validar
-      },
-      resetDateErrorStack(){//validacao só fará sentido qd o dialog tiver aberto, qd fechado, limpar a pilha
-        this.datesErrors = ['#']
       },
       fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
@@ -471,20 +421,14 @@
         }
       },
       validate(){
-        let datesValid = this.datesErrors.length === 1 ? true : false//checa validade para das datas, que tem uma logica particular
-          if(datesValid && this.editedItem.data_i !== '' && this.editedItem.data_f !== '')
-            datesValid = true
-          else
-            datesValid = false
-      
         const values = Object.values(this.inputsValidation)//
         var valid = values.filter(v => { return v === false} )//checa validade de todos os inputs que nao sejam datas, pois estas tem validacao especial
 
-        if(valid.includes(false) || !datesValid){//se os campos ou alguma data for inválida, invalide o form/dialog
+        if(valid.includes(false)){//se os campos ou alguma data for inválida, invalide o form/dialog
           console.log(" FORM invalido")
           this.valid = false
         }  
-        else if(!valid.includes(false) && datesValid){//caso contrário, valide
+        else if(!valid.includes(false)){//caso contrário, valide
           console.log(" Form valido!")
           this.valid  = true
         }  
@@ -498,7 +442,6 @@
       async fetchProdutos(){
         this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
         this.setMetasProdutos()
-        console.log("vejaaa ", this.itens)
       },
       setMetasProdutos(){//seta o valor inicial da meta de produtos, dps, isso será controlado a lvl de app, e nao de bd. de bd somente vindo da pag campanhas. Ao interagir aqui dentro, será só a lvl de app ( incrementando e decrementando baseado nas acoes)
         this.produtosQtdadeInfo.meta = this.campanhaInfos.qtdade
