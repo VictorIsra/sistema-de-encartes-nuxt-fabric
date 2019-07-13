@@ -60,6 +60,7 @@ export default {
             }
         },
         addRow(editedItem,campanha_id){//vai virar um mixin
+            console.log("AD ROW COM: ",editedItem, " id ", campanha_id)
              api.campanha.addRow(
                    {produtos:editedItem,
                    campanha_id}

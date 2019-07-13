@@ -36,43 +36,6 @@
                   </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.qtdade" 
-                                :rules="[qtdadeRule]"
-                                @blur="editUserInputs(false)"
-                                v-model.trim="editedItem.qtdade"
-                                label="Estoque">
-                  </v-text-field>
-                </v-flex>
-                <v-flex xs12 sm6>
-                  <v-text-field @blur="editUserInputs(false)" 
-                                ref="editedItem.unidade"
-                                v-model.trim="editedItem.unidade" 
-                                label="Unidade"></v-text-field>
-                </v-flex>
-                <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.obs" v-model="editedItem.obs" label="Observação"></v-text-field>
-                </v-flex>
-                <v-flex>
-                  <datas  
-                           :defaultDatesValues="defaultDatesValues" 
-                           @datechanged="getDate"
-                           @blur="editUserInputs(false)"
-                           @dateStatusInfo="getDateStatus"           
-                    />              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
-                </v-flex>
-                <v-flex xs12 sm6>
-                  <v-text-field  ref="editedItem.preco_c"
-                                 min="1" step="any"
-                                 @blur="editUserInputs(false)"
-                                 v-model.trim="editedItem.preco_c" 
-                                 :rules="[preco_cRule]" 
-                                 label="Preço de compra"
-                                 prefix="R$"
-                                 >
-                  </v-text-field>
-                </v-flex>
-
-                <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.preco_v"
                                 @blur="editUserInputs(false)"
                                 v-model.trim="editedItem.preco_v" 
@@ -82,18 +45,35 @@
                                 label="Preço de venda">
                   </v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.selout" v-model="editedItem.selout" label="Sell out"></v-text-field>
+                 <v-flex>
+                  <datas
+                           :defaultDatesValues="defaultDatesValues" 
+                           @datechanged="getDate"
+                           @blur="editUserInputs(false)"
+                           @dateStatusInfo="getDateStatus"           
+                    />              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
                 </v-flex>
-                <v-flex >
-                  <v-text-field ref="editedItem.marluc" justify-center 
-                                v-model.trim="editedItem.marluc" 
-                                :rules="[marlucRule]"
-                                 @blur="editUserInputs(false)"
-                                suffix="%"
-                                label="Margem de lucro"></v-text-field>
-                </v-flex>
-                
+                <v-flex xs12>
+                  <v-textarea   class=".body-2 primary--text"
+                    outline
+                    name="input-7-4"
+                    label="Observação:"
+                    v-model="editedItem.obs"
+                    hint="escreva uma observação sobre esta demanda."
+                  ></v-textarea>
+              </v-flex>
+              <v-flex>
+                <v-checkbox label="tabloide"  color="success" class="layout" v-model="editedItem.tabloide"></v-checkbox>   
+                <v-checkbox label="facebook"  color="success" class="layout" v-model="editedItem.facebook"></v-checkbox>   
+                <v-checkbox label="radio interna"  color="success" class="layout" v-model="editedItem.radio_interna"></v-checkbox>   
+                <v-checkbox label="jornais"  color="success" class="layout" v-model="editedItem.jornais"></v-checkbox>   
+              </v-flex>
+              <v-flex>
+                <v-checkbox label="cartaz"  color="success" class="layout" v-model="editedItem.cartaz"></v-checkbox>   
+                <v-checkbox label="tvindoor"  color="success" class="layout" v-model="editedItem.tvindoor"></v-checkbox>   
+                <v-checkbox label="radio externa"  color="success" class="layout" v-model="editedItem.radio_externa"></v-checkbox>   
+                <v-checkbox label="pov"  color="success" class="layout" v-model="editedItem.pov"></v-checkbox>   
+              </v-flex>
               </v-layout>
             </v-container>
             <v-card-actions>
@@ -121,28 +101,28 @@
           <td class="text-xs-center">{{ props.item.data_f }}</td>
           <td class="text-xs-center">{{ props.item.preco_v }}</td>
           <td  v-if="props.item.tabloide !== undefined" >
-            <v-checkbox  color="success" class="justify-end layout px-1" v-model="props.item.tabloide"></v-checkbox>   
+            <v-checkbox  color="success" @click.stop class="justify-end layout px-1" v-model="props.item.tabloide"></v-checkbox>   
           </td>
           <td v-if="props.item.cartaz !== undefined" >
-            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.cartaz"></v-checkbox>   
+            <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.cartaz"></v-checkbox>   
           </td>
           <td v-if="props.item.facebook !== undefined" >
-            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.facebook"></v-checkbox>   
+            <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.facebook"></v-checkbox>   
           </td>
            <td v-if="props.item.tvindoor !== undefined" >
-            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.tvindoor"></v-checkbox>   
+            <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.tvindoor"></v-checkbox>   
           </td>
           <td v-if="props.item.radio_interna !== undefined" >
-            <v-checkbox color="success" class="justify-center" v-model="props.item.radio_interna"></v-checkbox>   
+            <v-checkbox color="success" @click.stop class="justify-center" v-model="props.item.radio_interna"></v-checkbox>   
           </td>
            <td v-if="props.item.radio_externa !== undefined" >
-            <v-checkbox color="success" class="justify-center" v-model="props.item.radio_externa"></v-checkbox>   
+            <v-checkbox color="success" @click.stop class="justify-center" v-model="props.item.radio_externa"></v-checkbox>   
           </td>
           <td v-if="props.item.jornais !== undefined" >
-            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.jornais" ></v-checkbox>   
+            <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.jornais" ></v-checkbox>   
           </td>
            <td v-if="props.item.pov !== undefined" >
-            <v-checkbox color="success" class="justify-end layout px-0" v-model="props.item.pov" ></v-checkbox>   
+            <v-checkbox color="success" @click.stop class="justify-end layout px-0" v-model="props.item.pov" ></v-checkbox>   
           </td>
           <td class="justify-center layout px-0">
             <v-tooltip bottom>
@@ -156,20 +136,7 @@
                 edit
               </v-icon>
             </template>
-            <span span class="subheading">Clique aqui para escrever uma observação sobre essa demanda</span>
-            </v-tooltip>
-            <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-icon
-                small
-                class="mr-2"
-                @click="saveTick(props.item)"
-                v-on="on"
-              >
-                save
-              </v-icon>
-            </template>
-            <span span class="subheading">Clique aqui para salvar alterações da demanda</span>
+            <span span class="subheading">Clique aqui para editar uma demanda</span>
             </v-tooltip>
           </td>
         </tr>
@@ -207,6 +174,7 @@
     ],
     props:['campanha_id','campanhaInfos'],
     data: () => ({
+      demanda_id: '',//ao cadastrar um produto, ele gerará esse id. uma mini demanda é uma campanha com certos valores default, por isso,salvo a demanda como uma campanha com valores default,
       produtosQtdadeInfo: {//referente a qtdade de protudos cadastrados e metas, nao é o this.campanhaInfo.produtos ou this.campanhaInfo.qtdade pois este só da o fetch uma unica vez, vou mudar seu valor a lvl de app, e a lvl de bd somente atraves da pag de campanhas ;)
         meta: '',
         qtdade: ''
@@ -267,28 +235,36 @@
       editedItem: {
         img:  '',
         nome: '--',
-        qtdade: '0.00',
-        unidade: '--',
-        obs: '--',
         data_i: '',
         data_f: '',
-        preco_c: '0,00',
         preco_v: '0,00',
-        selout: '--',
-        marluc: '0.00'
+        tabloide: false,
+        cartaz: false,
+        facebook: false,
+        tvindoor: false,
+        radio_interna: false,
+        radio_externa: false,
+        radio_externa: false,
+        jornais: false,
+        pov: false,
+        obs: ''
       },
       defaultItem: {//aqui seto os valores defaults
         img:  '',
         nome: '--',
-        qtdade: '0.00',
-        unidade: '--',
-        obs: '--',
         data_i: '',
         data_f: '',
-        preco_c: '0,00',
         preco_v: '0,00',
-        selout: '--',
-        marluc: '0.00'
+        tabloide: false,
+        cartaz: false,
+        facebook: false,
+        tvindoor: false,
+        radio_interna: false,
+        radio_externa: false,
+        radio_externa: false,
+        jornais: false,
+        pov: false,
+        obs: ''
       }
     }),
     computed: {
@@ -307,19 +283,6 @@
         },
         deep: true
       },
-      produtosQtdadeInfo:{
-        handler(){
-          this.$emit('produtoQtdadeChange',this.produtosQtdadeInfo)
-        },
-        deep: true//fundamental ein!
-      },
-      campanhaInfos:{
-        handler(){
-          //só servirá pra indicar a qtdade caso o user crie a campanah e ja comece a ad produtos sem voltar pro painel de listagem de campanhas xD
-          this.setMetasProdutos()
-        },
-        deep: true
-      }
     },
     created () {
       this.initialize()//sera alimentado pelo bd eventualmente, tvz?
@@ -354,17 +317,21 @@
       resetValues(){
         //p dps de uma remocao, ao eu add um novo item, os campos n terem mais relacao com o que foi deletado
         this.editedItem = {
-          img:  '',
-          nome: '--',
-          qtdade: '0.00',
-          unidade: '--',
-          obs: '--',
-          data_i: '',
-          data_f: '',
-          preco_c: '0,00',
-          preco_v: '0,00',
-          selout: '--',
-          marluc: '0.00'
+            img:  '',
+            nome: '--',
+            data_i: '',
+            data_f: '',
+            preco_v: '0,00',
+            tabloide: false,
+            cartaz: false,
+            facebook: false,
+            tvindoor: false,
+            radio_interna: false,
+            radio_externa: false,
+            radio_externa: false,
+            jornais: false,
+            pov: false,
+            obs: ''
         }
       },
       deleteItem (item) {
@@ -403,16 +370,33 @@
             //console.log(" imgs ", this.editedItem.img)
             await this.fillImgInfo('',this.editedItem)
             Object.assign(this.itens[this.editedIndex], this.editedItem)
-           // this.updateRow(this.editedItem,this.campanha_id)
+            this.updateRow(this.editedItem,this.campanha_id)
         } else {//caso esteja adicionando algo em vez de editando
+            //crio uma campanha/demanda associada a essa(s) demanda 
+            await this.createDemandaID()//cria um novo id de campanha uma unica vez, dps q demanda_id !== '', ele n chamará mais essa f
             await this.fillImgInfo(0,this.editedItem)
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
-           // this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
+            this.addRow(this.editedItem,this.demanda_id)//na real nem precisava passa isso como arg mas foda-se
             this.decrementProdutos(false)//qd passo flag flase, eu INCREMENTO 
         }
         //this.saveProdutos()
         this.close()      
+      },
+      async createDemandaID(){//cria uma unica vez
+        if(this.demanda_id === ''){
+            const demanda = await this.createCampanha({
+                status: 'mini demanda',
+                qtdade: '0',
+                data_termino: '?',
+                data_inicio: '?',
+                marluc: '--',
+                tipos_campanhas: 'mini demanda',
+                campanha: 'mini demanda',
+                empresa: '--'
+            })
+            this.demanda_id = demanda//id da nova campanha gerada, lembre q essa campanha é uma mini demanda       
+        }
       },
       getDate(data){//pega as datas formatadas no componente filho 'datas.vue'
         //será chamado antes do método save, aqui, devo associar o valor do item editado com data
@@ -540,22 +524,6 @@
           this.inputsValidation['nome'] = true
         return !!v || "é preciso escolher um nome para o produto. "
       },
-      qtdadeRule(v){
-        if(!!v === false)
-           this.inputsValidation['qtdade'] = false
-        else
-          this.inputsValidation['qtdade'] = true
-
-         return !!v || 'a quantidade é obrigatória'
-      },
-      preco_cRule(v){
-        if(!!v === false)
-           this.inputsValidation['preco_c'] = false
-        else
-          this.inputsValidation['preco_c'] = true
-        
-        return  !!v || 'o preço de compra e é obrigatório'
-      },
       preco_vRule(v){
         if(!!v === false)
            this.inputsValidation['preco_v'] = false
@@ -564,24 +532,11 @@
 
         return !!v || 'o preço de venda e é obrigatório'
       },
-      marlucRule(v){
-        if(!!v === false)
-           this.inputsValidation['marluc'] = false
-        else
-          this.inputsValidation['marluc'] = true
-
-        return !!v || 'a margem de lucro e é obrigatória'
-      },
       editUserInputs(addUnit = true){//addUnit para botar o R$ e afins. quero isso pra salvar na tabela, mas nao quero isso ( addUnit = false) qd abrir uma form/dialog pra edicao
-        this.editedItem.qtdade = this.parsePtBr(this.editedItem.qtdade)
-        this.editedItem.preco_c = this.parsePtBr(this.editedItem.preco_c)
         this.editedItem.preco_v = this.parsePtBr(this.editedItem.preco_v)
-        this.editedItem.marluc = this.parsePtBr(this.editedItem.marluc)
 
         if(addUnit){
-          this.editedItem.preco_c = 'R$ ' + this.editedItem.preco_c
           this.editedItem.preco_v = 'R$ ' + this.editedItem.preco_v
-          this.editedItem.marluc += '%'
         }
       }
     }

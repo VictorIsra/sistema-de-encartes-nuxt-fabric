@@ -165,7 +165,12 @@
       },
       async fetchInfos(){//pega as info relativas as campanhas
         //pega info valiosas que nao aparecem na tabela. como o id da campanha por ex xD
-        this.infos = await this.fetchCampanhas()
+        const preInfos = await this.fetchCampanhas()
+        this.filtraStatus(preInfos)
+      },
+      filtraStatus(infos){
+        //só pega as campanhas que o status é diferente de 'pendente'
+        this.infos = infos.filter(info => {return info.status === 'mini demanda'})
         this.infos.forEach(infos => 
         infos.datas = infos.data_i + ' até ' + infos.data_t )//sintetiza info das datas em um unico campo
       },

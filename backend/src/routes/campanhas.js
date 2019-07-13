@@ -196,6 +196,7 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
 router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de produtos a campanha
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     let produtos = req.body.produtos//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
+    console.log("porra ", req.body)
     //como o addrow é sempre feito em produtos, n em concorrencia, posso com seguranca setar o proce de concorrencia pra r$ 0,00 aqui. faco a lvl de bd em vez de app para garantir a existencia dos getters e setters ;)
     produtos.preco_v_c1 = "R$ 0,00"
     produtos.preco_v_c2 = "R$ 0,00"

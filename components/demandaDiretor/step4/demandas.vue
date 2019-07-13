@@ -26,7 +26,7 @@
             <v-container grid-list-md >
               <v-layout wrap>
                  
-                <v-flex xs6>
+               <v-flex xs12>
                   <v-textarea   class=".body-2 primary--text"
                     outline
                     name="input-7-4"
@@ -34,6 +34,18 @@
                     v-model="editedItem.obs"
                     hint="escreva uma observação sobre esta demanda."
                   ></v-textarea>
+              </v-flex>
+              <v-flex>
+                <v-checkbox label="tabloide"  color="success" class="layout" v-model="editedItem.tabloide"></v-checkbox>   
+                <v-checkbox label="facebook"  color="success" class="layout" v-model="editedItem.facebook"></v-checkbox>   
+                <v-checkbox label="radio interna"  color="success" class="layout" v-model="editedItem.radio_interna"></v-checkbox>   
+                <v-checkbox label="jornais"  color="success" class="layout" v-model="editedItem.jornais"></v-checkbox>   
+              </v-flex>
+              <v-flex>
+                <v-checkbox label="cartaz"  color="success" class="layout" v-model="editedItem.cartaz"></v-checkbox>   
+                <v-checkbox label="tvindoor"  color="success" class="layout" v-model="editedItem.tvindoor"></v-checkbox>   
+                <v-checkbox label="radio externa"  color="success" class="layout" v-model="editedItem.radio_externa"></v-checkbox>   
+                <v-checkbox label="pov"  color="success" class="layout" v-model="editedItem.pov"></v-checkbox>   
               </v-flex>
               </v-layout>
             </v-container>
@@ -64,28 +76,28 @@
           <td class="text-xs-center">{{ props.item.data_f }}</td>
           <td class="text-xs-center">{{ props.item.preco_v }}</td>
           <td  v-if="props.item.tabloide !== undefined" >
-            <v-checkbox  color="success" class="justify-end layout px-1" v-model="props.item.tabloide"></v-checkbox>   
+            <v-checkbox  color="success" @click.stop class="justify-end layout px-1" v-model="props.item.tabloide"></v-checkbox>   
           </td>
           <td v-if="props.item.cartaz !== undefined" >
-            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.cartaz"></v-checkbox>   
+            <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.cartaz"></v-checkbox>   
           </td>
           <td v-if="props.item.facebook !== undefined" >
-            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.facebook"></v-checkbox>   
+            <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.facebook"></v-checkbox>   
           </td>
            <td v-if="props.item.tvindoor !== undefined" >
-            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.tvindoor"></v-checkbox>   
+            <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.tvindoor"></v-checkbox>   
           </td>
           <td v-if="props.item.radio_interna !== undefined" >
-            <v-checkbox color="success" class="justify-center" v-model="props.item.radio_interna"></v-checkbox>   
+            <v-checkbox color="success" @click.stop class="justify-center" v-model="props.item.radio_interna"></v-checkbox>   
           </td>
            <td v-if="props.item.radio_externa !== undefined" >
-            <v-checkbox color="success" class="justify-center" v-model="props.item.radio_externa"></v-checkbox>   
+            <v-checkbox color="success" @click.stop class="justify-center" v-model="props.item.radio_externa"></v-checkbox>   
           </td>
           <td v-if="props.item.jornais !== undefined" >
-            <v-checkbox color="success" class="justify-end layout px-1" v-model="props.item.jornais" ></v-checkbox>   
+            <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.jornais" ></v-checkbox>   
           </td>
            <td v-if="props.item.pov !== undefined" >
-            <v-checkbox color="success" class="justify-end layout px-0" v-model="props.item.pov" ></v-checkbox>   
+            <v-checkbox color="success" @click.stop class="justify-end layout px-0" v-model="props.item.pov" ></v-checkbox>   
           </td>
           <td class="justify-center layout px-0">
             <v-tooltip bottom>
@@ -99,20 +111,7 @@
                 edit
               </v-icon>
             </template>
-            <span span class="subheading">Clique aqui para escrever uma observação sobre essa demanda</span>
-            </v-tooltip>
-            <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-icon
-                small
-                class="mr-2"
-                @click="saveTick(props.item)"
-                v-on="on"
-              >
-                save
-              </v-icon>
-            </template>
-            <span span class="subheading">Clique aqui para salvar alterações da demanda</span>
+            <span span class="subheading">Clique aqui para editar essa demanda</span>
             </v-tooltip>
           </td>
         </tr>

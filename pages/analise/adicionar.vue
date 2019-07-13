@@ -80,7 +80,7 @@
                 Enviar demandas
               </v-btn>
             </template>
-            <span span class="subheading">Enviar demandas. Não esqueça de salvar as alterações antes de enviar!</span>
+            <span span class="subheading">Enviar demandas</span>
             </v-tooltip>
           </div>
         </v-stepper-content>
