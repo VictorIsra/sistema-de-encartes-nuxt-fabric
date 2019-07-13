@@ -49,7 +49,7 @@
         <td class="text-xs-center">{{props.item.marluc}}</td>
         <td class="text-xs-center">{{props.item.qtdade}}</td>
         <td class="text-xs-center">{{props.item.datas}}</td>
-        <td class="text-xs-center" :class="{'green': props.item.status === 'aprovado', 'red':props.item.status === 'reprovado','yellow':props.item.status === 'em avaliação','light-blue lighten-4':props.item.status === 'enviado para tabloide' }">{{ props.item.status}}</td>
+        <td class="text-xs-center" :class="{'green': props.item.status === 'aprovada', 'red':props.item.status === 'reprovada','yellow':props.item.status === 'em avaliação','light-blue lighten-4':props.item.status === 'enviado para tabloide' }">{{ props.item.status}}</td>
 
 
         <td class="justify-center layout px-0">

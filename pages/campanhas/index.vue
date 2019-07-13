@@ -49,11 +49,11 @@
         <td class="text-xs-center">{{props.item.marluc}}</td>
         <td class="text-xs-center">{{props.item.qtdade}}</td>
         <td class="text-xs-center">{{props.item.datas}}</td>
-        <td class="text-xs-center" :class="{'green': props.item.status === 'aprovado', 'red':props.item.status === 'reprovado','yellow':props.item.status === 'em avaliação','light-blue lighten-4':props.item.status === 'enviado para tabloide' }">{{ props.item.status}}</td>
+        <td class="text-xs-center" :class="{'green': props.item.status === 'aprovada', 'red':props.item.status === 'reprovada','yellow':props.item.status === 'em avaliação','light-blue lighten-4':props.item.status === 'enviado para tabloide' }">{{ props.item.status}}</td>
 
 
         <td class="justify-center layout px-0">
-          <v-tooltip bottom v-if="props.item.status === 'reprovada '|| props.item.status === 'pendente'">
+          <v-tooltip bottom v-if="props.item.status === 'reprovada'|| props.item.status === 'pendente'">
             <template v-slot:activator="{ on }"><!-- vai ser visivel só pro user diretor -->
               <!-- comprador só poderá editar uma campanha se ela tiver pendente ou foi reprovada ( reciclada)-->
               <v-icon 

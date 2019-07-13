@@ -43,7 +43,7 @@
         <td class="text-xs-center">{{props.item.marluc}}</td>
         <td class="text-xs-center">{{props.item.qtdade}}</td>
         <td class="text-xs-center">{{props.item.datas}}</td>
-        <td class="text-xs-center" :class="{'green': props.item.status === 'aprovado', 'red':props.item.status === 'reprovado','yellow':props.item.status === 'em avaliação','light-blue lighten-4':props.item.status === 'enviado para tabloide' }">{{ props.item.status}}</td>
+        <td class="text-xs-center" :class="{'green': props.item.status === 'aprovada', 'red':props.item.status === 'reprovada','yellow':props.item.status === 'em avaliação','light-blue lighten-4':props.item.status === 'enviado para tabloide' }">{{ props.item.status}}</td>
 
         <td class="justify-center layout px-0">
           <v-tooltip bottom>
@@ -69,6 +69,7 @@
                 medium
                 v-on="on"
                 color="success"
+                @click="changeStatus('aprovada',props.item)"
               >
                 thumb_up_alt
               </v-icon>
@@ -84,6 +85,8 @@
                 medium
                 v-on="on"
                 color="error"
+                @click="changeStatus('reprovada',props.item)"
+
               >
                 thumb_down_alt
               </v-icon>
@@ -106,9 +109,9 @@
     data: () => ({
       dialog: false,
       headers: [
-        { text: 'Empresa', value: 'nome_empresa',info:'nome da empresa'},
-        { text: 'Nome da campanha', value: 'nome_campanha',info:'nome da campanha'},
-        { text: 'Tipo de campanha', value: 'tipo_campanha',info:'tipo de campanha: mensal ou semanal'},
+        { text: 'Empresa', value: 'nome_empresa',info:'nome da empresa' ,width: '20%'},
+        { text: 'Nome da campanha', value: 'nome_campanha',info:'nome da campanha',width: '20%'},
+        { text: 'Tipo de campanha', value: 'tipo_campanha',info:'tipo de campanha: mensal ou semanal',width: '20%'},
         { text: 'Margem de lucro', value: 'marluc',info:'margem de lúcro mínima'},
         { text: 'Quantidade de produtos', value: 'qtdade',info:'quantidade de produtos já cadastrados em uma dada campanha'},
         { text: 'Data da campanha', value: 'datas',info:'intervalo de datas onde a campanha irá acontecer'},
@@ -138,6 +141,13 @@
       this.initialize()
     },
     methods: {
+      async changeStatus(status,item){//muda os status da campanha
+        this.editedIndex = this.infos.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.editedItem = await this.updateStatus(this.editedItem.campanha_id,status)
+        Object.assign(this.infos[this.editedIndex], this.editedItem)
+
+      },
       initialize () {
         this.fetchInfos()
       },
@@ -159,3 +169,4 @@
     }
   }
 </script>
+
