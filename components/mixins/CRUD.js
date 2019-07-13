@@ -28,6 +28,7 @@ export default {
         async createCampanha(campanhaInfos){
             try{
                 const newCampanha = await api.campanha.createCampanha(campanhaInfos)
+                console.log("criou")
                 return newCampanha.data.campanha_id
             }catch(e){
                 console.log("error: ",e)
