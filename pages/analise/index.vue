@@ -45,13 +45,12 @@
         <td class="text-xs-center">{{props.item.datas}}</td>
         <td class="text-xs-center" :class="{'green': props.item.status === 'aprovado', 'red':props.item.status === 'reprovado','yellow':props.item.status === 'em avaliação','light-blue lighten-4':props.item.status === 'enviado para tabloide' }">{{ props.item.status}}</td>
 
-
         <td class="justify-center layout px-0">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }" v-if="1===1"><!-- vai ser visivel só pro user diretor -->
               <!-- comprador só poderá editar uma campanha se ela tiver pendente ou foi reprovada ( reciclada)-->
               <v-icon
-                small
+                medium
                 class="mr-2"
                 @click="editItem(props.item)"
                 v-on="on"
@@ -60,6 +59,36 @@
               </v-icon>
             </template>
             <span class="subheading">Clique aqui para editar uma campanha ou criar uma demanda</span>
+            </v-tooltip>  
+        </td>    
+        <td class="justify-end">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }"><!-- vai ser visivel só pro user diretor -->
+              <!-- comprador só poderá editar uma campanha se ela tiver pendente ou foi reprovada ( reciclada)-->
+              <v-icon
+                medium
+                v-on="on"
+                color="success"
+              >
+                thumb_up_alt
+              </v-icon>
+            </template>
+            <span class="subheading">Aprovar campanha</span>
+            </v-tooltip>  
+        </td>
+        <td>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }"><!-- vai ser visivel só pro user diretor -->
+              <!-- comprador só poderá editar uma campanha se ela tiver pendente ou foi reprovada ( reciclada)-->
+              <v-icon
+                medium
+                v-on="on"
+                color="error"
+              >
+                thumb_down_alt
+              </v-icon>
+            </template>
+            <span class="subheading">Reprovar campanha</span>
             </v-tooltip>  
         </td>
       </template>
@@ -84,7 +113,10 @@
         { text: 'Quantidade de produtos', value: 'qtdade',info:'quantidade de produtos já cadastrados em uma dada campanha'},
         { text: 'Data da campanha', value: 'datas',info:'intervalo de datas onde a campanha irá acontecer'},
         { text: 'Status da campanha', value: 'status',info:"situação da campanha: pendente,aprovada,reprovada.Uma campanha recém criada ou que não atingiu a quantidade mínima de produtos estará numa situação 'pendente'. Uma campanha que bateu a meta de produtos e foi enviada para criação do tabloide estará no estado 'criação de tabloide'. Uma campanha que teve um tabloide criado e foi submetida a aprovação do diretor terá a situação 'em aprovação'. Uma campanha que foi reprovada pelo diretor estará na situação 'reprovada', e a que for aprovada estará em situação 'aprovada'."},
-        { text: 'Ações', value: 'name', sortable: false ,info:'ações'}
+        { text: 'Editar', value: 'name', sortable: false ,info:'Editar campanha'},
+        { text: 'Aprovar', sortable: false ,info:'aprovar campanha'},
+        { text: 'Reprovar', sortable: false ,info:'reprovar campanha'}
+
       ],
       infos: [],//sao as informacoes relativas a uma campanha
       editedIndex: -1,

@@ -1,5 +1,15 @@
 <template>
   <div>
+    <v-card-title primary-title class="justify-center">
+          <div>
+            <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+            <v-btn v-on="on" to="/analise" color="primary">voltar para análise de campanhas</v-btn>
+            </template>
+            <span span class="subheading">Voltar para painel de análise das campanhas</span>
+            </v-tooltip>
+          </div> 
+    </v-card-title>
     <v-stepper  v-model="e1">
       <v-stepper-header>
 
@@ -62,21 +72,21 @@
             
           <div class="text-xs-right">
             <v-btn color="primary" @click="e1 = e1 - 1">Voltar para análise da concorrência</v-btn>
-            <v-btn 
-              color="success"
-            >
-              Salvar demandas
-            </v-btn>
-            <v-btn 
-              color="success"
-            >
-              Enviar para gráfica
-            </v-btn>
+            <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn v-on="on"
+                color="success"
+              >
+                Enviar demandas
+              </v-btn>
+            </template>
+            <span span class="subheading">Enviar demandas. Não esqueça de salvar as alterações antes de enviar!</span>
+            </v-tooltip>
           </div>
         </v-stepper-content>
-        
       </v-stepper-items>
     </v-stepper>
+
   </div>
 </template>
 
