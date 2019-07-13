@@ -74,7 +74,7 @@
             }  
           }
         },
-        dateRange:{
+        dateRange:{//sera enviado via componente pai
           
         },
         defaultDatesValues:{//pra qd abrir um dialog, as datas serem iguais as das contidas na linha de uma tabela, em vez de em branco
@@ -137,9 +137,17 @@
     methods: {
       setDatesRange(){//seta o intervalo de datas em que os produtos devem estar ( datas form definidas na etapa 1)
         //date range é outra prop que uso em auxiliar. na real, precisava só de uma, mas como há mt n mexo aqui e a prop checkDataRange é utilizada em varios lugares, optei por criar um prop extra só pra essa passagem. um dia limpo isso xD
-        this.checkDataRange.Pdata_i = this.dateRange.data_inicio
-        this.checkDataRange.Pdata_f = this.dateRange.data_termino
-        this.checkDataRange.checkRange = true
+        if(this.dateRange === undefined){
+          //caso de uma mini demanda, preferi setar um range indinito pois, como n organizei o codigo direito, há detalhes q n me lembro, entao esse jeito, msm n sendo sofitisticado, é oq tem o melhor resultado :/
+          this.checkDataRange.Pdata_i = '1/01/1500'//range absurdo, na pratica é equivalende a n validar o range, mas quero q ele valide só pq, nesse caso, no add ou edite de item, ele limpa as datas no add, recupera no edit..enfm, como n lembro do codigo e ficou meio enrolado, optei por fazer isso
+          this.checkDataRange.Pdata_f = '1/01/3001'
+          this.checkDataRange.checkRange = true
+        }
+        else{//caso padrao de qd a data precisa ser validata
+          this.checkDataRange.Pdata_i = this.dateRange.data_inicio
+          this.checkDataRange.Pdata_f = this.dateRange.data_termino
+          this.checkDataRange.checkRange = true
+        }
       },
       formatDate (date) {
         if (!date)

@@ -6,7 +6,7 @@
       <v-text-field
         v-model="search"
         append-icon="search"
-        label="Buscar demanda"
+        label="Buscar produto"
         single-line
         hide-details
       ></v-text-field>
@@ -51,6 +51,14 @@
                 </v-flex>
                 <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.obs" v-model="editedItem.obs" label="Observação"></v-text-field>
+                </v-flex>
+                <v-flex>
+                  <datas  
+                           :defaultDatesValues="defaultDatesValues" 
+                           @datechanged="getDate"
+                           @blur="editUserInputs(false)"
+                           @dateStatusInfo="getDateStatus"           
+                    />              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
                 </v-flex>
                 <v-flex xs12 sm6>
                   <v-text-field  ref="editedItem.preco_c"
@@ -333,6 +341,7 @@
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)
         this.editedItem = Object.assign({}, item)//copia os itens de uma linha para um novo objeto e o associa ao dialog de edicao ( dialog recebe o objeto copiado retornado)
+        this.sendDefaultDates(1)//pro componente filho mostrar as dates referentes a linha correspondente ao se abrir o dialog
         this.prepareImgInfo(this.editedItem)
         this.editUserInputs(false)
         this.dialog = true  
@@ -340,6 +349,7 @@
       addItem(flag){
         this.resetValues()        
         this.imgInfo.flag = flag//garante q nao vai ter uma img pre definida ao abrir o dialog
+        this.sendDefaultDates(flag)
       },
       resetValues(){
         //p dps de uma remocao, ao eu add um novo item, os campos n terem mais relacao com o que foi deletado
@@ -369,6 +379,7 @@
       close () {
         this.resetImgCached()
         this.resetFlags()
+        this.resetDateErrorStack()
         this.dialog = false
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
@@ -383,6 +394,7 @@
         this.cachedImgInfo.imgURL = ''
       },
       resetFlags(){//reseta as flags que sao props em componentes filhos, pra que o watch sempre observe mudanca
+        this.defaultDatesValues.flag = 0
         this.imgInfo.flag = 0
       },
       async save () {
@@ -391,16 +403,74 @@
             //console.log(" imgs ", this.editedItem.img)
             await this.fillImgInfo('',this.editedItem)
             Object.assign(this.itens[this.editedIndex], this.editedItem)
-            this.updateRow(this.editedItem,this.campanha_id)
+           // this.updateRow(this.editedItem,this.campanha_id)
         } else {//caso esteja adicionando algo em vez de editando
             await this.fillImgInfo(0,this.editedItem)
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
-            this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
+           // this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
             this.decrementProdutos(false)//qd passo flag flase, eu INCREMENTO 
         }
         //this.saveProdutos()
         this.close()      
+      },
+      getDate(data){//pega as datas formatadas no componente filho 'datas.vue'
+        //será chamado antes do método save, aqui, devo associar o valor do item editado com data
+        //que assim ele atualizará na tabela no save ;)
+        if(data.flag === 0)
+            this.editedItem.data_i = data.data 
+        else if(data.flag === 1)
+            this.editedItem.data_f = data.data
+        else
+          console.log("erro ocorreu na funcao getData(componente datas.vue)")    
+      },
+      sendDefaultDates(flag){//dps passarei 1 ou 0 como argumento, pra dif edicao de um item novo
+        //se flag == 1, irá fazer as dates no componente data.vue passarem o valor presente na linha atual da tabela 
+        //se flag == 0, é o valor default, das datas ficarem em branco qd abrir um form/dialogo
+        //flag == -1, msm comportamento do default, mas garante q será executado, pois as flags sao baseados em watch no componente filho
+        this.defaultDatesValues.flag = flag
+        this.defaultDatesValues.Rdata_i = this.editedItem.data_i
+        this.defaultDatesValues.Rdata_f = this.editedItem.data_f
+        this.defaultDatesValues.flag = 1//p garantir que, na hr de criar o item, apos o user interagir com uma data, volte a validacao default (msg vermelha feia e irritante xD)
+        this.validate()
+      },
+      getDateStatus(info){//se o componente filho viu que a data é invalida ( fora do range), adiciona um item a pilha de erros
+          //lembre, as datas só serao validadas se o tamanho da pilha for 1 ( só tiver o elemento base da pilha ('#'))
+            if(!this.dialog)//só quero checar e mexer na pilha se um form/dialog tiver aberto
+              return
+          const duplicates = this.datesErrors.find(obj => //checa se nao estou adicionando um el repetido a pilha
+            info.status === obj.status && info.caller === obj.caller )
+         
+          if(duplicates === undefined && info.status !== 0 ){//status 0 é pq n teve erro, só quero preencher se foi error ( 1)
+            if(info.caller !== -1)// se caller != -1 é pq sao datas difs e invalidas
+                this.datesErrors.unshift(info)
+            else{//se caller = -1 é pq sao datas iguais e invalidas
+              if(this.datesErrors.length < 3){//se é  3 é pq ambas as invalidas ja tao na pilha, entao nada devo fazer, caso contrário devo adicionar as 2 datas a pilha de erro
+                var i
+                this.resetDateErrorStack()//reseto a pilha e adiciono as 2 datas invalidas e iguais, pois:
+                for(i = 0; i < 2;i++){//se length é menor que 3 e caller é -1, é pq ambas sao iguais e invalidas, logo adiciono ambas a pilha
+                  this.datesErrors.unshift({
+                    status: 1,
+                    caller: i
+                  })
+                }  
+              }
+            }   
+          }   
+          if(info.status === 0 ){//se a data nao é mais invalida, removo da  pilha o item que indicava que aquela data era invalida
+            if(info.caller === -1)//datas sao iguais e validas, esvazio a pilha
+              this.resetDateErrorStack()
+            else{//datas sao dif, mas alguma delas agora é valida, logo removo só uma data da pilha de erros  
+              this.datesErrors.forEach((obj,i) => {
+                if(info.caller === obj.caller)
+                  this.datesErrors.splice(i,1)//se removi algo é pq corrigiu algo, mas só sera valido totalmente qd a o tamanho da pilha for 1 (só ter a base dela)
+              })
+            }  
+          }
+          this.validate()//tenta validar
+      },
+      resetDateErrorStack(){//validacao só fará sentido qd o dialog tiver aberto, qd fechado, limpar a pilha
+        this.datesErrors = ['#']
       },
       fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
@@ -421,14 +491,20 @@
         }
       },
       validate(){
+        let datesValid = this.datesErrors.length === 1 ? true : false//checa validade para das datas, que tem uma logica particular
+          if(datesValid && this.editedItem.data_i !== '' && this.editedItem.data_f !== '')
+            datesValid = true
+          else
+            datesValid = false
+      
         const values = Object.values(this.inputsValidation)//
         var valid = values.filter(v => { return v === false} )//checa validade de todos os inputs que nao sejam datas, pois estas tem validacao especial
 
-        if(valid.includes(false)){//se os campos ou alguma data for inválida, invalide o form/dialog
+        if(valid.includes(false) || !datesValid){//se os campos ou alguma data for inválida, invalide o form/dialog
           console.log(" FORM invalido")
           this.valid = false
         }  
-        else if(!valid.includes(false)){//caso contrário, valide
+        else if(!valid.includes(false) && datesValid){//caso contrário, valide
           console.log(" Form valido!")
           this.valid  = true
         }  
