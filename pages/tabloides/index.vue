@@ -122,9 +122,7 @@
       filtraStatus(infos){
         //só pega as campanhas que o status é diferente de 'pendente'
         this.infos = infos.filter(info => {return info.status !== 'pendente'})
-        console.log("INFOS FILTARA ",this.infos)
-        this.infos.forEach(infos => 
-        infos.datas = infos.data_i + ' até ' + infos.data_t )//sintetiza info das datas em um unico campo
+        this.infos.forEach(infos => infos.datas = infos.data_i + ' até ' + infos.data_t )//sintetiza info das datas em um unico campo
       },
     }
   }

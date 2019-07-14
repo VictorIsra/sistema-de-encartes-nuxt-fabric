@@ -26,7 +26,9 @@
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
         <template v-slot:activator="{ on }">
-          <v-btn v-if="canAdd !== undefined " color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >Adicionar demanda</v-btn> <!--v-on="on" -->
+          <v-btn v-if="canAdd !== undefined " color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >
+          <v-icon class="mr-2">add</v-icon>
+            Adicionar demanda</v-btn> <!--v-on="on" -->
         </template>
         
         <v-card > <!-- o form em si é esse v card! -->

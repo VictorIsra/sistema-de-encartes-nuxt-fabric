@@ -84,7 +84,7 @@
             </template>
             <span class="subheading">Clique aqui para ver esta demanda</span>
             </v-tooltip>  
-           <v-tooltip bottom>
+           <v-tooltip bottom v-if="userType === 'diretor'">
             <template v-slot:activator="{ on }">
               <v-icon
                 small
@@ -110,6 +110,7 @@
       crudMixin
     ],
     data: () => ({
+      userType: '',
       search: '',
       dialog: false,
       headers: [
@@ -158,6 +159,7 @@
 
     methods: {
       initialize () {
+        this.userType = this.$store.state.auth.userType
         this.fetchInfos()
       },
       editItem (item) {
@@ -187,10 +189,16 @@
       },
       filtraStatus(infos){
         //só pega as campanhas que o status é diferente de 'pendente'
-        console.log("INFOS ",infos)
+                console.log("INFOS FILTARA ",infos)
+
         this.infos = infos.filter(info => {return info.demanda === true || info.demanda_criada === true})
-        this.infos.forEach(infos => 
-        infos.datas = infos.data_i + ' até ' + infos.data_t )//sintetiza info das datas em um unico campo
+        this.infos.forEach(infos =>{ 
+          if(infos.tipo_campanha !== 'mini demanda'){
+            infos.tipo_campanha = 'demandas de campanha'
+            infos.datas = infos.data_i + ' até ' + infos.data_t
+          }
+          else  
+            infos.datas = "demanda criada em " + infos.data_i })//sintetiza info das datas em um unico campo
       },
       save () {
         if (this.editedIndex > -1) {
