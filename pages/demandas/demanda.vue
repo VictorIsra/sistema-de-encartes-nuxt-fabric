@@ -1,182 +1,191 @@
 <template>
   <div>
-    <v-toolbar flat color="grey lighten-4">
-        <v-toolbar-title>
-          <v-layout align-center class="mr-2 primary--text">
-            <v-img class="mr-2" width="50" src="../icones/demanda.png"></v-img>
-            Demandas
-          </v-layout>
-        </v-toolbar-title>
-         <v-divider
-          class="mx-2"
-          inset
-          vertical
-        ></v-divider>
-    </v-toolbar>
-       <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
-    <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{produtosQtdadeInfo.qtdade}}/{{produtosQtdadeInfo.meta}}</span>
-      <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        append-icon="search"
-        label="Buscar produto"
-        single-line
-        hide-details
-      ></v-text-field>
-      <v-spacer></v-spacer>
-      <v-dialog v-model="dialog" max-width="500px">
-        <template v-slot:activator="{ on }">
-          <v-btn v-if="canAdd !== undefined " color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >
-          <v-icon class="mr-2">add</v-icon>
-            Adicionar demanda</v-btn> <!--v-on="on" -->
+    <v-card>
+      <v-toolbar flat color="grey lighten-4">
+          <v-toolbar-title>
+            <v-layout align-center class="mr-2 primary--text">
+              <v-img class="mr-2" width="50" src="../icones/demanda.png"></v-img>
+              Demandas
+            </v-layout>
+          </v-toolbar-title>
+          <v-divider
+            class="mx-2"
+            inset
+            vertical
+          ></v-divider>
+      </v-toolbar>
+        <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
+      <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{produtosQtdadeInfo.qtdade}}/{{produtosQtdadeInfo.meta}}</span>
+        <v-spacer></v-spacer> 
+        <v-text-field
+          v-model="search"
+          append-icon="search"
+          label="Buscar produto"
+          single-line
+          hide-details
+        ></v-text-field>
+        <v-spacer></v-spacer>
+        <v-dialog v-model="dialog" max-width="500px">
+          
+          <template v-slot:activator="{ on }">
+            <v-btn v-if="canAdd !== undefined " color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >
+            <v-icon class="mr-2">add</v-icon>
+              Adicionar demanda</v-btn> <!--v-on="on" -->
+          </template>
+          
+          <v-card > <!-- o form em si é esse v card! -->
+            <v-card-title>
+              <span class="headline">{{ formTitle }}</span>
+            </v-card-title>
+              <!-- v-model.lazy="valid"  botava no v-vartext abaixo, mas por hr, ignoro isso-->
+            <v-card-text  > <!-- informacoes de adicionar e deletar (é um form)-->
+              <v-container grid-list-md >
+                <v-layout wrap>
+                  <v-flex xs12>
+                  <img-upload @blur="editUserInputs(false)" :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
+                  </v-flex>
+                  <v-flex xs12 sm6>
+                    <v-text-field ref="editedItem.nome"
+                                  @blur="editUserInputs(false)"
+                                  v-model.trim="editedItem.nome"
+                                  :rules="[nomeRule]" 
+                                  label="Produto">
+                    </v-text-field>
+                  </v-flex>
+                  <v-flex xs12 sm6>
+                    <v-text-field ref="editedItem.preco_v"
+                                  @blur="editUserInputs(false)"
+                                  v-model.trim="editedItem.preco_v" 
+                                  min="1" step="any"
+                                  :rules="[preco_vRule]" 
+                                  prefix="R$"
+                                  label="Preço de venda">
+                    </v-text-field>
+                  </v-flex>
+                  <v-flex>
+                    <datas
+                            :defaultDatesValues="defaultDatesValues" 
+                            @datechanged="getDate"
+                            @blur="editUserInputs(false)"
+                            @dateStatusInfo="getDateStatus"           
+                      />              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
+                  </v-flex>
+                  <v-flex xs12>
+                    <v-textarea   class=".body-2 primary--text"
+                      outline
+                      name="input-7-4"
+                      label="Observação:"
+                      v-model="editedItem.obs"
+                      hint="escreva uma observação sobre esta demanda."
+                    ></v-textarea>
+                </v-flex>
+                <v-flex>
+                  <v-checkbox label="tabloide"  color="success" class="layout" v-model="editedItem.tabloide"></v-checkbox>   
+                  <v-checkbox label="facebook"  color="success" class="layout" v-model="editedItem.facebook"></v-checkbox>   
+                  <v-checkbox label="radio interna"  color="success" class="layout" v-model="editedItem.radio_interna"></v-checkbox>   
+                  <v-checkbox label="jornais"  color="success" class="layout" v-model="editedItem.jornais"></v-checkbox>   
+                </v-flex>
+                <v-flex>
+                  <v-checkbox label="cartaz"  color="success" class="layout" v-model="editedItem.cartaz"></v-checkbox>   
+                  <v-checkbox label="tvindoor"  color="success" class="layout" v-model="editedItem.tvindoor"></v-checkbox>   
+                  <v-checkbox label="radio externa"  color="success" class="layout" v-model="editedItem.radio_externa"></v-checkbox>   
+                  <v-checkbox label="pov"  color="success" class="layout" v-model="editedItem.pov"></v-checkbox>   
+                </v-flex>
+                </v-layout>
+              </v-container>
+              <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn  color="primary" @click="close">Cancelar</v-btn>
+              <v-btn  color="primary" :disabled="!valid"  @click="save">Salvar</v-btn>
+            </v-card-actions>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
+      <!-- campos que faram binds inportantes, como o search -->
+      <v-data-table 
+        :headers="headers"
+        :items="itens"
+        class="elevation-1"
+        :search="search"
+        item-key="data_i"
+      > 
+        <template v-slot:items="props"> <!-- {{ props.item.img }}-->
+          <tr @click="props.expanded = !props.expanded">
+            <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
+            <td class="text-xs-center">{{ props.item.nome }}</td>
+            <td class="text-xs-center">{{ props.item.data_i }}</td>
+            <td class="text-xs-center">{{ props.item.data_f }}</td>
+            <td class="text-xs-center">{{ props.item.preco_v }}</td>
+            <td  v-if="props.item.tabloide !== undefined" >
+              <v-checkbox  color="success" @click.stop class="justify-end layout px-1" v-model="props.item.tabloide"></v-checkbox>   
+            </td>
+            <td v-if="props.item.cartaz !== undefined" >
+              <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.cartaz"></v-checkbox>   
+            </td>
+            <td v-if="props.item.facebook !== undefined" >
+              <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.facebook"></v-checkbox>   
+            </td>
+            <td v-if="props.item.tvindoor !== undefined" >
+              <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.tvindoor"></v-checkbox>   
+            </td>
+            <td v-if="props.item.radio_interna !== undefined" >
+              <v-checkbox color="success" @click.stop class="justify-center" v-model="props.item.radio_interna"></v-checkbox>   
+            </td>
+            <td v-if="props.item.radio_externa !== undefined" >
+              <v-checkbox color="success" @click.stop class="justify-center" v-model="props.item.radio_externa"></v-checkbox>   
+            </td>
+            <td v-if="props.item.jornais !== undefined" >
+              <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.jornais" ></v-checkbox>   
+            </td>
+            <td v-if="props.item.pov !== undefined" >
+              <v-checkbox color="success" @click.stop class="justify-end layout px-0" v-model="props.item.pov" ></v-checkbox>   
+            </td>
+            <td class="justify-center layout px-0">
+              <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-icon
+                  v-if="userType === 'diretor'"
+                  small
+                  class="mr-2"
+                  @click="editItem(props.item)"
+                  v-on="on"
+                >
+                  edit
+                </v-icon>
+                <v-icon
+                  v-else
+                  small
+                  class="mr-2"
+                  v-on="on"
+                >
+                  edit
+                </v-icon>
+              </template>
+              <span span class="subheading" v-if="userType === 'diretor'">Clique aqui para editar esta demanda</span>
+              <span span class="subheading" v-else>somente o diretor pode editar as informações de uma demanda</span>
+              </v-tooltip>
+            </td>
+          </tr>
         </template>
-        
-        <v-card > <!-- o form em si é esse v card! -->
-          <v-card-title>
-            <span class="headline">{{ formTitle }}</span>
-          </v-card-title>
-            <!-- v-model.lazy="valid"  botava no v-vartext abaixo, mas por hr, ignoro isso-->
-          <v-card-text  > <!-- informacoes de adicionar e deletar (é um form)-->
-            <v-container grid-list-md >
-              <v-layout wrap>
-                 <v-flex xs12>
-                 <img-upload @blur="editUserInputs(false)" :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
-                </v-flex>
-                 <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.nome"
-                                @blur="editUserInputs(false)"
-                                v-model.trim="editedItem.nome"
-                                :rules="[nomeRule]" 
-                                label="Produto">
-                  </v-text-field>
-                </v-flex>
-                <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.preco_v"
-                                @blur="editUserInputs(false)"
-                                v-model.trim="editedItem.preco_v" 
-                                min="1" step="any"
-                                :rules="[preco_vRule]" 
-                                prefix="R$"
-                                label="Preço de venda">
-                  </v-text-field>
-                </v-flex>
-                 <v-flex>
-                  <datas
-                           :defaultDatesValues="defaultDatesValues" 
-                           @datechanged="getDate"
-                           @blur="editUserInputs(false)"
-                           @dateStatusInfo="getDateStatus"           
-                    />              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
-                </v-flex>
-                <v-flex xs12>
-                  <v-textarea   class=".body-2 primary--text"
-                    outline
-                    name="input-7-4"
-                    label="Observação:"
-                    v-model="editedItem.obs"
-                    hint="escreva uma observação sobre esta demanda."
-                  ></v-textarea>
-              </v-flex>
-              <v-flex>
-                <v-checkbox label="tabloide"  color="success" class="layout" v-model="editedItem.tabloide"></v-checkbox>   
-                <v-checkbox label="facebook"  color="success" class="layout" v-model="editedItem.facebook"></v-checkbox>   
-                <v-checkbox label="radio interna"  color="success" class="layout" v-model="editedItem.radio_interna"></v-checkbox>   
-                <v-checkbox label="jornais"  color="success" class="layout" v-model="editedItem.jornais"></v-checkbox>   
-              </v-flex>
-              <v-flex>
-                <v-checkbox label="cartaz"  color="success" class="layout" v-model="editedItem.cartaz"></v-checkbox>   
-                <v-checkbox label="tvindoor"  color="success" class="layout" v-model="editedItem.tvindoor"></v-checkbox>   
-                <v-checkbox label="radio externa"  color="success" class="layout" v-model="editedItem.radio_externa"></v-checkbox>   
-                <v-checkbox label="pov"  color="success" class="layout" v-model="editedItem.pov"></v-checkbox>   
-              </v-flex>
-              </v-layout>
-            </v-container>
-            <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn  color="primary" @click="close">Cancelar</v-btn>
-            <v-btn  color="primary" :disabled="!valid"  @click="save">Salvar</v-btn>
-           </v-card-actions>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
-    </v-toolbar>
-    <!-- campos que faram binds inportantes, como o search -->
-    <v-data-table 
-      :headers="headers"
-      :items="itens"
-      class="elevation-1"
-      :search="search"
-      item-key="data_i"
-    > 
-      <template v-slot:items="props"> <!-- {{ props.item.img }}-->
-        <tr @click="props.expanded = !props.expanded">
-          <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
-          <td class="text-xs-center">{{ props.item.nome }}</td>
-          <td class="text-xs-center">{{ props.item.data_i }}</td>
-          <td class="text-xs-center">{{ props.item.data_f }}</td>
-          <td class="text-xs-center">{{ props.item.preco_v }}</td>
-          <td  v-if="props.item.tabloide !== undefined" >
-            <v-checkbox  color="success" @click.stop class="justify-end layout px-1" v-model="props.item.tabloide"></v-checkbox>   
-          </td>
-          <td v-if="props.item.cartaz !== undefined" >
-            <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.cartaz"></v-checkbox>   
-          </td>
-          <td v-if="props.item.facebook !== undefined" >
-            <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.facebook"></v-checkbox>   
-          </td>
-           <td v-if="props.item.tvindoor !== undefined" >
-            <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.tvindoor"></v-checkbox>   
-          </td>
-          <td v-if="props.item.radio_interna !== undefined" >
-            <v-checkbox color="success" @click.stop class="justify-center" v-model="props.item.radio_interna"></v-checkbox>   
-          </td>
-           <td v-if="props.item.radio_externa !== undefined" >
-            <v-checkbox color="success" @click.stop class="justify-center" v-model="props.item.radio_externa"></v-checkbox>   
-          </td>
-          <td v-if="props.item.jornais !== undefined" >
-            <v-checkbox color="success" @click.stop class="justify-end layout px-1" v-model="props.item.jornais" ></v-checkbox>   
-          </td>
-           <td v-if="props.item.pov !== undefined" >
-            <v-checkbox color="success" @click.stop class="justify-end layout px-0" v-model="props.item.pov" ></v-checkbox>   
-          </td>
-          <td class="justify-center layout px-0">
-            <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-icon
-                v-if="userType === 'diretor'"
-                small
-                class="mr-2"
-                @click="editItem(props.item)"
-                v-on="on"
-              >
-                edit
-              </v-icon>
-              <v-icon
-                v-else
-                small
-                class="mr-2"
-                v-on="on"
-              >
-                edit
-              </v-icon>
-            </template>
-            <span span class="subheading" v-if="userType === 'diretor'">Clique aqui para editar esta demanda</span>
-            <span span class="subheading" v-else>somente o diretor pode editar as informações de uma demanda</span>
-            </v-tooltip>
-          </td>
-        </tr>
+        <template v-slot:expand="props">
+          <v-card flat>
+            <v-card-text>texto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kraltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiilho mano, puta que pariu varios tiro de fuziiil</v-card-text>
+          </v-card>
+        </template>
+        <template v-slot:no-results>
+          <v-alert :value="true" color="error" icon="warning">
+            O produto "{{ search }}" não foi encontrado.
+          </v-alert>
+        </template>
+      </v-data-table>
+      <template v-if="!canAdd">
+        <v-btn color="primary" to="/demandas">Voltar para listagem de demandas</v-btn>
       </template>
-      <template v-slot:expand="props">
-        <v-card flat>
-          <v-card-text>texto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kraltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiilho mano, puta que pariu varios tiro de fuziiil</v-card-text>
-        </v-card>
+      <template v-else>
+        <v-btn color="primary" to="/analise">Voltar para análise</v-btn>
       </template>
-      <template v-slot:no-results>
-        <v-alert :value="true" color="error" icon="warning">
-          O produto "{{ search }}" não foi encontrado.
-        </v-alert>
-      </template>
-    </v-data-table>
+    </v-card>  
   </div>
 </template>
 

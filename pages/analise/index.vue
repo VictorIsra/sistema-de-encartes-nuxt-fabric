@@ -3,6 +3,7 @@
      <v-toolbar flat color="grey lighten-4">
         <v-toolbar-title>
           <v-layout align-center class="mr-2 primary--text">
+          <v-img class="mr-2" width="40" src="icones/gavel.png"></v-img>
             Análise das campanhas
           </v-layout>
         </v-toolbar-title>

@@ -1,11 +1,24 @@
 <template>
 <v-flex xs12> 
   <v-card >
-    <v-card-title primary-title class="justify-center">
-          <div>
-            <h3 class="title font-weight-regular primary--text">Novo usuário</h3>
-          </div> 
-      </v-card-title>
+   <v-toolbar flat color="grey lighten-4">
+        <v-toolbar-title>
+          <v-layout align-center class="mr-2 primary--text">
+            <v-img class="mr-2" width="50" src="../icones/usuarios.png"></v-img>
+            Usuários
+          </v-layout>
+        </v-toolbar-title>
+         <v-divider
+          class="mx-2"
+          inset
+          vertical
+        ></v-divider>
+        <v-card-title color="grey lighten-4" class="justify-center">
+            <div>
+                <h3 class="title font-weight-regular primary--text">Novo usuário</h3>  
+            </div>
+        </v-card-title>
+    </v-toolbar>
       <v-divider class="title font-weight-regular primary--text"></v-divider>
       <v-form v-model="valid" ref="form">
         <v-container>

@@ -1,11 +1,19 @@
 <template>
   <div>
     <v-card>
-      <v-card-title  primary-title class="justify-center">
-        <div>
-          <h3 class="title font-weight-regular primary--text">Informações dos usuários</h3>
-        </div>      
-      </v-card-title>
+     <v-toolbar flat color="grey lighten-4">
+        <v-toolbar-title>
+          <v-layout align-center class="mr-2 primary--text">
+            <v-img class="mr-2" width="50" src="../icones/usuarios.png"></v-img>
+            Usuários
+          </v-layout>
+        </v-toolbar-title>
+         <v-divider
+          class="mx-2"
+          inset
+          vertical
+        ></v-divider>
+    </v-toolbar>
       <v-divider class="title font-weight-regular primary--text"></v-divider>
       <v-toolbar flat color="white">
         <v-spacer></v-spacer>
@@ -16,9 +24,13 @@
           single-line
           hide-details
         ></v-text-field>
+        
         <v-spacer></v-spacer>
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
+              <v-layout align-center class="justify-end">
+                <h3 class="subheading font-weight-regular primary--text">Cadastrar novo usuário</h3>  
+              </v-layout>  
               <v-btn to="/users/adicionar" fab dark color="primary" v-on="on">
                 <v-icon dark>add</v-icon>
               </v-btn>
