@@ -143,6 +143,7 @@
         if(flag){//inputs passados no componete formulario.vue sao validos, logo habilite o botao de 'proximo' neste componente (adcionar.vue)
           this.form_validated = true
           this.form_inputs = inputs
+          console.log("ue: ",this.form_inputs, " inputs ",inputs)
         }  
         else{
           this.form_validated = false

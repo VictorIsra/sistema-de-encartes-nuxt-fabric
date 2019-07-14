@@ -100,7 +100,9 @@
         data_inicio: '',
         data_termino: '',
         qtdade: '',//meta minima de produtos a serme cadastrados pra poder criar a campanha
-        status:'pendente'
+        status:'pendente',
+        demanda: false
+
       },
       checkbox: false
     }),

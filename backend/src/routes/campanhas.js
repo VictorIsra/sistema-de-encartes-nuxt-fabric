@@ -81,7 +81,8 @@ router.get('/campanhas/generalInfo',async(req,res) => {
                     qtdade: campanha.produtos.length + "/" + campanha.qtdade,
                     campanha_id: campanha.campanha_id,
                     status: campanha.status,
-                    produtos: campanha.produtos
+                    produtos: campanha.produtos,
+                    demanda: campanha.demanda
             }))
         }
         else//se tiver um id, retornará um objeto, nao um array, aí n teria sentido usar foreach
@@ -96,6 +97,7 @@ router.get('/campanhas/generalInfo',async(req,res) => {
 })
 router.post('/campanhas/createCampanha', async (req,res) => {//cria campanha
     const new_campanha = new Campanha(req.body)
+    console.log("vena ca ", new_campanha)
     //cria uma campanha + preenche as info gerais ( qqr info q n seja relacionada com o produtos, q é feita numa etapa posterior xD)
     try{
         await new_campanha.save()

@@ -172,9 +172,10 @@
       formatInputMixin,
       crudMixin
     ],
-    props:['campanha_id','campanhaInfos'],
+    
+    props:['campanhaInfos'],
     data: () => ({
-      demanda_id: '',//ao cadastrar um produto, ele gerará esse id. uma mini demanda é uma campanha com certos valores default, por isso,salvo a demanda como uma campanha com valores default,
+      campanha_id: undefined,//ao cadastrar um produto, ele gerará esse id. uma mini demanda é uma campanha com certos valores default, por isso,salvo a demanda como uma campanha com valores default,
       produtosQtdadeInfo: {//referente a qtdade de protudos cadastrados e metas, nao é o this.campanhaInfo.produtos ou this.campanhaInfo.qtdade pois este só da o fetch uma unica vez, vou mudar seu valor a lvl de app, e a lvl de bd somente atraves da pag de campanhas ;)
         meta: '',
         qtdade: ''
@@ -292,7 +293,7 @@
         if(this.campanha_id !== undefined && this.campanha_id !== '-1')
           this.fetchProdutos()
         else
-          console.log("escolhaprodutos.vue : nenhum id valido por hora ")  
+          console.log("escolhaprodutos.vue : nenhum id valido por hora ",this.campanha_id)  
       },
       prepareImgInfo(currentItem){//envia pro componente filho image_uload.vue os valores ( sao props no comp filho) a serem colocados ao abrir a aba/form de edit
         //é dif do cached info, pois aqui, é alimentado com info do db, e o db n salva a url ( pq é um buffer) e tal
@@ -377,25 +378,26 @@
             await this.fillImgInfo(0,this.editedItem)
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
-            this.addRow(this.editedItem,this.demanda_id)//na real nem precisava passa isso como arg mas foda-se
+            this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
             this.decrementProdutos(false)//qd passo flag flase, eu INCREMENTO 
         }
         //this.saveProdutos()
         this.close()      
       },
       async createDemandaID(){//cria uma unica vez
-        if(this.demanda_id === ''){
+        if(this.campanha_id === undefined){
             const demanda = await this.createCampanha({
-                status: 'mini demanda',
+                status: 'pendente',
                 qtdade: '0',
                 data_termino: '?',
                 data_inicio: '?',
                 marluc: '--',
                 tipos_campanhas: 'mini demanda',
                 campanha: 'mini demanda',
-                empresa: '--'
+                empresa: '--',
+                demanda: true
             })
-            this.demanda_id = demanda//id da nova campanha gerada, lembre q essa campanha é uma mini demanda       
+            this.campanha_id = demanda//id da nova campanha gerada, lembre q essa campanha é uma mini demanda       
         }
       },
       getDate(data){//pega as datas formatadas no componente filho 'datas.vue'

@@ -100,7 +100,8 @@
         data_inicio: '',
         data_termino: '',
         qtdade: '',//meta minima de produtos a serme cadastrados pra poder criar a campanha
-        status:'pendente'
+        status:'pendente',
+        demanda: false
       },
       checkbox: false
     }),
@@ -128,7 +129,7 @@
           if(!this.valid )//controla se o botao de 'proximo' no componente pai ficará habilitado ou nao
             this.$emit('statusform', this.valid)
           else
-            this.$emit('statusform',this.valid,this.form_inputs)
+            this.$emit('statusform',this.valid,this.form_inputs)  
         }
       }
     }

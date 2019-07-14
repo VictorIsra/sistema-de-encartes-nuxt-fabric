@@ -42,6 +42,9 @@ const campanhaSchema = new mongoose.Schema({
         //unique: true,
         trim: true
     },
+    demanda: {//diferenciar demanda de campanhas
+        type: Boolean
+    },
     campanha_id: {
         //vai receber o valor de _id gerado automaticamente p eu poder ref no codigo
         type: String
