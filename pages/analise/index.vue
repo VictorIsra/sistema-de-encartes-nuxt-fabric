@@ -23,7 +23,7 @@
           </v-layout>  
           <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-btn fab dark color="primary" v-on="on" to="/analise/demanda">
+            <v-btn fab dark color="primary" v-on="on" @click="addDemanda">
               <v-icon dark>add</v-icon>
             </v-btn>
            </template>
@@ -165,6 +165,9 @@
       },
       initialize () {
         this.fetchInfos()
+      },
+      addDemanda(){//flag canAdd vai controlar em ql momento posso adicionar demandas ou só ve-las
+        this.$router.push({name: "demandas-demanda",params: {canAdd:true}}) 
       },
       editItem (item) {
         this.editedIndex = this.infos.indexOf(item)

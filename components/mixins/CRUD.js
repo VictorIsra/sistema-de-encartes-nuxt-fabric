@@ -27,11 +27,12 @@ export default {
         },
         async createCampanha(campanhaInfos){
             try{
+                console.log("entrooou create campanha")
                 const newCampanha = await api.campanha.createCampanha(campanhaInfos)
-                console.log("criou")
+                console.log("vai retornar: ", newCampanha)
                 return newCampanha.data.campanha_id
             }catch(e){
-                console.log("error: ",e)
+                console.log("errorrr: ",e)
             }
         },
         async fetchCampanhas(campanha_id){
@@ -47,12 +48,13 @@ export default {
                 console.log("erro: ",e)
             }
         },
-        async updateStatus(id,status){
+        async updateStatus(id,status,demanda_criada = false){
             try{
                 console.log("entrei id e status ", id , status)
                 const campanhaAtualizada = await api.campanha.updateStatus({
                     id,
-                    status
+                    status,
+                    demanda_criada
                 })
                 console.log("saida ",campanhaAtualizada)
                 return campanhaAtualizada.data

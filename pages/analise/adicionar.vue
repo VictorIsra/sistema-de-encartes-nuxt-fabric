@@ -76,11 +76,12 @@
             <template v-slot:activator="{ on }">
               <v-btn v-on="on"
                 color="success"
+                @click="enviarDemandas"
               >
                 Enviar demandas
               </v-btn>
             </template>
-            <span span class="subheading">Enviar demandas</span>
+            <span span class="subheading">Enviar essa campanha e suas demandas para o painel de demandas</span>
             </v-tooltip>
           </div>
         </v-stepper-content>
@@ -129,9 +130,9 @@
       }
     },
     methods: {
-      async changeCampanhaStatus(status){//irá mudar o status da campanha
-        await this.updateStatus(this.campanha_id,status)
-        this.$router.push('/campanhas') 
+      async enviarDemandas(){//evia demandas associada a campanha pro painel de demandas
+        await this.updateStatus(this.campanha_id,this.campanha_infos.status,true)
+        this.$router.push('/demandas') 
       },
       produtoQtdadeChange(data){
         this.produtosQtdadeInfo = data//vem da etapa 2 ( escolhaprodutps.vue) e alimentará etapa 3 ( concorrencia.vue)

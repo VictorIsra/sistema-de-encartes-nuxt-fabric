@@ -1,5 +1,18 @@
 <template>
   <div>
+    <v-toolbar flat color="grey lighten-4">
+        <v-toolbar-title>
+          <v-layout align-center class="mr-2 primary--text">
+            <v-img class="mr-2" width="50" src="../icones/demanda.png"></v-img>
+            Demandas
+          </v-layout>
+        </v-toolbar-title>
+         <v-divider
+          class="mx-2"
+          inset
+          vertical
+        ></v-divider>
+    </v-toolbar>
        <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
     <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{produtosQtdadeInfo.qtdade}}/{{produtosQtdadeInfo.meta}}</span>
       <v-spacer></v-spacer>
@@ -13,7 +26,7 @@
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >Adicionar demanda</v-btn> <!--v-on="on" -->
+          <v-btn v-if="canAdd !== undefined " color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >Adicionar demanda</v-btn> <!--v-on="on" -->
         </template>
         
         <v-card > <!-- o form em si é esse v card! -->
@@ -128,6 +141,7 @@
             <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-icon
+                v-if="userType === 'diretor'"
                 small
                 class="mr-2"
                 @click="editItem(props.item)"
@@ -135,8 +149,17 @@
               >
                 edit
               </v-icon>
+              <v-icon
+                v-else
+                small
+                class="mr-2"
+                v-on="on"
+              >
+                edit
+              </v-icon>
             </template>
-            <span span class="subheading">Clique aqui para editar uma demanda</span>
+            <span span class="subheading" v-if="userType === 'diretor'">Clique aqui para editar esta demanda</span>
+            <span span class="subheading" v-else>somente o diretor pode editar as informações de uma demanda</span>
             </v-tooltip>
           </td>
         </tr>
@@ -175,6 +198,8 @@
     
     props:['campanhaInfos'],
     data: () => ({
+      userType: '',//saber o tipo de user
+      canAdd: undefined,//flag q indicará se posso adicionar o botao ou n
       campanha_id: undefined,//ao cadastrar um produto, ele gerará esse id. uma mini demanda é uma campanha com certos valores default, por isso,salvo a demanda como uma campanha com valores default,
       produtosQtdadeInfo: {//referente a qtdade de protudos cadastrados e metas, nao é o this.campanhaInfo.produtos ou this.campanhaInfo.qtdade pois este só da o fetch uma unica vez, vou mudar seu valor a lvl de app, e a lvl de bd somente atraves da pag de campanhas ;)
         meta: '',
@@ -290,6 +315,9 @@
     },
     methods: {
       initialize () {
+        this.userType = this.$store.state.auth.userType
+        this.campanha_id = this.$route.params.campanha_id
+        this.canAdd = this.$route.params.canAdd
         if(this.campanha_id !== undefined && this.campanha_id !== '-1')
           this.fetchProdutos()
         else
@@ -370,8 +398,9 @@
             this.editUserInputs()
             //console.log(" imgs ", this.editedItem.img)
             await this.fillImgInfo('',this.editedItem)
-            Object.assign(this.itens[this.editedIndex], this.editedItem)
             this.updateRow(this.editedItem,this.campanha_id)
+            Object.assign(this.itens[this.editedIndex], this.editedItem)
+
         } else {//caso esteja adicionando algo em vez de editando
             //crio uma campanha/demanda associada a essa(s) demanda 
             await this.createDemandaID()//cria um novo id de campanha uma unica vez, dps q demanda_id !== '', ele n chamará mais essa f
@@ -379,25 +408,33 @@
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
             this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
-            this.decrementProdutos(false)//qd passo flag flase, eu INCREMENTO 
         }
         //this.saveProdutos()
         this.close()      
       },
+      createDate(){//pega a data atual, serve pra dizer qd uma demanda foi criada
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2, '0');
+      var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+      var yyyy = today.getFullYear();
+
+      return dd + '/' + mm + '/' + yyyy;
+      },
       async createDemandaID(){//cria uma unica vez
+      console.log("ENTRO COM ",this.campanha_id)
         if(this.campanha_id === undefined){
-            const demanda = await this.createCampanha({
+            this.campanha_id = await this.createCampanha({
                 status: 'pendente',
                 qtdade: '0',
-                data_termino: '?',
-                data_inicio: '?',
+                data_termino: this.createDate(),
+                data_inicio:  this.createDate(),
                 marluc: '--',
                 tipos_campanhas: 'mini demanda',
-                campanha: 'mini demanda',
+                campanha: 'mini demanda criada em ' + this.createDate() ,
                 empresa: '--',
                 demanda: true
             })
-            this.campanha_id = demanda//id da nova campanha gerada, lembre q essa campanha é uma mini demanda       
+          //id da nova campanha gerada, lembre q essa campanha é uma mini demanda       
         }
       },
       getDate(data){//pega as datas formatadas no componente filho 'datas.vue'
@@ -503,20 +540,6 @@
       },
       async fetchProdutos(){
         this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
-        this.setMetasProdutos()
-      },
-      setMetasProdutos(){//seta o valor inicial da meta de produtos, dps, isso será controlado a lvl de app, e nao de bd. de bd somente vindo da pag campanhas. Ao interagir aqui dentro, será só a lvl de app ( incrementando e decrementando baseado nas acoes)
-        this.produtosQtdadeInfo.meta = this.campanhaInfos.qtdade
-        if(this.campanhaInfos.produtos !== undefined)//erro estranho, q n muda nada, é tipo um warning mas q ocorre só qd ligo o server pela primeira vez no dia o.o
-          this.produtosQtdadeInfo.qtdade = this.campanhaInfos.produtos.length
-      },
-      decrementProdutos(flag){//muda a qtdade dep rodutos cadastradas indicada no painel a lvl de app
-        if(flag){
-          this.produtosQtdadeInfo.qtdade --
-          return true
-        }  
-        else
-          this.produtosQtdadeInfo.qtdade ++  
       },
       //RULES:
       nomeRule(v){

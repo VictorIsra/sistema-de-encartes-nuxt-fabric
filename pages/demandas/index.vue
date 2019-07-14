@@ -1,11 +1,29 @@
 <template>
   <v-flex xl12>
+    <v-toolbar flat color="grey lighten-4">
+        <v-toolbar-title>
+          <v-layout align-center class="mr-2 primary--text">
+            <v-img class="mr-2" width="50" src="icones/demanda.png"></v-img>
+            Demandas
+          </v-layout>
+        </v-toolbar-title>
+         <v-divider
+          class="mx-2"
+          inset
+          vertical
+        ></v-divider>
+        <v-card-title color="grey lighten-4" class="justify-center">
+            <div>
+                <h3 class="title font-weight-regular primary--text">Demandas cadastradas</h3>  
+            </div>
+        </v-card-title>
+    </v-toolbar>
     <v-toolbar flat color="white">
        <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
         append-icon="search"
-        label="Filtrar campanhas"
+        label="Filtrar demandas"
         single-line
         hide-details
       ></v-text-field>
@@ -48,12 +66,12 @@
         <td class="text-xs-center">{{props.item.tipo_campanha}}</td>
         <td class="text-xs-center">{{props.item.marluc}}</td>
         <td class="text-xs-center">{{props.item.qtdade}}</td>
-        <td class="text-xs-center">{{props.item.datas}}</td>
+        <td class="text-xs-center">{{props.item.datas}}</td> 
         <td class="text-xs-center" :class="{'green': props.item.status === 'aprovada', 'red':props.item.status === 'reprovada','yellow':props.item.status === 'em avaliação','light-blue lighten-4':props.item.status === 'enviado para tabloide' }">{{ props.item.status}}</td>
 
 
         <td class="justify-center layout px-0">
-          <v-tooltip bottom v-if="props.item.status === 'reprovada '|| props.item.status === 'pendente'">
+          <v-tooltip bottom v-if="props.item.status === 'reprovada'|| props.item.status === 'pendente'">
             <template v-slot:activator="{ on }"><!-- vai ser visivel só pro user diretor -->
               <!-- comprador só poderá editar uma campanha se ela tiver pendente ou foi reprovada ( reciclada)-->
               <v-icon 
@@ -61,10 +79,10 @@
                 @click="editItem(props.item)"
                 v-on="on"
               >
-                edit
+                visibility
               </v-icon>
             </template>
-            <span class="subheading">Clique aqui para continuar a adicionar produtos a esta campanha</span>
+            <span class="subheading">Clique aqui para ver esta demanda</span>
             </v-tooltip>  
            <v-tooltip bottom>
             <template v-slot:activator="{ on }">
@@ -76,7 +94,7 @@
                 delete
               </v-icon>
             </template>
-            <span class="subheading">Clique aqui para excluir esta campanha</span>
+            <span class="subheading">Clique aqui para excluir esta demanda</span>
           </v-tooltip> 
         </td>
       </template>
@@ -96,12 +114,12 @@
       dialog: false,
       headers: [
         { text: 'Empresa', value: 'nome_empresa',info:'nome da empresa'},
-        { text: 'Nome da campanha', value: 'nome_campanha',info:'nome da campanha'},
-        { text: 'Tipo de campanha', value: 'tipo_campanha',info:'tipo de campanha: mensal ou semanal'},
+        { text: 'Nome da demanda', value: 'nome_campanha',info:'nome da campanha'},
+        { text: 'Tipo de demanda', value: 'tipo_campanha',info:'tipo de campanha: mensal ou semanal'},
         { text: 'Margem de lucro', value: 'marluc',info:'margem de lúcro mínima'},
         { text: 'Quantidade de produtos', value: 'qtdade',info:'quantidade de produtos já cadastrados em uma dada campanha'},
-        { text: 'Data da campanha', value: 'datas',info:'intervalo de datas onde a campanha irá acontecer'},
-        { text: 'Status da campanha', value: 'status',info:"situação da campanha: pendente,aprovada,reprovada.Uma campanha recém criada ou que não atingiu a quantidade mínima de produtos estará numa situação 'pendente'. Uma campanha que bateu a meta de produtos e foi enviada para criação do tabloide estará no estado 'criação de tabloide'. Uma campanha que teve um tabloide criado e foi submetida a aprovação do diretor terá a situação 'em aprovação'. Uma campanha que foi reprovada pelo diretor estará na situação 'reprovada', e a que for aprovada estará em situação 'aprovada'."},
+        { text: 'Data de criação da demanda', value: 'datas',info:'quando a demanda foi criada'},
+        { text: 'Status da demanda', value: 'status',info:"situação da campanha: pendente,aprovada,reprovada.Uma campanha recém criada ou que não atingiu a quantidade mínima de produtos estará numa situação 'pendente'. Uma campanha que bateu a meta de produtos e foi enviada para criação do tabloide estará no estado 'criação de tabloide'. Uma campanha que teve um tabloide criado e foi submetida a aprovação do diretor terá a situação 'em aprovação'. Uma campanha que foi reprovada pelo diretor estará na situação 'reprovada', e a que for aprovada estará em situação 'aprovada'."},
         { text: 'Ações', value: 'name', sortable: false ,info:'ações'}
       ],
       infos: [],//sao as informacoes relativas a uma campanha
@@ -145,9 +163,8 @@
       editItem (item) {
         this.editedIndex = this.infos.indexOf(item)
         this.editedItem = Object.assign({}, item)
-        //console.log("id: ", this.editedItem.campanha_id)
         //a principio redirecionará pra continuar a edicao/add de produtos, mas o diretor poderá alterar outras infos futuramente
-        this.$router.push({name: "campanhas-adicionar",params: {campanha_id:this.editedItem.campanha_id,edited:true}})
+        this.$router.push({name: "demandas-demanda",params: {campanha_id:this.editedItem.campanha_id,edited:true}})
         //só quero passar o id correspondente, a principio, n quero abrir o dialog, mas quem sabe o diretor o fará no futuro..entao deixo comentado
        // this.dialog = true
       },
@@ -170,7 +187,8 @@
       },
       filtraStatus(infos){
         //só pega as campanhas que o status é diferente de 'pendente'
-        this.infos = infos.filter(info => {return info.demanda === true})
+        console.log("INFOS ",infos)
+        this.infos = infos.filter(info => {return info.demanda === true || info.demanda_criada === true})
         this.infos.forEach(infos => 
         infos.datas = infos.data_i + ' até ' + infos.data_t )//sintetiza info das datas em um unico campo
       },

@@ -117,6 +117,7 @@
         this.produtosQtdadeInfo = data//vem da etapa 2 ( escolhaprodutps.vue) e alimentará etapa 3 ( concorrencia.vue)
       },
       async chooseStep(){
+        
       //baseado no id da campanha (undefined se n existir ou -1 se for criar uma campanha nova, else caso ja exista),irei setar o valor da variavel e1
       this.campanha_id = this.$route.params.campanha_id
         if(this.campanha_id === undefined || this.campanha_id === '-1'){

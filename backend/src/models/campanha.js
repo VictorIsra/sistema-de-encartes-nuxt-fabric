@@ -45,6 +45,9 @@ const campanhaSchema = new mongoose.Schema({
     demanda: {//diferenciar demanda de campanhas
         type: Boolean
     },
+    demanda_criada:{//serve pra parte das demandas referentes a uma campanha, apenas. qd o diretor salvar a demanda ref a campanha, isso será true e aparecerá essa campanha no painel de demandas
+        type: Boolean
+    },
     campanha_id: {
         //vai receber o valor de _id gerado automaticamente p eu poder ref no codigo
         type: String

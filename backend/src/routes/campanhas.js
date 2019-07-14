@@ -82,7 +82,8 @@ router.get('/campanhas/generalInfo',async(req,res) => {
                     campanha_id: campanha.campanha_id,
                     status: campanha.status,
                     produtos: campanha.produtos,
-                    demanda: campanha.demanda
+                    demanda: campanha.demanda,
+                    demanda_criada: campanha.demanda_criada
             }))
         }
         else//se tiver um id, retornará um objeto, nao um array, aí n teria sentido usar foreach
@@ -97,19 +98,21 @@ router.get('/campanhas/generalInfo',async(req,res) => {
 })
 router.post('/campanhas/createCampanha', async (req,res) => {//cria campanha
     const new_campanha = new Campanha(req.body)
-    console.log("vena ca ", new_campanha)
     //cria uma campanha + preenche as info gerais ( qqr info q n seja relacionada com o produtos, q é feita numa etapa posterior xD)
     try{
+
         await new_campanha.save()
         //gambiarra pra salvar o id gerado numa propriedade a parte e manipular no codigo xD
         new_campanha.campanha_id = new_campanha._id
         await new_campanha.save()
+
         res.status(202).send({
            campanha_id: new_campanha._id,
            atributoid: new_campanha.campanha_id//retorna o _id pra eu poder ref/identificar uma campanha no codigo
         })
        
     }catch(e){
+        console.log(" zik foi ", e)
         res.status(500).send("n rolou de criar campanha" + e )//n sei pq, se passo só send(e), ele n printa nada
     }
 })
@@ -143,11 +146,14 @@ router.put('/campanhas/removeRow',async(req,res)=>{
 })
 router.patch('/campanhas/changeStatus', async (req,res)=>{
     const campanha_id = req.body.id
+    let demanda_criada = req.body.demanda_criada//serve só pra uma campanha cujo diretor criou demandas associada a ela
     const campanha_status = req.body.status//status da campanha: pendente, enviado para tabloide, em avaliacao, ap, reprovado
+   
     console.log("entrou: ",req.body)
     try{
        const campanha = await Campanha.findById(campanha_id)
        campanha.status = campanha_status
+       campanha.demanda_criada = demanda_criada
 
        try{
         await campanha.save()
@@ -198,7 +204,7 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
 router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de produtos a campanha
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     let produtos = req.body.produtos//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
-    console.log("porra ", req.body)
+    console.log("porra ", req.body, " id ", campanha_id)
     //como o addrow é sempre feito em produtos, n em concorrencia, posso com seguranca setar o proce de concorrencia pra r$ 0,00 aqui. faco a lvl de bd em vez de app para garantir a existencia dos getters e setters ;)
     produtos.preco_v_c1 = "R$ 0,00"
     produtos.preco_v_c2 = "R$ 0,00"
