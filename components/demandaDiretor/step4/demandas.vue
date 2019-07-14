@@ -116,11 +116,6 @@
           </td>
         </tr>
       </template>
-      <template v-slot:expand="props">
-        <v-card flat>
-          <v-card-text>texto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kraltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiilho mano, puta que pariu varios tiro de fuziiil</v-card-text>
-        </v-card>
-      </template>
       <template v-slot:no-results>
         <v-alert :value="true" color="error" icon="warning">
           O produto "{{ search }}" não foi encontrado.

@@ -15,12 +15,12 @@
           ></v-divider>
       </v-toolbar>
         <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
-      <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{produtosQtdadeInfo.qtdade}}/{{produtosQtdadeInfo.meta}}</span>
+        <span class="title font-weight-regular primary--text">Clique em uma linha para ver as observações relativas a demanda</span>
         <v-spacer></v-spacer> 
         <v-text-field
           v-model="search"
           append-icon="search"
-          label="Buscar produto"
+          label="Buscar demanda"
           single-line
           hide-details
         ></v-text-field>
@@ -170,7 +170,7 @@
         </template>
         <template v-slot:expand="props">
           <v-card flat>
-            <v-card-text>texto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kraltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiiltexto grande p kralho mano, puta que pariu varios tiro de fuziiilho mano, puta que pariu varios tiro de fuziiil</v-card-text>
+            <v-card-text>{{props.item.obs}}</v-card-text>
           </v-card>
         </template>
         <template v-slot:no-results>

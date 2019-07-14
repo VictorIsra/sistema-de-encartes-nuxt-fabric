@@ -153,7 +153,8 @@ router.patch('/campanhas/changeStatus', async (req,res)=>{
     try{
        const campanha = await Campanha.findById(campanha_id)
        campanha.status = campanha_status
-       campanha.demanda_criada = demanda_criada
+       if(campanha.demanda_criada !== true)//pois só quero alterar isso uma unica vez. dado q é true, será semp true e a vida segue
+        campanha.demanda_criada = demanda_criada
 
        try{
         await campanha.save()
