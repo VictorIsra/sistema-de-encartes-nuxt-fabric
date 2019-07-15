@@ -121,9 +121,9 @@ export default {
         salvarPdf(){
             const context = this.canvas.getContext('2d')
             // only jpeg is supported by jsPDF
-            var imgData = this.canvas.toDataURL("image/jpeg", 1.0);
-            var pdf = new jsPDF();
-            pdf.addImage(imgData, 'JPEG', 0, 0);
+            var imgData = this.canvas.toDataURL("image/jpeg", 1.0)
+            var pdf = new jsPDF("1","mm","a4")
+            pdf.addImage(imgData, 'JPEG', 10, 10, 180, 150)
             pdf.save("download.pdf");
         },
         //METODOS RELATIVOS AO CANVAS/FABRIC
