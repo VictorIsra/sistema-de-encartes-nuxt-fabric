@@ -1,5 +1,5 @@
 <template>
-        <v-card>
+        <v-card class="teste">
            <!-- <v-carousel  :cycle="false" v-if="render">
                 <v-carousel-item 
                 v-for="(item,i) in imgs" :key="i"
@@ -46,14 +46,18 @@
             </v-toolbar>
             <v-toolbar>
                     <v-list class="scroll-y">
-                        <v-list-tile v-for="(img,i) in imgs" :key="i" class="teste" >
-                            <v-list-tile-content>
-                                <img class="image" @click="addImg(img,i)" :src="getImgURL(img,i)" width="100px" height="100px" v-bind:alt="img.src">
+                        <v-list-tile v-for="(img,i) in imgs" :key="i" class="listaHorizontal" >
+                            <v-list-tile-content><!-- context menu é o botao direto, fundamental p n da merda-->
+                                <img class="image" @contextmenu.prevent @click="addImg(img,i)" :src="getImgURL(img,i)" width="100px" height="100px" v-bind:alt="img.src">
                             </v-list-tile-content>
                         </v-list-tile>
                     </v-list>
             </v-toolbar>
-            <canvas id="c" class="canvas" width="1000px" height="1000px"></canvas>
+            <v-divider
+                class="mx-2"
+                inset
+                ></v-divider>
+                <canvas id="c" class="canvas-wrapper"></canvas>
            <!-- <ul>
                 <li v-for="(img,i) in imgs" :key="i">
                     <img class="image" @click="addImg(img,i)" :src="getImgURL(img,i)" width="50px" height="50px" v-bind:alt="img.src">
@@ -65,8 +69,9 @@
 <script>
 import crudMixin from '../../components/mixins/CRUD.js'
 import jsPDF from "jspdf"
+import html2canvas from "html2canvas"
 import {fabric}  from "fabric"
-
+window.html2canvas = html2canvas
 export default {
     mixins: [
       crudMixin
@@ -83,6 +88,8 @@ export default {
     mounted() {
         this.checkRedirect()
         this.canvas = new fabric.Canvas('c');
+        this.canvas.setHeight(1000);
+        this.canvas.setWidth(1000)
     },
     methods: {
         submeterAvaliacao(){//envia tabloide/campanha para o diretor
@@ -108,23 +115,37 @@ export default {
                 if(p.img !== undefined && p.img !== '')
                     this.imgs.push( p.img)
             })
-            //por alguma razao mt louca, se n espero um pouco, o caroulse n consegue carrega tds as imgs e da zika..mas usei await..enfim...se fuder
-            //setTimeout(()=>{console.log("esperei")
-            //this.render = true}, 500);
-            
         },
         getImgURL(img){
         //se uma img nao tiver sido escolhida, retorne enm branco
         const path = img.name === undefined ? "" : "../../../uploads/fotos/" + img.name
         return path
         },
-        salvarPdf(){
-            const context = this.canvas.getContext('2d')
-            // only jpeg is supported by jsPDF
-            var imgData = this.canvas.toDataURL("image/jpeg", 1.0)
-            var pdf = new jsPDF("1","mm","a4")
-            pdf.addImage(imgData, 'JPEG', 10, 10, 180, 150)
-            pdf.save("download.pdf");
+        async salvarPdf(){
+            this.canvas.discardActiveObject()//deselect, p n salvar com a markinha das opcoes
+            this.canvas.renderAll()
+         
+            // melhor trade off:
+            let canvas = await html2canvas(document.getElementById('c'))
+                .then((canvas) => {
+                    const imgData = canvas.toDataURL('image/jpeg',1.0);
+                    const pdf = new jsPDF("p","mm","tabloid")//new jsPDF({
+                    // orientation: 'landscape',
+                    // });
+                    const imgProps= pdf.getImageProperties(imgData);
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+                    pdf.save('downloadx.pdf');
+                });
+            //ou original:
+           // var imgData = this.canvas.toDataURL("image/jpeg", 1.0)
+            // var imgData = canvas.toDataURL("image/jpeg", 1.0, this.canvas.width,this.canvas.height)
+            // var pdf = new jsPDF("p","mm","tabloid")//("1","mm","tabloid")
+            // //pdf.addImage(imgData, 'JPEG',7,0)//, 15, 40, 180, 160)//pdf.addImage(imgData, 'JPEG', 10, 10, 180, 150);  // 180x150 mm @ (10,10)mm
+            // pdf.addImage(imgData, 'JPEG',0,0)//,7,0)//, 15, 40, 180, 160)//pdf.addImage(imgData, 'JPEG', 10, 10, 180, 150);  // 180x150 mm @ (10,10)mm
+            // pdf.save("download.pdf");
+            
         },
         //METODOS RELATIVOS AO CANVAS/FABRIC
         addImg(img,i){
@@ -133,15 +154,14 @@ export default {
             this.addImgToCanvas(relaPath,img)//parece estranho eu n passar simplesmente img, mas o fabric é eskisito...entao vai assim
         },
          addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
-            //img.name é o path da img rs
             fabric.Image.fromURL(path,(img)=>{
-                img.scaleToWidth(250)
+                img.scaleToWidth(250)//dif de crop, aqui literalmente "redimensiona"
                 img.scaleToHeight(250)
-                let temp = img.set({ left: 0, top: 0 })//,width:500,height:500})
+                let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
                 this.canvas.add(temp)
-            },{canvas: this.canvas})//n funciona passar esse arg...doc lixoooo
+            })//{canvas: this.canvas})//n funciona passar esse arg...doc lixoooo
         },
-        removeSelected(){//remove do canvas o objeto que está selecionado
+        removeSelected(){//remove do canvas o(s) objeto(s) que está selecionado
             if(this.canvas.getActiveObject() !== undefined){
                 let doomedObj = this.canvas.getActiveObject();
 
@@ -164,27 +184,35 @@ export default {
         }
     }
 }
-
-// .image {
-//   display: block;
-//   width: 10%;
-//   height: auto;
-// }
+//.canvas {
+  //  border:1px solid black;	
+//}
 </script>
 
 <style scoped>
-.canvas {
-    border:1px solid black;	
-}
-.teste{
+
+.listaHorizontal{
     float: left;
     padding: 2px
 }
-
-li img:hover {
-  background-color: #111111;
+.teste{
+    background-color: darkgrey;
 }
-
+.canvas-wrapper {
+    width: 900px;
+    min-height: 600px;
+    background-color: white;
+ }
+ .xd{
+     background-color: white;
+ }
+ #c{
+     position: absolute;
+     top:22px;
+     left:0px;
+     height: 100%;
+     width: 99%;
+ }
 </style>
 
 
