@@ -50,13 +50,11 @@ export default {
         },
         async loadTabloide(id){
             try{    
-                console.log("id: ",id)
                 const tabloide = api.campanha.loadTabloide({
                     params:{
                         campanha_id: id
                     }
                 })
-                console.log("tabloide ",tabloide, " tabloide d.data ",tabloide._v)
                 return tabloide
             }
             catch(e){

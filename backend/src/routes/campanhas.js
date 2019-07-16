@@ -159,7 +159,6 @@ router.get('/campanhas/loadTabloide',async(req,res)=>{
 router.post('/campanhas/saveTabloide',async(req,res)=> {
     const tabloide = req.body.tabloide
     const campanha_id = req.body.id
-    console.log("TIPO EE ",typeof(tabloide))
     try{
         const campanha = await Campanha.findById(campanha_id)
         campanha.tabloide = tabloide

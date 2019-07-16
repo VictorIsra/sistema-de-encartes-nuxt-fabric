@@ -233,6 +233,8 @@ export default {
           if(this.user === 'comprador'){
             if( it.title === 'Início')
               it.showMe = true
+            else if( it.title === 'Produtos')
+              it.showMe = true
             else if( it.title === 'Demandas')
               it.showMe = true
             else if(it.title === 'Campanhas')
@@ -251,6 +253,8 @@ export default {
               it.showMe = true
             else if(it.title == 'Analisar campanhas')    
               it.showMe = true
+            else if(it.title === 'Tablóides')    
+              it.showMe = true    
             else
               it.showMe = false 
           }

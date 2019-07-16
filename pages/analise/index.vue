@@ -75,7 +75,23 @@
             </template>
             <span class="subheading">Clique aqui para editar uma campanha ou criar uma demanda</span>
             </v-tooltip>  
-        </td>    
+        </td> 
+         <td >
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }"><!-- vai ser visivel só pro user diretor -->
+              <!-- comprador só poderá editar uma campanha se ela tiver pendente ou foi reprovada ( reciclada)-->
+              <v-icon
+                medium
+                v-on="on"
+                color="primary"
+                @click="verTabloide(props.item)"
+              >
+                visibility
+              </v-icon>
+            </template>
+            <span class="subheading">Ver tablóide da campanha</span>
+            </v-tooltip>  
+        </td>   
         <td class="justify-end">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }"><!-- vai ser visivel só pro user diretor -->
@@ -132,6 +148,7 @@
         { text: 'Data da campanha', value: 'datas',info:'intervalo de datas onde a campanha irá acontecer'},
         { text: 'Status da campanha', value: 'status',info:"situação da campanha: pendente,aprovada,reprovada.Uma campanha recém criada ou que não atingiu a quantidade mínima de produtos estará numa situação 'pendente'. Uma campanha que bateu a meta de produtos e foi enviada para criação do tabloide estará no estado 'criação de tabloide'. Uma campanha que teve um tabloide criado e foi submetida a aprovação do diretor terá a situação 'em aprovação'. Uma campanha que foi reprovada pelo diretor estará na situação 'reprovada', e a que for aprovada estará em situação 'aprovada'."},
         { text: 'Editar', value: 'name', sortable: false ,info:'Editar campanha'},
+        { text: 'Tabloide', value: 'name', sortable: false ,info:'Ver tablóide desta campanha'},
         { text: 'Aprovar', sortable: false ,info:'aprovar campanha'},
         { text: 'Reprovar', sortable: false ,info:'reprovar campanha'}
 
@@ -174,6 +191,11 @@
         this.editedIndex = this.infos.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.$router.push({name: "analise-adicionar",params: {campanha_id:this.editedItem.campanha_id}}) 
+      },
+      verTabloide(item){
+        this.editedIndex = this.infos.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.$router.push({name: "tabloides-montar",params: {campanha_id:this.editedItem.campanha_id}}) 
       },
       async fetchInfos(){//pega as info relativas as campanhas
         const preInfos = await this.fetchCampanhas()

@@ -7,52 +7,63 @@
                  @click="addImg(item,i)"
                 ></v-carousel-item>
             </v-carousel> -->
-            <v-toolbar flat color="grey lighten-4">
-                <v-toolbar-title>
-                    <v-layout align-center class="mr-2 primary--text">
-                        <v-btn round @click="voltar" color="primary">Voltar</v-btn>
-                    </v-layout>
-                </v-toolbar-title>
-                <v-divider
-                class="mx-2"
-                inset
-                vertical
-                ></v-divider>
-                <v-card-title color="grey lighten-4" class="justify-center">
-                    <div>
-                        <v-btn round color="warning" @click="removeSelected">remover imagem selecionada</v-btn>
-                    </div>
-                </v-card-title>
-                 <v-divider
-                class="mx-2"
-                inset
-                vertical
-                ></v-divider>
-                <v-card-title color="grey lighten-4" class="justify-center">
-                    <div>
-                        <v-btn round @click="submeterAvaliacao" color="success">Submeter para avaliação</v-btn>
-                    </div>
-                </v-card-title>  
-                <v-toolbar-title>
-                    <v-layout align-center class="mr-2 primary--text">
-                        <v-btn round @click="salvarPdf" color="primary">Salvar em pdf</v-btn>
-                    </v-layout>
-                </v-toolbar-title>
-                <v-toolbar-title>
-                    <v-layout align-center class="mr-2 primary--text">
-                        <v-btn round @click="salvarTabloide" color="primary">Salvar tabloide</v-btn>
-                    </v-layout>
-                </v-toolbar-title>
-            </v-toolbar>
-            <v-toolbar>
-                    <v-list class="scroll-y">
-                        <v-list-tile v-for="(img,i) in imgs" :key="i" class="listaHorizontal" >
-                            <v-list-tile-content><!-- context menu é o botao direto, fundamental p n da merda-->
-                                <img class="image" @contextmenu.prevent @click="addImg(img,i)" :src="getImgURL(img,i)" width="100px" height="100px" v-bind:alt="img.src">
-                            </v-list-tile-content>
-                        </v-list-tile>
-                    </v-list>
-            </v-toolbar>
+            <template v-if="userType === 'tabloide'">
+                <v-toolbar flat color="grey lighten-4">
+                    <v-toolbar-title>
+                        <v-layout align-center class="mr-2 primary--text">
+                            <v-btn round @click="voltar" color="primary">Voltar</v-btn>
+                        </v-layout>
+                    </v-toolbar-title>
+                    <v-divider
+                    class="mx-2"
+                    inset
+                    vertical
+                    ></v-divider>
+                    <v-card-title color="grey lighten-4" class="justify-center">
+                        <div>
+                            <v-btn round color="warning" @click="removeSelected">remover imagem selecionada</v-btn>
+                        </div>
+                    </v-card-title>
+                    <v-divider
+                    class="mx-2"
+                    inset
+                    vertical
+                    ></v-divider>
+                    <v-card-title color="grey lighten-4" class="justify-center">
+                        <div>
+                            <v-btn round @click="submeterAvaliacao" color="success">Submeter para avaliação</v-btn>
+                        </div>
+                    </v-card-title>  
+                    <v-toolbar-title>
+                        <v-layout align-center class="mr-2 primary--text">
+                            <v-btn round @click="salvarPdf" color="primary">Salvar em pdf</v-btn>
+                        </v-layout>
+                    </v-toolbar-title>
+                    <v-toolbar-title>
+                        <v-layout align-center class="mr-2 primary--text">
+                            <v-btn round @click="salvarTabloide" color="primary">Salvar tabloide</v-btn>
+                        </v-layout>
+                    </v-toolbar-title>
+                </v-toolbar>
+                <v-toolbar>
+                        <v-list class="scroll-y">
+                            <v-list-tile v-for="(img,i) in imgs" :key="i" class="listaHorizontal" >
+                                <v-list-tile-content><!-- context menu é o botao direto, fundamental p n da merda-->
+                                    <img class="image" @contextmenu.prevent @click="addImg(img,i)" :src="getImgURL(img,i)" width="100px" height="100px" v-bind:alt="img.src">
+                                </v-list-tile-content>
+                            </v-list-tile>
+                        </v-list>
+                </v-toolbar>
+            </template>
+            <template v-else>
+                <v-toolbar flat color="grey lighten-4">
+                    <v-toolbar-title>
+                        <v-layout align-center class="mr-2 primary--text">
+                            <v-btn round @click="voltar" color="primary">Voltar</v-btn>
+                        </v-layout>
+                    </v-toolbar-title>
+                </v-toolbar>
+            </template>    
             <v-divider
                 class="mx-2"
                 inset
@@ -76,6 +87,7 @@ export default {
       crudMixin
     ],
    data: () => ({
+        userType: '',
         render: false,//só dps de carregar as imgs!
         canvas: '',
         img: '',
@@ -85,10 +97,11 @@ export default {
         imgsList: []
     }),
     mounted() {
-        this.checkRedirect()
-        this.canvas = new fabric.Canvas('c');
-        this.canvas.setHeight(1000);
+        this.canvas = new fabric.Canvas('c')
+        this.canvas.setHeight(1000)
         this.canvas.setWidth(1000)
+        this.userType = this.$store.state.auth.userType
+        this.checkRedirect()
     },
     methods: {
         submeterAvaliacao(){//envia tabloide/campanha para o diretor
@@ -99,7 +112,10 @@ export default {
             this.$router.push('/tabloides')
         },
         voltar(){
-            this.$router.push('/tabloides')
+            if(this.userType === 'diretor')
+                this.$router.push('/analise')
+            else
+                this.$router.push('/tabloides')
         },
         checkRedirect(){//se tentar acessar essa pag sem existir uma campanha associada, redirecionar
             this.campanha_id = this.$route.params.campanha_id
@@ -125,10 +141,9 @@ export default {
         },
         async carregarTabloide(){
             const jsonTabloide = await this.loadTabloide(this.campanha_id)
-            console.log(jsonTabloide.data.tabloide)
             this.canvas.loadFromJSON(jsonTabloide.data.tabloide)
             this.canvas.renderAll()
-            console.log("carregou ",typeof(jsonTabloide.data.tabloide))
+            console.log("carregou ")
         },
         salvarTabloide(){
             var json = JSON.stringify(this.canvas.toJSON())

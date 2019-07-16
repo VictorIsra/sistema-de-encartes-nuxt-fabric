@@ -52,6 +52,7 @@
             <template v-slot:activator="{ on }" v-if="1===1"><!-- vai ser visivel só pro user diretor -->
               <!-- comprador só poderá editar uma campanha se ela tiver pendente ou foi reprovada ( reciclada)-->
               <v-icon
+                v-if="userType === 'tabloide'"
                 small
                 class="mr-2"
                 @click="editItem(props.item)"
@@ -59,8 +60,18 @@
               >
                 edit
               </v-icon>
+               <v-icon
+                v-else
+                small
+                class="mr-2"
+                @click="editItem(props.item)"
+                v-on="on"
+              >
+                visibility
+              </v-icon>
             </template>
-            <span class="subheading">Clique aqui para montar um tablóide relativo a esta campanha</span>
+            <span v-if="userType === 'tabloide'" class="subheading">Clique aqui para montar um tablóide relativo a esta campanha</span>
+            <span v-else class="subheading">Clique aqui para acompanhar este tablóide</span>
             </v-tooltip>  
         </td>
       </template>
@@ -77,6 +88,7 @@
     ],
     data: () => ({
       dialog: false,
+      userType: '',
       headers: [
         { text: 'Empresa', value: 'nome_empresa',info:'nome da empresa'},
         { text: 'Nome da campanha', value: 'nome_campanha',info:'nome da campanha'},
@@ -108,6 +120,7 @@
     },
     methods: {
       initialize () {
+        this.userType = this.$store.state.auth.userType
         this.fetchInfos()
       },
       editItem (item) {
