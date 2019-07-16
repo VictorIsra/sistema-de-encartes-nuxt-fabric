@@ -1,9 +1,10 @@
 <template>
   <v-flex xl12>
-     <v-toolbar flat color="grey lighten-4">
+     
+<v-toolbar flat color="grey lighten-4">
         <v-toolbar-title>
           <v-layout align-center class="mr-2 primary--text">
-            <v-img class="mr-2" width="40" src="icones/tabloides.png"></v-img>
+            <v-img class="mr-2" width="50" src="icones/tabloides.png"></v-img>
             Tablóides
           </v-layout>
         </v-toolbar-title>
@@ -18,11 +19,35 @@
             </div>
         </v-card-title>
     </v-toolbar>
+    <v-toolbar flat color="white">
+       <v-spacer></v-spacer>
+      <v-text-field
+        v-model="search"
+        append-icon="search"
+        label="Filtrar tablóides"
+        single-line
+        hide-details
+      ></v-text-field>
+      <v-spacer></v-spacer>
+      <v-dialog v-model="dialog" max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">{{ formTitle }}</span>
+          </v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" flat @click="close">Fechar</v-btn>
+            <v-btn color="blue darken-1" flat @click="save">OK</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-toolbar>
     <v-data-table
       :headers="headers"
       :items="infos"
       class="elevation-1"
-    >
+      :search="search"
+    >     
     
     <template slot="headerCell" slot-scope="props">
       <v-tooltip bottom>
@@ -87,6 +112,7 @@
       crudMixin
     ],
     data: () => ({
+      search: '',
       dialog: false,
       userType: '',
       headers: [

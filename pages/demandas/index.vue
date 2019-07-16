@@ -71,7 +71,7 @@
 
 
         <td class="justify-center layout px-0">
-          <v-tooltip bottom v-if="props.item.status === 'reprovada'|| props.item.status === 'pendente' || props.item.status === 'aprovada'">
+          <v-tooltip bottom ><!--v-if="props.item.status === 'pendente' || props.item.status === 'reprovada'|| props.item.status === 'pendente' || props.item.status === 'aprovada'"> -->
             <template v-slot:activator="{ on }"><!-- vai ser visivel só pro user diretor -->
               <!-- comprador só poderá editar uma campanha se ela tiver pendente ou foi reprovada ( reciclada)-->
               <v-icon 
