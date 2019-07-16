@@ -48,6 +48,28 @@ export default {
                 console.log("erro: ",e)
             }
         },
+        async loadTabloide(id){
+            try{    
+                console.log("id: ",id)
+                const tabloide = api.campanha.loadTabloide({
+                    params:{
+                        campanha_id: id
+                    }
+                })
+                console.log("tabloide ",tabloide, " tabloide d.data ",tabloide._v)
+                return tabloide
+            }
+            catch(e){
+                console.log("n consegui carregar tabloide")
+            }
+        },
+        saveTabloide(tabloide,id){
+            api.campanha.saveTabloide({
+                tabloide,
+                id
+            }).then(r => console.log(" SALVO CANVAS"))
+            .catch( e => console.log("af e"))
+        },
         async updateStatus(id,status,demanda_criada = false){
             try{
                 console.log("entrei id e status ", id , status)

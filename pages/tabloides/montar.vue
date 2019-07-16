@@ -38,11 +38,11 @@
                         <v-btn round @click="salvarPdf" color="primary">Salvar em pdf</v-btn>
                     </v-layout>
                 </v-toolbar-title>
-                <v-divider
-                class="mx-2"
-                inset
-                vertical
-                ></v-divider>
+                <v-toolbar-title>
+                    <v-layout align-center class="mr-2 primary--text">
+                        <v-btn round @click="salvarTabloide" color="primary">Salvar tabloide</v-btn>
+                    </v-layout>
+                </v-toolbar-title>
             </v-toolbar>
             <v-toolbar>
                     <v-list class="scroll-y">
@@ -68,10 +68,9 @@
 
 <script>
 import crudMixin from '../../components/mixins/CRUD.js'
-import jsPDF from "jspdf"
-import html2canvas from "html2canvas"
+//import jsPDF from "jspdf"
+//import html2canvas from "html2canvas"
 import {fabric}  from "fabric"
-window.html2canvas = html2canvas
 export default {
     mixins: [
       crudMixin
@@ -103,13 +102,16 @@ export default {
             this.$router.push('/tabloides')
         },
         checkRedirect(){//se tentar acessar essa pag sem existir uma campanha associada, redirecionar
-        this.campanha_id = this.$route.params.campanha_id
-        if(this.campanha_id === undefined)
-            this.$router.push('/tabloides')
-        else
-            this.fetchProdutos()//console.log("ID: ", this.campanha_id)     
+            this.campanha_id = this.$route.params.campanha_id
+            if(this.campanha_id === undefined)
+                this.$router.push('/tabloides')
+            else{
+                this.fetchProdutos()//console.log("ID: ", this.campanha_id) 
+                this.carregarTabloide()
+            }        
         },
         async fetchProdutos(){
+            console.log("no fetc ", this.campanha_id)
             this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             this.itens.forEach(p => {
                 if(p.img !== undefined && p.img !== '')
@@ -121,11 +123,27 @@ export default {
         const path = img.name === undefined ? "" : "../../../uploads/fotos/" + img.name
         return path
         },
+        async carregarTabloide(){
+            const jsonTabloide = await this.loadTabloide(this.campanha_id)
+            console.log(jsonTabloide.data.tabloide)
+            this.canvas.loadFromJSON(jsonTabloide.data.tabloide)
+            this.canvas.renderAll()
+            console.log("carregou ",typeof(jsonTabloide.data.tabloide))
+        },
+        salvarTabloide(){
+            var json = JSON.stringify(this.canvas.toJSON())
+            this.saveTabloide(json,this.campanha_id)
+        },
         async salvarPdf(){
             this.canvas.discardActiveObject()//deselect, p n salvar com a markinha das opcoes
             this.canvas.renderAll()
-         
-            // melhor trade off:
+            //FUNDAMENTAL N USAR IMPORT, SE N DÁ O BUG DO WINDOW NOT DEFINED.
+            //ESSA SOLUCAO FOI RECOMENDADA EM https://github.com/MrRio/jsPDF/issues/1891
+            const jsPDF = require('jspdf')
+            const html2canvas = require("html2canvas")
+            window.html2canvas = html2canvas
+            //FIM DO TRECHO ESSENCIAL
+        
             let canvas = await html2canvas(document.getElementById('c'))
                 .then((canvas) => {
                     const imgData = canvas.toDataURL('image/jpeg',1.0);
@@ -155,8 +173,8 @@ export default {
         },
          addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
             fabric.Image.fromURL(path,(img)=>{
-                img.scaleToWidth(250)//dif de crop, aqui literalmente "redimensiona"
-                img.scaleToHeight(250)
+                img.scaleToWidth(150)//dif de crop, aqui literalmente "redimensiona"
+                img.scaleToHeight(150)
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
                 this.canvas.add(temp)
             })//{canvas: this.canvas})//n funciona passar esse arg...doc lixoooo

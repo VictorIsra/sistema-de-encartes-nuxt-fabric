@@ -52,6 +52,9 @@ const campanhaSchema = new mongoose.Schema({
         //vai receber o valor de _id gerado automaticamente p eu poder ref no codigo
         type: String
     },
+    tabloide: {
+        type: String
+    },
     // produtos: {    //ai posso passar um array de objetos [ {obj1},{obj2}] etc
     //     type: Array,
     //     "default":[]

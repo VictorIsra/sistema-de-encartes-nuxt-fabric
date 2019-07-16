@@ -144,6 +144,37 @@ router.put('/campanhas/removeRow',async(req,res)=>{
         res.status(202).send(doc)
     })
 })
+router.get('/campanhas/loadTabloide',async(req,res)=>{
+    const campanha_id = req.query.campanha_id
+    try{
+        const campanha = await Campanha.findById(campanha_id)
+        res.send({
+            tabloide: campanha.tabloide
+        })
+    }catch(e){
+        console.log("n consegui carregar ",e)
+        res.status(500).send(e) 
+    }
+})
+router.post('/campanhas/saveTabloide',async(req,res)=> {
+    const tabloide = req.body.tabloide
+    const campanha_id = req.body.id
+    console.log("TIPO EE ",typeof(tabloide))
+    try{
+        const campanha = await Campanha.findById(campanha_id)
+        campanha.tabloide = tabloide
+        try{
+            await campanha.save()
+            console.log("canvastab salvo com sucesso!")
+        }catch(e){
+            console.log("n consegui tabloiderr",e)
+            res.status(500).send(e)
+        }
+    }catch(e){
+        console.log("n consegui salva update de status da campanha ",e)
+        res.status(500).send(e) 
+    }
+})  
 router.patch('/campanhas/changeStatus', async (req,res)=>{
     const campanha_id = req.body.id
     let demanda_criada = req.body.demanda_criada//serve só pra uma campanha cujo diretor criou demandas associada a ela
