@@ -29,21 +29,25 @@
                     inset
                     vertical
                     ></v-divider>
-                    <v-card-title color="grey lighten-4" class="justify-center">
                         <div>
                             <v-btn round @click="submeterAvaliacao" color="success">Submeter para avaliação</v-btn>
                         </div>
-                    </v-card-title>  
-                    <v-toolbar-title>
                         <v-layout align-center class="mr-2 primary--text">
-                            <v-btn round @click="salvarPdf" color="primary">Salvar em pdf</v-btn>
+                                <v-btn  round @click="salvarPdf(checkbox)" color="primary">{{salvarComo}}</v-btn>
+                            <v-layout class="justify-end">
+                                <v-checkbox
+                                v-model="checkbox"
+                                ></v-checkbox>
+                            </v-layout>    
                         </v-layout>
-                    </v-toolbar-title>
-                    <v-toolbar-title>
+                        <v-divider
+                            class="mx-2"
+                            inset
+                            vertical
+                        ></v-divider>
                         <v-layout align-center class="mr-2 primary--text">
                             <v-btn round @click="salvarTabloide" color="primary">Salvar tabloide</v-btn>
                         </v-layout>
-                    </v-toolbar-title>
                 </v-toolbar>
                 <v-toolbar>
                         <v-list class="scroll-y">
@@ -68,7 +72,7 @@
                 class="mx-2"
                 inset
                 ></v-divider>
-                <canvas id="c" class="canvas-wrapper"></canvas>
+                <canvas  id="c" class="canvas-wrapper"></canvas>
            <!-- <ul>
                 <li v-for="(img,i) in imgs" :key="i">
                     <img class="image" @click="addImg(img,i)" :src="getImgURL(img,i)" width="50px" height="50px" v-bind:alt="img.src">
@@ -87,6 +91,9 @@ export default {
       crudMixin
     ],
    data: () => ({
+        checkbox: true,
+        download: '',
+        salvarComo: 'baixar em PDF',
         userType: '',
         render: false,//só dps de carregar as imgs!
         canvas: '',
@@ -96,6 +103,14 @@ export default {
         campanha_id: undefined,
         imgsList: []
     }),
+    watch:{
+        checkbox(){
+            if(this.checkbox === true)
+                this.salvarComo = 'baixar em PDF'
+            else
+                this.salvarComo = 'baixar em BMP'
+        }
+    },
     mounted() {
         this.canvas = new fabric.Canvas('c')
         this.canvas.setHeight(1000)
@@ -151,36 +166,37 @@ export default {
             this.saveTabloide(json,this.campanha_id)
             console.log("salvo com sucesso.")
         },
-        async salvarPdf(){
-            this.canvas.discardActiveObject()//deselect, p n salvar com a markinha das opcoes
-            this.canvas.renderAll()
-            //FUNDAMENTAL N USAR IMPORT, SE N DÁ O BUG DO WINDOW NOT DEFINED.
-            //ESSA SOLUCAO FOI RECOMENDADA EM https://github.com/MrRio/jsPDF/issues/1891
-            const jsPDF = require('jspdf')
-            const html2canvas = require("html2canvas")
-            window.html2canvas = html2canvas
-            //FIM DO TRECHO ESSENCIAL
-        
-            let canvas = await html2canvas(document.getElementById('c'))
-                .then((canvas) => {
-                    const imgData = canvas.toDataURL('image/jpeg',1.0);
-                    const pdf = new jsPDF("p","mm","tabloid")//new jsPDF({
-                    // orientation: 'landscape',
-                    // });
-                    const imgProps= pdf.getImageProperties(imgData);
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-                    pdf.save('downloadx.pdf');
-                });
-            //ou original:
-           // var imgData = this.canvas.toDataURL("image/jpeg", 1.0)
-            // var imgData = canvas.toDataURL("image/jpeg", 1.0, this.canvas.width,this.canvas.height)
-            // var pdf = new jsPDF("p","mm","tabloid")//("1","mm","tabloid")
-            // //pdf.addImage(imgData, 'JPEG',7,0)//, 15, 40, 180, 160)//pdf.addImage(imgData, 'JPEG', 10, 10, 180, 150);  // 180x150 mm @ (10,10)mm
-            // pdf.addImage(imgData, 'JPEG',0,0)//,7,0)//, 15, 40, 180, 160)//pdf.addImage(imgData, 'JPEG', 10, 10, 180, 150);  // 180x150 mm @ (10,10)mm
-            // pdf.save("download.pdf");
+        async salvarPdf(checkbox){
+            if(checkbox){
+                this.canvas.discardActiveObject()//deselect, p n salvar com a markinha das opcoes
+                this.canvas.renderAll()
+                //FUNDAMENTAL N USAR IMPORT, SE N DÁ O BUG DO WINDOW NOT DEFINED.
+                //ESSA SOLUCAO FOI RECOMENDADA EM https://github.com/MrRio/jsPDF/issues/1891
+                const jsPDF = require('jspdf')
+                const html2canvas = require("html2canvas")
+                window.html2canvas = html2canvas
+                //FIM DO TRECHO ESSENCIAL
             
+                let canvas = await html2canvas(document.getElementById('c'))
+                    .then((canvas) => {
+                        const imgData = canvas.toDataURL('image/jpeg',1.0)
+                        const pdf = new jsPDF("p","mm","tabloid")//new jsPDF({
+                        // orientation: 'landscape',
+                        // });
+                        const imgProps= pdf.getImageProperties(imgData);
+                        const pdfWidth = pdf.internal.pageSize.getWidth();
+                        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                        pdf.addImage(imgData, 'JPEG', -1, 1, pdfWidth, pdfHeight);
+                        pdf.save('tabloide.pdf');
+                    });
+            }
+            else
+                this.saveAsImg()      
+        },
+        saveAsImg(){
+            var image = this.canvas.toDataURL("image/jpg",1.0)
+            alert("vam porra ")
+            this.$refs['download'].href = image;
         },
         //METODOS RELATIVOS AO CANVAS/FABRIC
         addImg(img,i){

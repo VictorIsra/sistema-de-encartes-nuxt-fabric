@@ -36,8 +36,6 @@
           </v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click="close">Fechar</v-btn>
-            <v-btn color="blue darken-1" flat @click="save">OK</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
