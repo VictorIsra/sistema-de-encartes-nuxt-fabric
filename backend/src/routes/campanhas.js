@@ -249,6 +249,7 @@ router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de pr
     produtos.jornais = false
     produtos.pov = false
     produtos.obs = '--'
+    produtos.obsDemanda = ' '
     Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
         if(err){
             console.log("deu ruim")

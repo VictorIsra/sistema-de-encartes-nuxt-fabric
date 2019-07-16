@@ -12,6 +12,7 @@
         single-line
         hide-details
       ></v-text-field>
+      <v-btn>{{}}</v-btn>
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
         <template v-slot:activator="{ on }">
@@ -126,7 +127,7 @@
         <td class="text-xs-center">{{ props.item.preco_c }}</td>
         <td class="text-xs-center">{{ props.item.preco_v }}</td>
         <td class="text-xs-center">{{ props.item.selout }}</td>
-        <td class="text-xs-center" :class="{'green': props.item.marluc >= campanhaInfos.marluc, 'red':props.item.marluc < campanhaInfos.marluc}">{{ props.item.marluc}}</td>
+        <td class="text-xs-center" :class="{'green': parseFloat(props.item.marluc) >= parseFloat(campanhaInfos.marluc), 'red': parseFloat(props.item.marluc) < parseFloat(campanhaInfos.marluc)}">{{ props.item.marluc}}</td>
 
         <td class="justify-center layout px-0">
           <v-tooltip bottom>

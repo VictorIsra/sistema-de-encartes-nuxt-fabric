@@ -128,7 +128,7 @@ const campanhaSchema = new mongoose.Schema({
             pov: {
                 type:Boolean
             },
-            obs:{
+            obsDemanda:{
                 type:String
             }
         }

@@ -105,6 +105,7 @@ export default {
     },
     methods: {
         submeterAvaliacao(){//envia tabloide/campanha para o diretor
+            this.salvarTabloide()
             this.changeCampanhaStatus('em avaliação')
         },
         async changeCampanhaStatus(status){//irá mudar o status da campanha
@@ -148,6 +149,7 @@ export default {
         salvarTabloide(){
             var json = JSON.stringify(this.canvas.toJSON())
             this.saveTabloide(json,this.campanha_id)
+            console.log("salvo com sucesso.")
         },
         async salvarPdf(){
             this.canvas.discardActiveObject()//deselect, p n salvar com a markinha das opcoes

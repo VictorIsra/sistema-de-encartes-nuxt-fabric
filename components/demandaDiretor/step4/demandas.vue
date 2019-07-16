@@ -31,7 +31,7 @@
                     outline
                     name="input-7-4"
                     label="Observação:"
-                    v-model="editedItem.obs"
+                    v-model="editedItem.obsDemanda"
                     hint="escreva uma observação sobre esta demanda."
                   ></v-textarea>
               </v-flex>

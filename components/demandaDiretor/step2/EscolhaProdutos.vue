@@ -17,7 +17,6 @@
         <template v-slot:activator="{ on }">
           <v-btn color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >Adicionar produto</v-btn> <!--v-on="on" -->
         </template>
-        
         <v-card > <!-- o form em si é esse v card! -->
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
@@ -126,7 +125,7 @@
         <td class="text-xs-center">{{ props.item.preco_c }}</td>
         <td class="text-xs-center">{{ props.item.preco_v }}</td>
         <td class="text-xs-center">{{ props.item.selout }}</td>
-        <td class="text-xs-center" :class="{'green': props.item.marluc >= campanhaInfos.marluc, 'red':props.item.marluc < campanhaInfos.marluc}">{{ props.item.marluc}}</td>
+        <td class="text-xs-center" :class="{'green': parseFloat(props.item.marluc) >= parseFloat(campanhaInfos.marluc), 'red': parseFloat(props.item.marluc) < parseFloat(campanhaInfos.marluc)}">{{ props.item.marluc}}</td>
 
         <td class="justify-center layout px-0">
           <v-tooltip bottom>
