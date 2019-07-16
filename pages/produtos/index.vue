@@ -2,6 +2,24 @@
 -->
 <template>
   <div>
+    <v-toolbar flat color="grey lighten-4">
+        <v-toolbar-title>
+          <v-layout align-center class="mr-2 primary--text">
+            <v-img class="mr-2" width="50" src="icones/produtos.png"></v-img>
+            Produtos
+          </v-layout>
+        </v-toolbar-title>
+         <v-divider
+          class="mx-2"
+          inset
+          vertical
+        ></v-divider>
+        <v-card-title color="grey lighten-4" class="justify-center">
+            <div>
+                <h3 class="title font-weight-regular primary--text">Cadastro de produtos</h3>  
+            </div>
+        </v-card-title>
+    </v-toolbar>
     <v-toolbar flat color="white">
       <v-spacer></v-spacer>
       <v-text-field

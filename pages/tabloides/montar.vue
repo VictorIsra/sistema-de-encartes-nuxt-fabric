@@ -1,12 +1,5 @@
 <template>
         <v-card class="teste">
-           <!-- <v-carousel  :cycle="false" v-if="render">
-                <v-carousel-item 
-                v-for="(item,i) in imgs" :key="i"
-                :src="getImgURL(item,i)"
-                 @click="addImg(item,i)"
-                ></v-carousel-item>
-            </v-carousel> -->
             <template v-if="userType === 'tabloide'">
                 <v-toolbar flat color="grey lighten-4">
                     <v-toolbar-title>
@@ -20,6 +13,7 @@
                     vertical
                     ></v-divider>
                     <v-card-title color="grey lighten-4" class="justify-center">
+                        
                         <div>
                             <v-btn round color="warning" @click="removeSelected">remover imagem selecionada</v-btn>
                         </div>
@@ -38,7 +32,12 @@
                                 <v-checkbox
                                 v-model="checkbox"
                                 ></v-checkbox>
-                            </v-layout>    
+                            </v-layout>
+                            <v-layout class="justify-end">
+                                <v-checkbox
+                                v-model="tobg"
+                                ></v-checkbox>
+                            </v-layout>      
                         </v-layout>
                         <v-divider
                             class="mx-2"
@@ -91,6 +90,7 @@ export default {
       crudMixin
     ],
    data: () => ({
+        tobg: false,
         checkbox: true,
         download: '',
         salvarComo: 'baixar em PDF',
@@ -109,6 +109,10 @@ export default {
                 this.salvarComo = 'baixar em PDF'
             else
                 this.salvarComo = 'baixar em BMP'
+        },
+        tobg(){
+            if(this.tobg === true)
+                this.setBackground()
         }
     },
     mounted() {
@@ -209,8 +213,23 @@ export default {
                 img.scaleToWidth(150)//dif de crop, aqui literalmente "redimensiona"
                 img.scaleToHeight(150)
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
-                this.canvas.add(temp)
+                if(!this.tobg)
+                    this.canvas.add(temp)
+                else
+                   this.setBackground(path,img)    
             })//{canvas: this.canvas})//n funciona passar esse arg...doc lixoooo
+        },
+        setBackground(path,img){
+            fabric.Image.fromURL(path,(img)=>{
+                img.scaleToWidth(this.canvas.width)//dif de crop, aqui literalmente "redimensiona"
+                img.scaleToHeight(this.canvas.height)
+                let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
+            
+                this.canvas.setBackgroundImage(temp)
+                this.canvas.renderAll()
+   
+            })
+        
         },
         removeSelected(){//remove do canvas o(s) objeto(s) que está selecionado
             if(this.canvas.getActiveObject() !== undefined){
