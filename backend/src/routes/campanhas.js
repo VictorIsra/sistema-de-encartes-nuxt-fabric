@@ -204,7 +204,6 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const row_id = req.body.row_id //id da linha que tou atualizando
     const produtos = req.body.produtos//linha a ser atualizada ao array de produtos
-    console.log("OLHE O UPDSTE")
     try{
         const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
         //me dá o index da linha que estou tentando atualizar:
@@ -242,16 +241,7 @@ router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de pr
     produtos.preco_v_c1 = "R$ 0,00"
     produtos.preco_v_c2 = "R$ 0,00"
     produtos.preco_v_c3 = "R$ 0,00"
-    // produtos.tabloide = false,
-    // produtos.facebook = false
-    // produtos.cartaz = false
-    // produtos.tvindoor = false
-    // produtos.radio_interna = false
-    // produtos.radio_externa = false
-    // produtos.jornais = false
-    // produtos.pov = false
-    // produtos.obs = '--'
-    // produtos.obsDemanda = ' '
+   
     Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
         if(err){
             console.log("deu ruim")
