@@ -1,20 +1,17 @@
 <!-- //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
 -->
 <template>
-  <div> 
-      <v-toolbar>
-          <no-ssr>
-            <vue-select-image :dataImages="dataImages">
-            </vue-select-image>
-          </no-ssr>     
-                <v-list class="scroll-y">
-                        <v-list-tile v-for="(img,i) in imgs" :key="i" class="listaHorizontal" >
-                                <v-list-tile-content><!-- context menu é o botao direto, fundamental p n da merda-->
-                                    <img class="image" @contextmenu.prevent  :src="getImgURL2(img,i)" width="100px" height="100px" v-bind:alt="img.src">
-                                </v-list-tile-content>
-                            </v-list-tile>
-                        </v-list>
-                </v-toolbar>
+  <div>     
+    <v-layout>
+        <no-ssr>
+            <v-list class="scroll-y">
+                <v-list-tile-content>
+                    <vue-select-image  :dataImages="dataImages" h='50px' w='50px' @onselectimage="onSelectImage">
+                    </vue-select-image>
+                </v-list-tile-content>    
+            </v-list>
+        </no-ssr>       
+    </v-layout>        
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
     <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{produtosQtdadeInfo.qtdade}}/{{produtosQtdadeInfo.meta}}</span>
       <v-spacer></v-spacer>
@@ -199,15 +196,12 @@
       crudMixin
     ],
     data: () => ({
-     dataImages: [{
-        id: '1',
-        src: 'https://unsplash.it/200?random',
-        alt: 'Alt Image 1'
-        }, {
-        id: '2',
-        src: 'https://unsplash.it/200?random',
-        alt: 'Alt Image 2'
-     }],
+     dataImages: [
+        // id: '1',
+        // src: 'https://unsplash.it/200?random',
+        // alt: 'Alt Image 1'
+        // }
+     ],
      imgs: [],
       lista: '',
       campanhaInfos: '',
@@ -336,6 +330,9 @@
         // }    
     },
     methods: {
+      onSelectImage(){
+        console.log("lalala")
+      },
       initialize () {
         if(this.campanha_id !== undefined && this.campanha_id !== '-1'){
             this.fetchCampanhaInfo()
@@ -352,7 +349,7 @@
                 if(p.img !== undefined && p.img !== '')
                     this.imgs.push( p.img)
             })
-            console.log("LISRA ",this.lista)
+            this.getImgURL3()
         },
       async fetchCampanhaInfo(){
         //pega info dessa campanha hardocded que simboliza o cadastro dos produtos do sistmea
@@ -538,9 +535,19 @@
         return this.valid
       },
       getImgURL2(img){
+          console.log("img", img , " z ")
         //se uma img nao tiver sido escolhida, retorne enm branco
         const path = img.name === undefined ? "" : "../../../uploads/fotos/" + img.name
         return path
+        },
+        getImgURL3(){
+            this.imgs.forEach((img,i) => {
+                let temp =  "../../../uploads/fotos/" + img.name
+                this.dataImages.push({  
+                    id:i,
+                    src: temp
+                })
+            })
         },
       getImgURL(item){
         //se uma img nao tiver sido escolhida, retorne enm branco
@@ -621,8 +628,7 @@
   }
 </script>
 <style>
-.listaHorizontal{
-    float: left;
-    padding: 2px
+.teste{
+    background-color: blue;
 }
 </style>
