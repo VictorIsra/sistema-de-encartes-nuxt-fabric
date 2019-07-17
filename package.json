@@ -24,6 +24,7 @@
     "jspdf": "^1.5.3",
     "nuxt": "^2.4.0",
     "vee-validate": "^2.2.10",
+    "vue-select-image": "^1.7.0",
     "vuetify": "^1.5.5",
     "vuetify-loader": "^1.2.1"
   },

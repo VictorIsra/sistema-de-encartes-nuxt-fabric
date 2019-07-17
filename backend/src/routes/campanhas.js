@@ -241,7 +241,22 @@ router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de pr
     produtos.preco_v_c1 = "R$ 0,00"
     produtos.preco_v_c2 = "R$ 0,00"
     produtos.preco_v_c3 = "R$ 0,00"
-   
+    if(produtos.tabloide !== true)//parece estranho, mas preciso explicitar o tick na criacao, se n n vai aparecer na criacao de demandas. mas n posos setar pra falso se já existir como true, por isso seto pra falso q é o valor default, caso n tenha sido tickado. isso garante q vai aparecer o tick
+        produtos.tabloide = false
+    if(produtos.facebook !== true)
+        produtos.facebook = false
+    if(produtos.cartaz !== true)
+        produtos.cartaz = false
+    if(produtos.tvindoor !== true)
+        produtos.tvindoor = false
+    if(produtos.radio_interna !== true)
+        produtos.radio_interna = false
+    if(produtos.radio_externa !== true)
+        produtos.radio_externa = false
+    if(produtos.jornais !== true)
+        produtos.jornais = false
+    if(produtos.pov !== true)
+        produtos.pov= false
     Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
         if(err){
             console.log("deu ruim")
