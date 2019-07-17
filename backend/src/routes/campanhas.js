@@ -204,6 +204,7 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     const row_id = req.body.row_id //id da linha que tou atualizando
     const produtos = req.body.produtos//linha a ser atualizada ao array de produtos
+    console.log("OLHE O UPDSTE")
     try{
         const campanha = await Campanha.findById(campanha_id)//acha a campanha q contem o array de interesse
         //me dá o index da linha que estou tentando atualizar:
@@ -236,20 +237,21 @@ router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de pr
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     let produtos = req.body.produtos//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
     console.log("porra ", req.body, " id ", campanha_id)
+    console.log("OLHE NO ADD ROW")
     //como o addrow é sempre feito em produtos, n em concorrencia, posso com seguranca setar o proce de concorrencia pra r$ 0,00 aqui. faco a lvl de bd em vez de app para garantir a existencia dos getters e setters ;)
     produtos.preco_v_c1 = "R$ 0,00"
     produtos.preco_v_c2 = "R$ 0,00"
     produtos.preco_v_c3 = "R$ 0,00"
-    produtos.tabloide = false,
-    produtos.facebook = false
-    produtos.cartaz = false
-    produtos.tvindoor = false
-    produtos.radio_interna = false
-    produtos.radio_externa = false
-    produtos.jornais = false
-    produtos.pov = false
-    produtos.obs = '--'
-    produtos.obsDemanda = ' '
+    // produtos.tabloide = false,
+    // produtos.facebook = false
+    // produtos.cartaz = false
+    // produtos.tvindoor = false
+    // produtos.radio_interna = false
+    // produtos.radio_externa = false
+    // produtos.jornais = false
+    // produtos.pov = false
+    // produtos.obs = '--'
+    // produtos.obsDemanda = ' '
     Campanha.findOneAndUpdate({_id: campanha_id}, {$push: {produtos}},{new: true},(err,doc)=>{
         if(err){
             console.log("deu ruim")

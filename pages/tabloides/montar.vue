@@ -198,9 +198,8 @@ export default {
                 this.saveAsImg()      
         },
         saveAsImg(){
-            var image = this.canvas.toDataURL("image/jpg",1.0)
-            alert("vam porra ")
-            this.$refs['download'].href = image;
+            //var image = this.canvas.toDataURL("image/jpg",1.0)
+            //this.$refs['download'].href = image;
         },
         //METODOS RELATIVOS AO CANVAS/FABRIC
         addImg(img,i){
@@ -220,9 +219,10 @@ export default {
             })//{canvas: this.canvas})//n funciona passar esse arg...doc lixoooo
         },
         setBackground(path,img){
+            
             fabric.Image.fromURL(path,(img)=>{
-                img.scaleToWidth(this.canvas.width)//dif de crop, aqui literalmente "redimensiona"
-                img.scaleToHeight(this.canvas.height)
+                img.scaleToWidth(1000)//dif de crop, aqui literalmente "redimensiona"
+                img.scaleToHeight(1000)
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
             
                 this.canvas.setBackgroundImage(temp)
