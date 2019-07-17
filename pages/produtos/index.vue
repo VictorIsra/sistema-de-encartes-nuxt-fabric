@@ -56,6 +56,14 @@
                   </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6>
+                  <v-text-field ref="editedItem.empresa"
+                                @blur="editUserInputs(false)"
+                                v-model.trim="editedItem.empresa"
+                                :rules="[empresaRule]" 
+                                label="Empresa">
+                  </v-text-field>
+                </v-flex>
+                 <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.qtdade" 
                                 :rules="[qtdadeRule]"
                                 @blur="editUserInputs(false)"
@@ -68,17 +76,22 @@
                                 ref="editedItem.unidade"
                                 v-model.trim="editedItem.unidade" 
                                 label="Unidade"></v-text-field>
+                </v-flex> 
+                <v-flex xs12 sm6>
+                  <v-text-field ref="editedItem.referencia"
+                                @blur="editUserInputs(false)"
+                                v-model.trim="editedItem.referencia"
+                                :rules="[referenciaRule]" 
+                                label="Referência">
+                  </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.obs" v-model="editedItem.obs" label="Observação"></v-text-field>
-                </v-flex>
-                <v-flex>
-                  <datas   :dateRange="campanhaInfos"
-                           :defaultDatesValues="defaultDatesValues" 
-                           @datechanged="getDate"
-                           @blur="editUserInputs(false)"
-                           @dateStatusInfo="getDateStatus"           
-                    />              <!--<v-text-field v-model="editedItem.data_i" label="Data de início"></v-text-field> -->
+                  <v-text-field ref="editedItem.categoria" 
+                                :rules="[categoriaRule]"
+                                @blur="editUserInputs(false)"
+                                v-model.trim="editedItem.categoria"
+                                label="Categoria">
+                  </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6>
                   <v-text-field  ref="editedItem.preco_c"
@@ -91,7 +104,6 @@
                                  >
                   </v-text-field>
                 </v-flex>
-
                 <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.preco_v"
                                 @blur="editUserInputs(false)"
@@ -102,18 +114,6 @@
                                 label="Preço de venda">
                   </v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.selout" v-model="editedItem.selout" label="Sell out"></v-text-field>
-                </v-flex>
-                <v-flex >
-                  <v-text-field ref="editedItem.marluc" justify-center 
-                                v-model.trim="editedItem.marluc" 
-                                :rules="[marlucRule]"
-                                 @blur="editUserInputs(false)"
-                                suffix="%"
-                                label="Margem de lucro"></v-text-field>
-                </v-flex>
-                
               </v-layout>
             </v-container>
             <v-card-actions>
@@ -136,15 +136,13 @@
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
         <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
-        <td class="text-xs-center">{{ props.item.qtdade }}</td>
-        <td class="text-xs-center">{{ props.item.unidade }}</td>
-        <td class="text-xs-center">{{ props.item.obs }}</td>
-        <td class="text-xs-center">{{ props.item.data_i }}</td>
-        <td class="text-xs-center">{{ props.item.data_f }}</td>
+        <td class="text-xs-center">{{ props.item.empresa }}</td>
+        <td class="text-xs-center">{{ props.item.referencia }}</td>
+        <td class="text-xs-center">{{ props.item.categoria }}</td>
         <td class="text-xs-center">{{ props.item.preco_c }}</td>
         <td class="text-xs-center">{{ props.item.preco_v }}</td>
-        <td class="text-xs-center">{{ props.item.selout }}</td>
-        <td class="text-xs-center" :class="{'green': parseFloat(props.item.marluc) >= parseFloat(campanhaInfos.marluc), 'red': parseFloat(props.item.marluc) < parseFloat(campanhaInfos.marluc)}">{{ props.item.marluc}}</td>
+        <td class="text-xs-center">{{ props.item.qtdade }}</td>
+        <td class="text-xs-center">{{ props.item.unidade }}</td>
 
         <td class="justify-center layout px-0">
           <v-tooltip bottom>
@@ -214,12 +212,14 @@
         qtdade: ''
       },
       inputsValidation: {//usarei isso pra definir a validade dos inputs de forma eficaz
-        nome:     true,
-        qtdade:   true,
-        unidade:  true,
-        preco_c:  true,
-        preco_v:  true,
-        marluc:   true
+        nome: true,
+        empresa: true,
+        referencia: true,
+        categoria: true,
+        qtdade: true,
+        unidade: true,
+        preco_c: true,
+        preco_v: true,
       },
       dialog: false,
       search: '',
@@ -252,15 +252,13 @@
         
         { text: 'IMAGEM', value: 'img' },
         { text: 'PRODUTO', value: 'nome' },
-        { text: 'ESTOQUE', value: 'qtdade' },
-        { text: 'UNIDADE', value: 'unidade' },
-        { text: 'OBSERVAÇÃO', value: 'obs' },
-        { text: 'DATA DE INÍCIO', value: 'data_i' },
-        { text: 'DATA DE TÉRMINO', value: 'data_f' },
+        { text: 'EMPRESA', value: 'empresa' },
+        { text: 'REFERÊNCIA', value: 'referencia' },
+        { text: 'CATEGORIA', value: 'categoria' },
         { text: 'PREÇO DE COMPRA', value: 'preco_c' },
         { text: 'PREÇO DE VENDA', value: 'preco_v' },
-        { text: 'SELL OUT', value: 'selout' },
-        { text: 'MARGEM DE LUCRO', value: 'marluc' },  
+        { text: 'ESTOQUE', value: 'qtdade' },
+        { text: 'UNIDADE', value: 'unidade' },
         { text: 'AÇÕES', value: 'acao' } 
       ],
       itens: [],
@@ -268,28 +266,24 @@
       editedItem: {
         img:  '',
         nome: '--',
+        empresa: '--',
+        referencia: '--',
+        categoria: '--',
         qtdade: '0.00',
         unidade: '--',
-        obs: '--',
-        data_i: '',
-        data_f: '',
         preco_c: '0,00',
         preco_v: '0,00',
-        selout: '--',
-        marluc: '0.00'
       },
       defaultItem: {//aqui seto os valores defaults
         img:  '',
         nome: '--',
+        empresa: '--',
+        referencia: '--',
+        categoria: '--',
         qtdade: '0.00',
         unidade: '--',
-        obs: '--',
-        data_i: '',
-        data_f: '',
         preco_c: '0,00',
         preco_v: '0,00',
-        selout: '--',
-        marluc: '0.00'
       }
     }),
     computed: {
@@ -363,15 +357,13 @@
         this.editedItem = {
           img:  '',
           nome: '--',
+          empresa: '--',
+          referencia: '--',
+          categoria: '--',
           qtdade: '0.00',
           unidade: '--',
-          obs: '--',
-          data_i: '',
-          data_f: '',
           preco_c: '0,00',
           preco_v: '0,00',
-          selout: '--',
-          marluc: '0.00'
         }
       },
       deleteItem (item) {
@@ -541,12 +533,33 @@
           this.produtosQtdadeInfo.qtdade ++  
       },
       //RULES:
+      empresaRule(v){
+        if(!!v === false)
+           this.inputsValidation['empresa'] = false
+        else
+          this.inputsValidation['empresa'] = true
+        return !!v || "O nome da empresa é obrigatório "
+      },
+      categoriaRule(v){
+        if(!!v === false)
+           this.inputsValidation['categoria'] = false
+        else
+          this.inputsValidation['categoria'] = true
+        return !!v || "A categoria do produto é obrigatória"
+      },
+      referenciaRule(v){
+        if(!!v === false)
+           this.inputsValidation['referencia'] = false
+        else
+          this.inputsValidation['referencia'] = true
+        return !!v || "A referência para o produto é obrigatória "
+      },
       nomeRule(v){
         if(!!v === false)
            this.inputsValidation['nome'] = false
         else
           this.inputsValidation['nome'] = true
-        return !!v || "é preciso escolher um nome para o produto. "
+        return !!v || "O nome do produto é obrigatório "
       },
       qtdadeRule(v){
         if(!!v === false)
@@ -572,24 +585,14 @@
 
         return !!v || 'o preço de venda e é obrigatório'
       },
-      marlucRule(v){
-        if(!!v === false)
-           this.inputsValidation['marluc'] = false
-        else
-          this.inputsValidation['marluc'] = true
-
-        return !!v || 'a margem de lucro e é obrigatória'
-      },
       editUserInputs(addUnit = true){//addUnit para botar o R$ e afins. quero isso pra salvar na tabela, mas nao quero isso ( addUnit = false) qd abrir uma form/dialog pra edicao
         this.editedItem.qtdade = this.parsePtBr(this.editedItem.qtdade)
         this.editedItem.preco_c = this.parsePtBr(this.editedItem.preco_c)
         this.editedItem.preco_v = this.parsePtBr(this.editedItem.preco_v)
-        this.editedItem.marluc = this.parsePtBr(this.editedItem.marluc)
 
         if(addUnit){
           this.editedItem.preco_c = 'R$ ' + this.editedItem.preco_c
           this.editedItem.preco_v = 'R$ ' + this.editedItem.preco_v
-          this.editedItem.marluc += '%'
         }
       }
     }

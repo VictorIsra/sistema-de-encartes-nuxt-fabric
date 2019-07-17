@@ -67,6 +67,17 @@ const campanhaSchema = new mongoose.Schema({
             nome:{
                 type:String
             },
+            //exclusiva a base de produtos v
+            categoria:{
+                type:String
+            },
+            empresa:{
+                type:String
+            },
+            referencia:{
+                type:String
+            },
+            //excluvid a base de produtos ^
             qtdade:{
                 type:String
             },
