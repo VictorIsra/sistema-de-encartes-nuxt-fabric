@@ -263,7 +263,7 @@ router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de pr
             res.status(500).send(err)
         }    
         const addedItensIndex = doc.produtos.length - 1//indice da linha adicionada, usarei no codigo pra ref    
-        res.status(202).send(doc.produtos[addedItensIndex]._id)//pra eu ter a ref dessa linha em particular   
+        res.status(202).send({row_id:doc.produtos[addedItensIndex]._id})//pra eu ter a ref dessa linha em particular   
     });   
 })   
 

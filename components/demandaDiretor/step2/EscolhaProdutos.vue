@@ -118,19 +118,19 @@
     <!-- campos que faram binds inportantes, como o search -->
     <v-data-table 
       :headers="headers"
-      :items="indexedItens"
+      :items="itens"
       class="elevation-1"
       :search="search"
       v-model="selected"
-      item-key="id"
+      item-key="_id"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
         <td class="justify-center layout px-0"> 
-        <v-checkbox class="justify-center layout px-0"
+        <v-radio class="justify-center layout px-0"
           v-model="props.selected"
           primary
           hide-details
-        ></v-checkbox>
+        ></v-radio>
         </td>
         <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
@@ -294,17 +294,14 @@
       }
     }),
     computed: {
-      indexedItens () {//se n ele perde o id no table..mt eskisito, mas assim funfa xDD
-      return this.itens.map((item, index) => ({
-          id: index,
-          ...item
-        }))
-      },
       formTitle () {
         return this.editedIndex === -1 ? 'Novo Produto:' : 'Editando Produto:'
       }
     },
     watch: {
+      selected(){
+        console.log("slecoes ",this.selected)
+      },
       dialog (val) {
         val || this.close()
       },
@@ -333,6 +330,13 @@
       this.initialize()//sera alimentado pelo bd eventualmente, tvz?
     },
     methods: {
+      teste(){
+        const validos = this.selected.forEach(item => {
+            return item._id !== undefined
+        })
+        console.log(validos)
+        return validos
+      },
       initialize () {
         if(this.campanha_id !== undefined && this.campanha_id !== '-1'){
           this.fetchProdList()
@@ -355,7 +359,6 @@
         },
         prepareProdInfo(){//prepara oq sera exibido na lista de prod cadastrados
             this.imgs.forEach((img,i) => {
-              console.log("aaee ", img)
                 let temp =  "../../../uploads/fotos/" + img.img.name
                 this.dataImages.push({  
                     id:i,
@@ -465,7 +468,9 @@
             await this.fillImgInfo(0,this.editedItem)
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
+            console.log("antes de ad ", this.editedItem)
             this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
+            console.log("apos ",this.editedItem)
             this.decrementProdutos(false)//qd passo flag flase, eu INCREMENTO 
         }
         //this.saveProdutos()

@@ -82,16 +82,22 @@ export default {
                 console.log("zika updatestauts ",e)
             }
         },
-        addRow(editedItem,campanha_id){//vai virar um mixin
-            console.log("AD ROW COM: ",editedItem, " id ", campanha_id)
-             api.campanha.addRow(
-                   {produtos:editedItem,
-                   campanha_id}
-             ).then(r => editedItem._id = r)
-             .catch(e => console.log("erro: ",e))
+        async addRow(editedItem,campanha_id){//vai virar um mixin
+            try{ 
+               const saida = await api.campanha.addRow(
+                    {produtos:editedItem,
+                    campanha_id}
+                )
+                console.log("retornarei ", saida.data.row_id)
+                return saida.data.row_id
+            }
+            catch(e){
+                console.log('erro ao tenta add linha ',e)
+            }    
         },
         updateRow(editedItem,campanha_id){//a lvl de bd, serve tano pra editar uma linha qt pra criar uma, ja q uma linha é um objeto dentro de uma campanha
             var img_id = ''
+            console.log("entrei coom ",editedItem)
             if(editedItem._id.data !== undefined)//primeira edicao apos criar algo existe um _id.data, nos outros casos apenas _id, entao cuidado
                 img_id = editedItem._id.data
             else

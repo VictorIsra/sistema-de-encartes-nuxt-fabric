@@ -119,11 +119,11 @@
     <!-- campos que faram binds inportantes, como o search -->
     <v-data-table 
       :headers="headers"
-      :items="indexedItens"
+      :items="itens"
       class="elevation-1"
       :search="search"
       v-model="selected"
-      item-key="id"
+      item-key="_id"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
         <td class="justify-center layout px-0"> 
@@ -295,12 +295,6 @@
       }
     }),
     computed: {
-      indexedItens () {//se n ele perde o id no table..mt eskisito, mas assim funfa xDD
-        return this.itens.map((item, index) => ({
-            id: index,
-            ...item
-          }))
-      },
       formTitle () {
         return this.editedIndex === -1 ? 'Novo Produto:' : 'Editando Produto:'
       }
@@ -356,10 +350,8 @@
         },
         prepareProdInfo(){//prepara oq sera exibido na lista de prod cadastrados
             this.imgs.forEach((img,i) => {
-              console.log("aaee ", img)
                 let temp =  "../../../uploads/fotos/" + img.img.name
                 this.dataImages.push({  
-                    id:i,
                     src: temp,
                     alt: img.prodNome,
                     originalName: img.img.originalName
@@ -368,7 +360,6 @@
         },
         onSelectImage(selected){//passado como arg indireto pelo compo vue-img
         this.selectedImg = selected
-        console.log("selecionado: ",this.selectedImg)
         this.ajustPath()
       },
       ajustPath(){//ajusta o path da img tanto rela qt abs
@@ -466,7 +457,9 @@
             await this.fillImgInfo(0,this.editedItem)
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
-            this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
+            const row_id = await this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
+            this.editedItem._id = row_id
+            console.log("tara ",this.editedItem)
             this.decrementProdutos(false)//qd passo flag flase, eu INCREMENTO 
         }
         //this.saveProdutos()

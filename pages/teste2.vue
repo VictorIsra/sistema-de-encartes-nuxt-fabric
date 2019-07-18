@@ -1,9 +1,18 @@
 <template>
+<div>
+      <v-radio-group v-model="radioGroup">
+      <v-radio
+        v-for="n in 1"
+        :key="n"
+        :label="`Radio ${n}`"
+        :value="n"
+      ></v-radio>
+    </v-radio-group>
   <v-data-table
     v-model="selected"
     :headers="headers"
     :items="desserts"
-    item-key="name"
+    item-key="name2"
     
   >
     <template v-slot:items="props">
@@ -22,6 +31,7 @@
       <td class="text-xs-right">{{ props.item.iron }}</td>
     </template>
   </v-data-table>
+</div> 
 </template>
 
 <script>
@@ -33,7 +43,7 @@
           {
             text: 'Dessert (100g serving)',
             align: 'left',
-           // sortable: false,
+            sortable: false,
             value: 'name'
           },
           { text: 'Calories', value: 'calories' },
