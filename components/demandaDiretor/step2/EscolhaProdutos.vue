@@ -352,7 +352,11 @@
                 if(p.img !== undefined && p.img !== '')
                     this.imgs.push( {
                       img:p.img,
-                      prodNome: p.nome
+                      prodNome: p.nome,
+                      qtdade: p.qtdade,
+                      unidade: p.unidade,
+                      preco_c: p.preco_c,
+                      preco_v: p.preco_v
                     })
             })
             this.prepareProdInfo()
@@ -364,6 +368,11 @@
                     id:i,
                     src: temp,
                     alt: img.prodNome,
+                    prodNome: img.prodNome,
+                      qtdade: img.qtdade,
+                      unidade: img.unidade,
+                      preco_c: img.preco_c,
+                      preco_v: img.preco_v,
                     originalName: img.img.originalName
                 })
             })
@@ -371,23 +380,41 @@
         onSelectImage(selected){//passado como arg indireto pelo compo vue-img
         this.selectedImg = selected
         console.log("selecionado: ",this.selectedImg)
-        this.ajustPath()
+        this.imgs.forEach(item => { console.log("iira ",item)})
+        this.updateInfo()
       },
-      ajustPath(){//ajusta o path da img tanto rela qt abs
+      updateInfo(){//ajusta o path da img tanto rela qt abs
+          alert("entrei")
           let savedName = this.selectedImg.src.match(/[^/]+$/)//img com nome doido q é salva no static/uploads/img
           this.selected.forEach(item => {
-            if(item.img === 'undefined '|| item.img === ''){//se n tiver foto associada
+            if(item.img === 'undefined ' || item.img === ''){//se n tiver foto associada
+            alert("und")
+
               item.img = {
                 originalName: this.selectedImg.originalName,
                 name: savedName,
-                src:"static/uploads/fotos/" + savedName
+                src:"static/uploads/fotos/" + savedName,
               }
+              item.preco_c = this.selectedImg.preco_c
+              item.preco_v = this.selectedImg.preco_v
+              item.qtdade = this.selectedImg.qtdade
+              item.unidade = this.selectedImg.unidade
+              item.nome = this.selectedImg.alt
+              alert("vai entraa")
+             //gambiarra mas funciona, atualizandocoreteamente em tods os cases xd
             }
             else{//se tiver,atualizo c a img selecionada
+            alert("lse")
               item.img.originalName = this.selectedImg.originalName,
               item.img.name = savedName
               item.img.name.src = "static/uploads/fotos/" + savedName
+              item.preco_c = this.selectedImg.preco_c
+              item.preco_v = this.selectedImg.preco_v
+              item.qtdade = this.selectedImg.qtdade
+              item.unidade = this.selectedImg.unidade
+              item.nome = this.selectedImg.alt
             }
+            console.log("TES ", this.selectedImg  )
             this.updateRow(item, this.campanha_id)
           })
       },

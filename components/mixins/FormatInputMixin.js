@@ -1,7 +1,7 @@
 export default{
     methods:{
         parsePtBr(input){
-            if(input === '')//a principio minha logica n permite esse caso, mas n custa nada, vai q esqueci de algo...
+            if(input === '' || input === undefined)//a principio minha logica n permite esse caso, mas n custa nada, vai q esqueci de algo...
                 input = '0,00'
             //remover qqr coisa que nao seja numero '.' ou ','
             input = input.replace(/[^0-9.,]/gi,'')//
