@@ -2,16 +2,14 @@
 -->
 <template>
   <div>     
-    <v-layout>
+    <v-toolbar>
         <no-ssr>
             <v-list class="scroll-y">
-                <v-list-tile-content>
-                    <vue-select-image  :dataImages="dataImages" h='50px' w='50px' @onselectimage="onSelectImage">
-                    </vue-select-image>
-                </v-list-tile-content>    
+                <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="onSelectImage">
+                </vue-select-image>
             </v-list>
         </no-ssr>       
-    </v-layout>        
+    </v-toolbar>        
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
     <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{produtosQtdadeInfo.qtdade}}/{{produtosQtdadeInfo.meta}}</span>
       <v-spacer></v-spacer>
@@ -123,8 +121,17 @@
       :items="itens"
       class="elevation-1"
       :search="search"
+      v-model="selected"
+      item-key="_id"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
+        <td class="justify-center layout px-0"> 
+        <v-checkbox class="justify-center layout px-0"
+          v-model="props.selected"
+          primary
+          hide-details
+        ></v-checkbox>
+        </td>
         <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
         <td class="text-xs-center">{{ props.item.qtdade }}</td>
@@ -196,6 +203,8 @@
       crudMixin
     ],
     data: () => ({
+     selected: [],//objetos selecionados  ( linhas da tabela selecionadas)
+     selectedImg: '', //imagem da lista de produtos selecionadas 
      dataImages: [
         // id: '1',
         // src: 'https://unsplash.it/200?random',
@@ -246,7 +255,7 @@
       },
       //fim info relativas ao uplode e img ^
       headers: [
-        
+        { text: 'SELECIONADO', value: 'sel' },
         { text: 'IMAGEM', value: 'img' },
         { text: 'PRODUTO', value: 'nome' },
         { text: 'ESTOQUE', value: 'qtdade' },
@@ -295,6 +304,10 @@
       }
     },
     watch: {
+      selected(){
+        console.log("vejamso seleca ",this.selected)
+        
+      },
       dialog (val) {
         val || this.close()
       },
@@ -322,16 +335,29 @@
     created () {
       this.initialize()//sera alimentado pelo bd eventualmente, tvz?
     },
-    mounted(){
-        // if (process.client){
-        //     this.vueSelectImage = require('vue-select-image')
-        //     this.Vue.component('VueSelectImage',this.vueSelectImage )
-        //     require('vue-select-image/dist/vue-select-image.css')
-        // }    
-    },
     methods: {
-      onSelectImage(){
-        console.log("lalala")
+      onSelectImage(selected){
+        this.selectedImg = selected
+        console.log("selecionado: ",this.selectedImg)
+        this.ajustPath()
+      },
+      ajustPath(){//ajusta o path da img tanto rela qt abs
+          let savedName = this.selectedImg.src.match(/[^/]+$/)//img com nome doido q é salva no static/uploads/img
+          this.selected.forEach(item => {
+            if(item.img === 'undefined '|| item.img === ''){//se n tiver foto associada
+              item.img = {
+                originalName: this.selectedImg.alt,
+                name: savedName,
+                src:"static/uploads/fotos/" + savedName
+              }
+            }
+            else{//se tiver,atualizo c a img selecionada
+              item.img.originalName = this.selectedImg.alt,
+              item.img.name = savedName
+              item.img.name.src = "static/uploads/fotos/" + savedName
+            }
+            this.updateRow(item, this.campanha_id)
+          })
       },
       initialize () {
         if(this.campanha_id !== undefined && this.campanha_id !== '-1'){
@@ -545,7 +571,8 @@
                 let temp =  "../../../uploads/fotos/" + img.name
                 this.dataImages.push({  
                     id:i,
-                    src: temp
+                    src: temp,
+                    alt: img.originalName
                 })
             })
         },
