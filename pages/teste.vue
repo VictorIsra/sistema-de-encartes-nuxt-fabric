@@ -346,13 +346,13 @@
           this.selected.forEach(item => {
             if(item.img === 'undefined '|| item.img === ''){//se n tiver foto associada
               item.img = {
-                originalName: this.selectedImg.alt,
+                originalName: this.selectedImg.originalName,
                 name: savedName,
                 src:"static/uploads/fotos/" + savedName
               }
             }
             else{//se tiver,atualizo c a img selecionada
-              item.img.originalName = this.selectedImg.alt,
+              item.img.originalName = this.selectedImg.originalName,
               item.img.name = savedName
               item.img.name.src = "static/uploads/fotos/" + savedName
             }
@@ -373,7 +373,10 @@
             this.lista = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             this.lista.forEach(p => {
                 if(p.img !== undefined && p.img !== '')
-                    this.imgs.push( p.img)
+                    this.imgs.push( {
+                      img:p.img,
+                      prodNome: p.nome
+                    })
             })
             this.getImgURL3()
         },
@@ -568,11 +571,13 @@
         },
         getImgURL3(){
             this.imgs.forEach((img,i) => {
-                let temp =  "../../../uploads/fotos/" + img.name
+              console.log("aaee ", img)
+                let temp =  "../../../uploads/fotos/" + img.img.name
                 this.dataImages.push({  
                     id:i,
                     src: temp,
-                    alt: img.originalName
+                    alt: img.prodNome,
+                    originalName: img.img.originalName
                 })
             })
         },
