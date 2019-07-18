@@ -34,9 +34,9 @@
           <v-card-text  > <!-- informacoes de adicionar e deletar (é um form)-->
             <v-container grid-list-md >
               <v-layout wrap>
-                 <v-flex xs12>
+              <!--   <v-flex xs12>
                  <img-upload @blur="editUserInputs(false)" :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
-                </v-flex>
+                </v-flex> -->
                  <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.nome"
                                 @blur="editUserInputs(false)"
@@ -459,7 +459,6 @@
             this.editUserInputs()
             const row_id = await this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
             this.editedItem._id = row_id
-            console.log("tara ",this.editedItem)
             this.decrementProdutos(false)//qd passo flag flase, eu INCREMENTO 
         }
         //this.saveProdutos()

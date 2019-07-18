@@ -407,7 +407,9 @@
             await this.fillImgInfo(0,this.editedItem)
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
-            this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
+            const row_id = await this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
+            this.editedItem._id = row_id
+            this.editedItem.id = row_id
             this.decrementProdutos(false)//qd passo flag flase, eu INCREMENTO 
         }
         //this.saveProdutos()

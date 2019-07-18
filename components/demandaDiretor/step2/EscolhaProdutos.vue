@@ -33,9 +33,9 @@
           <v-card-text  > <!-- informacoes de adicionar e deletar (é um form)-->
             <v-container grid-list-md >
               <v-layout wrap>
-                 <v-flex xs12>
+              <!--   <v-flex xs12>
                  <img-upload @blur="editUserInputs(false)" :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
-                </v-flex>
+                </v-flex> -->
                  <v-flex xs12 sm6>
                   <v-text-field ref="editedItem.nome"
                                 @blur="editUserInputs(false)"
@@ -126,11 +126,11 @@
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
         <td class="justify-center layout px-0"> 
-        <v-radio class="justify-center layout px-0"
+         <v-checkbox class="justify-center layout px-0"
           v-model="props.selected"
           primary
           hide-details
-        ></v-radio>
+        ></v-checkbox>
         </td>
         <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
@@ -468,9 +468,8 @@
             await this.fillImgInfo(0,this.editedItem)
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
-            console.log("antes de ad ", this.editedItem)
-            this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
-            console.log("apos ",this.editedItem)
+            const row_id = await this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
+            this.editedItem._id = row_id
             this.decrementProdutos(false)//qd passo flag flase, eu INCREMENTO 
         }
         //this.saveProdutos()

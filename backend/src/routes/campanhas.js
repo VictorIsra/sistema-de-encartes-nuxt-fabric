@@ -129,8 +129,10 @@ router.put('/campanhas/removeRow',async(req,res)=>{
     //rempve uma linha da tabela
     const campanha_id = req.body.campanha_id
     const row_id = req.body.row_id
+    //n exclui mais pois agora s imgs vem de uma base comum!
     const imgPath = req.body.path//path da img q irei excluir
-    if(imgPath !== undefined){//será undefined caso o item n tenha foto associada
+    //só pode excluir img da base de dados, que é essa campanha hardcoded
+    if(imgPath !== undefined && campanha_id === '5d2f6b45384572128c682715'){//será undefined caso o item n tenha foto associada
         axios.post('/campanhas/removeImg',{
             path: imgPath
         }).then(r => console.log("deleteeei"))

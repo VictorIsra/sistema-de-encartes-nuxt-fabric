@@ -1,6 +1,5 @@
 <template>
   <div>
-    <v-card>
       <v-toolbar flat color="grey lighten-4">
           <v-toolbar-title>
             <v-layout align-center class="mr-2 primary--text">
@@ -14,6 +13,16 @@
             vertical
           ></v-divider>
       </v-toolbar>
+        <v-layout>
+          <v-toolbar v-if="userType === 'diretor'">
+            <no-ssr>
+                <v-list class="scroll-y">
+                    <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="onSelectImage">
+                    </vue-select-image>
+                </v-list>
+            </no-ssr>       
+          </v-toolbar>
+        </v-layout>  
         <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
         <span class="title font-weight-regular primary--text">Clique em uma linha para ver as observações relativas a demanda</span>
         <v-spacer></v-spacer> 
@@ -41,9 +50,9 @@
             <v-card-text  > <!-- informacoes de adicionar e deletar (é um form)-->
               <v-container grid-list-md >
                 <v-layout wrap>
-                  <v-flex xs12>
+                 <!-- <v-flex xs12>
                   <img-upload @blur="editUserInputs(false)" :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
-                  </v-flex>
+                  </v-flex> -->
                   <v-flex xs12 sm6>
                     <v-text-field ref="editedItem.nome"
                                   @blur="editUserInputs(false)"
@@ -108,10 +117,18 @@
         :items="itens"
         class="elevation-1"
         :search="search"
-        item-key="data_i"
+        v-model="selected"
+        item-key="_id"
       > 
         <template v-slot:items="props"> <!-- {{ props.item.img }}-->
           <tr @click="props.expanded = !props.expanded">
+             <td class="justify-center layout px-0"> 
+              <v-checkbox class="justify-center layout px-0"
+                v-model="props.selected"
+                primary
+                hide-details
+              ></v-checkbox>
+            </td>
             <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
             <td class="text-xs-center">{{ props.item.nome }}</td>
             <td class="text-xs-center">{{ props.item.data_i }}</td>
@@ -185,7 +202,6 @@
       <template v-else>
         <v-btn color="primary" to="/analise">Voltar para análise</v-btn>
       </template>
-    </v-card>  
   </div>
 </template>
 
@@ -209,6 +225,12 @@
     
     props:['campanhaInfos'],
     data: () => ({
+      //variaveis necessarias pra lidar c lista de produtos do si
+      dataImages: [],
+      selected: [],//objetos selecionados  ( linhas da tabela selecionadas)
+      selectedImg: '', //imagem da lista de produtos selecionada
+      imgs: [],//imgs cadastradas no si
+      //fim variaveis nece p lidar c lsita de produtos di si
       userType: '',//saber o tipo de user
       canAdd: undefined,//flag q indicará se posso adicionar o botao ou n
       campanha_id: undefined,//ao cadastrar um produto, ele gerará esse id. uma mini demanda é uma campanha com certos valores default, por isso,salvo a demanda como uma campanha com valores default,
@@ -252,6 +274,7 @@
       },
       //fim info relativas ao uplode e img ^
       headers: [
+        { text: 'SELECIONADO', value: 'sel' },
         { text: 'IMAGEM', value: 'img' ,align: 'center' },
         { text: 'PRODUTO', value: 'nome',align: 'center' },
         { text: 'DATA DE INÍCIO', value: 'data_i' ,align: 'center' },
@@ -329,10 +352,58 @@
         this.userType = this.$store.state.auth.userType
         this.campanha_id = this.$route.params.campanha_id
         this.canAdd = this.$route.params.canAdd
-        if(this.campanha_id !== undefined && this.campanha_id !== '-1')
+        if(this.campanha_id !== undefined && this.campanha_id !== '-1'){
+          this.fetchProdList()
           this.fetchProdutos()
-        else
+        }  
+        else{
+          this.fetchProdList()
           console.log("escolhaprodutos.vue : nenhum id valido por hora ",this.campanha_id)  
+        }
+      },
+      async fetchProdList(){//pega produtos cadastrados no si
+            const prodListID = '5d2f6b45384572128c682715'//é unico no programa todo
+            const lista = await this.getProdutos(prodListID)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+            lista.forEach(p => {
+                if(p.img !== undefined && p.img !== '')
+                    this.imgs.push( {
+                      img:p.img,
+                      prodNome: p.nome
+                    })
+            })
+            this.prepareProdInfo()
+        },
+        prepareProdInfo(){//prepara oq sera exibido na lista de prod cadastrados
+            this.imgs.forEach((img,i) => {
+                let temp =  "../../../uploads/fotos/" + img.img.name
+                this.dataImages.push({  
+                    src: temp,
+                    alt: img.prodNome,
+                    originalName: img.img.originalName
+                })
+            })
+        },
+        onSelectImage(selected){//passado como arg indireto pelo compo vue-img
+        this.selectedImg = selected
+        this.ajustPath()
+      },
+      ajustPath(){//ajusta o path da img tanto rela qt abs
+          let savedName = this.selectedImg.src.match(/[^/]+$/)//img com nome doido q é salva no static/uploads/img
+          this.selected.forEach(item => {
+            if(item.img === 'undefined '|| item.img === ''){//se n tiver foto associada
+              item.img = {
+                originalName: this.selectedImg.originalName,
+                name: savedName,
+                src:"static/uploads/fotos/" + savedName
+              }
+            }
+            else{//se tiver,atualizo c a img selecionada
+              item.img.originalName = this.selectedImg.originalName,
+              item.img.name = savedName
+              item.img.name.src = "static/uploads/fotos/" + savedName
+            }
+            this.updateRow(item, this.campanha_id)
+          })
       },
       prepareImgInfo(currentItem){//envia pro componente filho image_uload.vue os valores ( sao props no comp filho) a serem colocados ao abrir a aba/form de edit
         //é dif do cached info, pois aqui, é alimentado com info do db, e o db n salva a url ( pq é um buffer) e tal
@@ -418,7 +489,8 @@
             await this.fillImgInfo(0,this.editedItem)
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
-            this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
+            const row_id = await this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
+            this.editedItem._id = row_id//na real nem precisava passa isso como arg mas foda-se
         }
         //this.saveProdutos()
         this.close()      

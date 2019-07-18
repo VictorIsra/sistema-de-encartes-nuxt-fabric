@@ -13,8 +13,8 @@ export default {
         },
         async removeCampanha(campanha_id,produtos){
             try{
-                await this.removeImgs(produtos)
-                console.log("imgs removidas,agora irei remover campanah de id ", campanha_id)
+               // await this.removeImgs(produtos) n mais ja que agora as imgs sao pegas da base de produtos
+                //console.log("imgs removidas,agora irei remover campanah de id ", campanha_id)
                 api.campanha.removeCampanha({
                     campanha_id
                 })
