@@ -1,7 +1,15 @@
 <!-- //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
 -->
 <template>
-  <div> 
+  <div>
+     <v-toolbar>
+        <no-ssr>
+            <v-list class="scroll-y">
+                <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="onSelectImage">
+                </vue-select-image>
+            </v-list>
+        </no-ssr>       
+    </v-toolbar>
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
     <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{produtosQtdadeInfo.qtdade}}/{{produtosQtdadeInfo.meta}}</span>
       <v-spacer></v-spacer>
@@ -111,11 +119,20 @@
     <!-- campos que faram binds inportantes, como o search -->
     <v-data-table 
       :headers="headers"
-      :items="itens"
+      :items="indexedItens"
       class="elevation-1"
       :search="search"
+      v-model="selected"
+      item-key="id"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
+        <td class="justify-center layout px-0"> 
+        <v-checkbox class="justify-center layout px-0"
+          v-model="props.selected"
+          primary
+          hide-details
+        ></v-checkbox>
+        </td>
         <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
         <td class="text-xs-center">{{ props.item.qtdade }}</td>
@@ -188,6 +205,12 @@
     ],
     props:['campanha_id','campanhaInfos'],
     data: () => ({
+      //variaveis necessarias pra lidar c lista de produtos do si
+      dataImages: [],
+      selected: [],//objetos selecionados  ( linhas da tabela selecionadas)
+      selectedImg: '', //imagem da lista de produtos selecionada
+      imgs: [],//imgs cadastradas no si
+      //fim variaveis nece p lidar c lsita de produtos di si
       produtosQtdadeInfo: {//referente a qtdade de protudos cadastrados e metas, nao é o this.campanhaInfo.produtos ou this.campanhaInfo.qtdade pois este só da o fetch uma unica vez, vou mudar seu valor a lvl de app, e a lvl de bd somente atraves da pag de campanhas ;)
         meta: '',
         qtdade: ''
@@ -228,7 +251,7 @@
       },
       //fim info relativas ao uplode e img ^
       headers: [
-        
+        { text: 'SELECIONADO', value: 'sel' },
         { text: 'IMAGEM', value: 'img' },
         { text: 'PRODUTO', value: 'nome' },
         { text: 'ESTOQUE', value: 'qtdade' },
@@ -272,6 +295,12 @@
       }
     }),
     computed: {
+      indexedItens () {//se n ele perde o id no table..mt eskisito, mas assim funfa xDD
+        return this.itens.map((item, index) => ({
+            id: index,
+            ...item
+          }))
+      },
       formTitle () {
         return this.editedIndex === -1 ? 'Novo Produto:' : 'Editando Produto:'
       }
@@ -306,10 +335,59 @@
     },
     methods: {
       initialize () {
-        if(this.campanha_id !== undefined && this.campanha_id !== '-1')
+        if(this.campanha_id !== undefined && this.campanha_id !== '-1'){
+          this.fetchProdList()
           this.fetchProdutos()
+        }  
         else
           console.log("escolhaprodutos.vue : nenhum id valido por hora ")  
+      },
+      async fetchProdList(){//pega produtos cadastrados no si
+            const prodListID = '5d2f6b45384572128c682715'//é unico no programa todo
+            const lista = await this.getProdutos(prodListID)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+            lista.forEach(p => {
+                if(p.img !== undefined && p.img !== '')
+                    this.imgs.push( {
+                      img:p.img,
+                      prodNome: p.nome
+                    })
+            })
+            this.prepareProdInfo()
+        },
+        prepareProdInfo(){//prepara oq sera exibido na lista de prod cadastrados
+            this.imgs.forEach((img,i) => {
+              console.log("aaee ", img)
+                let temp =  "../../../uploads/fotos/" + img.img.name
+                this.dataImages.push({  
+                    id:i,
+                    src: temp,
+                    alt: img.prodNome,
+                    originalName: img.img.originalName
+                })
+            })
+        },
+        onSelectImage(selected){//passado como arg indireto pelo compo vue-img
+        this.selectedImg = selected
+        console.log("selecionado: ",this.selectedImg)
+        this.ajustPath()
+      },
+      ajustPath(){//ajusta o path da img tanto rela qt abs
+          let savedName = this.selectedImg.src.match(/[^/]+$/)//img com nome doido q é salva no static/uploads/img
+          this.selected.forEach(item => {
+            if(item.img === 'undefined '|| item.img === ''){//se n tiver foto associada
+              item.img = {
+                originalName: this.selectedImg.originalName,
+                name: savedName,
+                src:"static/uploads/fotos/" + savedName
+              }
+            }
+            else{//se tiver,atualizo c a img selecionada
+              item.img.originalName = this.selectedImg.originalName,
+              item.img.name = savedName
+              item.img.name.src = "static/uploads/fotos/" + savedName
+            }
+            this.updateRow(item, this.campanha_id)
+          })
       },
       prepareImgInfo(currentItem){//envia pro componente filho image_uload.vue os valores ( sao props no comp filho) a serem colocados ao abrir a aba/form de edit
         //é dif do cached info, pois aqui, é alimentado com info do db, e o db n salva a url ( pq é um buffer) e tal

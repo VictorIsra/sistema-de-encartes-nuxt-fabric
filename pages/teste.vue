@@ -304,10 +304,6 @@
       }
     },
     watch: {
-      selected(){
-        console.log("vejamso seleca ",this.selected)
-        
-      },
       dialog (val) {
         val || this.close()
       },
@@ -563,12 +559,6 @@
         }  
         return this.valid
       },
-      getImgURL2(img){
-          console.log("img", img , " z ")
-        //se uma img nao tiver sido escolhida, retorne enm branco
-        const path = img.name === undefined ? "" : "../../../uploads/fotos/" + img.name
-        return path
-        },
         getImgURL3(){
             this.imgs.forEach((img,i) => {
               console.log("aaee ", img)
