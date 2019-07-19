@@ -36,7 +36,7 @@
               <!--   <v-flex xs12>
                  <img-upload @blur="editUserInputs(false)" :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
                 </v-flex> -->
-                 <v-flex xs12 sm6>
+                 <v-flex xs12 sm6 >
                   <v-text-field ref="editedItem.nome"
                                 @blur="editUserInputs(false)"
                                 v-model.trim="editedItem.nome"

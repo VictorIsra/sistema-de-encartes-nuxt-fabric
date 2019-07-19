@@ -51,12 +51,20 @@
                 <v-toolbar>
                         <v-list class="scroll-y">
                             <v-list-tile v-for="(img,i) in imgs" :key="i" class="listaHorizontal" >
-                                <v-list-tile-content><!-- context menu é o botao direto, fundamental p n da merda-->
-                                    <img class="image" @contextmenu.prevent @click="addImg(img,i)" :src="getImgURL(img,i)" width="100px" height="100px" v-bind:alt="img.src">
+                                <v-list-tile-content @click="addText(img.alt)">{{img.alt}}
+                                 
                                 </v-list-tile-content>
                             </v-list-tile>
                         </v-list>
-                </v-toolbar>
+                </v-toolbar> 
+                <v-toolbar>
+        <no-ssr>
+            <v-list class="scroll-y">
+                <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="addImg">
+                </vue-select-image>
+            </v-list>
+        </no-ssr>       
+    </v-toolbar>
             </template>
             <template v-else>
                 <v-toolbar flat color="grey lighten-4">
@@ -88,8 +96,18 @@ import {fabric}  from "fabric"
 export default {
     mixins: [
       crudMixin
-    ],
+    ],/*
+    
+     new fabric.Textbox('Lorum ipsum dolor sit amet', {
+        left: 50,
+        top: 50,
+        width: 150,
+        fontSize: 20
+        });*/
    data: () => ({
+        fonts: ["Pacifico", "VT323", "Quicksand", "Inconsolata"],
+        textbox:'',
+       dataImages: [],
         tobg: false,
         checkbox: true,
         download: '',
@@ -100,6 +118,7 @@ export default {
         img: '',
         itens: '',//imgs, futuramente texto..etc,
         imgs: [],
+
         campanha_id: undefined,
         imgsList: []
     }),
@@ -115,7 +134,7 @@ export default {
                 this.setBackground()
         }
     },
-    mounted() {
+    mounted() { 
         this.canvas = new fabric.Canvas('c')
         this.canvas.setHeight(1000)
         this.canvas.setWidth(1000)
@@ -142,20 +161,70 @@ export default {
             if(this.campanha_id === undefined)
                 this.$router.push('/tabloides')
             else{
+               // this.fetchProdList()
                 this.fetchProdutos()//console.log("ID: ", this.campanha_id) 
                 this.carregarTabloide()
             }        
+        },
+        async fetchProdList(){//pega produtos cadastrados no si
+           // const lista = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+            this.imgs.forEach(p => {
+                
+                if(p.img !== undefined && p.img !== '')
+                    this.imgsList.push( {
+                      img:p.img,
+                      prodNome: p.nome,
+                      qtdade: p.qtdade,
+                      unidade: p.unidade,
+                      preco_c: p.preco_c,
+                      preco_v: p.preco_v
+                
+                    })
+                    p.img.alt = p.nome
+            })
+            console.log("veja  ", this.imgs)
+            this.prepareProdInfo()
+        },
+        prepareProdInfo(){//prepara oq sera exibido na lista de prod cadastrados
+            // this.imgs.forEach((img,i) => {
+
+                
+            //     let temp =  "../../../uploads/fotos/" + img.img.name
+            //     this.dataImages.push({  
+            //         id:i,
+            //         src: temp,
+            //         alt: img.prodNome,
+            //         prodNome: img.prodNome,
+            //           qtdade: img.qtdade,
+            //           unidade: img.unidade,
+            //           preco_c: img.preco_c,
+            //           preco_v: img.preco_v,
+            //         originalName: img.img.originalName
+            //     })
+            // })
+            this.dataImages = this.imgs
+            console.log("kkk " ,this.dataImages)
         },
         async fetchProdutos(){
             console.log("no fetc ", this.campanha_id)
             this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             this.itens.forEach(p => {
-                if(p.img !== undefined && p.img !== '')
+                if(p.img !== undefined && p.img !== ''){
+                    p.img.alt = p.nome
                     this.imgs.push( p.img)
+
+                }    
+            })
+            this.imgs.forEach((img,i) => {
+                this.dataImages.push(img)
+                this.dataImages[i].src = this.getImgURL(img)
+
             })
         },
+        
         getImgURL(img){
         //se uma img nao tiver sido escolhida, retorne enm branco
+        console.log("entrou c ",img)
         const path = img.name === undefined ? "" : "../../../uploads/fotos/" + img.name
         return path
         },
@@ -163,7 +232,6 @@ export default {
             const jsonTabloide = await this.loadTabloide(this.campanha_id)
             this.canvas.loadFromJSON(jsonTabloide.data.tabloide)
             this.canvas.renderAll()
-            console.log("carregou ")
         },
         salvarTabloide(){
             var json = JSON.stringify(this.canvas.toJSON())
@@ -203,9 +271,14 @@ export default {
         },
         //METODOS RELATIVOS AO CANVAS/FABRIC
         addImg(img,i){
-            //console.log("adicionando img de indice ",i)
+            console.log("adicionando img de indice ",img)
             const relaPath = "../../../uploads/fotos/" + img.name
             this.addImgToCanvas(relaPath,img)//parece estranho eu n passar simplesmente img, mas o fabric é eskisito...entao vai assim
+        },
+        addText(text){
+           text = new fabric.Text('hello world',{ left: 0, top: 0 });
+            this.canvas.add(text)
+            alert("Kkk")
         },
          addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
             fabric.Image.fromURL(path,(img)=>{
