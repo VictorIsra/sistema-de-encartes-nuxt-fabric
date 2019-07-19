@@ -57,12 +57,14 @@
                         <vue-select-image :useLabel="true" :dataImages="dataImages" h='30px' w='30px' @onselectimage="addImg">
                         </vue-select-image>
                     </v-list>
-                    
+
                         <v-divider
                             class="mx-2"
                             inset
                             vertical
                         ></v-divider>
+                        <v-btn @click="bring(false)">FRENTE</v-btn>
+                        <v-btn @click="bring(true)">TRÁS</v-btn>
                     <v-flex xs1 class="subheading primary--text">FONTE:</v-flex>
                     <v-flex xs2>
                          <v-select
@@ -178,7 +180,8 @@ font-family: 'Indie Flower', cursive; */
         }
     },
     mounted() { 
-        this.canvas = new fabric.Canvas('c')
+        this.canvas = new fabric.Canvas('c',{
+        preserveObjectStacking: true})
         this.canvas.setHeight(1000)
         this.canvas.setWidth(1000)
         this.userType = this.$store.state.auth.userType
@@ -285,19 +288,21 @@ font-family: 'Indie Flower', cursive; */
             const relaPath = "../../../uploads/fotos/" + img.name
             const text = new fabric.IText(img.alt,{ top: 150 });
             this.canvas.add(text)
-            console.log("veeeeee ",img)
             const preco = new fabric.IText(img.preco_v,{ top: 200 });
             this.canvas.add(preco)
             this.addImgToCanvas(relaPath,img)//parece estranho eu n passar simplesmente img, mas o fabric é eskisito...entao vai assim
-        },
+            //    this.canvas.sendToBack(relaPath,img);
+
+       },
         
          addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
             fabric.Image.fromURL(path,(img)=>{
                 img.scaleToWidth(150)//dif de crop, aqui literalmente "redimensiona"
                 img.scaleToHeight(150)
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
-                if(!this.tobg)
+                if(!this.tobg){
                     this.canvas.add(temp)
+                }    
                 else
                    this.setBackground(path,img)    
             })//{canvas: this.canvas})//n funciona passar esse arg...doc lixoooo
@@ -324,14 +329,15 @@ font-family: 'Indie Flower', cursive; */
                     doomedObj.forEachObject((obj) => {
                         obj.set("fontFamily", this.selectionFont)
                     });
-                    this.canvas.requestRenderAll()
+                    this.canvas.renderAll()
+
                 }
                 else{
                 //um unico objeto selecionado
                 var activeObject = this.canvas.getActiveObject();
                     if(activeObject !== null ) {
                         this.canvas.getActiveObject().set("fontFamily", this.selectionFont)
-                        this.canvas.requestRenderAll()
+                        this.canvas.renderAll()
                     }
                 }
                         
@@ -345,7 +351,8 @@ font-family: 'Indie Flower', cursive; */
                     doomedObj.canvas = this.canvas
                     doomedObj.forEachObject((obj) => {
                         obj.setColor(font)
-                        this.canvas.requestRenderAll()
+                        this.canvas.renderAll()
+
                     });
                 }
                 else{
@@ -353,14 +360,40 @@ font-family: 'Indie Flower', cursive; */
                 var activeObject = this.canvas.getActiveObject();
                     if(activeObject !== null ) {
                         this.canvas.getActiveObject().setColor(font)
-                        this.canvas.requestRenderAll()
+                        this.canvas.renderAll()
+                    }
+                }
+                        
+            } 
+        }, bring(back = false){//remove do canvas o(s) objeto(s) que está selecionado
+            if(this.canvas.getActiveObject() !== undefined || this.canvas.getActiveObject() !== null){
+                let doomedObj = this.canvas.getActiveObject();
+
+                if (doomedObj.type === 'activeSelection') {
+                    //lembre de arro f pra referenciar o this sem ko
+                    doomedObj.canvas = this.canvas
+                    doomedObj.forEachObject((obj) => {
+                        if(!back)
+                            this.canvas.bringToFront(obj)
+                        else
+                          this.canvas.sendToBack(obj)
+                    });
+                }
+                else{
+                //um unico objeto selecionado
+                var activeObject = this.canvas.getActiveObject();
+                    if(activeObject !== null ) {
+                        if(!back)
+                            this.canvas.bringToFront(activeObject)
+                        else
+                          this.canvas.sendToBack(activeObject)
                     }
                 }
                         
             } 
         },
         removeSelected(){//remove do canvas o(s) objeto(s) que está selecionado
-            if(this.canvas.getActiveObject() !== undefined){
+            if(this.canvas.getActiveObject() !== undefined || this.canvas.getActiveObject() !== null){
                 let doomedObj = this.canvas.getActiveObject();
 
                 if (doomedObj.type === 'activeSelection') {
