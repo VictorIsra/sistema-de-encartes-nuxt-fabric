@@ -165,12 +165,6 @@ font-family: 'Indie Flower', cursive; */
         },
         selectionFont(){
             this.changeTextFamily(this.selectionFont)
-            // if(this.canvas.getActiveObject() !== undefined){
-            //    this.loadAndUse(this.selectionFont)
-              
-            //    this.canvas.requestRenderAll();
-            // }
-            
         },
         checkbox(){
             if(this.checkbox === true)
@@ -219,53 +213,16 @@ font-family: 'Indie Flower', cursive; */
                 this.carregarTabloide()
             }        
         },
-        async fetchProdList(){//pega produtos cadastrados no si
-           // const lista = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
-            this.imgs.forEach(p => {
-                
-                if(p.img !== undefined && p.img !== '')
-                    this.imgsList.push( {
-                      img:p.img,
-                      prodNome: p.nome,
-                      qtdade: p.qtdade,
-                      unidade: p.unidade,
-                      preco_c: p.preco_c,
-                      preco_v: p.preco_v
-                
-                    })
-                    p.img.alt = p.nome
-            })
-            console.log("veja  ", this.imgs)
-            this.prepareProdInfo()
-        },
-        prepareProdInfo(){//prepara oq sera exibido na lista de prod cadastrados
-            // this.imgs.forEach((img,i) => {
-
-                
-            //     let temp =  "../../../uploads/fotos/" + img.img.name
-            //     this.dataImages.push({  
-            //         id:i,
-            //         src: temp,
-            //         alt: img.prodNome,
-            //         prodNome: img.prodNome,
-            //           qtdade: img.qtdade,
-            //           unidade: img.unidade,
-            //           preco_c: img.preco_c,
-            //           preco_v: img.preco_v,
-            //         originalName: img.img.originalName
-            //     })
-            // })
-            this.dataImages = this.imgs
-            console.log("kkk " ,this.dataImages)
-        },
+        
+     
         async fetchProdutos(){
             console.log("no fetc ", this.campanha_id)
             this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             this.itens.forEach(p => {
                 if(p.img !== undefined && p.img !== ''){
                     p.img.alt = p.nome
+                    p.img.preco_v = p.preco_v
                     this.imgs.push( p.img)
-
                 }    
             })
             this.imgs.forEach((img,i) => {
@@ -328,6 +285,9 @@ font-family: 'Indie Flower', cursive; */
             const relaPath = "../../../uploads/fotos/" + img.name
             const text = new fabric.IText(img.alt,{ top: 150 });
             this.canvas.add(text)
+            console.log("veeeeee ",img)
+            const preco = new fabric.IText(img.preco_v,{ top: 200 });
+            this.canvas.add(preco)
             this.addImgToCanvas(relaPath,img)//parece estranho eu n passar simplesmente img, mas o fabric é eskisito...entao vai assim
         },
         
