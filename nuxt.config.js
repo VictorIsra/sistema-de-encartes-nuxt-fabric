@@ -3,7 +3,12 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 module.exports = {
   mode: 'universal',
-
+  
+  // webfontloader:{
+  //   google:{
+  //     families: ['Roboto:400,700']['Open Sans:400,700']['Hanalei:400,700']
+  //   }
+  // },  
   /*
   ** Headers of the page
   */
@@ -47,7 +52,7 @@ module.exports = {
   plugins: [
     '@/plugins/vuetify',
     '~/api/init.js',
-    { src: '~/plugins/imgPlugin.js', ssr: false }
+    { src: '~/plugins/imgPlugin.js', ssr: false },
   ],
 
   /*

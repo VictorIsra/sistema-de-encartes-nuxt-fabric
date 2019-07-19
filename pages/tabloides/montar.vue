@@ -1,5 +1,6 @@
 <template>
         <v-card class="teste">
+            
             <template v-if="userType === 'tabloide'">
                 <v-toolbar flat color="grey lighten-4">
                     <v-toolbar-title>
@@ -15,7 +16,7 @@
                     <v-card-title color="grey lighten-4" class="justify-center">
                         
                         <div>
-                            <v-btn round color="warning" @click="removeSelected">remover imagem selecionada</v-btn>
+                            <v-btn round color="warning" @click="removeSelected">remover seleção</v-btn>
                         </div>
                     </v-card-title>
                     <v-divider
@@ -49,21 +50,12 @@
                         </v-layout>
                 </v-toolbar>
                 <v-toolbar>
-                        <v-list class="scroll-y">
-                            <v-list-tile v-for="(img,i) in imgs" :key="i" class="listaHorizontal" >
-                                <v-list-tile-content @click="addText(img.alt)">{{img.alt}}
-                                 
-                                </v-list-tile-content>
-                            </v-list-tile>
-                        </v-list>
-                </v-toolbar> 
-                <v-toolbar>
-        <no-ssr>
-            <v-list class="scroll-y">
-                <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="addImg">
-                </vue-select-image>
-            </v-list>
-        </no-ssr>       
+                <no-ssr>
+                    <v-list class="scroll-y">
+                        <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="addImg">
+                        </vue-select-image>
+                    </v-list>
+                </no-ssr>       
     </v-toolbar>
             </template>
             <template v-else>
@@ -79,7 +71,12 @@
                 class="mx-2"
                 inset
                 ></v-divider>
+                <v-layout row>
                 <canvas  id="c" class="canvas-wrapper"></canvas>
+                  <no-ssr>
+                    <chrome-picker v-model="colors"></chrome-picker>                      
+                    </no-ssr>
+                </v-layout>
            <!-- <ul>
                 <li v-for="(img,i) in imgs" :key="i">
                     <img class="image" @click="addImg(img,i)" :src="getImgURL(img,i)" width="50px" height="50px" v-bind:alt="img.src">
@@ -92,19 +89,29 @@
 import crudMixin from '../../components/mixins/CRUD.js'
 //import jsPDF from "jspdf"
 //import html2canvas from "html2canvas"
+import { Compact, Chrome} from 'vue-color'
 import {fabric}  from "fabric"
+
 export default {
     mixins: [
       crudMixin
     ],/*
-    
+    c
      new fabric.Textbox('Lorum ipsum dolor sit amet', {
         left: 50,
         top: 50,
         width: 150,
         fontSize: 20
         });*/
+    components:{
+        'compact-picker': Compact,
+        'chrome-picker':Chrome
+    },
    data: () => ({
+       colors: '#194d33',
+       selectionFont: 'Times New Roman',//font inicial de um texto
+        opcao: 'IMAGENS',
+        radioGroup: '',
         fonts: ["Pacifico", "VT323", "Quicksand", "Inconsolata"],
         textbox:'',
        dataImages: [],
@@ -123,6 +130,18 @@ export default {
         imgsList: []
     }),
     watch:{
+        colors(){
+            this.changeTextColor(this.colors.hex8)
+        },
+        selectionFont(){
+            alert("mudeiii")
+            // if(this.canvas.getActiveObject() !== undefined){
+            //    this.loadAndUse(this.selectionFont)
+              
+            //    this.canvas.requestRenderAll();
+            // }
+            
+        },
         checkbox(){
             if(this.checkbox === true)
                 this.salvarComo = 'baixar em PDF'
@@ -142,6 +161,10 @@ export default {
         this.checkRedirect()
     },
     methods: {
+        // loadAndUse(font) {
+        //   this.changeTextColor(font)
+            
+        // },
         submeterAvaliacao(){//envia tabloide/campanha para o diretor
             this.salvarTabloide()
             this.changeCampanhaStatus('em avaliação')
@@ -273,13 +296,11 @@ export default {
         addImg(img,i){
             console.log("adicionando img de indice ",img)
             const relaPath = "../../../uploads/fotos/" + img.name
+            const text = new fabric.IText(img.alt,{ top: 150 });
+            this.canvas.add(text)
             this.addImgToCanvas(relaPath,img)//parece estranho eu n passar simplesmente img, mas o fabric é eskisito...entao vai assim
         },
-        addText(text){
-           text = new fabric.Text('hello world',{ left: 0, top: 0 });
-            this.canvas.add(text)
-            alert("Kkk")
-        },
+        
          addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
             fabric.Image.fromURL(path,(img)=>{
                 img.scaleToWidth(150)//dif de crop, aqui literalmente "redimensiona"
@@ -303,6 +324,28 @@ export default {
    
             })
         
+        },
+        changeTextColor(font){
+             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
+                let doomedObj = this.canvas.getActiveObject();
+                if (doomedObj.type === 'activeSelection') {
+                    //lembre de arro f pra referenciar o this sem ko
+                    doomedObj.canvas = this.canvas
+                    doomedObj.forEachObject((obj) => {
+                        obj.setColor(font)
+                        this.canvas.requestRenderAll()
+                    });
+                }
+                else{
+                //um unico objeto selecionado
+                var activeObject = this.canvas.getActiveObject();
+                    if(activeObject !== null ) {
+                        this.canvas.getActiveObject().setColor(font)
+                        this.canvas.requestRenderAll()
+                    }
+                }
+                        
+            } 
         },
         removeSelected(){//remove do canvas o(s) objeto(s) que está selecionado
             if(this.canvas.getActiveObject() !== undefined){
@@ -341,6 +384,7 @@ export default {
 .teste{
     background-color: darkgrey;
 }
+
 .canvas-wrapper {
     width: 900px;
     min-height: 600px;
