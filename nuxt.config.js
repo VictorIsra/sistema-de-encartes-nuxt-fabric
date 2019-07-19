@@ -53,6 +53,7 @@ module.exports = {
     '@/plugins/vuetify',
     '~/api/init.js',
     { src: '~/plugins/imgPlugin.js', ssr: false },
+    { src: '~/plugins/fontPicker.js', ssr: false },
   ],
 
   /*

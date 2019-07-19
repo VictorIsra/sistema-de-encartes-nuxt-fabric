@@ -2,7 +2,7 @@
         <v-card class="teste">
             
             <template v-if="userType === 'tabloide'">
-                <v-toolbar flat color="grey lighten-4">
+                <v-toolbar flat class="borda">
                     <v-toolbar-title>
                         <v-layout align-center class="mr-2 primary--text">
                             <v-btn round @click="voltar" color="primary">Voltar</v-btn>
@@ -14,7 +14,6 @@
                     vertical
                     ></v-divider>
                     <v-card-title color="grey lighten-4" class="justify-center">
-                        
                         <div>
                             <v-btn round color="warning" @click="removeSelected">remover seleção</v-btn>
                         </div>
@@ -49,12 +48,29 @@
                             <v-btn round @click="salvarTabloide" color="primary">Salvar tabloide</v-btn>
                         </v-layout>
                 </v-toolbar>
-                <v-toolbar>
+                
+               
+                <v-toolbar class="borda">
                 <no-ssr>
+                    
                     <v-list class="scroll-y">
-                        <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="addImg">
+                        <vue-select-image :useLabel="true" :dataImages="dataImages" h='30px' w='30px' @onselectimage="addImg">
                         </vue-select-image>
                     </v-list>
+                    
+                        <v-divider
+                            class="mx-2"
+                            inset
+                            vertical
+                        ></v-divider>
+                    <v-flex xs1 class="subheading primary--text">FONTE:</v-flex>
+                    <v-flex xs2>
+                         <v-select
+                            :items="fonts"
+                            v-model="selectionFont"
+                            
+                        ></v-select>
+                    </v-flex>
                 </no-ssr>       
     </v-toolbar>
             </template>
@@ -70,13 +86,20 @@
             <v-divider
                 class="mx-2"
                 inset
-                ></v-divider>
+                ></v-divider>      
                 <v-layout row>
-                <canvas  id="c" class="canvas-wrapper"></canvas>
+                    <v-flex>
+                 <canvas  id="c" class="canvas-wrapper"></canvas>
+                 
+                    </v-flex>
                   <no-ssr>
-                    <chrome-picker v-model="colors"></chrome-picker>                      
+                    <template>  
+                    <chrome-picker class="borda" v-model="colors">
+                        </chrome-picker>
+                    </template>    
                     </no-ssr>
                 </v-layout>
+                
            <!-- <ul>
                 <li v-for="(img,i) in imgs" :key="i">
                     <img class="image" @click="addImg(img,i)" :src="getImgURL(img,i)" width="50px" height="50px" v-bind:alt="img.src">
@@ -91,7 +114,7 @@ import crudMixin from '../../components/mixins/CRUD.js'
 //import html2canvas from "html2canvas"
 import { Compact, Chrome} from 'vue-color'
 import {fabric}  from "fabric"
-
+ 
 export default {
     mixins: [
       crudMixin
@@ -109,10 +132,17 @@ export default {
     },
    data: () => ({
        colors: '#194d33',
+       /**font-family: 'Darker Grotesque', sans-serif;
+font-family: 'Roboto', sans-serif;
+font-family: 'Literata', serif;
+font-family: 'Oswald', sans-serif;
+font-family: 'Bahianita', cursive;
+font-family: 'Josefin Sans', sans-serif;
+font-family: 'Indie Flower', cursive; */
        selectionFont: 'Times New Roman',//font inicial de um texto
         opcao: 'IMAGENS',
         radioGroup: '',
-        fonts: ["Pacifico", "VT323", "Quicksand", "Inconsolata"],
+        fonts: [ 'Times New Roman',"Roboto", 'Literata' , 'Oswald', "Inconsolata",'Josefin Sans','Indie Flower','Amiri','Rokkitt'],
         textbox:'',
        dataImages: [],
         tobg: false,
@@ -134,7 +164,7 @@ export default {
             this.changeTextColor(this.colors.hex8)
         },
         selectionFont(){
-            alert("mudeiii")
+            this.changeTextFamily(this.selectionFont)
             // if(this.canvas.getActiveObject() !== undefined){
             //    this.loadAndUse(this.selectionFont)
               
@@ -325,6 +355,28 @@ export default {
             })
         
         },
+             changeTextFamily(font){
+             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
+                let doomedObj = this.canvas.getActiveObject();
+                if (doomedObj.type === 'activeSelection') {
+                    //lembre de arro f pra referenciar o this sem ko
+                    doomedObj.canvas = this.canvas
+                    doomedObj.forEachObject((obj) => {
+                        obj.set("fontFamily", this.selectionFont)
+                    });
+                    this.canvas.requestRenderAll()
+                }
+                else{
+                //um unico objeto selecionado
+                var activeObject = this.canvas.getActiveObject();
+                    if(activeObject !== null ) {
+                        this.canvas.getActiveObject().set("fontFamily", this.selectionFont)
+                        this.canvas.requestRenderAll()
+                    }
+                }
+                        
+            } 
+        },
         changeTextColor(font){
              if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
                 let doomedObj = this.canvas.getActiveObject();
@@ -372,23 +424,27 @@ export default {
 }
 //.canvas {
   //  border:1px solid black;	
-//}
+//}// #1976D2
 </script>
 
 <style scoped>
-
+@import url('https://fonts.googleapis.com/css?family=Bahianita|Darker+Grotesque|Indie+Flower|Josefin+Sans|Literata|Oswald|Roboto|Amiri|Cinzel|Patua+One|Permanent+Marker|Righteous|Rokkitt|Vollkorn&display=swap');
 .listaHorizontal{
     float: left;
     padding: 2px
 }
+
 .teste{
-    background-color: darkgrey;
+    background-color: darkgray
 }
 
 .canvas-wrapper {
     width: 900px;
     min-height: 600px;
     background-color: white;
+ }
+ .borda{
+    border: 4px ridge #1976D2;
  }
  .xd{
      background-color: white;
@@ -399,6 +455,8 @@ export default {
      left:0px;
      height: 100%;
      width: 99%;
+ }  
+ .largura{
  }
 </style>
 
