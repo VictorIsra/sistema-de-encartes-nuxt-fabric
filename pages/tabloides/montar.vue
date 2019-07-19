@@ -141,10 +141,10 @@ font-family: 'Oswald', sans-serif;
 font-family: 'Bahianita', cursive;
 font-family: 'Josefin Sans', sans-serif;
 font-family: 'Indie Flower', cursive; */
-       selectionFont: 'Times New Roman',//font inicial de um texto
+       selectionFont: 'PT Serif',//font inicial de um texto
         opcao: 'IMAGENS',
         radioGroup: '',
-        fonts: [ 'Times New Roman',"Roboto", 'Literata' , 'Oswald', "Inconsolata",'Josefin Sans','Indie Flower','Amiri','Rokkitt'],
+        fonts: [ 'PT Serif','Times New Roman',"Roboto", 'Literata' , 'Oswald', "Inconsolata",'Josefin Sans','Indie Flower','Amiri','Rokkitt'],
         textbox:'',
        dataImages: [],
         tobg: false,
@@ -286,19 +286,20 @@ font-family: 'Indie Flower', cursive; */
         addImg(img,i){
             console.log("adicionando img de indice ",img)
             const relaPath = "../../../uploads/fotos/" + img.name
-            const text = new fabric.IText(img.alt,{ top: 150 });
+            const text = new fabric.IText(img.alt,{ top: 100,fontSize: 20 });
             this.canvas.add(text)
-            const preco = new fabric.IText(img.preco_v,{ top: 200 });
+            const preco = new fabric.IText(img.preco_v,{ top: 125,fontSize: 20 });
             this.canvas.add(preco)
             this.addImgToCanvas(relaPath,img)//parece estranho eu n passar simplesmente img, mas o fabric é eskisito...entao vai assim
             //    this.canvas.sendToBack(relaPath,img);
 
        },
+       
         
          addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
             fabric.Image.fromURL(path,(img)=>{
-                img.scaleToWidth(150)//dif de crop, aqui literalmente "redimensiona"
-                img.scaleToHeight(150)
+                img.scaleToWidth(100)//dif de crop, aqui literalmente "redimensiona"
+                img.scaleToHeight(100)
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
                 if(!this.tobg){
                     this.canvas.add(temp)
@@ -307,16 +308,45 @@ font-family: 'Indie Flower', cursive; */
                    this.setBackground(path,img)    
             })//{canvas: this.canvas})//n funciona passar esse arg...doc lixoooo
         },
+
+
+     scaleAndPositionImage(bgImage) {
+        //setCanvasZoom();
+            console.log("bgimag ",bgImage)
+        //bgImage = fabric.Image.fromURL(bgImage)
+        var canvasAspect = this.canvas.width / this.canvas.height//  canvasWidth / canvasHeight;
+        var imgAspect = bgImage.width / bgImage.height;
+        var left, top, scaleFactor;
+
+        if (canvasAspect >= imgAspect) {
+            var scaleFactor = this.canvas.width / bgImage.width;
+            left = 0;
+            top = -((bgImage.height * scaleFactor) -  this.canvas.height) / 2;
+        } else {
+            var scaleFactor = this.canvas.height / bgImage.height;
+            top = 0;
+            left = -((bgImage.width * scaleFactor) - this.canvas.width) / 2;
+
+        }
+        alert("ue")
+        this.canvas.setBackgroundImage(bgImage, this.canvas.renderAll.bind(this.canvas), {
+            top: top,
+            left: left,
+            originX: 'left',
+            originY: 'top',
+            scaleX: scaleFactor,
+            scaleY: scaleFactor
+        });
+        this.canvas.renderAll();
+
+    },
         setBackground(path,img){
             
             fabric.Image.fromURL(path,(img)=>{
-                img.scaleToWidth(1000)//dif de crop, aqui literalmente "redimensiona"
-                img.scaleToHeight(1000)
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
-            
-                this.canvas.setBackgroundImage(temp)
-                this.canvas.renderAll()
-   
+                this.canvas.setBackgroundImage(temp,this.canvas.renderAll.bind(this.canvas), {
+                scaleX: this.canvas.width / temp.width,
+                scaleY: this.canvas.height /temp.height})
             })
         
         },
@@ -421,7 +451,7 @@ font-family: 'Indie Flower', cursive; */
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css?family=Bahianita|Darker+Grotesque|Indie+Flower|Josefin+Sans|Literata|Oswald|Roboto|Amiri|Cinzel|Patua+One|Permanent+Marker|Righteous|Rokkitt|Vollkorn&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Bahianita|PT+Serif|Darker+Grotesque|Indie+Flower|Josefin+Sans|Literata|Oswald|Roboto|Amiri|Cinzel|Patua+One|Permanent+Marker|Righteous|Rokkitt|Vollkorn&display=swap');
 .listaHorizontal{
     float: left;
     padding: 2px
