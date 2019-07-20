@@ -63,8 +63,23 @@
                             inset
                             vertical
                         ></v-divider>
-                        <v-btn @click="bring(false)">FRENTE</v-btn>
-                        <v-btn @click="bring(true)">TRÁS</v-btn>
+                            <div>
+                                <v-btn color="primary" fab medium dark @click="clearZoom">
+                                    <v-icon>remove_circle</v-icon>
+                                </v-btn>
+                            </div>
+                            <div>
+                                <v-btn color="primary" fab medium dark @click="canvas.setZoom(canvas.getZoom() / 1.1 )">
+                                    <v-icon>remove_circle</v-icon>
+                                </v-btn>
+                            </div>
+                             <div>
+                                <v-btn color="primary" fab medium dark @click=" canvas.setZoom(canvas.getZoom() * 1.1 )">
+                                    <v-icon>add</v-icon>
+                                </v-btn>
+                            </div>
+                            <v-btn color="primary" @click="bring(false)">FRENTE</v-btn>
+                            <v-btn color="primary"  @click="bring(true)">TRÁS</v-btn>
                     <v-flex xs1 class="subheading primary--text">FONTE:</v-flex>
                     <v-flex xs2>
                          <v-select
@@ -91,7 +106,7 @@
                 ></v-divider>      
                 <v-layout row>
                     <v-flex>
-                 <canvas  id="c" class="canvas-wrapper"></canvas>
+                 <canvas  id="c" class="canvas-wrapper" ></canvas>
                  
                     </v-flex>
                   <no-ssr>
@@ -117,6 +132,8 @@ import crudMixin from '../../components/mixins/CRUD.js'
 import { Compact, Chrome} from 'vue-color'
 import {fabric}  from "fabric"
  
+ 
+   
 export default {
     mixins: [
       crudMixin
@@ -132,6 +149,7 @@ export default {
         'compact-picker': Compact,
         'chrome-picker':Chrome
     },
+    
    data: () => ({
        colors: '#194d33',
        /**font-family: 'Darker Grotesque', sans-serif;
@@ -182,7 +200,7 @@ font-family: 'Indie Flower', cursive; */
     mounted() { 
         this.canvas = new fabric.Canvas('c',{
         preserveObjectStacking: true})
-        this.canvas.setHeight(1000)
+        this.canvas.setHeight(1540)
         this.canvas.setWidth(1000)
         this.userType = this.$store.state.auth.userType
         this.checkRedirect()
@@ -294,6 +312,10 @@ font-family: 'Indie Flower', cursive; */
             //    this.canvas.sendToBack(relaPath,img);
 
        },
+       clearZoom(){
+            this.canvas.setZoom(1);
+            this.canvas.renderAll()
+       },
        
         
          addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
@@ -312,7 +334,6 @@ font-family: 'Indie Flower', cursive; */
 
      scaleAndPositionImage(bgImage) {
         //setCanvasZoom();
-            console.log("bgimag ",bgImage)
         //bgImage = fabric.Image.fromURL(bgImage)
         var canvasAspect = this.canvas.width / this.canvas.height//  canvasWidth / canvasHeight;
         var imgAspect = bgImage.width / bgImage.height;
@@ -328,7 +349,6 @@ font-family: 'Indie Flower', cursive; */
             left = -((bgImage.width * scaleFactor) - this.canvas.width) / 2;
 
         }
-        alert("ue")
         this.canvas.setBackgroundImage(bgImage, this.canvas.renderAll.bind(this.canvas), {
             top: top,
             left: left,
@@ -395,10 +415,11 @@ font-family: 'Indie Flower', cursive; */
                 }
                         
             } 
-        }, bring(back = false){//remove do canvas o(s) objeto(s) que está selecionado
-            if(this.canvas.getActiveObject() !== undefined || this.canvas.getActiveObject() !== null){
+            
+        },
+        bring(back = false){//remove do canvas o(s) objeto(s) que está selecionado
+            if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
                 let doomedObj = this.canvas.getActiveObject();
-
                 if (doomedObj.type === 'activeSelection') {
                     //lembre de arro f pra referenciar o this sem ko
                     doomedObj.canvas = this.canvas
@@ -423,7 +444,7 @@ font-family: 'Indie Flower', cursive; */
             } 
         },
         removeSelected(){//remove do canvas o(s) objeto(s) que está selecionado
-            if(this.canvas.getActiveObject() !== undefined || this.canvas.getActiveObject() !== null){
+            if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
                 let doomedObj = this.canvas.getActiveObject();
 
                 if (doomedObj.type === 'activeSelection') {
@@ -480,6 +501,8 @@ font-family: 'Indie Flower', cursive; */
      width: 99%;
  }  
  .largura{
+     padding: 5px;
+     width: 10px;
  }
 </style>
 
