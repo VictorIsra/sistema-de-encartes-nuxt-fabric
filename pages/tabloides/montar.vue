@@ -65,7 +65,7 @@
                         ></v-divider>
                             <div>
                                 <v-btn color="primary" fab medium dark @click="clearZoom">
-                                    <v-icon>remove_circle</v-icon>
+                                    <v-icon>restore</v-icon>
                                 </v-btn>
                             </div>
                             <div>

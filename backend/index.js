@@ -8,8 +8,12 @@ const campanhaRoute = require('./src/routes/campanhas')
 // const path = require('path')
 const app = express()
 
+const bodyParser = require('body-parser');
 
 
+// Express 4.0
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 // app.post('/teste',(req,res)=>{
 //     const path = req.body.path   
 //     fs.unlink(path,(err)=>{
