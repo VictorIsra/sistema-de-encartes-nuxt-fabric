@@ -250,19 +250,19 @@
       },
       //fim info relativas ao uplode e img ^
       headers: [
-        { text: 'SELECIONADO', value: 'sel' },
-        { text: 'IMAGEM', value: 'img' },
-        { text: 'PRODUTO', value: 'nome' },
-        { text: 'ESTOQUE', value: 'qtdade' },
-        { text: 'UNIDADE', value: 'unidade' },
-        { text: 'OBSERVAÇÃO', value: 'obs' },
-        { text: 'DATA DE INÍCIO', value: 'data_i' },
-        { text: 'DATA DE TÉRMINO', value: 'data_f' },
-        { text: 'PREÇO DE COMPRA', value: 'preco_c' },
-        { text: 'PREÇO DE VENDA', value: 'preco_v' },
-        { text: 'SELL OUT', value: 'selout' },
-        { text: 'MARGEM DE LUCRO', value: 'marluc' },  
-        { text: 'AÇÕES', value: 'acao' } 
+        { text: 'SELECIONADO', value: 'sel' , width: "1%", align: "center"},
+        { text: 'IMAGEM', value: 'img' , width: "1%", align: "center"},
+        { text: 'PRODUTO', value: 'nome' , width: "1%", align: "center"},
+        { text: 'ESTOQUE', value: 'qtdade', width: "1%", align: "center"},
+        { text: 'UNIDADE', value: 'unidade' , width: "1%", align: "center"},
+        { text: 'OBSERVAÇÃO', value: 'obs' , width: "1%", align: "center"},
+        { text: 'DATA DE INÍCIO', value: 'data_i' , width: "1%", align: "center"},
+        { text: 'DATA DE TÉRMINO', value: 'data_f' , width: "1%", align: "center"},
+        { text: 'PREÇO DE COMPRA', value: 'preco_c' , width: "1%", align: "center"},
+        { text: 'PREÇO DE VENDA', value: 'preco_v' , width: "1%", align: "center"},
+        { text: 'SELL OUT', value: 'selout' , width: "1%", align: "center"},
+        { text: 'MARGEM DE LUCRO', value: 'marluc' , width: "1%", align: "center"},
+        { text: 'AÇÕES', value: 'acao' , width: "1%", align: "center"},
       ],
       itens: [],
       editedIndex: -1,
@@ -675,3 +675,8 @@
     }
   }
 </script>
+<style>
+table.v-table tbody td:first-child, table.v-table tbody td:not(:first-child), table.v-table tbody th:first-child, table.v-table tbody th:not(:first-child), table.v-table thead td:first-child, table.v-table thead td:not(:first-child), table.v-table thead th:first-child, table.v-table thead th:not(:first-child) {
+  padding: 0px;
+}
+</style>

@@ -114,14 +114,14 @@
       dialog: false,
       userType: '',
       headers: [
-        { text: 'Empresa', value: 'nome_empresa',info:'nome da empresa'},
-        { text: 'Nome da campanha', value: 'nome_campanha',info:'nome da campanha'},
-        { text: 'Tipo de campanha', value: 'tipo_campanha',info:'tipo de campanha: mensal ou semanal'},
-        { text: 'Margem de lucro', value: 'marluc',info:'margem de lúcro mínima'},
-        { text: 'Quantidade de produtos', value: 'qtdade',info:'quantidade de produtos já cadastrados em uma dada campanha'},
-        { text: 'Data da campanha', value: 'datas',info:'intervalo de datas onde a campanha irá acontecer'},
-        { text: 'Status da campanha', value: 'status',info:"situação da campanha: pendente,aprovada,reprovada.Uma campanha recém criada ou que não atingiu a quantidade mínima de produtos estará numa situação 'pendente'. Uma campanha que bateu a meta de produtos e foi enviada para criação do tabloide estará no estado 'criação de tabloide'. Uma campanha que teve um tabloide criado e foi submetida a aprovação do diretor terá a situação 'em aprovação'. Uma campanha que foi reprovada pelo diretor estará na situação 'reprovada', e a que for aprovada estará em situação 'aprovada'."},
-        { text: 'Ações', value: 'name', sortable: false ,info:'ações'}
+        { text: 'Empresa', value: 'nome_empresa',info:'nome da empresa', width: "1%", align: "center"},
+        { text: 'Nome da campanha', value: 'nome_campanha',info:'nome da campanha', width: "1%", align: "center"},
+        { text: 'Tipo de campanha', value: 'tipo_campanha',info:'tipo de campanha: mensal ou semanal', width: "1%", align: "center"},
+        { text: 'Margem de lucro', value: 'marluc',info:'margem de lúcro mínima', width: "1%", align: "center"},
+        { text: 'Quantidade de produtos', value: 'qtdade',info:'quantidade de produtos já cadastrados em uma dada campanha', width: "1%", align: "center"},
+        { text: 'Data da campanha', value: 'datas',info:'intervalo de datas onde a campanha irá acontecer', width: "1%", align: "center"},
+        { text: 'Status da campanha', value: 'status',info:"situação da campanha: pendente,aprovada,reprovada.Uma campanha recém criada ou que não atingiu a quantidade mínima de produtos estará numa situação 'pendente'. Uma campanha que bateu a meta de produtos e foi enviada para criação do tabloide estará no estado 'criação de tabloide'. Uma campanha que teve um tabloide criado e foi submetida a aprovação do diretor terá a situação 'em aprovação'. Uma campanha que foi reprovada pelo diretor estará na situação 'reprovada', e a que for aprovada estará em situação 'aprovada'.", width: "1%", align: "center"},
+        { text: 'Ações', value: 'name', sortable: false ,info:'ações', width: "1%", align: "center"}
       ],
       infos: [],//sao as informacoes relativas a uma campanha
       editedIndex: -1,
@@ -164,3 +164,8 @@
     }
   }
 </script>
+<style>
+table.v-table tbody td:first-child, table.v-table tbody td:not(:first-child), table.v-table tbody th:first-child, table.v-table tbody th:not(:first-child), table.v-table thead td:first-child, table.v-table thead td:not(:first-child), table.v-table thead th:first-child, table.v-table thead th:not(:first-child) {
+  padding: 0px;
+}
+</style>

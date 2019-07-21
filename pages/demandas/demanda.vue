@@ -275,20 +275,20 @@
       //fim info relativas ao uplode e img ^
       headers: [
         { text: 'SELECIONADO', value: 'sel' },
-        { text: 'IMAGEM', value: 'img' ,align: 'center' },
-        { text: 'PRODUTO', value: 'nome',align: 'center' },
-        { text: 'DATA DE INÍCIO', value: 'data_i' ,align: 'center' },
-        { text: 'DATA DE TÉRMINO', value: 'data_f',align: 'center' },
-        { text: 'PREÇO DE VENDA', value: 'preco_v' ,align: 'center' },
-        { text: 'TABLÓIDE', value: 'preco_v' ,align: 'center' },
-        { text: 'CARTAZ', value: 'preco_v' ,align: 'center' },
-        { text: 'FACEBOOK', value: 'preco_v' ,align: 'center' },
-        { text: 'TV INDOOR', value: 'preco_v' ,align: 'center' },
-        { text: 'RÁDIO INTERNA', value: 'preco_v' ,align: 'center' },
-        { text: 'RÁDIO EXTERNA', value: 'preco_v' ,align: 'center' },
-        { text: 'JORNAIS', value: 'preco_v' ,align: 'center' },
-        { text: 'POV', value: 'preco_v' ,align: 'center' },
-        { text: 'AÇÕES', value: 'obs',align: 'center' },
+        { text: 'IMAGEM', value: 'img' , width: "1%", align: "center"},
+        { text: 'PRODUTO', value: 'nome', width: "1%", align: "center"},
+        { text: 'DATA DE INÍCIO', value: 'data_i', width: "1%", align: "center"},
+        { text: 'DATA DE TÉRMINO', value: 'data_f', width: "1%", align: "center"},
+        { text: 'PREÇO DE VENDA', value: 'preco_v' , width: "1%", align: "center"},
+        { text: 'TABLÓIDE', value: 'preco_v' , width: "1%", align: "center"},
+        { text: 'CARTAZ', value: 'preco_v', width: "1%", align: "center"},
+        { text: 'FACEBOOK', value: 'preco_v' , width: "1%", align: "center"},
+        { text: 'TV INDOOR', value: 'preco_v', width: "1%", align: "center"},
+        { text: 'RÁDIO INTERNA', value: 'preco_v' , width: "1%", align: "center"},
+        { text: 'RÁDIO EXTERNA', value: 'preco_v' , width: "1%", align: "center"},
+        { text: 'JORNAIS', value: 'preco_v' , width: "1%", align: "center"},
+        { text: 'POV', value: 'preco_v' , width: "1%", align: "center"},
+        { text: 'AÇÕES', value: 'obs', width: "1%", align: "center"},
       ],
       itens: [],
       editedIndex: -1,
@@ -650,3 +650,8 @@
     }
   }
 </script>
+<style>
+table.v-table tbody td:first-child, table.v-table tbody td:not(:first-child), table.v-table tbody th:first-child, table.v-table tbody th:not(:first-child), table.v-table thead td:first-child, table.v-table thead td:not(:first-child), table.v-table thead th:first-child, table.v-table thead th:not(:first-child) {
+  padding: 0px;
+}
+</style>
