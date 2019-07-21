@@ -180,6 +180,7 @@ font-family: 'Indie Flower', cursive; */
         imgsList: []
     }),
     watch:{
+     
         colors(){
             this.changeTextColor(this.colors.hex8)
         },
@@ -297,7 +298,7 @@ font-family: 'Indie Flower', cursive; */
                 this.saveAsImg()      
         },
         saveAsImg(){
-            //var image = this.canvas.toDataURL("image/jpg",1.0)
+            //var image = canvas.toDataURL("image/jpg",1.0)
             //this.$refs['download'].href = image;
         },
         //METODOS RELATIVOS AO CANVAS/FABRIC
@@ -309,7 +310,7 @@ font-family: 'Indie Flower', cursive; */
             const preco = new fabric.IText(img.preco_v,{ top: 125,fontSize: 20 });
             this.canvas.add(preco)
             this.addImgToCanvas(relaPath,img)//parece estranho eu n passar simplesmente img, mas o fabric é eskisito...entao vai assim
-            //    this.canvas.sendToBack(relaPath,img);
+            //    canvas.sendToBack(relaPath,img);
 
        },
        clearZoom(){
@@ -328,7 +329,7 @@ font-family: 'Indie Flower', cursive; */
                 }    
                 else
                    this.setBackground(path,img)    
-            })//{canvas: this.canvas})//n funciona passar esse arg...doc lixoooo
+            })//{canvas: canvas})//n funciona passar esse arg...doc lixoooo
         },
 
 
@@ -364,9 +365,9 @@ font-family: 'Indie Flower', cursive; */
             
             fabric.Image.fromURL(path,(img)=>{
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
-                this.canvas.setBackgroundImage(temp,this.canvas.renderAll.bind(this.canvas), {
-                scaleX: this.canvas.width / temp.width,
-                scaleY: this.canvas.height /temp.height})
+                canvas.setBackgroundImage(temp,canvas.renderAll.bind(canvas), {
+                scaleX: canvas.width / temp.width,
+                scaleY: canvas.height /temp.height})
             })
         
         },
@@ -427,7 +428,7 @@ font-family: 'Indie Flower', cursive; */
                         if(!back)
                             this.canvas.bringToFront(obj)
                         else
-                          this.canvas.sendToBack(obj)
+                          canvas.sendToBack(obj)
                     });
                 }
                 else{
@@ -445,7 +446,7 @@ font-family: 'Indie Flower', cursive; */
         },
         removeSelected(){//remove do canvas o(s) objeto(s) que está selecionado
             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                let doomedObj = this.canvas.getActiveObject();
+                let doomedObj = canvas.getActiveObject();
 
                 if (doomedObj.type === 'activeSelection') {
                     //lembre de arro f pra referenciar o this sem ko

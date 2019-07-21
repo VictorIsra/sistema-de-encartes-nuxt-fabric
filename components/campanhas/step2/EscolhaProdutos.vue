@@ -1,7 +1,7 @@
 <!-- //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
 -->
 <template>
-  <div>
+  <div> 
      <v-toolbar>
         <no-ssr>
             <v-list class="scroll-y">
@@ -25,7 +25,6 @@
         <template v-slot:activator="{ on }">
           <v-btn color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >Adicionar produto</v-btn> <!--v-on="on" -->
         </template>
-        
         <v-card > <!-- o form em si é esse v card! -->
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
@@ -37,7 +36,7 @@
               <!--   <v-flex xs12>
                  <img-upload @blur="editUserInputs(false)" :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
                 </v-flex> -->
-                 <v-flex xs12 sm6>
+                 <v-flex xs12 sm6 >
                   <v-text-field ref="editedItem.nome"
                                 @blur="editUserInputs(false)"
                                 v-model.trim="editedItem.nome"
@@ -127,7 +126,7 @@
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
         <td class="justify-center layout px-0"> 
-        <v-checkbox class="justify-center layout px-0"
+         <v-checkbox class="justify-center layout px-0"
           v-model="props.selected"
           primary
           hide-details
@@ -300,6 +299,9 @@
       }
     },
     watch: {
+      selected(){
+        console.log("slecoes ",this.selected)
+      },
       dialog (val) {
         val || this.close()
       },
@@ -328,22 +330,34 @@
       this.initialize()//sera alimentado pelo bd eventualmente, tvz?
     },
     methods: {
+      teste(){
+        const validos = this.selected.forEach(item => {
+            return item._id !== undefined
+        })
+        console.log(validos)
+        return validos
+      },
       initialize () {
+                  this.fetchProdList()
+
         if(this.campanha_id !== undefined && this.campanha_id !== '-1'){
-          this.fetchProdList()
           this.fetchProdutos()
         }  
         else
           console.log("escolhaprodutos.vue : nenhum id valido por hora ")  
       },
-      async fetchProdList(){//pega produtos cadastrados no si
+       async fetchProdList(){//pega produtos cadastrados no si
             const prodListID = '5d2f6b45384572128c682715'//é unico no programa todo
             const lista = await this.getProdutos(prodListID)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             lista.forEach(p => {
                 if(p.img !== undefined && p.img !== '')
                     this.imgs.push( {
                       img:p.img,
-                      prodNome: p.nome
+                      prodNome: p.nome,
+                      qtdade: p.qtdade,
+                      unidade: p.unidade,
+                      preco_c: p.preco_c,
+                      preco_v: p.preco_v
                     })
             })
             this.prepareProdInfo()
@@ -352,31 +366,56 @@
             this.imgs.forEach((img,i) => {
                 let temp =  "../../../uploads/fotos/" + img.img.name
                 this.dataImages.push({  
+                    id:i,
                     src: temp,
                     alt: img.prodNome,
+                    prodNome: img.prodNome,
+                      qtdade: img.qtdade,
+                      unidade: img.unidade,
+                      preco_c: img.preco_c,
+                      preco_v: img.preco_v,
                     originalName: img.img.originalName
                 })
             })
         },
         onSelectImage(selected){//passado como arg indireto pelo compo vue-img
         this.selectedImg = selected
-        this.ajustPath()
+        console.log("selecionado: ",this.selectedImg)
+        this.imgs.forEach(item => { console.log("iira ",item)})
+        this.updateInfo()
       },
-      ajustPath(){//ajusta o path da img tanto rela qt abs
+      updateInfo(){//ajusta o path da img tanto rela qt abs
+          alert("entrei")
           let savedName = this.selectedImg.src.match(/[^/]+$/)//img com nome doido q é salva no static/uploads/img
           this.selected.forEach(item => {
-            if(item.img === 'undefined '|| item.img === ''){//se n tiver foto associada
+            if(item.img === 'undefined ' || item.img === ''){//se n tiver foto associada
+            alert("und")
+
               item.img = {
                 originalName: this.selectedImg.originalName,
                 name: savedName,
-                src:"static/uploads/fotos/" + savedName
+                src:"static/uploads/fotos/" + savedName,
               }
+              item.preco_c = this.selectedImg.preco_c
+              item.preco_v = this.selectedImg.preco_v
+              item.qtdade = this.selectedImg.qtdade
+              item.unidade = this.selectedImg.unidade
+              item.nome = this.selectedImg.alt
+              alert("vai entraa")
+             //gambiarra mas funciona, atualizandocoreteamente em tods os cases xd
             }
             else{//se tiver,atualizo c a img selecionada
+            alert("lse")
               item.img.originalName = this.selectedImg.originalName,
               item.img.name = savedName
               item.img.name.src = "static/uploads/fotos/" + savedName
+              item.preco_c = this.selectedImg.preco_c
+              item.preco_v = this.selectedImg.preco_v
+              item.qtdade = this.selectedImg.qtdade
+              item.unidade = this.selectedImg.unidade
+              item.nome = this.selectedImg.alt
             }
+            console.log("TES ", this.selectedImg  )
             this.updateRow(item, this.campanha_id)
           })
       },
@@ -568,11 +607,10 @@
       async fetchProdutos(){
         this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
         this.setMetasProdutos()
-        console.log("vejaaa ", this.itens)
       },
       setMetasProdutos(){//seta o valor inicial da meta de produtos, dps, isso será controlado a lvl de app, e nao de bd. de bd somente vindo da pag campanhas. Ao interagir aqui dentro, será só a lvl de app ( incrementando e decrementando baseado nas acoes)
         this.produtosQtdadeInfo.meta = this.campanhaInfos.qtdade
-        if(this.campanhaInfos.produtos !== undefined)//erro estranho, q n muda nada, é tipo um warning mas q ocorre só qd ligo o server pela primeira vez no dia o.o
+        if(this.campanhaInfos.produtos!== undefined)//erro estranho, q n muda nada, é tipo um warning mas q ocorre só qd ligo o server pela primeira vez no dia o.o
           this.produtosQtdadeInfo.qtdade = this.campanhaInfos.produtos.length
       },
       decrementProdutos(flag){//muda a qtdade dep rodutos cadastradas indicada no painel a lvl de app
