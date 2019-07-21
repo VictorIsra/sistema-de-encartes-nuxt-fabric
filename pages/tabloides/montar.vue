@@ -365,9 +365,9 @@ font-family: 'Indie Flower', cursive; */
             
             fabric.Image.fromURL(path,(img)=>{
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
-                canvas.setBackgroundImage(temp,canvas.renderAll.bind(canvas), {
-                scaleX: canvas.width / temp.width,
-                scaleY: canvas.height /temp.height})
+                this.canvas.setBackgroundImage(temp,this.canvas.renderAll.bind(this.canvas), {
+                scaleX: this.canvas.width / temp.width,
+                scaleY: this.canvas.height /temp.height})
             })
         
         },
@@ -446,7 +446,7 @@ font-family: 'Indie Flower', cursive; */
         },
         removeSelected(){//remove do canvas o(s) objeto(s) que está selecionado
             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                let doomedObj = canvas.getActiveObject();
+                let doomedObj = this.canvas.getActiveObject();
 
                 if (doomedObj.type === 'activeSelection') {
                     //lembre de arro f pra referenciar o this sem ko
