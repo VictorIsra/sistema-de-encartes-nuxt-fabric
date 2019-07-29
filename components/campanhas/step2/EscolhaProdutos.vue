@@ -382,15 +382,12 @@
         onSelectImage(selected){//passado como arg indireto pelo compo vue-img
         this.selectedImg = selected
         console.log("selecionado: ",this.selectedImg)
-        this.imgs.forEach(item => { console.log("iira ",item)})
         this.updateInfo()
       },
       updateInfo(){//ajusta o path da img tanto rela qt abs
-          alert("entrei")
           let savedName = this.selectedImg.src.match(/[^/]+$/)//img com nome doido q é salva no static/uploads/img
           this.selected.forEach(item => {
             if(item.img === 'undefined ' || item.img === ''){//se n tiver foto associada
-            alert("und")
 
               item.img = {
                 originalName: this.selectedImg.originalName,
@@ -406,7 +403,6 @@
              //gambiarra mas funciona, atualizandocoreteamente em tods os cases xd
             }
             else{//se tiver,atualizo c a img selecionada
-            alert("lse")
               item.img.originalName = this.selectedImg.originalName,
               item.img.name = savedName
               item.img.name.src = "static/uploads/fotos/" + savedName

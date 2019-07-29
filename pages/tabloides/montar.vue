@@ -105,9 +105,13 @@
                 inset
                 ></v-divider>      
                 <v-layout row>
+                    
                     <v-flex>
-                 <canvas  id="c" class="canvas-wrapper" ></canvas>
-                 
+                 <div @wheel="hoverOn"  ><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->
+                      >       
+                 <canvas  id="c" class="canvas-wrapper">
+                </canvas>
+                 </div>
                     </v-flex>
                   <no-ssr>
                     <template>  
@@ -151,14 +155,13 @@ export default {
     },
     
    data: () => ({
-       colors: '#194d33',
-       /**font-family: 'Darker Grotesque', sans-serif;
-font-family: 'Roboto', sans-serif;
-font-family: 'Literata', serif;
-font-family: 'Oswald', sans-serif;
-font-family: 'Bahianita', cursive;
-font-family: 'Josefin Sans', sans-serif;
-font-family: 'Indie Flower', cursive; */
+       isDragging: false,
+       lastPosX: 0,
+       lastPosY: 0,
+       mY: 0,
+       /**hover canvs */
+       hover: false,
+       colors: '#194d33',//var obrigatoria na lib de color picker
        selectionFont: 'PT Serif',//font inicial de um texto
         opcao: 'IMAGENS',
         radioGroup: '',
@@ -175,12 +178,13 @@ font-family: 'Indie Flower', cursive; */
         img: '',
         itens: '',//imgs, futuramente texto..etc,
         imgs: [],
+        grid: 50,
 
         campanha_id: undefined,
         imgsList: []
     }),
     watch:{
-     
+       
         colors(){
             this.changeTextColor(this.colors.hex8)
         },
@@ -198,6 +202,7 @@ font-family: 'Indie Flower', cursive; */
                 this.setBackground()
         }
     },
+    
     mounted() { 
         this.canvas = new fabric.Canvas('c',{
         preserveObjectStacking: true})
@@ -205,12 +210,90 @@ font-family: 'Indie Flower', cursive; */
         this.canvas.setWidth(1000)
         this.userType = this.$store.state.auth.userType
         this.checkRedirect()
+        this. fillGrid()
+
     },
     methods: {
         // loadAndUse(font) {
         //   this.changeTextColor(font)
             
         // },
+        mouseMove(opt){
+        
+        
+            // moving upward
+        if (opt.pageY < this.mY) {
+            console.log('From Bottom');
+               var units = 10 ;
+        var delta = new fabric.Point(0,units) ;
+        this.canvas.relativePan(delta) 
+        this.canvas.requestRenderAll();
+        // moving downward
+        } else {
+            console.log('From Top');
+               var units = 1 ;
+        var delta = new fabric.Point(0,-units) ;
+        this.canvas.relativePan(delta) 
+        this.canvas.requestRenderAll();
+        }
+
+        // set new mY after doing test above
+        this.mY = opt.pageY;
+
+        //     console.log("ddd ",opt)
+        //     if (this.isDragging) {
+            
+        //          var units = 10 ;
+        // var delta = new fabric.Point(0,-units) ;
+        // this.canvas.relativePan(delta) 
+        // this.canvas.requestRenderAll();
+        //     }
+            
+        },
+        mouseDown(opt){
+            console.log("mdddd", opt)
+            if (opt.ctrlKey === true) {
+                this.isDragging = true
+               // this.selection = false
+               console.log("al tru opt ev: ",opt)
+                this.lastPosX = opt.clientX
+                this.lastPosY = opt.clientY
+            }
+        },
+         mouseUp(opt){
+            console.log("mdddd", opt)
+                this.isDragging = false
+               // this.selection = false
+               console.log("al tru opt ev: ",opt)
+                this.lastPosX = opt.clientX
+                this.lastPosY = opt.clientY
+        },
+        hoverOn(event){
+            console.log("EVENT ",event)
+            event.returnValue = false
+            if(event.deltaY > 0){
+                this.canvas.setZoom(this.canvas.getZoom() / 1.1) 
+                
+            }    
+            if(event.deltaY < 0)
+                this.canvas.setZoom(this.canvas.getZoom() * 1.1) 
+        },
+        fillGrid(){
+          var grid = 50;
+            var unitScale = 100;
+            // var canvasWidth =  100 * unitScale;
+            // var canvasHeight = 100 * unitScale;
+
+            // canvas.setWidth(canvasWidth);
+            // canvas.setHeight(canvasHeight);
+
+            // create grid
+
+            for (var i = 0; i < (600 / grid); i++) {
+            this.canvas.add(new fabric.Line([ i * grid, 0, i * grid,600], { type:'line', stroke: '#ccc', selectable: false }));
+            this.canvas.add(new fabric.Line([ 0, i *600, i * grid], { type: 'line', stroke: '#ccc', selectable: false }))
+            }
+        },
         submeterAvaliacao(){//envia tabloide/campanha para o diretor
             this.salvarTabloide()
             this.changeCampanhaStatus('em avaliação')
@@ -264,6 +347,7 @@ font-family: 'Indie Flower', cursive; */
             const jsonTabloide = await this.loadTabloide(this.campanha_id)
             this.canvas.loadFromJSON(jsonTabloide.data.tabloide)
             this.canvas.renderAll()
+
         },
         salvarTabloide(){
             var json = JSON.stringify(this.canvas.toJSON())

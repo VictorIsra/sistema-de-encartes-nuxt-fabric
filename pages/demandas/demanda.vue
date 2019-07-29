@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div>   
       <v-toolbar flat color="grey lighten-4">
           <v-toolbar-title>
             <v-layout align-center class="mr-2 primary--text">
@@ -13,7 +13,6 @@
             vertical
           ></v-divider>
       </v-toolbar>
-        <v-layout>
           <v-toolbar v-if="userType === 'diretor'">
             <no-ssr>
                 <v-list class="scroll-y">
@@ -22,7 +21,6 @@
                 </v-list>
             </no-ssr>       
           </v-toolbar>
-        </v-layout>  
         <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
         <span class="title font-weight-regular primary--text">Clique em uma linha para ver as observações relativas a demanda</span>
         <v-spacer></v-spacer> 
@@ -385,23 +383,38 @@
         },
         onSelectImage(selected){//passado como arg indireto pelo compo vue-img
         this.selectedImg = selected
+        
         this.ajustPath()
       },
       ajustPath(){//ajusta o path da img tanto rela qt abs
-          let savedName = this.selectedImg.src.match(/[^/]+$/)//img com nome doido q é salva no static/uploads/img
+           let savedName = this.selectedImg.src.match(/[^/]+$/)//img com nome doido q é salva no static/uploads/img
           this.selected.forEach(item => {
-            if(item.img === 'undefined '|| item.img === ''){//se n tiver foto associada
+            if(item.img === 'undefined ' || item.img === ''){//se n tiver foto associada
+
               item.img = {
                 originalName: this.selectedImg.originalName,
                 name: savedName,
-                src:"static/uploads/fotos/" + savedName
+                src:"static/uploads/fotos/" + savedName,
               }
+              item.preco_c = this.selectedImg.preco_c
+              item.preco_v = this.selectedImg.preco_v
+              item.qtdade = this.selectedImg.qtdade
+              item.unidade = this.selectedImg.unidade
+              item.nome = this.selectedImg.alt
+              alert("vai entraa")
+             //gambiarra mas funciona, atualizandocoreteamente em tods os cases xd
             }
             else{//se tiver,atualizo c a img selecionada
               item.img.originalName = this.selectedImg.originalName,
               item.img.name = savedName
               item.img.name.src = "static/uploads/fotos/" + savedName
+              item.preco_c = this.selectedImg.preco_c
+              item.preco_v = this.selectedImg.preco_v
+              item.qtdade = this.selectedImg.qtdade
+              item.unidade = this.selectedImg.unidade
+              item.nome = this.selectedImg.alt
             }
+            console.log("TES ", this.selectedImg  )
             this.updateRow(item, this.campanha_id)
           })
       },
