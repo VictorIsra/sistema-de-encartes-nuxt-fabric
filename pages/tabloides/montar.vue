@@ -15,7 +15,7 @@
                     ></v-divider>
                     <v-card-title color="grey lighten-4" class="justify-center">
                         <div>
-                            <v-btn round color="warning" @click="removeSelected">remover seleção</v-btn>
+                            <v-btn round color="warning" @click="actionHandler('removeSelection')">remover seleção</v-btn>
                         </div>
                     </v-card-title>
                     <v-divider
@@ -65,8 +65,8 @@
                             <v-icon>add</v-icon>
                         </v-btn>
                     </div>
-                    <v-btn color="primary" @click="bring(false)">FRENTE</v-btn>
-                    <v-btn color="primary"  @click="bring(true)">TRÁS</v-btn>
+                    <v-btn color="primary" @click="actionHandler('bring',false)">FRENTE</v-btn>
+                    <v-btn color="primary"  @click="actionHandler('bring',true)">TRÁS</v-btn>
                 </v-toolbar>
                     <v-toolbar dense class="borda"> 
                         <v-flex xs3>
@@ -248,13 +248,16 @@ export default {
     watch:{
        
         colors(){
-            this.changeTextColor(this.colors.hex8)
+            this.actionHandler('fontColor')
+            //this.changeTextColor(this.colors.hex8)
         },
         selectionFont(){
-            this.changeTextFamily(this.selectionFont)
+            this.actionHandler('fontFamily')
+            //this.changeTextFamily(this.selectionFont)
         },
         fontSize(){
-            this.changeTextSize(this.fontSize)
+            this.actionHandler('fontSize')
+            //this.changeTextSize(this.fontSize)
         },
         checkbox(){
             if(this.checkbox === true)
@@ -279,10 +282,93 @@ export default {
 
     },
     methods: {
-        // loadAndUse(font) {
-        //   this.changeTextColor(font)
-            
-        // },
+        //event indicará a acao q deve ser feita, e o value o valor passado
+        actionHandler(event, value = false){//como as f de mudar cor, tamanho do texto, font etc tem a msm estrutura, essa funcao fará o papel de todos os casos
+           if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
+                let doomedObj = this.canvas.getActiveObject();
+                if (doomedObj.type === 'activeSelection') {
+                    //varios object selecinados
+                    doomedObj.canvas = this.canvas
+                    if(event === 'fontFamily'){
+                        doomedObj.forEachObject((obj) => {
+                            obj.set("fontFamily", this.selectionFont)
+                        })
+                    }
+                    else if(event === 'fontSize'){
+                        doomedObj.forEachObject((obj) => {
+                            obj.set("fontSize", this.fontSize.toString())
+                        })
+                    }
+                    else if(event === 'fontColor'){
+                        doomedObj.forEachObject((obj) => {
+                             obj.setColor(this.colors.hex8)
+                        })
+                    }
+                    else if(event === 'bring'){
+                        doomedObj.forEachObject((obj) => {
+                            if(!value)
+                                this.canvas.bringToFront(obj)
+                            else
+                                this.canvas.sendToBack(obj)
+                        })
+                    }
+                    else if(event === 'removeSelection'){
+                        doomedObj.forEachObject((obj) => {
+                            this.canvas.remove(obj)
+                        })
+                    }
+                    this.canvas.renderAll()
+                }
+                else{
+                //um unico objeto selecionado
+                    var activeObject = this.canvas.getActiveObject();
+                    if(activeObject !== null ) {
+                        if(event === 'fontFamily'){
+                            this.canvas.getActiveObject().set("fontFamily", this.selectionFont)
+                        }
+                        else if(event === 'fontSize'){
+                            this.canvas.getActiveObject().set("fontSize", this.fontSize.toString())
+                        }
+                        else if(event === 'fontColor'){
+                            this.canvas.getActiveObject().setColor(this.colors.hex8)
+                        }
+                        else if(event === 'bring'){
+                            if(!value)
+                                this.canvas.bringToFront(activeObject)
+                            else
+                                this.canvas.sendToBack(activeObject)
+                        }
+                        else if(event === 'removeSelection'){
+                            this.canvas.remove(activeObject);
+                        }
+                        this.canvas.renderAll()
+                    }
+                }
+                        
+            } 
+        },
+      
+        removeSelected(){//remove do canvas o(s) objeto(s) que está selecionado
+            if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
+                let doomedObj = this.canvas.getActiveObject();
+
+                if (doomedObj.type === 'activeSelection') {
+                    //lembre de arro f pra referenciar o this sem ko
+                    doomedObj.canvas = this.canvas
+                    doomedObj.forEachObject((obj) => {
+                        this.canvas.remove(obj)
+                    });
+                }
+                else{
+                //um unico objeto selecionado
+                var activeObject = this.canvas.getActiveObject();
+                    if(activeObject !== null ) {
+                        this.canvas.remove(activeObject);
+                    }
+                }
+                        
+            } 
+        },
         mouseMove(opt){
         
         
@@ -503,125 +589,7 @@ export default {
             })
         
         },
-             changeTextFamily(font){
-             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                let doomedObj = this.canvas.getActiveObject();
-                if (doomedObj.type === 'activeSelection') {
-                    //lembre de arro f pra referenciar o this sem ko
-                    doomedObj.canvas = this.canvas
-                    doomedObj.forEachObject((obj) => {
-                        console.log("souuu selec ",obj)
-                        obj.set("fontFamily", this.selectionFont)
-                    });
-                    this.canvas.renderAll()
-
-                }
-                else{
-                //um unico objeto selecionado
-                var activeObject = this.canvas.getActiveObject();
-                    if(activeObject !== null ) {
-                        this.canvas.getActiveObject().set("fontFamily", this.selectionFont)
-                        this.canvas.renderAll()
-                    }
-                }
-                        
-            } 
-        },
-          changeTextSize(font){
-             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                console.log("selecao ",this.canvas.getActiveObject())
-                let doomedObj = this.canvas.getActiveObject();
-                if (doomedObj.type === 'activeSelection') {
-                    //lembre de arro f pra referenciar o this sem ko
-                    doomedObj.canvas = this.canvas
-                    doomedObj.forEachObject((obj) => {
-                        obj.set("fontSize", this.fontSize.toString())
-                    });
-                    this.canvas.renderAll()
-
-                }
-                else{
-                //um unico objeto selecionado
-                var activeObject = this.canvas.getActiveObject();
-                    if(activeObject !== null ) {
-                        this.canvas.getActiveObject().set("fontSize", this.fontSize.toString())
-                        this.canvas.renderAll()
-                    }
-                }
-                        
-            } 
-        },
-        changeTextColor(font){
-             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                let doomedObj = this.canvas.getActiveObject();
-                if (doomedObj.type === 'activeSelection') {
-                    //lembre de arro f pra referenciar o this sem ko
-                    doomedObj.canvas = this.canvas
-                    doomedObj.forEachObject((obj) => {
-                        obj.setColor(font)
-                        this.canvas.renderAll()
-
-                    });
-                }
-                else{
-                //um unico objeto selecionado
-                var activeObject = this.canvas.getActiveObject();
-                    if(activeObject !== null ) {
-                        this.canvas.getActiveObject().setColor(font)
-                        this.canvas.renderAll()
-                    }
-                }
-                        
-            } 
-            
-        },
-        bring(back = false){//remove do canvas o(s) objeto(s) que está selecionado
-            if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                let doomedObj = this.canvas.getActiveObject();
-                if (doomedObj.type === 'activeSelection') {
-                    //lembre de arro f pra referenciar o this sem ko
-                    doomedObj.canvas = this.canvas
-                    doomedObj.forEachObject((obj) => {
-                        if(!back)
-                            this.canvas.bringToFront(obj)
-                        else
-                          canvas.sendToBack(obj)
-                    });
-                }
-                else{
-                //um unico objeto selecionado
-                var activeObject = this.canvas.getActiveObject();
-                    if(activeObject !== null ) {
-                        if(!back)
-                            this.canvas.bringToFront(activeObject)
-                        else
-                          this.canvas.sendToBack(activeObject)
-                    }
-                }
-                        
-            } 
-        },
-        removeSelected(){//remove do canvas o(s) objeto(s) que está selecionado
-            if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                let doomedObj = this.canvas.getActiveObject();
-
-                if (doomedObj.type === 'activeSelection') {
-                    //lembre de arro f pra referenciar o this sem ko
-                    doomedObj.canvas = this.canvas
-                    doomedObj.forEachObject((obj) => {
-                        this.canvas.remove(obj);
-                    });
-                }
-                else{
-                //um unico objeto selecionado
-                var activeObject = this.canvas.getActiveObject();
-                    if(activeObject !== null ) {
-                        this.canvas.remove(activeObject);
-                    }
-                }
-                        
-            } 
-        }
+           
     }
 }
 </script>
