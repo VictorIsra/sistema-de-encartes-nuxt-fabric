@@ -49,24 +49,55 @@
                         </v-layout>
                 </v-toolbar>
                 <v-toolbar class="borda">
-                    <v-spacer></v-spacer>
-                    <div>
-                        <v-btn color="primary" fab small dark @click="clearZoom">
-                            <v-icon>restore</v-icon>
-                        </v-btn>
-                    </div>
-                    <div>
-                        <v-btn color="primary" fab small dark @click="canvas.setZoom(canvas.getZoom() / 1.1 )">
-                            <v-icon>remove_circle</v-icon>
-                        </v-btn>
-                    </div>
-                    <div>
-                        <v-btn color="primary" fab small dark @click=" canvas.setZoom(canvas.getZoom() * 1.1 )">
-                            <v-icon>add</v-icon>
-                        </v-btn>
-                    </div>
-                    <v-btn color="primary" @click="actionHandler('bring',false)">FRENTE</v-btn>
-                    <v-btn color="primary"  @click="actionHandler('bring',true)">TRÁS</v-btn>
+                    <v-layout align-center class="justify-center">
+                        <div>
+                            <v-btn color="primary" fab small dark @click="Xmovement(-1)">
+                                <v-icon>arrow_back</v-icon>
+                            </v-btn>
+                        </div>
+                        <div>
+                            <v-btn color="primary" fab small dark @click="Xmovement">
+                                <v-icon>arrow_forward</v-icon>
+                            </v-btn>
+                        </div>
+                        <div>
+                            <v-btn color="primary" fab small dark @click="Ymovement(-1)">
+                                <v-icon>arrow_upward</v-icon>
+                            </v-btn>
+                        </div>
+                        <div>
+                            <v-btn color="primary" fab small dark @click="Ymovement">
+                                <v-icon>arrow_downward</v-icon>
+                            </v-btn>
+                        </div>
+                        <v-divider
+                                class="mx-2"
+                                inset
+                                vertical
+                            ></v-divider>
+                        <div>
+                            <v-btn color="primary" fab small dark @click="clearZoom">
+                                <v-icon>restore</v-icon>
+                            </v-btn>
+                        </div>
+                        <div>
+                            <v-btn color="primary" fab small dark @click="canvas.setZoom(canvas.getZoom() / 1.1 )">
+                                <v-icon>remove_circle</v-icon>
+                            </v-btn>
+                        </div>
+                        <div>
+                            <v-btn color="primary" fab small dark @click=" canvas.setZoom(canvas.getZoom() * 1.1 )">
+                                <v-icon>add</v-icon>
+                            </v-btn>
+                        </div>
+                        <v-divider
+                                class="mx-2"
+                                inset
+                                vertical
+                            ></v-divider>
+                        <v-btn color="primary" @click="actionHandler('bring',false)">FRENTE</v-btn>
+                        <v-btn color="primary"  @click="actionHandler('bring',true)">TRÁS</v-btn>
+                    </v-layout>
                 </v-toolbar>
                     <v-toolbar dense class="borda"> 
                         <v-flex xs3>
@@ -149,11 +180,9 @@
                 <v-layout row>
                     
                     <v-flex>
-                 <div @wheel="wheelOn" @click="changeTest" ><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->
-                            
-                 <canvas  id="c" class="canvas-wrapper">
-                </canvas>
-                 </div>
+                        <div @wheel="wheelOn" @click="changeTest" ><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
+                         <canvas  id="c" class="canvas-wrapper"></canvas>
+                        </div>
                     </v-flex>
                   <no-ssr>
                     <template>  
@@ -167,6 +196,7 @@
 </template>
 
 <script>
+
 import crudMixin from '../../components/mixins/CRUD.js'
 import { Compact, Chrome} from 'vue-color'
 import {fabric}  from "fabric"
@@ -195,15 +225,12 @@ export default {
        },
        colors: '#194d33',//var obrigatoria na lib de color picker
        selectionFont: 'PT Serif',//font inicial de um texto
-        opcao: 'IMAGENS',
-        radioGroup: '',
         fontSize: 20,
         fonts: [ 'PT Serif','Times New Roman',"Roboto", 'Literata' , 'Oswald', "Inconsolata",'Josefin Sans','Indie Flower','Amiri','Rokkitt'],
         textbox:'',
        dataImages: [],
         tobg: false,
         checkbox: true,
-        download: '',
         salvarComo: 'baixar em PDF',
         userType: '',
         canvas: '',
@@ -240,7 +267,6 @@ export default {
                 this.setBackground()
         },
     },
-    
     mounted() { 
         this.canvas = new fabric.Canvas('c',{
         preserveObjectStacking: true})
@@ -250,6 +276,27 @@ export default {
         this.checkRedirect()
     },
     methods: {
+        Xmovement(flag = 0){//andar p direita ou esuqer
+            var units = 10//caso direita
+            if(flag === -1)//caso esquerda
+                units = -units
+            var delta = new fabric.Point(units,0)
+            this.canvas.relativePan(delta)
+        },
+        Ymovement(flag = 0){//andar p cima ou p baixo
+            var units = 10//caso p baixo
+            if(flag === -1)//caso cima
+                units = -units
+            var delta = new fabric.Point(0,units)
+            this.canvas.relativePan(delta)
+        },
+         clearZoom(){
+
+            this.canvas.setZoom(1)
+            //reset o canvas para o status inicial
+            this.canvas.setViewportTransform([1,0,0,1,0,0]) 
+            this.canvas.renderAll()
+       },
         //event indicará a acao q deve ser feita, e o value o valor passado
         actionHandler(event, value = false){//como as f de mudar cor, tamanho do texto, font etc tem a msm estrutura, essa funcao fará o papel de todos os casos
            if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
@@ -461,10 +508,6 @@ export default {
             //    canvas.sendToBack(relaPath,img);
 
        },
-        clearZoom(){
-            this.canvas.setZoom(1);
-            this.canvas.renderAll()
-       },
         addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
             fabric.Image.fromURL(path,(img)=>{
                 img.scaleToWidth(100)//dif de crop, aqui literalmente "redimensiona"
@@ -497,11 +540,9 @@ export default {
     float: left;
     padding: 2px
 }
-
 .teste{
     background-color: darkgray
 }
-
 .canvas-wrapper {
     width: 900px;
     min-height: 600px;
