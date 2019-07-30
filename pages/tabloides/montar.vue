@@ -62,6 +62,7 @@
                         <template v-if="$vuetify.breakpoint.mdAndUp">
                         <v-divider vertical></v-divider>
 
+                         <v-flex xs3>
                         <v-overflow-btn
                             :items="dropdown_edit"
                             editable
@@ -71,10 +72,9 @@
                             class="pa-0"
                             overflow
                         ></v-overflow-btn>
-
+                         </v-flex>
                         <v-divider vertical></v-divider>
 
-                        <v-spacer></v-spacer>
 
                         <v-btn-toggle
                             v-model="toggle_multiple"
@@ -92,30 +92,26 @@
                             <v-icon>format_underlined</v-icon>
                             </v-btn>
 
-                            <v-btn :value="4" text>
-                            <v-icon>format_color_fill</v-icon>
-                            </v-btn>
                         </v-btn-toggle>
+                            <v-divider vertical></v-divider>
+                            <div>
+                                <v-btn color="primary" fab small dark @click="clearZoom">
+                                    <v-icon>restore</v-icon>
+                                </v-btn>
+                            </div>
+                            <div>
+                                <v-btn color="primary" fab small dark @click="canvas.setZoom(canvas.getZoom() / 1.1 )">
+                                    <v-icon>remove_circle</v-icon>
+                                </v-btn>
+                            </div>
+                             <div>
+                                <v-btn color="primary" fab small dark @click=" canvas.setZoom(canvas.getZoom() * 1.1 )">
+                                    <v-icon>add</v-icon>
+                                </v-btn>
+                            </div>
+                            <v-btn color="primary" @click="bring(false)">FRENTE</v-btn>
+                            <v-btn color="primary"  @click="bring(true)">TRÁS</v-btn>
 
-                        <div class="mx-4"></div>
-
-                        <v-btn-toggle v-model="toggle_exclusive">
-                            <v-btn :value="1" text>
-                            <v-icon>format_align_left</v-icon>
-                            </v-btn>
-
-                            <v-btn :value="2" text>
-                            <v-icon>format_align_center</v-icon>
-                            </v-btn>
-
-                            <v-btn :value="3" text>
-                            <v-icon>format_align_right</v-icon>
-                            </v-btn>
-
-                            <v-btn :value="4" text>
-                            <v-icon>format_align_justify</v-icon>
-                            </v-btn>
-                        </v-btn-toggle>
                         </template>
                     </v-toolbar>
                
@@ -126,29 +122,6 @@
                         <vue-select-image :useLabel="true" :dataImages="dataImages" h='30px' w='30px' @onselectimage="addImg">
                         </vue-select-image>
                     </v-list>
-
-                        <v-divider
-                            class="mx-2"
-                            inset
-                            vertical
-                        ></v-divider>
-                            <div>
-                                <v-btn color="primary" fab medium dark @click="clearZoom">
-                                    <v-icon>restore</v-icon>
-                                </v-btn>
-                            </div>
-                            <div>
-                                <v-btn color="primary" fab medium dark @click="canvas.setZoom(canvas.getZoom() / 1.1 )">
-                                    <v-icon>remove_circle</v-icon>
-                                </v-btn>
-                            </div>
-                             <div>
-                                <v-btn color="primary" fab medium dark @click=" canvas.setZoom(canvas.getZoom() * 1.1 )">
-                                    <v-icon>add</v-icon>
-                                </v-btn>
-                            </div>
-                            <v-btn color="primary" @click="bring(false)">FRENTE</v-btn>
-                            <v-btn color="primary"  @click="bring(true)">TRÁS</v-btn>
                 </no-ssr>       
     </v-toolbar>
             </template>
@@ -169,7 +142,7 @@
                     
                     <v-flex>
                  <div @wheel="hoverOn" @click="changeTest" ><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->
-                      >       
+                            
                  <canvas  id="c" class="canvas-wrapper">
                 </canvas>
                  </div>
@@ -313,27 +286,19 @@ export default {
         this.canvas.relativePan(delta) 
         this.canvas.requestRenderAll();
         }
-
-        // set new mY after doing test above
         this.mY = opt.pageY;
-
-        //     console.log("ddd ",opt)
-        //     if (this.isDragging) {
-            
-        //          var units = 10 ;
-        // var delta = new fabric.Point(0,-units) ;
-        // this.canvas.relativePan(delta) 
-        // this.canvas.requestRenderAll();
-        //     }
-            
         },
         changeTest(event){
-            //!== undefined                //             console.log(obj.text, obj.fontFamily, obj.fontSize, obj.fontStyle)
+            //!== undefined                      console.log(obj.text, obj.fontFamily, obj.fontSize, obj.fontStyle)
 
             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
                 if(this.canvas.getActiveObject().text !== undefined){
+                    console.log("aaaa ", this.canvas.getActiveObject())
                     this.selectionFont = this.canvas.getActiveObject().fontFamily //só textos passam desse teste, imgs sao object active, mas retornam undefined para esse atributo
                     this.fontSize = this.canvas.getActiveObject().fontSize.toString()
+                    // console.log("veja ",this.canvas.getActiveObject().scaleY)
+                    // this.fontSize = (this.canvas.getActiveObject().scaleY * 20)//tamanho default
+                    // alert(this.fontSize)
                 }
             }
             else
