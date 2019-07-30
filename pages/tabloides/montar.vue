@@ -48,6 +48,26 @@
                             <v-btn round @click="salvarTabloide" color="primary">Salvar tabloide</v-btn>
                         </v-layout>
                 </v-toolbar>
+                <v-toolbar class="borda">
+                    <v-spacer></v-spacer>
+                    <div>
+                        <v-btn color="primary" fab small dark @click="clearZoom">
+                            <v-icon>restore</v-icon>
+                        </v-btn>
+                    </div>
+                    <div>
+                        <v-btn color="primary" fab small dark @click="canvas.setZoom(canvas.getZoom() / 1.1 )">
+                            <v-icon>remove_circle</v-icon>
+                        </v-btn>
+                    </div>
+                    <div>
+                        <v-btn color="primary" fab small dark @click=" canvas.setZoom(canvas.getZoom() * 1.1 )">
+                            <v-icon>add</v-icon>
+                        </v-btn>
+                    </div>
+                    <v-btn color="primary" @click="bring(false)">FRENTE</v-btn>
+                    <v-btn color="primary"  @click="bring(true)">TRÁS</v-btn>
+                </v-toolbar>
                     <v-toolbar dense class="borda"> 
                         <v-flex xs3>
                             <v-overflow-btn
@@ -75,7 +95,6 @@
                          </v-flex>
                         <v-divider vertical></v-divider>
 
-
                         <v-btn-toggle
                             v-model="toggle_multiple"
                             multiple
@@ -91,27 +110,19 @@
                             <v-btn :value="3" text>
                             <v-icon>format_underlined</v-icon>
                             </v-btn>
-
                         </v-btn-toggle>
+                        <v-divider class="mx-2" vertical></v-divider>
+                        <v-spacer></v-spacer>
+                        <span class="subheading indigo--text">Escala X:</span>
+                        <v-flex xs1>
                             <v-divider vertical></v-divider>
-                            <div>
-                                <v-btn color="primary" fab small dark @click="clearZoom">
-                                    <v-icon>restore</v-icon>
-                                </v-btn>
-                            </div>
-                            <div>
-                                <v-btn color="primary" fab small dark @click="canvas.setZoom(canvas.getZoom() / 1.1 )">
-                                    <v-icon>remove_circle</v-icon>
-                                </v-btn>
-                            </div>
-                             <div>
-                                <v-btn color="primary" fab small dark @click=" canvas.setZoom(canvas.getZoom() * 1.1 )">
-                                    <v-icon>add</v-icon>
-                                </v-btn>
-                            </div>
-                            <v-btn color="primary" @click="bring(false)">FRENTE</v-btn>
-                            <v-btn color="primary"  @click="bring(true)">TRÁS</v-btn>
-
+                            <span class="subheading indigo--text"> {{elScale.x.toFixed(3)}}</span>
+                        </v-flex>
+                        <span class="subheading indigo--text">Escala Y:</span>
+                        <v-flex xs1>
+                            <v-divider vertical></v-divider>
+                            <span class="subheading indigo--text ">{{elScale.y.toFixed(3)}}</span>
+                        </v-flex>
                         </template>
                     </v-toolbar>
                
@@ -141,7 +152,7 @@
                 <v-layout row>
                     
                     <v-flex>
-                 <div @wheel="hoverOn" @click="changeTest" ><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->
+                 <div @wheel="wheelOn" @click="changeTest" ><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->
                             
                  <canvas  id="c" class="canvas-wrapper">
                 </canvas>
@@ -151,7 +162,8 @@
                     <template>  
                     <chrome-picker class="borda" v-model="colors">
                         </chrome-picker>
-                    </template>    
+                    </template>  
+                      
                     </no-ssr>
                 </v-layout>
                 
@@ -206,7 +218,10 @@ export default {
             ],
             toggle_exclusive: 2,
             toggle_multiple: [1, 2, 3],
-       
+       elScale: {//serve pra ver a escala do elemento selecionado, "seu tamanho"
+           x: 1,
+           y: 1
+       },
        colors: '#194d33',//var obrigatoria na lib de color picker
        selectionFont: 'PT Serif',//font inicial de um texto
         opcao: 'IMAGENS',
@@ -289,40 +304,20 @@ export default {
         this.mY = opt.pageY;
         },
         changeTest(event){
-            //!== undefined                      console.log(obj.text, obj.fontFamily, obj.fontSize, obj.fontStyle)
-
+            // console.log(obj.text, obj.fontFamily, obj.fontSize, obj.fontStyle)
             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                if(this.canvas.getActiveObject().text !== undefined){
-                    console.log("aaaa ", this.canvas.getActiveObject())
+                //comum a todos os el: img, texto etc
+                this.elScale.x = this.canvas.getActiveObject().scaleX
+                this.elScale.y = this.canvas.getActiveObject().scaleY
+                if(this.canvas.getActiveObject().text !== undefined){//exclusivo p texto
                     this.selectionFont = this.canvas.getActiveObject().fontFamily //só textos passam desse teste, imgs sao object active, mas retornam undefined para esse atributo
                     this.fontSize = this.canvas.getActiveObject().fontSize.toString()
-                    // console.log("veja ",this.canvas.getActiveObject().scaleY)
-                    // this.fontSize = (this.canvas.getActiveObject().scaleY * 20)//tamanho default
-                    // alert(this.fontSize)
                 }
             }
             else
                 console.log("Nada selec")    
         },
-        mouseDown(opt){
-            console.log("mdddd", opt)
-            if (opt.ctrlKey === true) {
-                this.isDragging = true
-               // this.selection = false
-               console.log("al tru opt ev: ",opt)
-                this.lastPosX = opt.clientX
-                this.lastPosY = opt.clientY
-            }
-        },
-         mouseUp(opt){
-            console.log("mdddd", opt)
-                this.isDragging = false
-               // this.selection = false
-               console.log("al tru opt ev: ",opt)
-                this.lastPosX = opt.clientX
-                this.lastPosY = opt.clientY
-        },
-        hoverOn(event){
+        wheelOn(event){
             event.returnValue = false
             if(event.deltaY > 0){//zoom out
                 this.canvas.setZoom(this.canvas.getZoom() / 1.1) 
@@ -534,6 +529,7 @@ export default {
         },
           changeTextSize(font){
              if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
+                console.log("selecao ",this.canvas.getActiveObject())
                 let doomedObj = this.canvas.getActiveObject();
                 if (doomedObj.type === 'activeSelection') {
                     //lembre de arro f pra referenciar o this sem ko
@@ -628,9 +624,6 @@ export default {
         }
     }
 }
-//.canvas {
-  //  border:1px solid black;	
-//}// #1976D2
 </script>
 
 <style scoped>
