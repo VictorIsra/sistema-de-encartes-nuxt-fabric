@@ -93,12 +93,9 @@
                             overflow
                         ></v-overflow-btn>
                          </v-flex>
-                        <v-divider vertical></v-divider>
+                        <v-divider vertical class="mx-2"></v-divider>
 
-                        <v-btn-toggle
-                            v-model="toggle_multiple"
-                            multiple
-                        >
+                        <v-btn-toggle v-model="toggle_exclusive">
                             <v-btn :value="1" text>
                             <v-icon>format_bold</v-icon>
                             </v-btn>
@@ -107,9 +104,9 @@
                             <v-icon>format_italic</v-icon>
                             </v-btn>
 
-                            <v-btn :value="3" text>
+                           <!-- <v-btn :value="3" text>
                             <v-icon>format_underlined</v-icon>
-                            </v-btn>
+                            </v-btn> -->
                         </v-btn-toggle>
                         <v-divider class="mx-2" vertical></v-divider>
                         <v-spacer></v-spacer>
@@ -166,58 +163,32 @@
                       
                     </no-ssr>
                 </v-layout>
-                
-           <!-- <ul>
-                <li v-for="(img,i) in imgs" :key="i">
-                    <img class="image" @click="addImg(img,i)" :src="getImgURL(img,i)" width="50px" height="50px" v-bind:alt="img.src">
-                </li>
-            </ul> -->
         </v-card>
 </template>
 
 <script>
 import crudMixin from '../../components/mixins/CRUD.js'
-//import jsPDF from "jspdf"
-//import html2canvas from "html2canvas"
 import { Compact, Chrome} from 'vue-color'
 import {fabric}  from "fabric"
  
- 
-   
 export default {
     mixins: [
       crudMixin
-    ],/*
-    c
-     new fabric.Textbox('Lorum ipsum dolor sit amet', {
-        left: 50,
-        top: 50,
-        width: 150,
-        fontSize: 20
-        });*/
+    ],
     components:{
         'compact-picker': Compact,
         'chrome-picker':Chrome
     },
-    
    data: () => ({
-       isDragging: false,
-       lastPosX: 0,
-       lastPosY: 0,
-       mY: 0,
-       /**hover canvs */
-       hover: false,
-            
-            dropdown_edit: [
+        dropdown_edit: [
             { text: '10' },
             { text: '20' },
             { text: '40' },
             { text: '60' },
             { text: '80' },
             { text: '100' },
-            ],
-            toggle_exclusive: 2,
-            toggle_multiple: [1, 2, 3],
+        ],
+        toggle_exclusive: '',
        elScale: {//serve pra ver a escala do elemento selecionado, "seu tamanho"
            x: 1,
            y: 1
@@ -235,18 +206,14 @@ export default {
         download: '',
         salvarComo: 'baixar em PDF',
         userType: '',
-        render: false,//só dps de carregar as imgs!
         canvas: '',
         img: '',
         itens: '',//imgs, futuramente texto..etc,
         imgs: [],
-        grid: 50,
-
         campanha_id: undefined,
         imgsList: []
     }),
     watch:{
-       
         colors(){
             this.actionHandler('fontColor')
             //this.changeTextColor(this.colors.hex8)
@@ -259,6 +226,9 @@ export default {
             this.actionHandler('fontSize')
             //this.changeTextSize(this.fontSize)
         },
+        toggle_exclusive(){
+            this.actionHandler('fontStyle', this.toggle_exclusive)
+        },
         checkbox(){
             if(this.checkbox === true)
                 this.salvarComo = 'baixar em PDF'
@@ -268,7 +238,7 @@ export default {
         tobg(){
             if(this.tobg === true)
                 this.setBackground()
-        }
+        },
     },
     
     mounted() { 
@@ -278,8 +248,6 @@ export default {
         this.canvas.setWidth(1000)
         this.userType = this.$store.state.auth.userType
         this.checkRedirect()
-        this. fillGrid()
-
     },
     methods: {
         //event indicará a acao q deve ser feita, e o value o valor passado
@@ -302,6 +270,16 @@ export default {
                     else if(event === 'fontColor'){
                         doomedObj.forEachObject((obj) => {
                              obj.setColor(this.colors.hex8)
+                        })
+                    }
+                    else if(event === 'fontStyle'){
+                        let style = 'normal'
+                        if(value === 1)
+                            style = 'Bold'
+                        else if(value === 2)
+                            style = 'Italic'    
+                        doomedObj.forEachObject((obj) => {
+                            obj.set("fontStyle", style)
                         })
                     }
                     else if(event === 'bring'){
@@ -332,6 +310,14 @@ export default {
                         else if(event === 'fontColor'){
                             this.canvas.getActiveObject().setColor(this.colors.hex8)
                         }
+                        else if(event === 'fontStyle'){
+                            let style = 'normal'
+                            if(value === 1)
+                                style = 'Bold'
+                            else if(value === 2)
+                                style = 'Italic'  
+                            this.canvas.getActiveObject().set("fontStyle", style)
+                        }
                         else if(event === 'bring'){
                             if(!value)
                                 this.canvas.bringToFront(activeObject)
@@ -347,47 +333,15 @@ export default {
                         
             } 
         },
-      
-        removeSelected(){//remove do canvas o(s) objeto(s) que está selecionado
-            if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                let doomedObj = this.canvas.getActiveObject();
-
-                if (doomedObj.type === 'activeSelection') {
-                    //lembre de arro f pra referenciar o this sem ko
-                    doomedObj.canvas = this.canvas
-                    doomedObj.forEachObject((obj) => {
-                        this.canvas.remove(obj)
-                    });
-                }
-                else{
-                //um unico objeto selecionado
-                var activeObject = this.canvas.getActiveObject();
-                    if(activeObject !== null ) {
-                        this.canvas.remove(activeObject);
-                    }
-                }
-                        
-            } 
-        },
-        mouseMove(opt){
-        
-        
-            // moving upward
-        if (opt.pageY < this.mY) {
-            console.log('From Bottom');
-               var units = 10 ;
-        var delta = new fabric.Point(0,units) ;
-        this.canvas.relativePan(delta) 
-        this.canvas.requestRenderAll();
-        // moving downward
-        } else {
-            console.log('From Top');
-               var units = 1 ;
-        var delta = new fabric.Point(0,-units) ;
-        this.canvas.relativePan(delta) 
-        this.canvas.requestRenderAll();
-        }
-        this.mY = opt.pageY;
+        checkFontStyle(style){//checa o tipo de estilo de fonte selecionada ou nao no painel e retorna
+            if(style === 'Bold'){
+                this.toggle_exclusive = 1
+            }    
+            else if(style === 'Italic')
+                this.toggle_exclusive = 2
+            else if( style === 'normal')
+                this.toggle_exclusive = '' 
+                
         },
         changeTest(event){
             // console.log(obj.text, obj.fontFamily, obj.fontSize, obj.fontStyle)
@@ -398,6 +352,7 @@ export default {
                 if(this.canvas.getActiveObject().text !== undefined){//exclusivo p texto
                     this.selectionFont = this.canvas.getActiveObject().fontFamily //só textos passam desse teste, imgs sao object active, mas retornam undefined para esse atributo
                     this.fontSize = this.canvas.getActiveObject().fontSize.toString()
+                    this.checkFontStyle(this.canvas.getActiveObject().fontStyle)
                 }
             }
             else
@@ -411,22 +366,6 @@ export default {
             }    
             if(event.deltaY < 0)//zoom in ( aumenta)
                 this.canvas.setZoom(this.canvas.getZoom() * 1.1) 
-        },
-        fillGrid(){
-          var grid = 50;
-            var unitScale = 100;
-            // var canvasWidth =  100 * unitScale;
-            // var canvasHeight = 100 * unitScale;
-
-            // canvas.setWidth(canvasWidth);
-            // canvas.setHeight(canvasHeight);
-
-            // create grid
-
-            for (var i = 0; i < (600 / grid); i++) {
-            this.canvas.add(new fabric.Line([ i * grid, 0, i * grid,600], { type:'line', stroke: '#ccc', selectable: false }));
-            this.canvas.add(new fabric.Line([ 0, i *600, i * grid], { type: 'line', stroke: '#ccc', selectable: false }))
-            }
         },
         submeterAvaliacao(){//envia tabloide/campanha para o diretor
             this.salvarTabloide()
@@ -451,9 +390,7 @@ export default {
                 this.fetchProdutos()//console.log("ID: ", this.campanha_id) 
                 this.carregarTabloide()
             }        
-        },
-        
-     
+        },  
         async fetchProdutos(){
             console.log("no fetc ", this.campanha_id)
             this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
@@ -469,8 +406,7 @@ export default {
                 this.dataImages[i].src = this.getImgURL(img)
 
             })
-        },
-        
+        },    
         getImgURL(img){
         //se uma img nao tiver sido escolhida, retorne enm branco
         console.log("entrou c ",img)
@@ -512,12 +448,6 @@ export default {
                         pdf.save('tabloide.pdf');
                     });
             }
-            else
-                this.saveAsImg()      
-        },
-        saveAsImg(){
-            //var image = canvas.toDataURL("image/jpg",1.0)
-            //this.$refs['download'].href = image;
         },
         //METODOS RELATIVOS AO CANVAS/FABRIC
         addImg(img,i){
@@ -531,13 +461,11 @@ export default {
             //    canvas.sendToBack(relaPath,img);
 
        },
-       clearZoom(){
+        clearZoom(){
             this.canvas.setZoom(1);
             this.canvas.renderAll()
        },
-       
-        
-         addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
+        addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
             fabric.Image.fromURL(path,(img)=>{
                 img.scaleToWidth(100)//dif de crop, aqui literalmente "redimensiona"
                 img.scaleToHeight(100)
@@ -549,36 +477,6 @@ export default {
                    this.setBackground(path,img)    
             })//{canvas: canvas})//n funciona passar esse arg...doc lixoooo
         },
-
-
-     scaleAndPositionImage(bgImage) {
-        //setCanvasZoom();
-        //bgImage = fabric.Image.fromURL(bgImage)
-        var canvasAspect = this.canvas.width / this.canvas.height//  canvasWidth / canvasHeight;
-        var imgAspect = bgImage.width / bgImage.height;
-        var left, top, scaleFactor;
-
-        if (canvasAspect >= imgAspect) {
-            var scaleFactor = this.canvas.width / bgImage.width;
-            left = 0;
-            top = -((bgImage.height * scaleFactor) -  this.canvas.height) / 2;
-        } else {
-            var scaleFactor = this.canvas.height / bgImage.height;
-            top = 0;
-            left = -((bgImage.width * scaleFactor) - this.canvas.width) / 2;
-
-        }
-        this.canvas.setBackgroundImage(bgImage, this.canvas.renderAll.bind(this.canvas), {
-            top: top,
-            left: left,
-            originX: 'left',
-            originY: 'top',
-            scaleX: scaleFactor,
-            scaleY: scaleFactor
-        });
-        this.canvas.renderAll();
-
-    },
         setBackground(path,img){
             
             fabric.Image.fromURL(path,(img)=>{
@@ -588,8 +486,7 @@ export default {
                 scaleY: this.canvas.height /temp.height})
             })
         
-        },
-           
+        },    
     }
 }
 </script>
@@ -628,5 +525,3 @@ export default {
      width: 10px;
  }
 </style>
-
-
