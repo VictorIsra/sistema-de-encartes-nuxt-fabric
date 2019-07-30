@@ -65,7 +65,8 @@
                         <v-overflow-btn
                             :items="dropdown_edit"
                             editable
-                            label="Select size"
+                            v-model="fontSize"
+                            label="Tamanho da fonte"
                             hide-details
                             class="pa-0"
                             overflow
@@ -223,19 +224,21 @@ export default {
        hover: false,
             
             dropdown_edit: [
-            { text: '100%' },
-            { text: '75%' },
-            { text: '50%' },
-            { text: '25%' },
-            { text: '0%' },
+            { text: '10' },
+            { text: '20' },
+            { text: '40' },
+            { text: '60' },
+            { text: '80' },
+            { text: '100' },
             ],
             toggle_exclusive: 2,
             toggle_multiple: [1, 2, 3],
-    
+       
        colors: '#194d33',//var obrigatoria na lib de color picker
        selectionFont: 'PT Serif',//font inicial de um texto
         opcao: 'IMAGENS',
         radioGroup: '',
+        fontSize: 20,
         fonts: [ 'PT Serif','Times New Roman',"Roboto", 'Literata' , 'Oswald', "Inconsolata",'Josefin Sans','Indie Flower','Amiri','Rokkitt'],
         textbox:'',
        dataImages: [],
@@ -261,6 +264,9 @@ export default {
         },
         selectionFont(){
             this.changeTextFamily(this.selectionFont)
+        },
+        fontSize(){
+            this.changeTextSize(this.fontSize)
         },
         checkbox(){
             if(this.checkbox === true)
@@ -325,8 +331,10 @@ export default {
             //!== undefined                //             console.log(obj.text, obj.fontFamily, obj.fontSize, obj.fontStyle)
 
             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                if(this.canvas.getActiveObject().text !== undefined)
-                   this.selectionFont = this.canvas.getActiveObject().fontFamily //só textos passam desse teste, imgs sao object active, mas retornam undefined para esse atributo
+                if(this.canvas.getActiveObject().text !== undefined){
+                    this.selectionFont = this.canvas.getActiveObject().fontFamily //só textos passam desse teste, imgs sao object active, mas retornam undefined para esse atributo
+                    this.fontSize = this.canvas.getActiveObject().fontSize.toString()
+                }
             }
             else
                 console.log("Nada selec")    
@@ -553,6 +561,29 @@ export default {
                 var activeObject = this.canvas.getActiveObject();
                     if(activeObject !== null ) {
                         this.canvas.getActiveObject().set("fontFamily", this.selectionFont)
+                        this.canvas.renderAll()
+                    }
+                }
+                        
+            } 
+        },
+          changeTextSize(font){
+             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
+                let doomedObj = this.canvas.getActiveObject();
+                if (doomedObj.type === 'activeSelection') {
+                    //lembre de arro f pra referenciar o this sem ko
+                    doomedObj.canvas = this.canvas
+                    doomedObj.forEachObject((obj) => {
+                        obj.set("fontSize", this.fontSize.toString())
+                    });
+                    this.canvas.renderAll()
+
+                }
+                else{
+                //um unico objeto selecionado
+                var activeObject = this.canvas.getActiveObject();
+                    if(activeObject !== null ) {
+                        this.canvas.getActiveObject().set("fontSize", this.fontSize.toString())
                         this.canvas.renderAll()
                     }
                 }
