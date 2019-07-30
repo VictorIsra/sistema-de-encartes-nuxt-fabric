@@ -76,7 +76,7 @@
                                 vertical
                             ></v-divider>
                         <div>
-                            <v-btn color="primary" fab small dark @click="clearZoom">
+                            <v-btn color="primary" fab small dark @click="restoreDefault">
                                 <v-icon>restore</v-icon>
                             </v-btn>
                         </div>
@@ -290,8 +290,7 @@ export default {
             var delta = new fabric.Point(0,units)
             this.canvas.relativePan(delta)
         },
-         clearZoom(){
-
+         restoreDefault(){
             this.canvas.setZoom(1)
             //reset o canvas para o status inicial
             this.canvas.setViewportTransform([1,0,0,1,0,0]) 
@@ -474,6 +473,7 @@ export default {
         async salvarPdf(checkbox){
             if(checkbox){
                 this.canvas.discardActiveObject()//deselect, p n salvar com a markinha das opcoes
+                this.restoreDefault()//restaura td pra posicao inicial ( tira zoom e panning)
                 this.canvas.renderAll()
                 //FUNDAMENTAL N USAR IMPORT, SE N DÁ O BUG DO WINDOW NOT DEFINED.
                 //ESSA SOLUCAO FOI RECOMENDADA EM https://github.com/MrRio/jsPDF/issues/1891
