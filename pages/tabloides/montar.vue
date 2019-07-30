@@ -48,7 +48,75 @@
                             <v-btn round @click="salvarTabloide" color="primary">Salvar tabloide</v-btn>
                         </v-layout>
                 </v-toolbar>
-                
+                    <v-toolbar dense class="borda"> 
+                        <v-flex xs3>
+                            <v-overflow-btn
+                            label="FONTE"
+                            hide-details
+                            class="pa-0"
+                            v-model="selectionFont"
+                            :items='fonts'
+                            dense
+                            ></v-overflow-btn>
+                        </v-flex>
+                        <template v-if="$vuetify.breakpoint.mdAndUp">
+                        <v-divider vertical></v-divider>
+
+                        <v-overflow-btn
+                            :items="dropdown_edit"
+                            editable
+                            label="Select size"
+                            hide-details
+                            class="pa-0"
+                            overflow
+                        ></v-overflow-btn>
+
+                        <v-divider vertical></v-divider>
+
+                        <v-spacer></v-spacer>
+
+                        <v-btn-toggle
+                            v-model="toggle_multiple"
+                            multiple
+                        >
+                            <v-btn :value="1" text>
+                            <v-icon>format_bold</v-icon>
+                            </v-btn>
+
+                            <v-btn :value="2" text>
+                            <v-icon>format_italic</v-icon>
+                            </v-btn>
+
+                            <v-btn :value="3" text>
+                            <v-icon>format_underlined</v-icon>
+                            </v-btn>
+
+                            <v-btn :value="4" text>
+                            <v-icon>format_color_fill</v-icon>
+                            </v-btn>
+                        </v-btn-toggle>
+
+                        <div class="mx-4"></div>
+
+                        <v-btn-toggle v-model="toggle_exclusive">
+                            <v-btn :value="1" text>
+                            <v-icon>format_align_left</v-icon>
+                            </v-btn>
+
+                            <v-btn :value="2" text>
+                            <v-icon>format_align_center</v-icon>
+                            </v-btn>
+
+                            <v-btn :value="3" text>
+                            <v-icon>format_align_right</v-icon>
+                            </v-btn>
+
+                            <v-btn :value="4" text>
+                            <v-icon>format_align_justify</v-icon>
+                            </v-btn>
+                        </v-btn-toggle>
+                        </template>
+                    </v-toolbar>
                
                 <v-toolbar class="borda">
                 <no-ssr>
@@ -80,14 +148,6 @@
                             </div>
                             <v-btn color="primary" @click="bring(false)">FRENTE</v-btn>
                             <v-btn color="primary"  @click="bring(true)">TRÁS</v-btn>
-                    <v-flex xs1 class="subheading primary--text">FONTE:</v-flex>
-                    <v-flex xs2>
-                         <v-select
-                            :items="fonts"
-                            v-model="selectionFont"
-                            
-                        ></v-select>
-                    </v-flex>
                 </no-ssr>       
     </v-toolbar>
             </template>
@@ -107,7 +167,7 @@
                 <v-layout row>
                     
                     <v-flex>
-                 <div @wheel="hoverOn"  ><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->
+                 <div @wheel="hoverOn" @click="changeTest" ><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->
                       >       
                  <canvas  id="c" class="canvas-wrapper">
                 </canvas>
@@ -161,6 +221,17 @@ export default {
        mY: 0,
        /**hover canvs */
        hover: false,
+            
+            dropdown_edit: [
+            { text: '100%' },
+            { text: '75%' },
+            { text: '50%' },
+            { text: '25%' },
+            { text: '0%' },
+            ],
+            toggle_exclusive: 2,
+            toggle_multiple: [1, 2, 3],
+    
        colors: '#194d33',//var obrigatoria na lib de color picker
        selectionFont: 'PT Serif',//font inicial de um texto
         opcao: 'IMAGENS',
@@ -250,6 +321,16 @@ export default {
         //     }
             
         },
+        changeTest(event){
+            //!== undefined                //             console.log(obj.text, obj.fontFamily, obj.fontSize, obj.fontStyle)
+
+            if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
+                if(this.canvas.getActiveObject().text !== undefined)
+                   this.selectionFont = this.canvas.getActiveObject().fontFamily //só textos passam desse teste, imgs sao object active, mas retornam undefined para esse atributo
+            }
+            else
+                console.log("Nada selec")    
+        },
         mouseDown(opt){
             console.log("mdddd", opt)
             if (opt.ctrlKey === true) {
@@ -269,13 +350,12 @@ export default {
                 this.lastPosY = opt.clientY
         },
         hoverOn(event){
-            console.log("EVENT ",event)
             event.returnValue = false
-            if(event.deltaY > 0){
+            if(event.deltaY > 0){//zoom out
                 this.canvas.setZoom(this.canvas.getZoom() / 1.1) 
                 
             }    
-            if(event.deltaY < 0)
+            if(event.deltaY < 0)//zoom in ( aumenta)
                 this.canvas.setZoom(this.canvas.getZoom() * 1.1) 
         },
         fillGrid(){
@@ -462,6 +542,7 @@ export default {
                     //lembre de arro f pra referenciar o this sem ko
                     doomedObj.canvas = this.canvas
                     doomedObj.forEachObject((obj) => {
+                        console.log("souuu selec ",obj)
                         obj.set("fontFamily", this.selectionFont)
                     });
                     this.canvas.renderAll()
