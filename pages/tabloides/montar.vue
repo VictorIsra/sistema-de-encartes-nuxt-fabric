@@ -50,6 +50,12 @@
                 </v-toolbar>
                 <v-toolbar class="borda">
                     <v-layout align-center class="justify-center">
+                         <span>Mostrar grid:</span>
+                        <div>
+                            <v-checkbox class="layout"
+                                v-model="checkGrid"
+                            ></v-checkbox>
+                        </div>    
                         <div>
                             <v-btn color="primary" fab small dark @click="Xmovement(-1)">
                                 <v-icon>arrow_back</v-icon>
@@ -213,9 +219,13 @@ export default {
         dropdown_edit: [
             { text: '10' },
             { text: '20' },
+            { text: '30' },
             { text: '40' },
+            { text: '50' },
             { text: '60' },
+            { text: '70' },
             { text: '80' },
+            { text: '90' },
             { text: '100' },
         ],
         toggle_exclusive: '',
@@ -223,6 +233,8 @@ export default {
            x: 1,
            y: 1
        },
+        gridGroup: null,
+        checkGrid: false,//checkbox q diz erespeito ao grid
         isDragging: false,
         lastPosX: 0,
         lastPosY: 0,
@@ -244,6 +256,12 @@ export default {
         imgsList: []
     }),
     watch:{
+       checkGrid(){
+            if(this.checkGrid)
+                this.fillGrid()
+            else
+                this.removeGrid()    
+        },
         colors(){
             this.actionHandler('fontColor')
             //this.changeTextColor(this.colors.hex8)
@@ -279,6 +297,33 @@ export default {
         this.checkRedirect()
     },
     methods: {
+        fillGrid(){
+            if(this.gridGroup)
+                return
+            var gridoption = {
+                stroke: "#000000",
+                strokeWidth: 1,
+                strokeDashArray: [5, 5],
+                distance: 5
+            };
+            var gridLines = [];
+            for (var x = 1; x < (this.canvas.width); x += 50) {
+                gridLines.push(new fabric.Line([x, 0, x, this.canvas.width], gridoption));
+            }
+            for (var x = 1; x < (this.canvas.height); x += 50) {
+                gridLines.push(new fabric.Line([0, x, this.canvas.height, x], gridoption));
+            }
+            this.gridGroup = new fabric.Group(gridLines, {
+                selectable: false,
+                evented: false
+            })
+            this.gridGroup.addWithUpdate();
+            this.canvas.add(this.gridGroup);    
+        },
+        removeGrid(){
+            this.gridGroup && this.canvas.remove(this.gridGroup)
+            this.gridGroup = null
+        },
         mouseDown(evento){
             if (evento.ctrlKey === true) {
                 this.isDragging = true
@@ -491,7 +536,9 @@ export default {
             this.canvas.renderAll()
 
         },
-        salvarTabloide(){
+        async salvarTabloide(){
+            this.checkGrid = false
+            await this.removeGrid()
             var json = JSON.stringify(this.canvas.toJSON())
             this.saveTabloide(json,this.campanha_id)
             console.log("salvo com sucesso.")
@@ -500,6 +547,8 @@ export default {
             if(checkbox){
                 this.canvas.discardActiveObject()//deselect, p n salvar com a markinha das opcoes
                 this.restoreDefault()//restaura td pra posicao inicial ( tira zoom e panning)
+                this.checkGrid = false//desabilita o grid
+                await this.removeGrid()
                 this.canvas.renderAll()
                 //FUNDAMENTAL N USAR IMPORT, SE N DÁ O BUG DO WINDOW NOT DEFINED.
                 //ESSA SOLUCAO FOI RECOMENDADA EM https://github.com/MrRio/jsPDF/issues/1891
@@ -526,9 +575,9 @@ export default {
         addImg(img,i){
             console.log("adicionando img de indice ",img)
             const relaPath = "../../../uploads/fotos/" + img.name
-            const text = new fabric.IText(img.alt,{ top: 100,fontSize: 20 });
+            const text = new fabric.IText(img.alt,{ top: 100,fontSize: 40 });
             this.canvas.add(text)
-            const preco = new fabric.IText(img.preco_v,{ top: 125,fontSize: 20 });
+            const preco = new fabric.IText(img.preco_v,{ top: 140,fontSize: 30 });
             this.canvas.add(preco)
             this.addImgToCanvas(relaPath,img)//parece estranho eu n passar simplesmente img, mas o fabric é eskisito...entao vai assim
             //    canvas.sendToBack(relaPath,img);
