@@ -34,13 +34,10 @@
       <v-spacer></v-spacer>
       <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-              <v-btn v-if="userType === 'tabloide'" class="mx-2" fab dark small color="primary" @mouseover="bflag = 0" to="/" v-on="on">
-                  <v-icon dark>aspect_ratio</v-icon>
-              </v-btn>
-            <v-btn color="primary" dark class="mb-2" @mouseover="bflag = 1" @click="addItem(-1)" v-on="on" >Adicionar produto</v-btn> <!--v-on="on" -->
+            <bg-dialog v-if="userType === 'tabloide'"></bg-dialog>
+            <v-btn color="primary" dark class="mb-2"  @click="addItem(-1)" v-on="on" >Adicionar produto</v-btn> <!--v-on="on" -->
           </template>
-          <span v-if="bflag === 0">Adicionar backgrounds</span>
-          <span v-else>Cadastrar um novo produto ao sistema</span>
+          <span>Cadastrar um novo produto ao sistema</span>
         </v-tooltip>  
         
       <v-dialog v-model="dialog" max-width="500px">
@@ -200,11 +197,13 @@
   import datas from  '../../components/campanhas/generalUseComponents/datas.vue'
   import formatInputMixin from '../../components/mixins/FormatInputMixin.js'
   import crudMixin from '../../components/mixins/CRUD.js'
+  import bgDialog from '../../components/campanhas/generalUseComponents/bgDialog.vue'
 
   export default {
     components: {
       'img-upload': imgUpload,
-      datas
+      datas,
+      bgDialog
     },
     mixins: [
       formatInputMixin,
@@ -214,7 +213,6 @@
     //props:['campanha_id','campanhaInfos'],
     data: () => ({
       userType: '',//autoexplicativo, porra xD
-      bflag: 0,//se 0, tooltip em rel a uma coisa; 1, tooltip em rela a outra
       campanhaInfos: '',
       campanha_id: '5d2f6b45384572128c682715',//é hardcoded pois o cadastro de produto é sempre feito nessa id 
       produtosQtdadeInfo: {//referente a qtdade de protudos cadastrados e metas, nao é o this.campanhaInfo.produtos ou this.campanhaInfo.qtdade pois este só da o fetch uma unica vez, vou mudar seu valor a lvl de app, e a lvl de bd somente atraves da pag de campanhas ;)
