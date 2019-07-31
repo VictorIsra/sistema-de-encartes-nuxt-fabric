@@ -51,11 +51,9 @@
                 <v-toolbar class="borda">
                     <v-layout align-center class="justify-center">
                          <span>Mostrar grid:</span>
-                        <div>
-                            <v-checkbox class="layout"
+                            <v-checkbox class="justify-space-between"
                                 v-model="checkGrid"
-                            ></v-checkbox>
-                        </div>    
+                            ></v-checkbox>  
                         <div>
                             <v-btn color="primary" fab small dark @click="Xmovement(-1)">
                                 <v-icon>arrow_back</v-icon>
@@ -264,15 +262,12 @@ export default {
         },
         colors(){
             this.actionHandler('fontColor')
-            //this.changeTextColor(this.colors.hex8)
         },
         selectionFont(){
             this.actionHandler('fontFamily')
-            //this.changeTextFamily(this.selectionFont)
         },
         fontSize(){
             this.actionHandler('fontSize')
-            //this.changeTextSize(this.fontSize)
         },
         toggle_exclusive(){
             this.actionHandler('fontStyle', this.toggle_exclusive)

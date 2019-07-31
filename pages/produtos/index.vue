@@ -5,6 +5,7 @@
     <v-toolbar flat color="grey lighten-4">
         <v-toolbar-title>
           <v-layout align-center class="mr-2 primary--text">
+            
             <v-img class="mr-2" width="50" src="icones/produtos.png"></v-img>
             Produtos
           </v-layout>
@@ -31,11 +32,18 @@
         hide-details
       ></v-text-field>
       <v-spacer></v-spacer>
-      <v-dialog v-model="dialog" max-width="500px">
-        <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark class="mb-2" @click="addItem(-1)" v-on="on" >Adicionar produto</v-btn> <!--v-on="on" -->
-        </template>
+      <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+              <v-btn v-if="userType === 'tabloide'" class="mx-2" fab dark small color="primary" @mouseover="bflag = 0" to="/" v-on="on">
+                  <v-icon dark>aspect_ratio</v-icon>
+              </v-btn>
+            <v-btn color="primary" dark class="mb-2" @mouseover="bflag = 1" @click="addItem(-1)" v-on="on" >Adicionar produto</v-btn> <!--v-on="on" -->
+          </template>
+          <span v-if="bflag === 0">Adicionar backgrounds</span>
+          <span v-else>Cadastrar um novo produto ao sistema</span>
+        </v-tooltip>  
         
+      <v-dialog v-model="dialog" max-width="500px">
         <v-card > <!-- o form em si é esse v card! -->
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
@@ -205,6 +213,8 @@
     //fetchCampanhas
     //props:['campanha_id','campanhaInfos'],
     data: () => ({
+      userType: '',//autoexplicativo, porra xD
+      bflag: 0,//se 0, tooltip em rel a uma coisa; 1, tooltip em rela a outra
       campanhaInfos: '',
       campanha_id: '5d2f6b45384572128c682715',//é hardcoded pois o cadastro de produto é sempre feito nessa id 
       produtosQtdadeInfo: {//referente a qtdade de protudos cadastrados e metas, nao é o this.campanhaInfo.produtos ou this.campanhaInfo.qtdade pois este só da o fetch uma unica vez, vou mudar seu valor a lvl de app, e a lvl de bd somente atraves da pag de campanhas ;)
@@ -321,6 +331,7 @@
     },
     methods: {
       initialize () {
+        this.userType = this.$store.state.auth.userType
         if(this.campanha_id !== undefined && this.campanha_id !== '-1'){
           this.fetchCampanhaInfo()
           this.fetchProdutos()
@@ -351,6 +362,8 @@
         this.resetValues()        
         this.imgInfo.flag = flag//garante q nao vai ter uma img pre definida ao abrir o dialog
         this.sendDefaultDates(flag)
+        this.dialog = true
+
       },
       resetValues(){
         //p dps de uma remocao, ao eu add um novo item, os campos n terem mais relacao com o que foi deletado
