@@ -180,7 +180,7 @@
                 <v-layout row>
                     
                     <v-flex>
-                        <div @wheel="wheelOn" @click="changeTest" ><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
+                        <div @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove"><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
                          <canvas  id="c" class="canvas-wrapper"></canvas>
                         </div>
                     </v-flex>
@@ -223,6 +223,9 @@ export default {
            x: 1,
            y: 1
        },
+        isDragging: false,
+        lastPosX: 0,
+        lastPosY: 0,
        colors: '#194d33',//var obrigatoria na lib de color picker
        selectionFont: 'PT Serif',//font inicial de um texto
         fontSize: 20,
@@ -276,6 +279,29 @@ export default {
         this.checkRedirect()
     },
     methods: {
+        mouseDown(evento){
+            if (evento.ctrlKey === true) {
+                this.isDragging = true
+                this.lastPosX = evento.clientX
+                this.lastPosY = evento.clientY
+            }
+        },
+        mouseMove(evento){
+            if(this.isDragging) {
+                let deltaX = 0
+                let deltaY = 0
+                deltaX += evento.clientX - this.lastPosX
+                deltaY += evento.clientY - this.lastPosY
+                let offset = new fabric.Point(deltaX,deltaY)
+                this.canvas.relativePan(offset)
+                //this.requestRenderAll();
+                this.lastPosX = evento.clientX
+                this.lastPosY = evento.clientY
+            }
+        },
+        mouseUp(){
+            this.isDragging = false
+        },
         Xmovement(flag = 0){//andar p direita ou esuqer
             var units = 10//caso direita
             if(flag === -1)//caso esquerda
