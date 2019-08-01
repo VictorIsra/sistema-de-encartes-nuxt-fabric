@@ -27,17 +27,7 @@
                             <v-btn round @click="submeterAvaliacao" color="success">Submeter para avaliação</v-btn>
                         </div>
                         <v-layout align-center class="mr-2 primary--text">
-                                <v-btn  round @click="salvarPdf(checkbox)" color="primary">{{salvarComo}}</v-btn>
-                            <v-layout class="justify-end">
-                                <v-checkbox
-                                v-model="checkbox"
-                                ></v-checkbox>
-                            </v-layout>
-                            <v-layout class="justify-end">
-                                <v-checkbox
-                                v-model="tobg"
-                                ></v-checkbox>
-                            </v-layout>      
+                            <v-btn  round @click="salvarPdf(checkbox)" color="primary">{{salvarComo}}</v-btn>
                         </v-layout>
                         <v-divider
                             class="mx-2"
@@ -165,6 +155,11 @@
                         <vue-select-image :useLabel="true" :dataImages="dataImages" h='30px' w='30px' @onselectimage="addImg">
                         </vue-select-image>
                     </v-list>
+                     <v-list v-if="filtroEscolhido === 'backgrounds'" class="scroll-y">
+                        <vue-select-image :useLabel="true" :dataImages="bgsImages" h='30px' w='30px' @onselectimage="addBg">
+                        </vue-select-image>
+                    </v-list>
+                    
                     <v-layout align-center>
                     <v-divider vertical class="mx-2"></v-divider>
                     <v-spacer></v-spacer>
@@ -262,7 +257,6 @@ export default {
         fontSize: 20,
         fonts: [ 'PT Serif','Times New Roman',"Roboto", 'Literata' , 'Oswald', "Inconsolata",'Josefin Sans','Indie Flower','Amiri','Rokkitt'],
         textbox:'',
-       dataImages: [],
         tobg: false,
         checkbox: true,
         salvarComo: 'baixar em PDF',
@@ -270,11 +264,20 @@ export default {
         canvas: '',
         img: '',
         itens: '',//imgs, futuramente texto..etc,
-        imgs: [],
+        imgs: [],//produtos
+        bgs:[],//bgs
+        comple:[],//img complementares
+        bgsImages:[],//vetor q contera bgs
+        compleImages: [],
+        dataImages: [],
         campanha_id: undefined,
-        imgsList: []
+       // imgsList: []
     }),
     watch:{
+        filtroEscolhido(){
+            if(this.filtroEscolhido === 'backgrounds')
+                this.tobg = true
+        },
        checkGrid(){
             if(this.checkGrid)
                 this.fillGrid()
@@ -527,7 +530,6 @@ export default {
             }        
         },  
         async fetchProdutos(){
-            console.log("no fetc ", this.campanha_id)
             this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             this.itens.forEach(p => {
                 if(p.img !== undefined && p.img !== ''){
@@ -541,6 +543,30 @@ export default {
                 this.dataImages[i].src = this.getImgURL(img)
 
             })
+            let campanhaBg_id = "5d4223b924a1f1483c193259"
+            this.itens = await this.getProdutos(campanhaBg_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+            this.itens.forEach(p => {
+                if(p.img !== undefined && p.img !== '')
+                    this.bgs.push( p.img)  
+            })
+            this.bgs.forEach((img,i) => {
+                this.bgsImages.push(img)
+                this.bgsImages[i].src = this.getImgURL(img)
+
+            })
+            // let campanhaComple_id = ""
+            // this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+            // this.itens.forEach(p => {
+            //     if(p.img !== undefined && p.img !== ''){
+            //         p.img.alt = p.nome
+            //         this.comple.push( p.img)
+            //     }    
+            // })
+            // this.comple.forEach((img,i) => {
+            //     this.compleImages.push(img)
+            //     this.compleImages[i].src = this.getImgURL(img)
+
+            // })
             this.dataImages.sort(function(a, b){//sortei produtos em ordem alfabetica
                 if(a.alt.toLowerCase() < b.alt.toLowerCase()) { return -1; }
                 if(a.alt.toLowerCase() > b.alt.toLowerCase()) { return 1; }
@@ -606,16 +632,18 @@ export default {
             //    canvas.sendToBack(relaPath,img);
 
        },
+       addBg(img,i){
+            const relaPath = "../../../uploads/fotos/" + img.name
+            this.setBackground(relaPath,img)
+       },
         addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
             fabric.Image.fromURL(path,(img)=>{
                 img.scaleToWidth(100)//dif de crop, aqui literalmente "redimensiona"
                 img.scaleToHeight(100)
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
-                if(!this.tobg){
-                    this.canvas.add(temp)
-                }    
-                else
-                   this.setBackground(path,img)    
+               // if(!this.tobg){
+                this.canvas.add(temp)
+            
             })//{canvas: canvas})//n funciona passar esse arg...doc lixoooo
         },
         setBackground(path,img){
