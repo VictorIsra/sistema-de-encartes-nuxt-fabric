@@ -342,8 +342,8 @@ export default {
                 return
             var gridoption = {
                 stroke: '#ebebeb',
-                strokeWidth: 1,
-                distance: 5
+                strokeWidth: 2,
+                distance: 10
             }
             var gridLines = [];
             let gridlen = this.canvas.width > this.canvas.height ?  this.canvas.width :  this.canvas.height
@@ -359,7 +359,8 @@ export default {
             })
             this.gridGroup.addWithUpdate()
             this.canvas.add(this.gridGroup)  
-            this.canvas.sendToBack(this.gridGroup)
+            //this.canvas.sendToBack(this.gridGroup)
+            this.canvas.bringToFront(this.gridGroup)
 
         },
         removeGrid(){
@@ -443,8 +444,11 @@ export default {
                     }
                     else if(event === 'bring'){
                         doomedObj.forEachObject((obj) => {
-                            if(!value)
+                            if(!value){
                                 this.canvas.bringToFront(obj)
+                                if(this.gridGroup)
+                                    this.canvas.bringToFront(this.gridGroup)//grid ficar sempre atras, caso ele exista
+                            }    
                             else
                                 this.canvas.sendToBack(obj)
                         })
@@ -478,8 +482,11 @@ export default {
                             this.canvas.getActiveObject().set("fontStyle", style)
                         }
                         else if(event === 'bring'){
-                            if(!value)
+                            if(!value){
                                 this.canvas.bringToFront(activeObject)
+                                if(this.gridGroup)
+                                    this.canvas.bringToFront(this.gridGroup)//grid ficar sempre atras, caso ele exista
+                            }    
                             else
                                 this.canvas.sendToBack(activeObject)
                         }
@@ -656,22 +663,25 @@ export default {
             this.canvas.add(preco)
             this.addImgToCanvas(relaPath,img)//parece estranho eu n passar simplesmente img, mas o fabric é eskisito...entao vai assim
             //    canvas.sendToBack(relaPath,img);
-
+            
        },
        addBg(img,i){
            console.log("vejaa IMGa ", img)
             const relaPath = "../../../uploads/fotos/" + img.name
             this.setBackground(relaPath,img)
             this.currBg = img
+            if(this.gridGroup)
+                this.canvas.bringToFront(this.gridGroup)//grid ficar sempre atras, caso ele exista
        },
         addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
             fabric.Image.fromURL(path,(img)=>{
                 img.scaleToWidth(100)//dif de crop, aqui literalmente "redimensiona"
-                img.scaleToHeight(100)
+                img.scaleToHeight(150)
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
                // if(!this.tobg){
                 this.canvas.add(temp)
-            
+                if(this.gridGroup)
+                    this.canvas.bringToFront(this.gridGroup)//grid ficar sempre atras, caso ele exista
             })//{canvas: canvas})//n funciona passar esse arg...doc lixoooo
         },
         setBackground(path,img){
