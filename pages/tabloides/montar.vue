@@ -201,21 +201,7 @@
                 class="mx-2"
                 inset
                 ></v-divider>   
-                <!--  <no-ssr>
-
-                    <template>
-                    <chrome-picker  class="borda gg2" v-model="colors">
-                        </chrome-picker>
-                    </template>  
-                    
-                    </no-ssr>   -->
                 <v-layout row>
-                 
-                    <v-flex>
-                        <div @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove"><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
-                         <canvas  id="c" class="canvas-wrapper"></canvas>
-                        </div>
-                    </v-flex>
                   <no-ssr>
                     <template>  
                     <chrome-picker class="borda" v-model="colors">
@@ -223,6 +209,11 @@
                     </template>  
                       
                     </no-ssr>
+                    <v-flex>
+                        <div @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove"><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
+                         <canvas  id="c" class="canvas-wrapper"></canvas>
+                        </div>
+                    </v-flex>
                 </v-layout>
         </v-card>
 </template>
