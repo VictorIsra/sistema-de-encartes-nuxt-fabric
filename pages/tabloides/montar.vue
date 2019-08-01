@@ -1,6 +1,5 @@
 <template>
         <v-card class="teste">
-            
             <template v-if="userType === 'tabloide'">
                 <v-toolbar flat class="borda">
                     <v-toolbar-title>
@@ -43,7 +42,17 @@
                          <span>Mostrar grid:</span>
                             <v-checkbox class="justify-space-between"
                                 v-model="checkGrid"
-                            ></v-checkbox>  
+                            ></v-checkbox> 
+                         <div>
+                            <v-btn color="primary" fab small dark @click="setCanvasDim(1000,1540)">
+                                <v-icon>stay_current_landscape</v-icon>
+                            </v-btn>
+                        </div> 
+                         <div>
+                            <v-btn color="primary" fab small dark @click="setCanvasDim(1540,1000)">
+                                <v-icon>stay_current_portrait</v-icon>
+                            </v-btn>
+                        </div> 
                         <div>
                             <v-btn color="primary" fab small dark @click="Xmovement(-1)">
                                 <v-icon>arrow_back</v-icon>
@@ -191,9 +200,17 @@
             <v-divider
                 class="mx-2"
                 inset
-                ></v-divider>      
-                <v-layout row>
+                ></v-divider>   
+                <!--  <no-ssr>
+
+                    <template>
+                    <chrome-picker  class="borda gg2" v-model="colors">
+                        </chrome-picker>
+                    </template>  
                     
+                    </no-ssr>   -->
+                <v-layout row>
+                 
                     <v-flex>
                         <div @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove"><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
                          <canvas  id="c" class="canvas-wrapper"></canvas>
@@ -271,6 +288,7 @@ export default {
         compleImages: [],
         dataImages: [],
         campanha_id: undefined,
+        currBg: ''//background q ta sendo usado no momento, usado caso a res do canvas mude 
        // imgsList: []
     }),
     watch:{
@@ -302,10 +320,6 @@ export default {
             else
                 this.salvarComo = 'baixar em BMP'
         },
-        tobg(){
-            if(this.tobg === true)
-                this.setBackground()
-        },
     },
     mounted() { 
         this.canvas = new fabric.Canvas('c',{
@@ -315,7 +329,15 @@ export default {
         this.userType = this.$store.state.auth.userType
         this.checkRedirect()
     },
-    methods: {
+    methods: {  
+        setCanvasDim(width,height){
+            this.canvas.setHeight(width)
+            this.canvas.setWidth(height)
+            this.restoreDefault()//apos mudar as dim, da um refesh no canvas p ele voltar pro status original, porem com a res mudada
+            if(this.currBg !== ''){
+                this.addBg(this.currBg)
+            }
+        },
         fillGrid(){
             if(this.gridGroup)
                 return
@@ -582,14 +604,17 @@ export default {
         async carregarTabloide(){
             const jsonTabloide = await this.loadTabloide(this.campanha_id)
             this.canvas.loadFromJSON(jsonTabloide.data.tabloide)
+            this.currBg = jsonTabloide.data.tabloide_bg
             this.canvas.renderAll()
-
         },
         async salvarTabloide(){
             this.checkGrid = false
             await this.removeGrid()
             var json = JSON.stringify(this.canvas.toJSON())
-            this.saveTabloide(json,this.campanha_id)
+            if(this.currBg !== '')
+                this.saveTabloide(json,this.campanha_id,this.currBg)
+            else
+                this.saveTabloide(json,this.campanha_id)
             console.log("salvo com sucesso.")
         },
         async salvarPdf(checkbox){
@@ -633,8 +658,10 @@ export default {
 
        },
        addBg(img,i){
+           console.log("vejaa IMGa ", img)
             const relaPath = "../../../uploads/fotos/" + img.name
             this.setBackground(relaPath,img)
+            this.currBg = img
        },
         addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
             fabric.Image.fromURL(path,(img)=>{
@@ -690,5 +717,10 @@ export default {
  .largura{
      padding: 5px;
      width: 10px;
+ }
+ .gg2{
+      padding: 5px;
+     width: 200px;
+     height:  220px;
  }
 </style>

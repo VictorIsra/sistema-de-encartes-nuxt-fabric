@@ -66,10 +66,11 @@ export default {
                 console.log("n consegui carregar tabloide")
             }
         },
-        saveTabloide(tabloide,id){
+        saveTabloide(tabloide,id,bg = undefined){
             api.campanha.saveTabloide({
                 tabloide,
-                id
+                id,
+                bg
             }).then(r => console.log(" SALVO CANVAS"))
             .catch( e => console.log("af e"))
         },
