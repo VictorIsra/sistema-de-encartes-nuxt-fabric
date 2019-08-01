@@ -44,12 +44,12 @@
                             <v-btn-toggle v-model="checkGrid" mandatory>
 
                              <div>
-                            <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300,'landscape')">
+                            <v-btn color="primary" fab small dark >
                                 <v-icon>grid_off</v-icon>
                             </v-btn>
                         </div> 
                          <div>
-                            <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300,'landscape')">
+                            <v-btn color="primary" fab small dark >
                                 <v-icon>grid_on</v-icon>
                             </v-btn>
                         </div> 
