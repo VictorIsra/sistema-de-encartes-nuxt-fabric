@@ -44,12 +44,12 @@
                                 v-model="checkGrid"
                             ></v-checkbox> 
                          <div>
-                            <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300)">
+                            <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300,'landscape')">
                                 <v-icon>stay_current_landscape</v-icon>
                             </v-btn>
                         </div> 
                          <div>
-                            <v-btn color="primary" fab small dark @click="setCanvasDim(1640,1000)">
+                            <v-btn color="primary" fab small dark @click="setCanvasDim(1640,1000,'portrait')">
                                 <v-icon>stay_current_portrait</v-icon>
                             </v-btn>
                         </div> 
@@ -204,7 +204,7 @@
                 <v-layout row>
                   <no-ssr>
                     <template>  
-                    <chrome-picker class="borda" v-model="colors">
+                    <chrome-picker class="borda gg2" v-model="colors">
                         </chrome-picker>
                     </template>  
                       
@@ -270,6 +270,7 @@ export default {
         salvarComo: 'baixar em PDF',
         userType: '',
         canvas: '',
+        canvasMode: 'portrait',//portrait ou landscape,
         img: '',
         itens: '',//imgs, futuramente texto..etc,
         imgs: [],//produtos
@@ -283,6 +284,10 @@ export default {
        // imgsList: []
     }),
     watch:{
+        canvasMode(){
+            this.fillGrid()
+        }
+        ,
         filtroEscolhido(){
             if(this.filtroEscolhido === 'backgrounds')
                 this.tobg = true
@@ -321,7 +326,8 @@ export default {
         this.checkRedirect()
     },
     methods: {  
-        setCanvasDim(width,height){
+        setCanvasDim(width,height,mode){
+            this.canvasMode = mode
             this.canvas.setHeight(width)
             this.canvas.setWidth(height)
             this.restoreDefault()//apos mudar as dim, da um refesh no canvas p ele voltar pro status original, porem com a res mudada
@@ -333,17 +339,18 @@ export default {
             if(this.gridGroup)
                 return
             var gridoption = {
-                stroke: "#000000",
+                stroke: '#ebebeb',
                 strokeWidth: 1,
                 strokeDashArray: [5, 5],
                 distance: 5
-            };
-            var gridLines = [];
-            for (var x = 1; x < (this.canvas.width); x += 50) {
-                gridLines.push(new fabric.Line([x, 0, x, this.canvas.width], gridoption));
             }
-            for (var x = 1; x < (this.canvas.height); x += 50) {
-                gridLines.push(new fabric.Line([0, x, this.canvas.height, x], gridoption));
+            var gridLines = [];
+            let gridlen = this.canvas.width > this.canvas.height ?  this.canvas.width :  this.canvas.height
+            for (var x = 1; x < (gridlen ); x += 30) {
+                gridLines.push(new fabric.Line([x, 0, x, gridlen], gridoption));
+          //  }
+            //for (var x = 1; x < (this.canvas.height ); x += 30) {
+                gridLines.push(new fabric.Line([0, x, gridlen, x], gridoption));
             }
             this.gridGroup = new fabric.Group(gridLines, {
                 selectable: false,
@@ -707,8 +714,7 @@ export default {
      width: 10px;
  }
  .gg2{
-      padding: 5px;
-     width: 200px;
-     height:  220px;
+     width: 1000px;
+     height:  200px;
  }
 </style>
