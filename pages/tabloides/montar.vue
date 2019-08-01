@@ -254,7 +254,7 @@
                       
                     </no-ssr> 
                     <v-flex sx2> 
-                        <span @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove"><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
+                        <span @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove.stop="mouseMove"><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
                          <canvas  id="c" class="canvas-wrapper"></canvas>
                         </span>
                     </v-flex>
@@ -417,6 +417,7 @@ export default {
                 this.isDragging = true
                 this.lastPosX = evento.clientX
                 this.lastPosY = evento.clientY
+                
             }
         },
         mouseMove(evento){
