@@ -161,10 +161,26 @@
                 <v-toolbar class="borda">
                 <no-ssr>
                     
-                    <v-list class="scroll-y">
+                    <v-list v-if="filtroEscolhido === 'produtos'" class="scroll-y">
                         <vue-select-image :useLabel="true" :dataImages="dataImages" h='30px' w='30px' @onselectimage="addImg">
                         </vue-select-image>
                     </v-list>
+                    <v-layout align-center>
+                    <v-divider vertical class="mx-2"></v-divider>
+                    <v-spacer></v-spacer>
+                    <template>
+                        <v-flex xs2>
+                        <span class="heading indigo--text">Filtrar por</span>
+                        </v-flex>
+                        <v-flex xs3>
+                        <v-select
+                            :items="filtro"
+                            v-model="filtroEscolhido"
+                        ></v-select>
+                        </v-flex>
+                    </template>    
+  </v-layout>
+
                 </no-ssr>       
     </v-toolbar>
             </template>
@@ -231,6 +247,11 @@ export default {
            x: 1,
            y: 1
        },
+        filtro: [{ text: 'produtos'},
+                {text: 'backgrounds'},
+                {text: 'complementares'}
+        ],
+        filtroEscolhido: 'produtos',
         gridGroup: null,
         checkGrid: false,//checkbox q diz erespeito ao grid
         isDragging: false,
@@ -312,8 +333,10 @@ export default {
                 selectable: false,
                 evented: false
             })
-            this.gridGroup.addWithUpdate();
-            this.canvas.add(this.gridGroup);    
+            this.gridGroup.addWithUpdate()
+            this.canvas.add(this.gridGroup)  
+            this.canvas.sendToBack(this.gridGroup)
+
         },
         removeGrid(){
             this.gridGroup && this.canvas.remove(this.gridGroup)
