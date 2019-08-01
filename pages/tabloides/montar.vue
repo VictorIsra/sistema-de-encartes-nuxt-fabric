@@ -3,40 +3,31 @@
             <template v-if="userType === 'tabloide'">
                 <v-toolbar flat :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
-                    <v-toolbar-title>
-                        <v-layout align-center class="mr-2 primary--text">
-                            <v-btn round @click="voltar" color="primary">Voltar</v-btn>
-                        </v-layout>
-                    </v-toolbar-title>
-                    <v-divider
-                    class="mx-2"
-                    inset
-                    vertical
-                    ></v-divider>
-                    <v-card-title color="grey lighten-4" class="justify-center">
-                        <div>
-                            <v-btn round color="warning" @click="actionHandler('removeSelection')">remover seleção</v-btn>
-                        </div>
-                    </v-card-title>
-                    <v-divider
-                    class="mx-2"
-                    inset
-                    vertical
-                    ></v-divider>
-                        <div>
-                            <v-btn round @click="submeterAvaliacao" color="success">Submeter para avaliação</v-btn>
-                        </div>
-                        <v-layout align-center class="mr-2 primary--text">
-                            <v-btn  round @click="salvarPdf(checkbox)" color="primary">{{salvarComo}}</v-btn>
-                        </v-layout>
-                        <v-divider
-                            class="mx-2"
-                            inset
-                            vertical
-                        ></v-divider>
-                        <v-layout align-center class="mr-2 primary--text">
-                            <v-btn round @click="salvarTabloide" color="primary">Salvar tabloide</v-btn>
-                        </v-layout>
+                    <v-layout align-center class="justify-center">
+                        
+                        <v-toolbar-title>
+                            <div>
+                                <v-btn color="primary" fab medium dark @click="voltar">
+                                    <v-icon>arrow_back</v-icon>
+                                </v-btn>
+                            </div> 
+                        </v-toolbar-title>
+                            <div>
+                                <v-btn color="primary" fab medium dark @click="submeterAvaliacao">
+                                    <v-icon>gavel</v-icon>
+                                </v-btn>
+                            </div> 
+                            <div>
+                                <v-btn color="primary" fab medium dark @click="salvarPdf(checkbox)">
+                                    <v-icon>picture_as_pdf</v-icon>
+                                </v-btn>
+                            </div> 
+                            <div>
+                                <v-btn color="primary" fab medium dark  @click="salvarTabloide">
+                                    <v-icon>save</v-icon>
+                                </v-btn>
+                            </div> 
+                        </v-layout>    
                 </v-toolbar>
                 <v-toolbar  :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
@@ -74,13 +65,18 @@
                                 vertical>
                                 </v-divider>
                              <div>
-                            <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300,'landscape')">
+                            <v-btn color="primary" fab small dark >
                                 <v-icon>present_to_all</v-icon>
                             </v-btn>
                         </div> 
                          <div>
-                            <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300,'landscape')">
+                            <v-btn color="primary" fab small dark >
                                 <v-icon>no_sim</v-icon>
+                            </v-btn>
+                        </div> 
+                         <div>
+                            <v-btn color="red" fab small dark @click="actionHandler('removeSelection')">
+                                <v-icon>clear</v-icon>
                             </v-btn>
                         </div> 
                          <v-divider class="mx-2"
@@ -207,33 +203,42 @@
                         <vue-select-image :useLabel="true" :dataImages="bgsImages" h='30px' w='30px' @onselectimage="addBg">
                         </vue-select-image>
                     </v-list>
-                    
-                    <v-layout align-center>
-                    <v-divider vertical class="mx-2"></v-divider>
-                    <v-spacer></v-spacer>
-                    <template>
-                        <v-flex xs2>
-                        <span class="heading indigo--text">Filtrar por</span>
-                        </v-flex>
-                        <v-flex xs3>
-                        <v-select
-                            :items="filtro"
-                            v-model="filtroEscolhido"
-                        ></v-select>
-                        </v-flex>
-                    </template>    
-  </v-layout>
-
-                </no-ssr>       
-    </v-toolbar>
+                </no-ssr> 
+                <v-divider vertical class="mx-1"></v-divider>
+                        <template>
+                            <v-flex xs1>
+                            <span class="heading indigo--text">Filtrar por</span>
+                            </v-flex>
+                            <v-flex xs2>
+                            <v-select
+                                :items="filtro"
+                                v-model="filtroEscolhido"
+                            ></v-select>
+                            </v-flex>
+                        </template>    
+            </v-toolbar>      
             </template>
             <template v-else>
                 <v-toolbar flat color="grey lighten-4">
-                    <v-toolbar-title>
-                        <v-layout align-center class="mr-2 primary--text">
-                            <v-btn round @click="voltar" color="primary">Voltar</v-btn>
-                        </v-layout>
-                    </v-toolbar-title>
+                    <v-layout align-center class="justify-center">
+                        <v-toolbar-title>
+                            <div>
+                                <v-btn color="primary" fab medium dark @click="voltar">
+                                    <v-icon>arrow_back</v-icon>
+                                </v-btn>
+                            </div> 
+                        </v-toolbar-title>
+                          <div>
+                                <v-btn color="primary" fab medium dark @click="salvarPdf(checkbox)">
+                                    <v-icon>picture_as_pdf</v-icon>
+                                </v-btn>
+                            </div>
+                            <div>
+                                <v-btn color="primary" fab medium dark @click="restoreDefault">
+                                    <v-icon>restore</v-icon>
+                                </v-btn>
+                             </div> 
+                    </v-layout>
                 </v-toolbar>
             </template>    
             <v-divider
