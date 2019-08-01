@@ -2,7 +2,7 @@
     <v-layout justify-end>
         <v-tooltip bottom>
         <template v-slot:activator="{ on }">
-            <v-btn class="mx-2" fab dark small color="primary" @click="dialog = true" v-on="on">
+            <v-btn class="mx-2" fab dark small color="primary" @click="openDialog" v-on="on">
                 <v-icon dark>aspect_ratio</v-icon>
             </v-btn>
         </template>
@@ -92,6 +92,15 @@ export default {
                 this.dataImages.splice(i,1)
            })
         },
+        openDialog(flag){
+            
+            this.imgInfo.flag = flag
+            console.log("PORRRRRRRR", this.imgInfo)
+            this.resetImgCached()
+            this.imgInfo.flag = 0
+            this.dialog = true
+
+        },
         async save(flag){
             this.imgInfo.flag = flag
             let item = { img: this.dataImages}
@@ -143,8 +152,9 @@ export default {
         },
         close () {
         this.resetImgCached()
+        this.imgInfo.flag = 0
         this.dialog = false
-         this.imgInfo.flag = 0
+
       },
       resetImgCached(){
         //reseta os valores cacheados, pois ao se fechar, preciso setar eles pra '', se nao é possivel q eu atualize uma foto sem querer, simplesmente pq escolhi uma ( mas dps cancelei), com essa f, garanto que, se eu ecolher algo mas dps fechar o dialog sem salvar, nenhuma img nova sera salva xD

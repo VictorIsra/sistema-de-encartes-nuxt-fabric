@@ -61,7 +61,7 @@ export default {
                 else{
                     this.clearInput()
                 }
-            }
+            },deep: true
         }
     },
     methods: {
