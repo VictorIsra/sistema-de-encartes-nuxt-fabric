@@ -384,11 +384,9 @@
         this.updateInfo()
       },
       updateInfo(){//ajusta o path da img tanto rela qt abs
-          alert("entrei")
           let savedName = this.selectedImg.src.match(/[^/]+$/)//img com nome doido q é salva no static/uploads/img
           this.selected.forEach(item => {
             if(item.img === 'undefined ' || item.img === ''){//se n tiver foto associada
-            alert("und")
 
               item.img = {
                 originalName: this.selectedImg.originalName,
@@ -400,11 +398,9 @@
               item.qtdade = this.selectedImg.qtdade
               item.unidade = this.selectedImg.unidade
               item.nome = this.selectedImg.alt
-              alert("vai entraa")
              //gambiarra mas funciona, atualizandocoreteamente em tods os cases xd
             }
             else{//se tiver,atualizo c a img selecionada
-            alert("lse")
               item.img.originalName = this.selectedImg.originalName,
               item.img.name = savedName
               item.img.name.src = "static/uploads/fotos/" + savedName

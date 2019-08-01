@@ -97,7 +97,7 @@ export default {
         },
         updateRow(editedItem,campanha_id){//a lvl de bd, serve tano pra editar uma linha qt pra criar uma, ja q uma linha é um objeto dentro de uma campanha
             var img_id = ''
-            console.log("entrei coom ",editedItem)
+            console.log("entradas ",editedItem, " id: ", campanha_id)
             if(editedItem._id.data !== undefined)//primeira edicao apos criar algo existe um _id.data, nos outros casos apenas _id, entao cuidado
                 img_id = editedItem._id.data
             else
@@ -135,6 +135,7 @@ export default {
         },
         async imgUpload(file,item){//faz o upload da img a lvl de bd
             //file é o this.editeItem.img.imgfile, o item é a ref real: this.editeItem
+            console.log("entro file e imtem ", file, " item: ", item)
             const formData = new FormData()
             formData.append('upload',file)
             //se oldpath n for undefined, é pq tem uma img antiga que quero remover em paralelo de atuakizar nova xD

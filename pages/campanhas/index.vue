@@ -169,7 +169,6 @@
         this.filtraStatus(preInfos)
       },
       filtraStatus(infos){
-        console.log("akii ",infos)
         //só pega as campanhas que o status é diferente de 'pendente'
         this.infos = infos.filter(info => {return info.demanda === false})//quero campanhas msm e n demandas
         this.infos.forEach(infos => 

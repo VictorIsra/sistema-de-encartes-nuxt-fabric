@@ -131,8 +131,9 @@ router.put('/campanhas/removeRow',async(req,res)=>{
     const row_id = req.body.row_id
     //n exclui mais pois agora s imgs vem de uma base comum!
     const imgPath = req.body.path//path da img q irei excluir
-    //só pode excluir img da base de dados, que é essa campanha hardcoded
-    if(imgPath !== undefined && campanha_id === '5d2f6b45384572128c682715'){//será undefined caso o item n tenha foto associada
+    //só pode excluir img da base de dados, que é essa(s) campanha(s) é(sao) hardcoded
+    //ou seja, só essas duas ids tem permissao de defato deeltar uma fot,bg, oq seja do sistema
+    if(imgPath !== undefined && (campanha_id === '5d2f6b45384572128c682715' || campanha_id === '5d41e7571db4d9250a0d96c2')){//será undefined caso o item n tenha foto associada
         axios.post('/campanhas/removeImg',{
             path: imgPath
         }).then(r => console.log("deleteeei"))
@@ -237,8 +238,8 @@ router.patch('/campanhas/updateRow',filterInput,async(req,res) => {
 router.post('/campanhas/addRow',filterInput,(req,res) => {//adiciona linha de produtos a campanha
     const campanha_id = req.body.campanha_id//id da CAMPANHA
     let produtos = req.body.produtos//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
-    console.log("porra ", req.body, " id ", campanha_id)
-    console.log("OLHE NO ADD ROW")
+    // console.log("porra ", req.body, " id ", campanha_id)
+    // console.log("OLHE NO ADD ROW")
     //como o addrow é sempre feito em produtos, n em concorrencia, posso com seguranca setar o proce de concorrencia pra r$ 0,00 aqui. faco a lvl de bd em vez de app para garantir a existencia dos getters e setters ;)
     produtos.preco_v_c1 = "R$ 0,00"
     produtos.preco_v_c2 = "R$ 0,00"

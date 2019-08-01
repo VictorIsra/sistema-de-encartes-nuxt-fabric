@@ -8,14 +8,44 @@
         </template>
         <span>Adicionar backgrounds</span>
         </v-tooltip>  
-        <v-dialog v-model="dialog" persistent max-width="500">
+        <v-dialog v-model="dialog" persistent max-width="700">
         <v-card>
             <v-card-title class="headline primary--text">Backgrounds cadastrados:</v-card-title>
             <v-card-text>Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.</v-card-text>
-            <v-card></v-card>
+            <v-card-text>
+                 <no-ssr>
+                    erererer
+                    <v-list class="scroll-y">
+                        <vue-select-image :useLabel="true" :dataImages="dataImages" h='30px' w='30px' @onselectimage="addImg">
+                        </vue-select-image>
+                    </v-list>
+                </no-ssr>     
+            <v-card>
+                <v-layout>
+                    <v-flex xs5>
+                    <img-upload :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
+                    </v-flex> 
+                    <v-divider vertical class="mx-2"></v-divider>
+                    <v-flex xs5>
+                        <v-text-field label="Nome"></v-text-field>
+                    </v-flex>
+                    <v-divider vertical class="mx-2"></v-divider>
+                    <v-flex xs1> 
+                       <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn class="mx-2" fab dark small @click="save(-1)" color="primary" v-on="on">
+                                    <v-icon dark>save</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Salvar background</span>
+                        </v-tooltip> 
+                    </v-flex>
+                </v-layout>
+            </v-card>    
+            </v-card-text>       
             <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="dialog = false">Fechar</v-btn>
+            <v-btn color="primary" text @click="close">Fechar</v-btn>
             </v-card-actions>
         </v-card>
         </v-dialog>
@@ -23,10 +53,120 @@
 </template>
 
 <script>
+import crudMixin from '../../mixins/CRUD.js'
+import imgUpload from '../generalUseComponents/image_upload.vue'
+
+
 export default {
+    mixins: [
+      crudMixin
+    ],
+    components:{
+        'img-upload': imgUpload
+    },
     data: () => ({
-        dialog: false
-    
+        cachedImgInfo: {
+            imgName: '',//só o nome da img
+            imgFile: '',//objeto que pode ser salvo no db e posteriormente renderizado em uma img,inclusive
+            imgURL: ''
+        },
+          imgInfo: {
+          imgName: '',
+          imgURL: '',
+          imgFile: '',
+          flag: 0
+        },
+        dialog: false,
+        dataImages: [],
+        itens: [],
+        img: [],
+        campanha_id: '5d4223b924a1f1483c193259'//campanha relativa aos backgrounds, é unica no codigo
     }),
+    created(){
+        this.fetchProdutos()
+    },
+    methods:{
+        addImg(){
+            alert("Koe")
+        },
+        async save(flag){
+            this.imgInfo.flag = flag
+            let item = { img: this.img}
+
+            item.src = "static/uploads/fotos/" + item.name
+            
+            let flag2 = await this.fillImgInfo('',item)//retornara se salvou alguma img ou a entrada era nula e usara isso como flag
+            if(flag2 != -1){
+                const row_id = await this.addRow(item,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
+                item._id = row_id
+                this.resetImgCached()
+                this.resetVectors()
+                this.imgInfo.flag = 0
+            }
+           
+        },
+        resetVectors(){
+            this.img = []
+            this.dataImages = []
+        },
+        async fetchProdutos(){
+            this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+            this.itens.forEach(p => {
+                if(p.img !== undefined && p.img !== ''){
+                    p.img.alt = p.nome
+                    p.img.preco_v = p.preco_v
+                    this.img.push( p.img)
+                }    
+            })
+            this.img.forEach((img,i) => {
+                this.dataImages.push(img)
+                this.dataImages[i].src = this.getImgURL(img)
+
+            })
+        },
+        fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
+        //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
+            this.cachedImgInfo.imgName = data.name
+            this.cachedImgInfo.imgFile = data.file
+            this.cachedImgInfo.imgURL = data.url
+        }, 
+        getImgURL(img){
+        //se uma img nao tiver sido escolhida, retorne enm branco
+        console.log("imag ", img.name === undefined)
+        const path = img.name === undefined ? "" : "../../../uploads/fotos/" + img.name
+        console.log("path é ", path)
+            if(path === '')
+                return
+            else{
+                console.log("existo")
+                return path
+            }
+        },
+        close () {
+        this.resetImgCached()
+        this.dialog = false
+         this.imgInfo.flag = 0
+      },
+      resetImgCached(){
+        //reseta os valores cacheados, pois ao se fechar, preciso setar eles pra '', se nao é possivel q eu atualize uma foto sem querer, simplesmente pq escolhi uma ( mas dps cancelei), com essa f, garanto que, se eu ecolher algo mas dps fechar o dialog sem salvar, nenhuma img nova sera salva xD
+       //eu ja fazia essa operacoa antes, mas o segredo é faze-la neste nesta f, no momento de fechar, e n apenas num save da vida
+        this.cachedImgInfo.imgName = ''
+        this.cachedImgInfo.imgFile = ''
+        this.cachedImgInfo.imgURL = ''
+      },
+      async fillImgInfo(newItemIndex = '', editedItem){  
+        //LEMBRE: img name e url parecem inuteis a lvl de bd, mas sao fundamentais pro usuario interagir/ver a lvl de app!
+         //só guardarei a foto escolhida se ele salvou algo, se nao, nao
+        //sera chamada se o user de fato quis salvar uma img e ela nao for em branco, pois caso seja, n tem objeto pra criar e daria erro!
+        if(this.cachedImgInfo.imgFile !== '' && newItemIndex === ''){//caso editando algo existente c img
+          //console.log("entreii com ",  this.imgInfo.imgFile, " novo ", editedItem.img.src)
+          await this.imgUpload(this.cachedImgInfo.imgFile,editedItem)
+          return 1
+        }
+        else{
+            return -1
+        }
+      }
+    }
 }      
 </script>
