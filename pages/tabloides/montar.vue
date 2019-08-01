@@ -41,10 +41,36 @@
                 <v-toolbar  :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
                     <v-layout align-center class="justify-center">
-                         <span>Mostrar grid:</span>
-                            <v-checkbox class="justify-space-between"
-                                v-model="checkGrid"
-                            ></v-checkbox> 
+                            <v-btn-toggle v-model="checkGrid" mandatory>
+
+                             <div>
+                            <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300,'landscape')">
+                                <v-icon>grid_off</v-icon>
+                            </v-btn>
+                        </div> 
+                         <div>
+                            <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300,'landscape')">
+                                <v-icon>grid_on</v-icon>
+                            </v-btn>
+                        </div> 
+                         </v-btn-toggle>
+                             <v-divider class="mx-2"
+                                inset
+                                vertical>
+                                </v-divider>
+                             <div>
+                            <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300,'landscape')">
+                                <v-icon>present_to_all</v-icon>
+                            </v-btn>
+                        </div> 
+                         <div>
+                            <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300,'landscape')">
+                                <v-icon>no_sim</v-icon>
+                            </v-btn>
+                        </div> 
+                        <v-divider  class="mx-2"
+                                inset
+                                vertical></v-divider>
                          <div>
                             <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300,'landscape')">
                                 <v-icon>stay_current_landscape</v-icon>
@@ -55,6 +81,10 @@
                                 <v-icon>stay_current_portrait</v-icon>
                             </v-btn>
                         </div> 
+                         <v-divider class="mx-2"
+                                inset
+                                vertical>
+                                </v-divider>
                         <div>
                             <v-btn color="primary" fab small dark @click="Xmovement(-1)">
                                 <v-icon>arrow_back</v-icon>
@@ -250,6 +280,7 @@ export default {
             { text: '100' },
         ],
         toggle_exclusive: '',
+        toggle_grid_exclusive: '',//util,toggle de outro agrupament oe botao
        elScale: {//serve pra ver a escala do elemento selecionado, "seu tamanho"
            x: 1,
            y: 1
@@ -260,7 +291,7 @@ export default {
         ],
         filtroEscolhido: 'produtos',
         gridGroup: null,
-        checkGrid: false,//checkbox q diz erespeito ao grid
+        checkGrid: undefined,//checkbox q diz erespeito ao grid
         isDragging: false,
         lastPosX: 0,
         lastPosY: 0,
@@ -616,7 +647,8 @@ export default {
             this.canvas.loadFromJSON(jsonTabloide.data.tabloide)
             this.currBg = jsonTabloide.data.tabloide_bg
             this.canvas.renderAll()
-            this.setCanvasDim(3600,2300,'landscape')
+            //this.setCanvasDim(3600,2300,'landscape')
+            this.setCanvasDim(1640,1000,'portrait')
 
         },
         async salvarTabloide(){
