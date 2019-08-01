@@ -11,16 +11,8 @@
         <v-dialog v-model="dialog" persistent max-width="700">
         <v-card>
             <v-card-title class="headline primary--text">Backgrounds cadastrados:</v-card-title>
-            <v-card-text>Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.</v-card-text>
             <v-card-text>
-                 <no-ssr>
-                    <v-list class="scroll-y">
-                        <vue-select-image :useLabel="true" :dataImages="dataImages" h='30px' w='30px' @onselectimage="addImg">
-                        </vue-select-image>
-                    </v-list>
-                </no-ssr>     
-            <v-card>
-                <v-layout class="justify-center">
+                 <v-layout class="justify-center">
                     <v-flex xs5>
                     <img-upload :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
                     </v-flex> 
@@ -35,6 +27,16 @@
                         </v-tooltip> 
                     </v-flex>
                 </v-layout>
+                    <v-card-text  class="sub-heading primary--text">Clique numa imagem na lista abaixo para remove-la:</v-card-text>
+                <v-toolbar class="borda">
+                 <no-ssr>
+                    <v-list class="scroll-y">
+                        <vue-select-image :useLabel="true" :dataImages="dataImages" h='30px' w='30px' @onselectimage="addImg">
+                        </vue-select-image>
+                    </v-list>
+                </no-ssr> 
+                </v-toolbar>    
+            <v-card>
             </v-card>    
             </v-card-text>       
             <v-card-actions>
@@ -167,3 +169,8 @@ export default {
     }
 }      
 </script>
+<style>
+ .borda{
+    border: 4px ridge #1976D2;
+ }
+</style>
