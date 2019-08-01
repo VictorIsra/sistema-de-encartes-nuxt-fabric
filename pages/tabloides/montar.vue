@@ -1,7 +1,8 @@
 <template>
-        <v-card class="teste">
+        <v-card>
             <template v-if="userType === 'tabloide'">
-                <v-toolbar flat class="borda">
+                <v-toolbar flat :class="{'borda': canvasMode !== 'portrait',
+                                'borda2': canvasMode === 'portrait'}">
                     <v-toolbar-title>
                         <v-layout align-center class="mr-2 primary--text">
                             <v-btn round @click="voltar" color="primary">Voltar</v-btn>
@@ -37,7 +38,8 @@
                             <v-btn round @click="salvarTabloide" color="primary">Salvar tabloide</v-btn>
                         </v-layout>
                 </v-toolbar>
-                <v-toolbar class="borda">
+                <v-toolbar  :class="{'borda': canvasMode !== 'portrait',
+                                'borda2': canvasMode === 'portrait'}">
                     <v-layout align-center class="justify-center">
                          <span>Mostrar grid:</span>
                             <v-checkbox class="justify-space-between"
@@ -102,7 +104,8 @@
                         <v-btn color="primary"  @click="actionHandler('bring',true)">TRÁS</v-btn>
                     </v-layout>
                 </v-toolbar>
-                    <v-toolbar dense class="borda"> 
+                    <v-toolbar dense :class="{'borda': canvasMode !== 'portrait',
+                                'borda2': canvasMode === 'portrait'}"> 
                         <v-flex xs3>
                             <v-overflow-btn
                             label="FONTE"
@@ -157,7 +160,8 @@
                         </template>
                     </v-toolbar>
                
-                <v-toolbar class="borda">
+                <v-toolbar :class="{'borda': canvasMode !== 'portrait',
+                                'borda2': canvasMode === 'portrait'}">
                 <no-ssr>
                     
                     <v-list v-if="filtroEscolhido === 'produtos'" class="scroll-y">
@@ -201,14 +205,14 @@
                 class="mx-2"
                 inset
                 ></v-divider>   
-                <v-layout row>
-                  <no-ssr>
+                <v-layout row >
+                 <no-ssr>
                     <template>  
                     <chrome-picker class="borda gg2" v-model="colors">
                         </chrome-picker>
                     </template>  
                       
-                    </no-ssr>
+                    </no-ssr> 
                     <v-flex sx2> 
                         <span @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove"><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
                          <canvas  id="c" class="canvas-wrapper"></canvas>
@@ -698,7 +702,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped >
 @import url('https://fonts.googleapis.com/css?family=Bahianita|PT+Serif|Darker+Grotesque|Indie+Flower|Josefin+Sans|Literata|Oswald|Roboto|Amiri|Cinzel|Patua+One|Permanent+Marker|Righteous|Rokkitt|Vollkorn&display=swap');
 .listaHorizontal{
     float: left;
@@ -714,6 +718,11 @@ export default {
  }
  .borda{
     border: 4px ridge #1976D2;
+    width: 103%;
+ }
+ .borda2{
+    border: 4px ridge #1976D2;
+    width: 100;
  }
  .xd{
      background-color: white;
@@ -722,6 +731,13 @@ export default {
     color: red;
 
  }  
+ .tolbar{
+     position: relative;
+  color:aqua;
+  width: 100%;
+  will-change: padding-left;
+  
+ }
  .largura{
      padding: 5px;
      width: 10px;
