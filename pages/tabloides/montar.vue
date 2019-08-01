@@ -54,7 +54,22 @@
                             </v-btn>
                         </div> 
                          </v-btn-toggle>
-                             <v-divider class="mx-2"
+                        <v-divider  class="mx-2"
+                                inset
+                                vertical></v-divider>
+                        <v-btn-toggle  mandatory>
+                         <div>
+                            <v-btn color="primary" fab small dark @click="setCanvasDim(1640,1000,'portrait')">
+                                <v-icon>stay_current_portrait</v-icon>
+                            </v-btn>
+                        </div>
+                         <div>
+                            <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300,'landscape')">
+                                <v-icon>stay_current_landscape</v-icon>
+                            </v-btn>
+                        </div> 
+                        </v-btn-toggle>
+                          <v-divider class="mx-2"
                                 inset
                                 vertical>
                                 </v-divider>
@@ -66,19 +81,6 @@
                          <div>
                             <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300,'landscape')">
                                 <v-icon>no_sim</v-icon>
-                            </v-btn>
-                        </div> 
-                        <v-divider  class="mx-2"
-                                inset
-                                vertical></v-divider>
-                         <div>
-                            <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300,'landscape')">
-                                <v-icon>stay_current_landscape</v-icon>
-                            </v-btn>
-                        </div> 
-                         <div>
-                            <v-btn color="primary" fab small dark @click="setCanvasDim(1640,1000,'portrait')">
-                                <v-icon>stay_current_portrait</v-icon>
                             </v-btn>
                         </div> 
                          <v-divider class="mx-2"
@@ -171,13 +173,16 @@
                             <v-icon>format_italic</v-icon>
                             </v-btn>
 
-                           <!-- <v-btn :value="3" text>
-                            <v-icon>format_underlined</v-icon>
-                            </v-btn> -->
                         </v-btn-toggle>
-                        <v-divider class="mx-2" vertical></v-divider>
-                        <v-spacer></v-spacer>
-                        <span class="subheading indigo--text">Escala X:</span>
+                        <v-flex>
+                            <v-btn class="mx-2" fab dark small color="white grey--text" @click="addText">
+                                <v-icon dark>title</v-icon>
+                            </v-btn>
+                        </v-flex>
+                        <v-divider  class="mx-2" vertical></v-divider>
+                        <v-flex class="mx-4">
+                            <span class="subheading indigo--text mx-1">Escala X:</span>
+                        </v-flex>
                         <v-flex xs1>
                             <v-divider vertical></v-divider>
                             <span class="subheading indigo--text"> {{elScale.x.toFixed(3)}}</span>
@@ -689,6 +694,10 @@ export default {
                     });
             }
         },
+        addText(){
+            const text = new fabric.IText('Texto',{ top: 100,fontSize: 40})
+            this.canvas.add(text)
+        },//cria um texto no canvas
         //METODOS RELATIVOS AO CANVAS/FABRIC
         addImg(img,i){
             console.log("adicionando img de indice ",img)
