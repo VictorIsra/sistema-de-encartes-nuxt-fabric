@@ -44,12 +44,12 @@
                                 v-model="checkGrid"
                             ></v-checkbox> 
                          <div>
-                            <v-btn color="primary" fab small dark @click="setCanvasDim(1000,1540)">
+                            <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300)">
                                 <v-icon>stay_current_landscape</v-icon>
                             </v-btn>
                         </div> 
                          <div>
-                            <v-btn color="primary" fab small dark @click="setCanvasDim(1540,1000)">
+                            <v-btn color="primary" fab small dark @click="setCanvasDim(1640,1000)">
                                 <v-icon>stay_current_portrait</v-icon>
                             </v-btn>
                         </div> 
@@ -209,10 +209,10 @@
                     </template>  
                       
                     </no-ssr>
-                    <v-flex>
-                        <div @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove"><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
+                    <v-flex sx2> 
+                        <span @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove"><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
                          <canvas  id="c" class="canvas-wrapper"></canvas>
-                        </div>
+                        </span>
                     </v-flex>
                 </v-layout>
         </v-card>
@@ -699,11 +699,8 @@ export default {
      background-color: white;
  }
  #c{
-     position: absolute;
-     top:22px;
-     left:0px;
-     height: 100%;
-     width: 99%;
+    color: red;
+
  }  
  .largura{
      padding: 5px;
