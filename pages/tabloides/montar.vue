@@ -285,7 +285,8 @@ export default {
     }),
     watch:{
         canvasMode(){
-            this.fillGrid()
+            this.checkGrid = false
+            this.removeGrid()
         }
         ,
         filtroEscolhido(){
@@ -324,6 +325,7 @@ export default {
         this.canvas.setWidth(1000)
         this.userType = this.$store.state.auth.userType
         this.checkRedirect()
+
     },
     methods: {  
         setCanvasDim(width,height,mode){
@@ -341,7 +343,6 @@ export default {
             var gridoption = {
                 stroke: '#ebebeb',
                 strokeWidth: 1,
-                strokeDashArray: [5, 5],
                 distance: 5
             }
             var gridLines = [];
@@ -604,6 +605,8 @@ export default {
             this.canvas.loadFromJSON(jsonTabloide.data.tabloide)
             this.currBg = jsonTabloide.data.tabloide_bg
             this.canvas.renderAll()
+            this.setCanvasDim(3600,2300,'landscape')
+
         },
         async salvarTabloide(){
             this.checkGrid = false
