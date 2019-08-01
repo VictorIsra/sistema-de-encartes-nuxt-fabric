@@ -30,7 +30,7 @@ router.post('/campanhas/removeImg',(req,res)=>{
    
     fs.unlink(path,(err)=>{
         if(err)
-            throw err
+            throw err 
         console.log("removido!")
         res.status(202).send()  
     })

@@ -83,23 +83,28 @@ export default {
         addImg(img){
             alert("Koe")
             img.src = "static/uploads/fotos/" + img.name
-            this.removeRow(img.row_id,img.src,this.campanha_id)
+           this.removeImg(img.src)
+           this.removeRow(img.row_id,img.src,this.campanha_id)
+           this.dataImages.forEach((it,i)=>{
+               if(it.src === img.src)
+                this.dataImages.splice(i,1)
+           })
         },
         async save(flag){
             this.imgInfo.flag = flag
             let item = { img: this.dataImages}
-            console.log("LEEE ",item)
             let flag2 = await this.fillImgInfo('',item)//retornara se salvou alguma img ou a entrada era nula e usara isso como flag
             if(flag2 != -1){
                 
 
                 item.img.src = "static/uploads/fotos/" + item.name
                 const row_id = await this.addRow(item,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
-                item._id = row_id
+                item.img._id = row_id
                 item.img.src = this.getImgURL(item.img)
                 this.dataImages.push(item.img)
                 this.resetImgCached()
                 this.imgInfo.flag = 0
+
             }
            
         },
@@ -116,7 +121,6 @@ export default {
                 this.dataImages[i].src = this.getImgURL(img)
 
             })
-            console.log("aaa ", this.dataImages, " img ", this.img)
         },
         fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img

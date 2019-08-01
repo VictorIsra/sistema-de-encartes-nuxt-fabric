@@ -11,6 +11,11 @@ export default {
                 }
             })        
         },
+        removeImg(path){//remove uma unica img. util na hr de remover bg
+            if(path !== '' && path !== undefined)
+                api.campanha.removeImg({path})
+                alert("dropeiii")
+        },
         async removeCampanha(campanha_id,produtos){
             try{
                // await this.removeImgs(produtos) n mais ja que agora as imgs sao pegas da base de produtos
@@ -112,7 +117,6 @@ export default {
              .catch(e => console.log("erro: ",e))
         },
         removeRow(row_id,path,campanha_id){
-            console.log("ENTRA ", row_id, " E ", campanha_id)
              api.campanha.removeRow({
                  campanha_id,
                  row_id: row_id,
