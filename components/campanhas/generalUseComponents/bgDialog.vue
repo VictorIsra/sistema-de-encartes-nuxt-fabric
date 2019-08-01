@@ -14,22 +14,16 @@
             <v-card-text>Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.</v-card-text>
             <v-card-text>
                  <no-ssr>
-                    erererer
                     <v-list class="scroll-y">
                         <vue-select-image :useLabel="true" :dataImages="dataImages" h='30px' w='30px' @onselectimage="addImg">
                         </vue-select-image>
                     </v-list>
                 </no-ssr>     
             <v-card>
-                <v-layout>
+                <v-layout class="justify-center">
                     <v-flex xs5>
                     <img-upload :imgInfo="imgInfo" @imgUploaded="fillCachedImgInfo"/>
                     </v-flex> 
-                    <v-divider vertical class="mx-2"></v-divider>
-                    <v-flex xs5>
-                        <v-text-field label="Nome"></v-text-field>
-                    </v-flex>
-                    <v-divider vertical class="mx-2"></v-divider>
                     <v-flex xs1> 
                        <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
@@ -68,7 +62,7 @@ export default {
         cachedImgInfo: {
             imgName: '',//só o nome da img
             imgFile: '',//objeto que pode ser salvo no db e posteriormente renderizado em uma img,inclusive
-            imgURL: ''
+            imgURL: '',
         },
           imgInfo: {
           imgName: '',
@@ -86,36 +80,35 @@ export default {
         this.fetchProdutos()
     },
     methods:{
-        addImg(){
+        addImg(img){
             alert("Koe")
+            img.src = "static/uploads/fotos/" + img.name
+            this.removeRow(img.row_id,img.src,this.campanha_id)
         },
         async save(flag){
             this.imgInfo.flag = flag
-            let item = { img: this.img}
-
-            item.src = "static/uploads/fotos/" + item.name
-            
+            let item = { img: this.dataImages}
+            console.log("LEEE ",item)
             let flag2 = await this.fillImgInfo('',item)//retornara se salvou alguma img ou a entrada era nula e usara isso como flag
             if(flag2 != -1){
+                
+
+                item.img.src = "static/uploads/fotos/" + item.name
                 const row_id = await this.addRow(item,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
                 item._id = row_id
+                item.img.src = this.getImgURL(item.img)
+                this.dataImages.push(item.img)
                 this.resetImgCached()
-                this.resetVectors()
                 this.imgInfo.flag = 0
             }
            
         },
-        resetVectors(){
-            this.img = []
-            this.dataImages = []
-        },
         async fetchProdutos(){
             this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
-            this.itens.forEach(p => {
+            this.itens.forEach((p,i) => {
                 if(p.img !== undefined && p.img !== ''){
-                    p.img.alt = p.nome
-                    p.img.preco_v = p.preco_v
                     this.img.push( p.img)
+                    this.img[i].row_id = p._id
                 }    
             })
             this.img.forEach((img,i) => {
@@ -123,6 +116,7 @@ export default {
                 this.dataImages[i].src = this.getImgURL(img)
 
             })
+            console.log("aaa ", this.dataImages, " img ", this.img)
         },
         fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img
@@ -138,7 +132,6 @@ export default {
             if(path === '')
                 return
             else{
-                console.log("existo")
                 return path
             }
         },

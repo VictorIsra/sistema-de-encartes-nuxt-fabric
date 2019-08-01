@@ -112,6 +112,7 @@ export default {
              .catch(e => console.log("erro: ",e))
         },
         removeRow(row_id,path,campanha_id){
+            console.log("ENTRA ", row_id, " E ", campanha_id)
              api.campanha.removeRow({
                  campanha_id,
                  row_id: row_id,
