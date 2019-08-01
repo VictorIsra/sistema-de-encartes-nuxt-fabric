@@ -19,12 +19,12 @@
                             </div> 
                             <div>
                                 <v-btn color="primary" fab medium dark @click="salvarPdf(checkbox)">
-                                    <v-icon>picture_as_pdf</v-icon>
+                                    <v-icon size=40>picture_as_pdf</v-icon>
                                 </v-btn>
                             </div> 
                             <div>
-                                <v-btn color="primary" fab medium dark  @click="salvarTabloide">
-                                    <v-icon>save</v-icon>
+                                <v-btn color="warning" fab medium dark  @click="salvarTabloide">
+                                    <v-icon size=40>save</v-icon>
                                 </v-btn>
                             </div> 
                         </v-layout>    
@@ -229,13 +229,13 @@
                             </div> 
                         </v-toolbar-title>
                           <div>
-                                <v-btn color="primary" fab medium dark @click="salvarPdf(checkbox)">
-                                    <v-icon>picture_as_pdf</v-icon>
+                                <v-btn color="primary"  fab medium dark @click="salvarPdf(checkbox)">
+                                    <v-icon size=40>picture_as_pdf</v-icon>
                                 </v-btn>
                             </div>
                             <div>
                                 <v-btn color="primary" fab medium dark @click="restoreDefault">
-                                    <v-icon>restore</v-icon>
+                                    <v-icon size=40>restore</v-icon>
                                 </v-btn>
                              </div> 
                     </v-layout>
