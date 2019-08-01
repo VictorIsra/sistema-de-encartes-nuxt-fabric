@@ -518,6 +518,11 @@ export default {
                 this.dataImages[i].src = this.getImgURL(img)
 
             })
+            this.dataImages.sort(function(a, b){//sortei produtos em ordem alfabetica
+                if(a.alt.toLowerCase() < b.alt.toLowerCase()) { return -1; }
+                if(a.alt.toLowerCase() > b.alt.toLowerCase()) { return 1; }
+                return 0;
+            })
         },    
         getImgURL(img){
         //se uma img nao tiver sido escolhida, retorne enm branco

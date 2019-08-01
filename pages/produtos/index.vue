@@ -530,6 +530,11 @@
       async fetchProdutos(){
         this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
         this.setMetasProdutos()
+        this.itens.sort(function(a, b){//sortei produtos em ordem alfabetica
+            if(a.nome.toLowerCase() < b.nome.toLowerCase()) { return -1; }
+            if(a.nome.toLowerCase() > b.nome.toLowerCase()) { return 1; }
+            return 0;
+        })
       },
       setMetasProdutos(){//seta o valor inicial da meta de produtos, dps, isso será controlado a lvl de app, e nao de bd. de bd somente vindo da pag campanhas. Ao interagir aqui dentro, será só a lvl de app ( incrementando e decrementando baseado nas acoes)
         this.produtosQtdadeInfo.meta = this.campanhaInfos.qtdade
