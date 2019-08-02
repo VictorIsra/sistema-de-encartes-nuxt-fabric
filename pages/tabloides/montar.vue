@@ -264,14 +264,17 @@
                 <v-layout row >
                  <no-ssr>
                     <template>  
-                    <chrome-picker class="borda gg2" v-model="colors">
-                        </chrome-picker>
+                  
+                        <chrome-picker v-if="userType !== 'tabloide'" class="borda gg2" v-model="colors" @mousehover.stop></chrome-picker>
+                        <chrome-picker v-else class="borda gg2" v-model="colors" @mousehover.stop></chrome-picker>
+
                     </template>  
                       
                     </no-ssr> 
                     <v-flex sx2> 
                         <span @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove"><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
-                         <canvas  id="c" class="canvas-wrapper"></canvas>
+                         <canvas  id="c" 
+                          width="1000" heigth="1540" style="width:600px;height:600px;"></canvas>
                         </span>
                     </v-flex>
                 </v-layout>
@@ -383,8 +386,8 @@ export default {
     mounted() { 
         this.canvas = new fabric.Canvas('c',{
         preserveObjectStacking: true})
-        this.canvas.setHeight(1540)
-        this.canvas.setWidth(1000)
+       // this.canvas.setHeight(1540)
+        //this.canvas.setWidth(1000)
         this.userType = this.$store.state.auth.userType
         this.checkRedirect()
 
@@ -472,7 +475,7 @@ export default {
                 return
             var gridoption = {
                 stroke: '#ebebeb',
-                strokeWidth: 2,
+                strokeWidth: 0.5,
                 distance: 10
             }
             var gridLines = [];
@@ -765,7 +768,7 @@ export default {
             this.currBg = jsonTabloide.data.tabloide_bg
             this.canvas.renderAll()
             //this.setCanvasDim(3600,2300,'landscape')
-            this.setCanvasDim(1640,1000,'portrait')
+            this.setCanvasDim(1540,1000,'portrait')
 
         },
         async salvarTabloide(){
@@ -867,11 +870,7 @@ export default {
 .teste{
     background-color: darkgray
 }
-.canvas-wrapper {
-    width: 900px;
-    min-height: 600px;
-    background-color: white;
- }
+
  .borda{
     border: 4px ridge #1976D2;
     width: 103%;
