@@ -23,10 +23,14 @@
                                 </v-btn>
                             </div> 
                             <div>
+                                <canvas-option></canvas-option>
+                            </div>
+                            <div>
                                 <v-btn color="warning" fab medium dark  @click="salvarTabloide">
                                     <v-icon size=40>save</v-icon>
                                 </v-btn>
                             </div> 
+
                         </v-layout>    
                 </v-toolbar>
                 <v-toolbar  :class="{'borda': canvasMode !== 'portrait',
@@ -282,7 +286,7 @@
 </template>
 
 <script>
-
+import canvasOption from '../../components/campanhas/generalUseComponents/canvasOptions'// ../generalUseComponents/canvasOptions.vue'
 import crudMixin from '../../components/mixins/CRUD.js'
 import { Compact, Chrome} from 'vue-color'
 import {fabric}  from "fabric"
@@ -293,7 +297,8 @@ export default {
     ],
     components:{
         'compact-picker': Compact,
-        'chrome-picker':Chrome
+        'chrome-picker':Chrome,
+        'canvas-option':canvasOption
     },
    data: () => ({
         dropdown_edit: [

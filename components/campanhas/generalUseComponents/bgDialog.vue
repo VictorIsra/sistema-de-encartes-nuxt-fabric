@@ -95,7 +95,6 @@ export default {
         openDialog(flag){
             
             this.imgInfo.flag = flag
-            console.log("PORRRRRRRR", this.imgInfo)
             this.resetImgCached()
             this.imgInfo.flag = 0
             this.dialog = true
