@@ -392,7 +392,7 @@ export default {
     methods: {  
         normalScript(){
             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                if(this.canvas.getActiveObject().type === 'group'|| this.canvas.getActiveObject().type === 'activeSelection')
+                if(this.canvas.getActiveObject().type === 'image' ||this.canvas.getActiveObject().type === 'group'|| this.canvas.getActiveObject().type === 'activeSelection')
                     return
                 var active = this.canvas.getActiveObject()
                 // if (!active) return;
@@ -405,7 +405,7 @@ export default {
         },
         superScript() {
             if( this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-               if(this.canvas.getActiveObject().type === 'group'|| this.canvas.getActiveObject().type === 'activeSelection')
+               if(this.canvas.getActiveObject().type === 'image' || this.canvas.getActiveObject().type === 'group'|| this.canvas.getActiveObject().type === 'activeSelection')
                     return
                 var active = this.canvas.getActiveObject()
                 console.log("NOAO RETORNE ", active)
@@ -415,7 +415,7 @@ export default {
         },
         subScript() {
             if( this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                if(this.canvas.getActiveObject().type === 'group' || this.canvas.getActiveObject().type === 'activeSelection')
+                if(this.canvas.getActiveObject().type === 'image' || this.canvas.getActiveObject().type === 'group' || this.canvas.getActiveObject().type === 'activeSelection')
                     return
                 var active = this.canvas.getActiveObject()
                 active.setSubscript()
