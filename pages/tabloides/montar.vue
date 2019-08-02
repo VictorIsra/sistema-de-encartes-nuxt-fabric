@@ -50,16 +50,16 @@
                                 inset
                                 vertical></v-divider>
                         <v-btn-toggle  mandatory>
-                         <div>
+                       <!--  <div>
                             <v-btn color="primary" fab small dark @click="setCanvasDim(1640,1000,'portrait')">
                                 <v-icon>stay_current_portrait</v-icon>
                             </v-btn>
-                        </div>
-                         <div>
-                            <v-btn color="primary" fab small dark @click="setCanvasDim(2300,6300,'landscape')"><!--ivnerte p volta p original-->
+                        </div> -->
+                        <!-- <div>
+                            <v-btn color="primary" fab small dark >@click="setCanvasDim(2300,6300,'landscape')"> 
                                 <v-icon>stay_current_landscape</v-icon>
                             </v-btn>
-                        </div> 
+                        </div> -->
                         </v-btn-toggle>
                           <v-divider class="mx-2"
                                 
