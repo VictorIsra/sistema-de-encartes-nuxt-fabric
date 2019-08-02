@@ -9,31 +9,39 @@
         <span>Adicionar backgrounds</span>
         </v-tooltip>  
         
-        <v-dialog v-model="dialog" persistent max-width="350">
+        <v-dialog v-model="dialog" persistent max-width="450">
             <v-card>
                 <v-layout class="justify-center">
                     <v-card-title class="headline primary--text">Configurações do canvas</v-card-title>
                 </v-layout>
                 <v-container grid-list-md >
                     <v-layout wrap class="justify-center">
-                       <v-flex xs12 sm2>
+                       <v-flex xs12 sm3>
                             <v-select
                                 :items="dpisPossiveis"
                                 v-model="dpi"
                                 label="DPI">
                             ></v-select>
-                            </v-flex>
-                         <v-flex xs12 sm2 >
+                        </v-flex>
+                        <v-flex xs12 sm3>
+                            <v-select
+                                :items="folhas"
+                                v-model="folha"
+                                @click="checkMode"
+                                label="folha">
+                            ></v-select>
+                        </v-flex>
+                          <v-flex xs12 sm3 >
                             <div> 
-                        <v-text-field  size=10 v-model="largura"
-                                        label="Largura">
+                        <v-text-field @change="checkDim" @click="checkMode" v-model="largura"
+                                        label="Altura (cm)">
                         </v-text-field>
                             </div>
                         </v-flex>
-                         <v-flex xs12 sm2 >
+                         <v-flex xs12 sm3 @change="checkDim" @click="checkMode">
                             <div>
                         <v-text-field   v-model="altura"
-                                        label="Altura">
+                                        label="Largura (cm)">
                         </v-text-field>
                             </div>
                         </v-flex>
@@ -51,16 +59,81 @@
 <script>
 export default {/*px por miliemtro: Printers typically print at 300 pixels per inch.In millimeters: 300ppi / 25.4 mm-in = 11.81 pixels per millimeter.So if you want to print a 50mm drawing you would calculate the required pixel size like this:50mm x 11.81ppm = 590.5 pixels (591 pixels)And you resize the canvas to have 591 pixels (assuming square) like this: */
     data: () => ({
+        folhas: ['A0','A1','A2','A3','A4','A5'],//opcoes pre feitas de folhas
+        folha: 'A4',//tipo de folha do canvas por default
         dpisPossiveis: [72,50,300],
-        altura:28, //eixo y em (mm)
-        largura : 20,//eixo x em (mm)
+        altura:210, // éa largura no menu lol eixo y em (mm) ? na real cm ac
+        largura : 297,//eixo x em (mm) ? na real cm
         dpi: 72,//default q o jspdf gera, mas salverei posteriormenteo com 300, caso user queira.
         dialog: false,
         width: '',//caso ex de folha 10cm por 15 cm : wid = 10 cm *300 / 2.54 = 1181 pixels
         height: '',//15 //caso ex de folha 10cm por 15 cm : hei = 15 cm *300 / 2.54 = 1772 pixels
-    }) ,
-    
+    }),
+    watch:{
+            // altura(){//NA REAL É LARGURA X
+            // alert("Oo")
+                
+            // },
+            // largura(){//NA REAL É ALTURA  Y
+            //     this.checkDim()
+            // },
+        folha(){
+            if(this.folha === 'A0'){
+                this.altura = 841,
+                this.largura = 1000//devia ser 1189
+            }
+            else if(this.folha === 'A1'){
+                this.altura = 594,
+                this.largura = 841//devia ser 1189
+            }
+            else if(this.folha === 'A2'){
+                this.altura = 420,
+                this.largura = 594//devia ser 1189
+            }
+            else if(this.folha === 'A3'){
+                this.altura = 297,
+                this.largura = 420//devia ser 1189
+            }
+            else if(this.folha === 'A4'){
+                this.altura = 210,
+                this.largura = 297//devia ser 1189
+            }
+            else if(this.folha === 'A5'){
+                this.altura = 148,
+                this.largura = 210//devia ser 1189
+            }
+        }
+    },
     methods:{
+         checkMode(){
+            if(this.altura >= 88){
+                this.$emit('canvasmode',{
+                data: {
+                        mode: 'landscape'
+                    }
+                })
+            }
+            else{
+                this.$emit('canvasmode',{
+                data: {
+                        mode: 'portrait'
+                    }
+                })
+            }
+        },
+        checkDim(){
+            if(this.altura * this.largura >= 841000){
+                //o maior eixto recebera o vlaor max
+                if(this.altura >= this.largura){
+                    this.altura = 1000
+                    this.largura = 841
+                }else{
+                    this.altura = 841
+                    this.largura = 1000
+                }
+             }//n da p ser maior, se n dá overflow! 
+             this.checkMode()
+        },
         open(){
             this.dialog = true
         },
@@ -73,9 +146,9 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
         genCanvasSize(){
             //calcula o tamanho do canvas em pixels basado na altura e largura passadas em mm
             //11.81 vem de  300ppi / 25.4mm = 11.81 pixels por mm  ja q impressao normal é de 30 pixels por inch
-            this.width = this.largura * 11.81
-            this.height = this.altura * 11.81
-            alert("vai emit")
+            //* 10 pq a formula é em cm, mas a entrada do user é  mm
+            this.width =  ( this.largura * (300 / 2.54))/ 10//* 11.81//lol q bizarrroo
+            this.height =   (this.altura * (300 /2.54))/10  //da o valor em pxs
             this.$emit('resize-canvas',{
                 data: {
                     width: this.width.toFixed(3),

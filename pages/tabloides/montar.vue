@@ -23,7 +23,7 @@
                                 </v-btn>
                             </div> 
                             <div>
-                                <canvas-option></canvas-option>
+                                <canvas-option @canvasmode="setMode" @resize-canvas="setCanvasDim"></canvas-option>
                             </div>
                             <div>
                                 <v-btn color="warning" fab medium dark  @click="salvarTabloide">
@@ -278,7 +278,7 @@
                     <v-flex sx2> 
                         <span @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove"><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
                          <canvas  id="c" 
-                          width="1000" heigth="1540" style="width:600px;height:600px;"></canvas>
+                          style="width:600px;height:600px;"></canvas>
                         </span>
                     </v-flex>
                 </v-layout>
@@ -398,6 +398,12 @@ export default {
 
     },
     methods: {  
+        setMode(objeto){
+            if(objeto.data.mode === 'portrait')//troca p mduar e executar o watch
+                this.canvasMode = 'landscape'
+            this.canvasMode = objeto.data.mode
+        
+        },
         normalScript(){
             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
                 if(this.canvas.getActiveObject().type === 'image' ||this.canvas.getActiveObject().type === 'group'|| this.canvas.getActiveObject().type === 'activeSelection')
@@ -466,10 +472,11 @@ export default {
             this.canvas.requestRenderAll();
         });
         },
-        setCanvasDim(width,height,mode){
-            this.canvasMode = mode
-            this.canvas.setHeight(width)
-            this.canvas.setWidth(height)
+        setCanvasDim(objeto){
+            if(objeto.data === undefined)
+                return
+            this.canvas.setHeight(objeto.data.width)
+            this.canvas.setWidth(objeto.data.height)
             this.restoreDefault()//apos mudar as dim, da um refesh no canvas p ele voltar pro status original, porem com a res mudada
             if(this.currBg !== ''){
                 this.addBg(this.currBg)
@@ -803,13 +810,13 @@ export default {
                 let canvas = await html2canvas(document.getElementById('c'))
                     .then((canvas) => {
                         const imgData = canvas.toDataURL('image/jpeg',1.0)
-                        const pdf = new jsPDF("p","mm","tabloid")//new jsPDF({
+                        const pdf = new jsPDF("p","mm")//,"tabloid")//new jsPDF({
                         // orientation: 'landscape',
                         // });
                         const imgProps= pdf.getImageProperties(imgData);
                         const pdfWidth = pdf.internal.pageSize.getWidth();
                         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                        pdf.addImage(imgData, 'JPEG', -1, 1, pdfWidth, pdfHeight);
+                        pdf.addImage(imgData, 'JPEG', 1, 1)
                         pdf.save('tabloide.pdf');
                     });
             }
