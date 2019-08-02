@@ -46,25 +46,10 @@
                             </v-btn>
                         </div> 
                          </v-btn-toggle>
-                        <v-divider  class="mx-1"
+                        <v-divider  
                                 inset
-                                vertical></v-divider>
-                        <v-btn-toggle  mandatory>
-                       <!--  <div>
-                            <v-btn color="primary" fab small dark @click="setCanvasDim(1640,1000,'portrait')">
-                                <v-icon>stay_current_portrait</v-icon>
-                            </v-btn>
-                        </div> -->
-                        <!-- <div>
-                            <v-btn color="primary" fab small dark >@click="setCanvasDim(2300,6300,'landscape')"> 
-                                <v-icon>stay_current_landscape</v-icon>
-                            </v-btn>
-                        </div> -->
-                        </v-btn-toggle>
-                          <v-divider class="mx-2"
-                                
-                                vertical>
-                                </v-divider>
+                                vertical class="mx-2"></v-divider>
+                   
                          <div>
                             <v-btn color="primary" fab small dark @click="copy">
                                 <v-icon>fa-copy</v-icon>
@@ -186,6 +171,21 @@
                             </v-btn>
 
                         </v-btn-toggle>
+                            <div>
+                                <v-btn color="white grey--text" fab small dark @click="superScript">
+                                    <v-icon>fa-superscript</v-icon>
+                                </v-btn>
+                            </div> 
+                            <div>
+                                <v-btn color="white grey--text" fab small dark @click="subScript"> 
+                                    <v-icon>fa-subscript</v-icon>
+                                </v-btn>
+                            </div> 
+                            <div>
+                                <v-btn color="white grey--text" fab small dark @click="normalScript">
+                                    <v-icon>fa-times</v-icon>
+                                </v-btn>
+                            </div>
                         <v-flex>
                             <v-btn class="mx-2" fab dark small color="white grey--text" @click="addText">
                                 <v-icon dark>title</v-icon>
@@ -390,6 +390,38 @@ export default {
 
     },
     methods: {  
+        normalScript(){
+            if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
+                if(this.canvas.getActiveObject().type === 'group'|| this.canvas.getActiveObject().type === 'activeSelection')
+                    return
+                var active = this.canvas.getActiveObject()
+                // if (!active) return;
+                active.setSelectionStyles({
+                    fontSize: undefined,
+                    deltaY: undefined,
+                })
+                this.canvas.requestRenderAll()
+            }    
+        },
+        superScript() {
+            if( this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
+               if(this.canvas.getActiveObject().type === 'group'|| this.canvas.getActiveObject().type === 'activeSelection')
+                    return
+                var active = this.canvas.getActiveObject()
+                console.log("NOAO RETORNE ", active)
+                active.setSuperscript();
+                this.canvas.requestRenderAll()
+            }    
+        },
+        subScript() {
+            if( this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
+                if(this.canvas.getActiveObject().type === 'group' || this.canvas.getActiveObject().type === 'activeSelection')
+                    return
+                var active = this.canvas.getActiveObject()
+                active.setSubscript()
+                this.canvas.requestRenderAll()
+            }    
+        },
         copy(){
             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
                 this.canvas.getActiveObject().clone(cloned => {
