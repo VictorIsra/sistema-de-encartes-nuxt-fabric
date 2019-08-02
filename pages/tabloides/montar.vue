@@ -55,7 +55,7 @@
                             </v-btn>
                         </div>
                          <div>
-                            <v-btn color="primary" fab small dark @click="setCanvasDim(3600,2300,'landscape')">
+                            <v-btn color="primary" fab small dark @click="setCanvasDim(2300,6300,'landscape')"><!--ivnerte p volta p original-->
                                 <v-icon>stay_current_landscape</v-icon>
                             </v-btn>
                         </div> 
@@ -65,12 +65,12 @@
                                 vertical>
                                 </v-divider>
                              <div>
-                            <v-btn color="primary" fab small dark >
+                            <v-btn color="primary" fab small dark @click="agrupa" >
                                 <v-icon>present_to_all</v-icon>
                             </v-btn>
                         </div> 
                          <div>
-                            <v-btn color="primary" fab small dark >
+                            <v-btn color="primary" fab small dark @click="desagrupa">
                                 <v-icon>no_sim</v-icon>
                             </v-btn>
                         </div> 
@@ -254,7 +254,7 @@
                       
                     </no-ssr> 
                     <v-flex sx2> 
-                        <span @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove.stop="mouseMove"><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
+                        <span @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove"><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
                          <canvas  id="c" class="canvas-wrapper"></canvas>
                         </span>
                     </v-flex>
@@ -570,6 +570,27 @@ export default {
             else
                 console.log("Nada selec")    
         },
+        agrupa(){
+            //agrupa selecoes
+            if (!this.canvas.getActiveObject()) {
+                return
+            }
+            if (this.canvas.getActiveObject().type !== 'activeSelection') {
+                return
+                }
+            this.canvas.getActiveObject().toGroup();
+            this.canvas.requestRenderAll();
+        },
+        desagrupa(){
+            if (!this.canvas.getActiveObject()) {
+                return
+            }
+            if (this.canvas.getActiveObject().type !== 'group') {
+                return
+            }
+            this.canvas.getActiveObject().toActiveSelection();
+            this.canvas.requestRenderAll();
+        },
         wheelOn(event){
             event.returnValue = false
             if(event.deltaY > 0){//zoom out
@@ -712,8 +733,11 @@ export default {
             this.canvas.add(text)
             const preco = new fabric.IText(img.preco_v,{ top: 140,fontSize: 30 });
             this.canvas.add(preco)
+            
+            
             this.addImgToCanvas(relaPath,img)//parece estranho eu n passar simplesmente img, mas o fabric é eskisito...entao vai assim
             //    canvas.sendToBack(relaPath,img);
+            
             
        },
        addBg(img,i){
