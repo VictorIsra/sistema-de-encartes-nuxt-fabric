@@ -32,9 +32,10 @@
                 <v-toolbar  :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
                     <v-layout align-center class="justify-center">
+                       
                             <v-btn-toggle v-model="checkGrid" mandatory>
-
-                             <div>
+                                
+                        <div>
                             <v-btn color="primary" fab small dark >
                                 <v-icon>grid_off</v-icon>
                             </v-btn>
@@ -45,7 +46,7 @@
                             </v-btn>
                         </div> 
                          </v-btn-toggle>
-                        <v-divider  class="mx-2"
+                        <v-divider  class="mx-1"
                                 inset
                                 vertical></v-divider>
                         <v-btn-toggle  mandatory>
@@ -60,6 +61,21 @@
                             </v-btn>
                         </div> 
                         </v-btn-toggle>
+                          <v-divider class="mx-2"
+                                
+                                vertical>
+                                </v-divider>
+                         <div>
+                            <v-btn color="primary" fab small dark @click="copy">
+                                <v-icon>fa-copy</v-icon>
+                            </v-btn>
+                        </div>
+                         <div>
+                            <v-btn color="primary" fab small dark @click="paste">
+                                <v-icon>fa-clipboard</v-icon>
+                            </v-btn>
+                        </div>
+                        
                           <v-divider class="mx-2"
                                 inset
                                 vertical>
@@ -325,7 +341,8 @@ export default {
         compleImages: [],
         dataImages: [],
         campanha_id: undefined,
-        currBg: ''//background q ta sendo usado no momento, usado caso a res do canvas mude 
+        currBg: '',//background q ta sendo usado no momento, usado caso a res do canvas mude 
+        clipboard: ''
        // imgsList: []
     }),
     watch:{
@@ -373,6 +390,42 @@ export default {
 
     },
     methods: {  
+        copy(){
+            if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
+                this.canvas.getActiveObject().clone(cloned => {
+                    this.clipboard = cloned
+                })
+              
+                console.log("clip ",this.clipboard)
+            }
+        },
+        paste(){
+            if(this.clipboard === '' || (this.clipboard === undefined))
+                return
+            this.clipboard.clone(clonedObj => {
+            this.canvas.discardActiveObject();
+            clonedObj.set({
+                left: clonedObj.left + 10,
+                top: clonedObj.top + 10,
+                evented: true,
+            });
+            if (clonedObj.type === 'activeSelection') {
+                // active selection needs a reference to the canvas.
+                clonedObj.canvas = this.canvas;
+                clonedObj.forEachObject(obj => {
+                    this.canvas.add(obj)
+                })
+                // this should solve the unselectability
+                clonedObj.setCoords();
+            } else {
+                this.canvas.add(clonedObj);
+            }
+           this.clipboard.top += 10;
+           this.clipboard.left += 10;
+            this.canvas.setActiveObject(clonedObj);
+            this.canvas.requestRenderAll();
+        });
+        },
         setCanvasDim(width,height,mode){
             this.canvasMode = mode
             this.canvas.setHeight(width)
@@ -729,9 +782,9 @@ export default {
         addImg(img,i){
             console.log("adicionando img de indice ",img)
             const relaPath = "../../../uploads/fotos/" + img.name
-            const text = new fabric.IText(img.alt,{ top: 100,fontSize: 40 });
+            const text = new fabric.IText(img.alt,{ top: 140,fontSize: 40 });
             this.canvas.add(text)
-            const preco = new fabric.IText(img.preco_v,{ top: 140,fontSize: 30 });
+            const preco = new fabric.IText(img.preco_v,{ top: 180,fontSize: 30 });
             this.canvas.add(preco)
             
             
