@@ -13,28 +13,49 @@
                         
                         <v-toolbar-title>
                             <div>
-                                <v-btn color="primary" fab medium dark @click="voltar">
-                                    <v-icon>arrow_back</v-icon>
-                                </v-btn>
+                              
+                                <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn color="primary" fab medium dark @click="voltar" v-on="on"> 
+                                        <v-icon>arrow_back</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span class="subheading">Voltar para painel inicial</span>
+                                </v-tooltip>
                             </div> 
                         </v-toolbar-title>
                             <div>
-                                <v-btn color="primary" fab medium dark @click="submeterAvaliacao">
+                                <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" color="primary" fab medium dark @click="submeterAvaliacao">
                                     <v-icon>gavel</v-icon>
                                 </v-btn>
+                                </template>
+                                <span class="subheading">Submeter este tablóide para avaliação</span>
+                                </v-tooltip>
                             </div> 
                             <div>
-                                <v-btn color="primary" fab medium dark @click="salvarPdf">
+                                <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                <v-btn color="primary" v-on="on" fab medium dark @click="salvarPdf">
                                     <v-icon size=40>picture_as_pdf</v-icon>
-                                </v-btn>
+                                </v-btn> 
+                                </template>
+                                <span class="subheading">Baixar PDF desde tablóide</span>
+                                </v-tooltip>
                             </div> 
                             <div>
                                 <canvas-option @canvasmode="setMode" @getReal="fillInfo" @resize-canvas="setCanvasDim"></canvas-option>
                             </div>
                             <div>
-                                <v-btn color="warning" fab medium dark  @click="salvarTabloide">
+                                <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                <v-btn color="warning" v-on="on" fab medium dark  @click="salvarTabloide">
                                     <v-icon size=40>save</v-icon>
-                                </v-btn>
+                                </v-btn>    
+                                </template>
+                                <span class="subheading">Salvar alterações feitas no tablóide</span>
+                                </v-tooltip>
                             </div> 
 
                         </v-layout>    
@@ -46,101 +67,169 @@
                             <v-btn-toggle v-model="checkGrid" mandatory>
                                 
                         <div>
-                            <v-btn color="primary" fab small dark >
+                            <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                            <v-btn color="primary" fab small dark v-on="on">
                                 <v-icon>grid_off</v-icon>
-                            </v-btn>
+                            </v-btn> 
+                            </template>
+                            <span class="subheading">Esconder grid</span>
+                            </v-tooltip>
                         </div> 
-                         <div>
-                            <v-btn color="primary" fab small dark >
+                         <div> 
+                          <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                            <v-btn color="primary" fab small dark v-on="on" >
                                 <v-icon>grid_on</v-icon>
                             </v-btn>
+                            </template>
+                            <span class="subheading">Mostrar grid</span>
+                            </v-tooltip>
                         </div> 
                          </v-btn-toggle>
                         <v-divider  
                                 inset
                                 vertical class="mx-2"></v-divider>
                    
-                         <div>
-                            <v-btn color="primary" fab small dark @click="copy">
+                         <div> 
+                           <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="primary" fab small dark @click="copy" v-on="on">
                                 <v-icon>fa-copy</v-icon>
-                            </v-btn>
+                            </v-btn> 
+                            </template>
+                            <span class="subheading">Copiar elemento(s) selecionado(s)</span>
+                            </v-tooltip>
                         </div>
                          <div>
-                            <v-btn color="primary" fab small dark @click="paste">
+                            <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="primary" fab small dark @click="paste" v-on="on">
                                 <v-icon>fa-clipboard</v-icon>
                             </v-btn>
+                            </template>
+                            <span class="subheading">Colar elemento(s) copiados(s)</span>
+                            </v-tooltip>
                         </div>
                         
                           <v-divider class="mx-2"
                                 inset
                                 vertical>
                                 </v-divider>
-                             <div>
-                            <v-btn color="primary" fab small dark @click="agrupa" >
+                             <div> 
+                            <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="primary" fab small dark @click="agrupa" v-on="on" >
                                 <v-icon>present_to_all</v-icon>
-                            </v-btn>
+                            </v-btn> 
+                            </template>
+                            <span class="subheading">Agrupar seleção em um único elemento</span>
+                            </v-tooltip>
                         </div> 
                          <div>
-                            <v-btn color="primary" fab small dark @click="desagrupa">
-                                <v-icon>no_sim</v-icon>
-                            </v-btn>
+                            <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="primary" fab small dark @click="desagrupa" v-on="on">
+                                <v-icon>no_sim</v-icon> 
+                            </v-btn>        
+                            </template>
+                            <span class="subheading">Separar elemento em elementos individuais</span>
+                            </v-tooltip>
                         </div> 
-                         <div>
-                            <v-btn color="red" fab small dark @click="actionHandler('removeSelection')">
-                                <v-icon>clear</v-icon>
+                         <div> 
+                             <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="red" fab small v-on="on" dark @click="actionHandler('removeSelection')">
+                                <v-icon>clear</v-icon>   
                             </v-btn>
+                            </template>
+                            <span class="subheading">Deletar elemento(s) selecionados(s)</span>
+                            </v-tooltip>
                         </div> 
                          <v-divider class="mx-2"
                                 inset
                                 vertical>
                                 </v-divider>
                         <div>
-                            <v-btn color="primary" fab small dark @click="Xmovement(-1)">
+                             <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="primary" v-on="on" fab small dark @click="Xmovement(-1)">
                                 <v-icon>arrow_back</v-icon>
                             </v-btn>
+                            </template>
+                            <span class="subheading">Mover canvas 1 unidade para esquerda</span>
+                            </v-tooltip>
                         </div>
                         <div>
-                            <v-btn color="primary" fab small dark @click="Xmovement">
+                            <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="primary" fab small v-on="on" dark @click="Xmovement">
                                 <v-icon>arrow_forward</v-icon>
-                            </v-btn>
+                            </v-btn></template>
+                            <span class="subheading">Mover canvas 1 unidade para direita</span>
+                            </v-tooltip>
                         </div>
-                        <div>
-                            <v-btn color="primary" fab small dark @click="Ymovement(-1)">
+                        <div> <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="primary" fab small v-on="on" dark @click="Ymovement(-1)">
                                 <v-icon>arrow_upward</v-icon>
                             </v-btn>
+                            </template>
+                            <span class="subheading">Mover canvas 1 unidade para cima</span>
+                            </v-tooltip>
                         </div>
-                        <div>
-                            <v-btn color="primary" fab small dark @click="Ymovement">
+                        <div> <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="primary" fab small v-on="on" dark @click="Ymovement">
                                 <v-icon>arrow_downward</v-icon>
                             </v-btn>
+                               </template>
+                            <span class="subheading">Mover canvas 1 unidade para baixo</span>
+                            </v-tooltip>
                         </div>
                         <v-divider
                                 class="mx-2"
                                 inset
                                 vertical
                             ></v-divider>
-                        <div>
-                            <v-btn color="primary" fab small dark @click="restoreDefault">
+                        <div><v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="primary" fab small dark v-on="on" @click="restoreDefault">
                                 <v-icon>restore</v-icon>
-                            </v-btn>
+                            </v-btn>    
+                            </template>
+                            <span class="subheading">Setar canvas para posição e zoon originais</span>
+                            </v-tooltip>
                         </div>
-                        <div>
-                            <v-btn color="primary" fab small dark @click="canvas.setZoom(canvas.getZoom() / 1.1 )">
+                        <div><v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="primary" fab small v-on="on" dark @click="canvas.setZoom(canvas.getZoom() / 1.1 )">
                                 <v-icon>remove_circle</v-icon>
-                            </v-btn>
+                            </v-btn></template>
+                            <span class="subheading">Afastar canvas em 1 unidade (Zoon out)</span>
+                            </v-tooltip>
                         </div>
                         <div>
-                            <v-btn color="primary" fab small dark @click=" canvas.setZoom(canvas.getZoom() * 1.1 )">
+                            <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="primary" fab small v-on="on" dark @click="canvas.setZoom(canvas.getZoom() * 1.1 )">
                                 <v-icon>add</v-icon>
-                            </v-btn>
+                            </v-btn></template>
+                            <span class="subheading">Aproximar canvas em 1 unidade (Zoon in)</span>
+                            </v-tooltip>
                         </div>
                         <v-divider
                                 class="mx-2"
                                 inset
                                 vertical
-                            ></v-divider>
-                        <v-btn color="primary" @click="actionHandler('bring',false)">FRENTE</v-btn>
-                        <v-btn color="primary"  @click="actionHandler('bring',true)">TRÁS</v-btn>
+                            ></v-divider> <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                        <v-btn color="primary" v-on="on" @click="actionHandler('bring',false)">FRENTE</v-btn>
+                        </template>
+                        <span class="subheading">Jogar elemento(s) para frente do canvas</span></v-tooltip> <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                        <v-btn color="primary" v-on="on" @click="actionHandler('bring',true)">TRÁS</v-btn> </template>
+                        <span class="subheading">Jogar elemento(s) para o fundo do canvas</span> </v-tooltip>
                     </v-layout>
                 </v-toolbar>
                     <v-toolbar dense :class="{'borda': canvasMode !== 'portrait',
@@ -172,38 +261,58 @@
                         <v-divider vertical class="mx-2"></v-divider>
 
                         <v-btn-toggle v-model="toggle_exclusive" mandatory>
-                
-                             <v-btn :value="3" text @click="checkFontStyle('normal')">
+                            <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                             <v-btn :value="3" v-on="on" text @click="checkFontStyle('normal')">
                             <v-icon>text_fields</v-icon>
-                            </v-btn>
-                            <v-btn :value="1" text @click="checkFontStyle('Bold')">
+                            </v-btn> </template>
+                            <span class="subheading">Aplicar estilo padrão ao(s) texto(s) selecionado(s)</span>
+                            </v-tooltip><v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn :value="1" text @click="checkFontStyle('Bold')" v-on="on">
                             <v-icon>format_bold</v-icon>
-                            </v-btn>
-
-                            <v-btn :value="2" text @click="checkFontStyle('Italic')">
+                            </v-btn> </template>
+                            <span class="subheading" >Aplicar estilo negrito ao(s) texto(s) selecionado(s)</span>
+                            </v-tooltip><v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn :value="2" v-on="on" text @click="checkFontStyle('Italic')">
                             <v-icon>format_italic</v-icon>
-                           </v-btn>
+                           </v-btn></template>
+                            <span class="subheading">Aplicar estilo itálico ao(s) texto(s) selecionado(s)</span>
+                            </v-tooltip>
 
                         </v-btn-toggle >
-                            <div>
-                                <v-btn color="white grey--text" fab small dark @click="superScript">
+                            <div><v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                                <v-btn color="white grey--text" v-on="on" fab small dark @click="superScript">
                                     <v-icon>fa-superscript</v-icon>
-                                </v-btn>
+                                </v-btn></template>
+                            <span class="subheading">Aplicar superScript superior a(s) letra(s) achurada(s)</span>
+                            </v-tooltip>
                             </div> 
-                            <div>
-                                <v-btn color="white grey--text" fab small dark @click="subScript"> 
+                            <div><v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                                <v-btn color="white grey--text" fab small v-on="on" dark @click="subScript"> 
                                     <v-icon>fa-subscript</v-icon>
-                                </v-btn>
+                                </v-btn></template>
+                            <span class="subheading">Aplicar superScript inferior a(s) letra(s) achurada(s)</span>
+                            </v-tooltip>
                             </div> 
-                            <div>
-                                <v-btn color="white grey--text" fab small dark @click="normalScript">
+                            <div><v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                                <v-btn color="white grey--text" v-on="on" fab small dark @click="normalScript">
                                     <v-icon>fa-times</v-icon>
-                                </v-btn>
+                                </v-btn></template>
+                            <span class="subheading">Resetar a(s) letra(s) achurada(s) para o formato padrão</span>
+                            </v-tooltip>
                             </div>
-                        <v-flex>
-                            <v-btn class="mx-2" fab dark small color="white grey--text" @click="addText">
+                        <v-flex><v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn class="mx-2" v-on="on" fab dark small color="white grey--text" @click="addText">
                                 <v-icon dark>title</v-icon>
-                            </v-btn>
+                            </v-btn></template>
+                            <span class="subheading">Adicionar nova caixa de texto ao canvas</span>
+                            </v-tooltip>
                         </v-flex>
                         <v-divider  class="mx-2" vertical></v-divider>
                         <v-flex class="mx-4">
@@ -801,6 +910,12 @@ export default {
             this.canvas.loadFromJSON(jsonTabloide.data.tabloide)
             this.currBg = jsonTabloide.data.tabloide_bg
             this.canvas.renderAll()
+            if(this.userType!== 'tabloide'){
+                alert("ideia boa mas temq usa bd agora xd" + this.altura + " l " + this.largura)
+              //  this.canvas.setHeight(this.altura)
+                //this.canvas.setWidth(this.largura)
+            
+            }
             //this.setCanvasDim(3600,2300,'landscape')
            // this.setCanvasDim(1540,1000,'portrait')
 
@@ -840,7 +955,7 @@ export default {
             
         },
         addText(){
-            const text = new fabric.IText('Texto',{ top: 100,fontSize: 40})
+            const text = new fabric.IText('Texto',{ top: 100,fontSize: 200})
             this.canvas.add(text)
         },//cria um texto no canvas
         //METODOS RELATIVOS AO CANVAS/FABRIC

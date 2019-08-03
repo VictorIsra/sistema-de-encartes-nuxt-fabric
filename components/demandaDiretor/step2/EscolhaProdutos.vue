@@ -125,7 +125,7 @@
       item-key="_id"
     > 
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
-        <td class="justify-center layout px-0"> 
+        <td> 
          <v-checkbox class="justify-center layout px-0"
           v-model="props.selected"
           primary
@@ -250,14 +250,14 @@
       },
       //fim info relativas ao uplode e img ^
       headers: [
-        { text: 'SELECIONADO', value: 'sel' , width: "1%", align: "center"},
+        { text: '', value: 'sel' , width: "1%", align: "center"},
         { text: 'IMAGEM', value: 'img' , width: "1%", align: "center"},
         { text: 'PRODUTO', value: 'nome' , width: "1%", align: "center"},
         { text: 'ESTOQUE', value: 'qtdade', width: "1%", align: "center"},
         { text: 'UNIDADE', value: 'unidade' , width: "1%", align: "center"},
         { text: 'OBSERVAÇÃO', value: 'obs' , width: "1%", align: "center"},
-        { text: 'DATA DE INÍCIO', value: 'data_i' , width: "1%", align: "center"},
-        { text: 'DATA DE TÉRMINO', value: 'data_f' , width: "1%", align: "center"},
+        { text: 'INÍCIO', value: 'data_i' , width: "5%", align: "center"},
+        { text: 'TÉRMINO', value: 'data_f' , width: "5%", align: "center"},
         { text: 'PREÇO DE COMPRA', value: 'preco_c' , width: "1%", align: "center"},
         { text: 'PREÇO DE VENDA', value: 'preco_v' , width: "1%", align: "center"},
         { text: 'SELL OUT', value: 'selout' , width: "1%", align: "center"},

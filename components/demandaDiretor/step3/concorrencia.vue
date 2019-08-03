@@ -138,9 +138,9 @@
         { text: 'PRODUTO', value: 'nome' , width: "1%", align: "center"},
         { text: 'PREÇO DE COMPRA', value: 'preco_c' , width: "1%", align: "center"},
         { text: 'PREÇO DE VENDA ', value: 'preco_v' , width: "1%", align: "center"},
-        { text: 'PREÇO DE VENDA DO CONCORRENTE 1', value: 'preco_v_c1' , width: "1%", align: "center"},
-        { text: 'PREÇO DE VENDA DO CONCORRENTE 2', value: 'preco_v_c2', width: "1%", align: "center"},
-        { text: 'PREÇO DE VENDA DO CONCORRENTE 3', value: 'preco_v_c3' , width: "1%", align: "center"},
+        { text: 'CONCORRENTE 1', value: 'preco_v_c1' , width: "1%", align: "center"},
+        { text: 'CONCORRENTE 2', value: 'preco_v_c2', width: "1%", align: "center"},
+        { text: 'CONCORRENTE 3', value: 'preco_v_c3' , width: "1%", align: "center"},
         { text: 'MARGEM DE LUCRO', value: 'marluc', width: "1%", align: "center"}, 
         { text: 'AÇÕES', value: 'acao' , width: "1%", align: "center"}
       ],

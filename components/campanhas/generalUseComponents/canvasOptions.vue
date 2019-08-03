@@ -6,7 +6,7 @@
                 <v-icon dark>build</v-icon>
             </v-btn>
         </template>
-        <span>Adicionar backgrounds</span>
+        <span class="subheading">Configurações do canvas</span>
         </v-tooltip>  
         
         <v-dialog v-model="dialog" persistent max-width="550">
