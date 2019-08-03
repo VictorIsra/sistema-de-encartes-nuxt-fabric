@@ -267,22 +267,8 @@
                     </v-layout>
                 </v-toolbar>
             </template>  
-            
-                  <!--  <no-ssr>
-                        <chrome-picker width="10"  v-model="colors" ></chrome-picker>
-                    </no-ssr> -->
-                    <!--    <v-flex sx2> 
-                        <span @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove"> @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp"       
-                         <canvas  id="c"
-                          style="width:600px;height:600px;"></canvas>
-                        </span> 
-                    </v-flex> -->
-        
-                
         </v-card>
-        
-       <!--  <span @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove">< @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
-                <v-layout row >
+            <v-layout row >
                  <no-ssr>
                     <template>  
                     <chrome-picker class=" teste2" v-model="colors">
