@@ -855,17 +855,19 @@ export default {
 //                     });
                 let canvas = await html2canvas(document.getElementById('c'))
                     .then((canvas) => {
-                        const pdf = new jsPDF("p", "mm")//essencial msmm, mudand o de de p p l ou n
                         
-                        var imgData = this.canvas.toDataURL('image/jpeg', 1.0);
-                            let amX = (this.canvas.width * 0.264583).toFixed(6)
-                            let amY = (this.canvas.heigth* 0.264583).toFixed(6)
+                        var imgData = this.canvas.toDataURL('image/png')
+                        alert("folha "+ this.folha)
+                        const pdf = new jsPDF("landscape", "mm",this.folha)//essencial msmm, mudand o de de p p l ou n
+
+                        //    let amX = (this.canvas.width * 0.264583).toFixed(6)
+                          //  let amY = (this.canvas.heigth* 0.264583).toFixed(6)
                         console.log("amwes ", this.largura , " amy ", this.altura)
                         // // due to lack of documentation; try setting w/h based on unit
-                        var width = pdf.internal.pageSize.getWidth();
-                        var height = pdf.internal.pageSize.getHeight();
-                       // if(this.folha === 'A4')
-                            pdf.addImage(imgData, 'JPEG',0,0, width,height);  // 180x150 mm @ (10,10)mm
+                        let width = pdf.internal.pageSize.getWidth()
+                        let height = pdf.internal.pageSize.getHeight()
+
+                            pdf.addImage(imgData, 'JPEG',0,0, width,height) // 180x150 mm @ (10,10)mm
                        // if(this.folha === 'tabloide')
                          //   pdf.addImage(imgData, 'JPEG',0,0, this.largura/2 * 72 / 25.4,this.altura/16 * (72) / 25.4);  // 180x150 mm @ (10,10)mm
 

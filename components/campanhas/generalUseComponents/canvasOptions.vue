@@ -60,7 +60,7 @@
 <script>
 export default {/*px por miliemtro: Printers typically print at 300 pixels per inch.In millimeters: 300ppi / 25.4 mm-in = 11.81 pixels per millimeter.So if you want to print a 50mm drawing you would calculate the required pixel size like this:50mm x 11.81ppm = 590.5 pixels (591 pixels)And you resize the canvas to have 591 pixels (assuming square) like this: */
     data: () => ({
-        folhas: ['A0','A1','A2','A3','A4','A5','B0','B1','B2','B3','B4','B5','tabloide'],//opcoes pre feitas de folhas
+        folhas: [   'tabloid','A5','A4','A3','A2','A2','A0'],//opcoes pre feitas de folhas
         folha: 'A4',//tipo de folha do canvas por default
         dpisPossiveis: [72,50,300],
         altura:210, // éa largura no menu lol eixo y em (mm) ? na real cm ac
@@ -103,24 +103,8 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
                 this.altura = 148,
                 this.largura = 210//devia ser 1189
             }
-            //B0 n aparece pois exece max size, q ja parece
-            else if(this.folha === 'B1'){
-                this.altura = 707,
-                this.largura = 1000//devia ser 1189
-            }
-            else if(this.folha === 'B2'){
-                this.altura = 500,
-                this.largura = 707//devia ser 1189
-            }
-            else if(this.folha === 'B3'){
-                this.altura = 353,
-                this.largura = 500//devia ser 1189
-            }
-            else if(this.folha === 'B4'){
-                this.altura = 250,
-                this.largura = 353//devia ser 1189
-            }
-            else if(this.folha === 'tabloide'){
+          
+            else if(this.folha === 'tabloid'){
                 this.altura = 304,
                 this.largura = 457.2//devia ser 1189
             }
