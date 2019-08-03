@@ -171,7 +171,7 @@
                          </v-flex>
                         <v-divider vertical class="mx-2"></v-divider>
 
-                        <v-btn-toggle v-model="toggle_exclusive">
+                        <v-btn-toggle >
                             <v-btn :value="1" text>
                             <v-icon>format_bold</v-icon>
                             </v-btn>
@@ -301,7 +301,6 @@
 
 <script>
 import alerts from '../../components/campanhas/generalUseComponents/alerts'// ../generalUseComponents/canvasOptions.vue'
-import jsPDF from 'jspdf'
 import canvasOption from '../../components/campanhas/generalUseComponents/canvasOptions'// ../generalUseComponents/canvasOptions.vue'
 import crudMixin from '../../components/mixins/CRUD.js'
 import { Compact, Chrome} from 'vue-color'
@@ -446,6 +445,7 @@ export default {
             if( this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
                if(this.canvas.getActiveObject().type === 'image' || this.canvas.getActiveObject().type === 'group'|| this.canvas.getActiveObject().type === 'activeSelection')
                     return
+                this.normalScript()//restaura antes d alterar
                 var active = this.canvas.getActiveObject()
                 console.log("NOAO RETORNE ", active)
                 active.setSuperscript();
@@ -456,6 +456,7 @@ export default {
             if( this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
                 if(this.canvas.getActiveObject().type === 'image' || this.canvas.getActiveObject().type === 'group' || this.canvas.getActiveObject().type === 'activeSelection')
                     return
+                this.normalScript()//restaura antes de auterar
                 var active = this.canvas.getActiveObject()
                 active.setSubscript()
                 this.canvas.requestRenderAll()
@@ -831,7 +832,7 @@ export default {
                 await this.removeGrid()
                 this.canvas.renderAll()
              
-                //const jsPDF = require('jspdf')
+                const jsPDF = require('jspdf')
                 let mode = "landscape"
                 var imgData = this.canvas.toDataURL('image/png',1.0)
                     if(this.canvas.width <= this.canvas.height)
@@ -877,8 +878,8 @@ export default {
        },
         addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
             fabric.Image.fromURL(path,(img)=>{
-                img.scaleToWidth(100)//dif de crop, aqui literalmente "redimensiona"
-                img.scaleToHeight(150)
+                img.scaleToWidth(250)//dif de crop, aqui literalmente "redimensiona"
+                img.scaleToHeight(250)
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
                // if(!this.tobg){
                 this.canvas.add(temp)

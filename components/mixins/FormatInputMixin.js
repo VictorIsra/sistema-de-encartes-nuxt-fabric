@@ -17,6 +17,7 @@ export default{
                 input = "0,00"
           //  console.log("input parseado: ",input)
             return input
-        }
+        },
+       
     }  
 }

@@ -32,15 +32,13 @@
                         </v-flex>
                           <v-flex xs12 sm6>
                       
-                        <v-text-field @change="checkDim"  v-model="largura"
-                                        
-                                        size="30"   
+                        <v-text-field  @change="checkDim"
+                                        v-model="largura"
                                         label="Altura (mm)">
                         </v-text-field>
                         </v-flex>
-                         <v-flex xs12 sm6 @change="checkDim">
-                        <v-text-field   v-model="altura"
-                                        
+                         <v-flex xs12 sm6>
+                        <v-text-field   v-model="altura"  @change="checkDim" 
                                         label="Largura (mm)">
                         </v-text-field>
                         </v-flex>
@@ -68,7 +66,9 @@
     </v-layout>    
 </template>
 <script>
-export default {/*px por miliemtro: Printers typically print at 300 pixels per inch.In millimeters: 300ppi / 25.4 mm-in = 11.81 pixels per millimeter.So if you want to print a 50mm drawing you would calculate the required pixel size like this:50mm x 11.81ppm = 590.5 pixels (591 pixels)And you resize the canvas to have 591 pixels (assuming square) like this: */
+  import formatInputMixin from '../../mixins/FormatInputMixin.js'
+
+export default {/*px por miliemtro: Printers typically print at 300 pixels per inch.In millimeters: 300ppi / 25.4 mm-in = 11.81 pixels per millimeter.So if you want to print a 50mm drawing you would calculate the required pixel size like this:50mm x 11.81ppm = 590.5 pixels (591 pixels)And you resize the canvas to have 591 pixels (astming square) like this: */
     data: () => ({
         folhas: ['tabloid','A5','A4','A3'],//opcoes pre feitas de folhas
         folha: 'A4',//tipo de folha do canvas por default
@@ -79,17 +79,20 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
         width: '',//caso ex de folha 10cm por 15 cm : wid = 10 cm *300 / 2.54 = 1181 pixels
         height: '',//15 //caso ex de folha 10cm por 15 cm : hei = 15 cm *300 / 2.54 = 1772 pixels
     }),
+    mixins: [
+      formatInputMixin
+    ],
     watch:{
             altura(){//NA REAL É LARGURA X
-                if(this.altura >= 304)
-                    this.altura = 304
+                if(this.altura >= 457.2)
+                    this.altura = 457.2
                 if(this.largura >= 457.2)
-                    this.largura = 457.2    
+                    this.largura = 457.2  
                 
             },
             largura(){//NA REAL É ALTURA  Y
-               if(this.altura >= 304)
-                    this.altura = 304
+               if(this.altura >= 457.2)
+                    this.altura = 457.2
                 if(this.largura >= 457.2)
                     this.largura = 457.2    
             },
@@ -114,7 +117,11 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
             }
         }
     },
+    mounted(){
+        this.save()
+    },
     methods:{
+       
         swap(flag){//pportrait passa flag 0, land flag 1
             if(this.chave != flag){
                 this.chave = flag
@@ -122,6 +129,7 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
                 this.altura = this.largura
                 this.largura = aux
             }
+           
         },
          getRealSize(){
             //tamanho real em mm
