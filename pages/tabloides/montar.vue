@@ -1,5 +1,8 @@
 <template>
+        <div>
         <v-card>
+            <alerts></alerts>
+          
             <template v-if="userType === 'tabloide'">
                 <v-toolbar flat :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
@@ -23,7 +26,7 @@
                                 </v-btn>
                             </div> 
                             <div>
-                                <canvas-option @canvasmode="setMode" @resize-canvas="setCanvasDim"></canvas-option>
+                                <canvas-option @canvasmode="setMode" @getReal="fillInfo" @resize-canvas="setCanvasDim"></canvas-option>
                             </div>
                             <div>
                                 <v-btn color="warning" fab medium dark  @click="salvarTabloide">
@@ -260,32 +263,42 @@
                              </div> 
                     </v-layout>
                 </v-toolbar>
-            </template>    
-            <v-divider
-                class="mx-2"
-                inset
-                ></v-divider>   
+            </template>  
+            
+                  <!--  <no-ssr>
+                        <chrome-picker width="10"  v-model="colors" ></chrome-picker>
+                    </no-ssr> -->
+                    <!--    <v-flex sx2> 
+                        <span @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove"> @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp"       
+                         <canvas  id="c"
+                          style="width:600px;height:600px;"></canvas>
+                        </span> 
+                    </v-flex> -->
+        
+                
+        </v-card>
+        
+       <!--  <span @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove">< @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
                 <v-layout row >
                  <no-ssr>
                     <template>  
-                  
-                        <chrome-picker v-if="userType !== 'tabloide'" class="borda gg2" v-model="colors" @mousehover.stop></chrome-picker>
-                        <chrome-picker v-else class="borda gg2" v-model="colors" @mousehover.stop></chrome-picker>
-
+                    <chrome-picker class=" teste2" v-model="colors">
+                        </chrome-picker>
                     </template>  
                       
                     </no-ssr> 
                     <v-flex sx2> 
-                        <span @wheel="wheelOn" @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove"><!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->            
-                         <canvas  id="c" 
-                          style="width:600px;height:600px;"></canvas>
+                        <span @wheel="wheelOn"  @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove">
+                         <canvas  id="c" class="canvas-wrapper"></canvas>
                         </span>
                     </v-flex>
                 </v-layout>
-        </v-card>
+        </div>
 </template>
 
 <script>
+import alerts from '../../components/campanhas/generalUseComponents/alerts'// ../generalUseComponents/canvasOptions.vue'
+
 import canvasOption from '../../components/campanhas/generalUseComponents/canvasOptions'// ../generalUseComponents/canvasOptions.vue'
 import crudMixin from '../../components/mixins/CRUD.js'
 import { Compact, Chrome} from 'vue-color'
@@ -298,7 +311,8 @@ export default {
     components:{
         'compact-picker': Compact,
         'chrome-picker':Chrome,
-        'canvas-option':canvasOption
+        'canvas-option':canvasOption,
+        alerts
     },
    data: () => ({
         dropdown_edit: [
@@ -329,6 +343,8 @@ export default {
         isDragging: false,
         lastPosX: 0,
         lastPosY: 0,
+        altura:0,
+        largura:0,
        colors: '#194d33',//var obrigatoria na lib de color picker
        selectionFont: 'PT Serif',//font inicial de um texto
         fontSize: 20,
@@ -350,7 +366,7 @@ export default {
         dataImages: [],
         campanha_id: undefined,
         currBg: '',//background q ta sendo usado no momento, usado caso a res do canvas mude 
-        clipboard: ''
+        clipboard: '',
        // imgsList: []
     }),
     watch:{
@@ -401,7 +417,10 @@ export default {
         setMode(objeto){
             if(objeto.data.mode === 'portrait')//troca p mduar e executar o watch
                 this.canvasMode = 'landscape'
+            this.removeGrid()
+            this.checkGrid = undefined
             this.canvasMode = objeto.data.mode
+
         
         },
         normalScript(){
@@ -471,6 +490,11 @@ export default {
             this.canvas.setActiveObject(clonedObj);
             this.canvas.requestRenderAll();
         });
+        },
+        fillInfo(data){
+            this.altura = data.altura
+            this.largura = data.largura
+            alert("sapooo")
         },
         setCanvasDim(objeto){
             if(objeto.data === undefined)
@@ -794,12 +818,15 @@ export default {
             console.log("salvo com sucesso.")
         },
         async salvarPdf(checkbox){
-            if(checkbox){
+            
+
                 this.canvas.discardActiveObject()//deselect, p n salvar com a markinha das opcoes
                 this.restoreDefault()//restaura td pra posicao inicial ( tira zoom e panning)
                 this.checkGrid = false//desabilita o grid
                 await this.removeGrid()
                 this.canvas.renderAll()
+               // let imagem =  new Image()
+               // imagem.src = this.canvas.toDataURL()
                 //FUNDAMENTAL N USAR IMPORT, SE N DÁ O BUG DO WINDOW NOT DEFINED.
                 //ESSA SOLUCAO FOI RECOMENDADA EM https://github.com/MrRio/jsPDF/issues/1891
                 const jsPDF = require('jspdf')
@@ -807,19 +834,36 @@ export default {
                 window.html2canvas = html2canvas
                 //FIM DO TRECHO ESSENCIAL
             
+//                 let canvas = await html2canvas(document.getElementById('c'))
+//                     .then((canvas) => {
+//                         const imgData = canvas.toDataURL('image/jpeg',1.0)
+//                         const pdf = new jsPDF("p","mm")//,"tabloid")//new jsPDF({
+//                         // orientation: 'landscape',
+//                         // });
+//                          let amX = (this.canvas.width * 0.264583).toFixed(6)
+//                          let amY = (this.canvas.heigth  * 0.264583).toFixed(6)
+// console.log("como ",amX , " ", amY , " cajva ", this.canvas)
+//                         const imgProps= pdf.getImageProperties(imgData);
+//                        // const pdfWidth = pdf.internal.pageSize.getWidth();
+//                         const pdfHeight = amX * amY / amY
+
+
+//                         pdf.addImage(imgData, 'JPEG', 1, 1)//,amX,amY)
+//                         pdf.save('tabloide.pdf');
+//                     });
                 let canvas = await html2canvas(document.getElementById('c'))
                     .then((canvas) => {
-                        const imgData = canvas.toDataURL('image/jpeg',1.0)
-                        const pdf = new jsPDF("p","mm")//,"tabloid")//new jsPDF({
-                        // orientation: 'landscape',
-                        // });
-                        const imgProps= pdf.getImageProperties(imgData);
-                        const pdfWidth = pdf.internal.pageSize.getWidth();
-                        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                        pdf.addImage(imgData, 'JPEG', 1, 1)
-                        pdf.save('tabloide.pdf');
-                    });
-            }
+                        const pdf = new jsPDF("l", "mm")
+                        
+                        var imgData = this.canvas.toDataURL('image/jpeg', 1.0);
+                            let amX = (this.canvas.width * 0.264583).toFixed(6)
+                            let amY = (this.canvas.heigth* 0.264583).toFixed(6)
+                        console.log("amwes ", this.largura , " amy ", this.altura)
+                        // // due to lack of documentation; try setting w/h based on unit
+                        pdf.addImage(imgData, 'JPEG',0,0, this.largura/2 * 72 / 25.4,this.altura/4 * 72 / 25.4);  // 180x150 mm @ (10,10)mm
+                        pdf.save('tabloideBolado.pdf')
+                })
+            
         },
         addText(){
             const text = new fabric.IText('Texto',{ top: 100,fontSize: 40})
@@ -860,7 +904,7 @@ export default {
             })//{canvas: canvas})//n funciona passar esse arg...doc lixoooo
         },
         setBackground(path,img){
-            
+        
             fabric.Image.fromURL(path,(img)=>{
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
                 this.canvas.setBackgroundImage(temp,this.canvas.renderAll.bind(this.canvas), {
@@ -898,6 +942,7 @@ export default {
     color: red;
 
  }  
+ 
  .tolbar{
      position: relative;
   color:aqua;

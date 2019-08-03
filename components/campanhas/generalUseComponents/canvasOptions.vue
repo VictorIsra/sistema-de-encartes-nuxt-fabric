@@ -9,42 +9,43 @@
         <span>Adicionar backgrounds</span>
         </v-tooltip>  
         
-        <v-dialog v-model="dialog" persistent max-width="450">
+        <v-dialog v-model="dialog" persistent max-width="550">
             <v-card>
                 <v-layout class="justify-center">
                     <v-card-title class="headline primary--text">Configurações do canvas</v-card-title>
                 </v-layout>
                 <v-container grid-list-md >
                     <v-layout wrap class="justify-center">
-                       <v-flex xs12 sm3>
+                        <div class="align-center">
+                       <v-flex xs12 sm5>
                             <v-select
                                 :items="dpisPossiveis"
                                 v-model="dpi"
                                 label="DPI">
                             ></v-select>
                         </v-flex>
-                        <v-flex xs12 sm3>
+                        <v-flex xs12 sm5>
                             <v-select
                                 :items="folhas"
                                 v-model="folha"
-                                @click="checkMode"
                                 label="folha">
                             ></v-select>
                         </v-flex>
-                          <v-flex xs12 sm3 >
-                            <div> 
-                        <v-text-field @change="checkDim" @click="checkMode" v-model="largura"
-                                        label="Altura (cm)">
+                        </div>
+                        <div>
+                          <v-flex xs12 sm5>
+                      
+                        <v-text-field @change="checkDim"  v-model="largura"
+                                        label="Altura (mm)">
                         </v-text-field>
-                            </div>
+                            
                         </v-flex>
-                         <v-flex xs12 sm3 @change="checkDim" @click="checkMode">
-                            <div>
+                         <v-flex xs12 sm5 @change="checkDim">
                         <v-text-field   v-model="altura"
-                                        label="Largura (cm)">
+                                        label="Largura (mm)">
                         </v-text-field>
-                            </div>
                         </v-flex>
+                        </div>
                     </v-layout>
                 </v-container>    
                 <v-layout class="justify-center">       
@@ -59,7 +60,7 @@
 <script>
 export default {/*px por miliemtro: Printers typically print at 300 pixels per inch.In millimeters: 300ppi / 25.4 mm-in = 11.81 pixels per millimeter.So if you want to print a 50mm drawing you would calculate the required pixel size like this:50mm x 11.81ppm = 590.5 pixels (591 pixels)And you resize the canvas to have 591 pixels (assuming square) like this: */
     data: () => ({
-        folhas: ['A0','A1','A2','A3','A4','A5'],//opcoes pre feitas de folhas
+        folhas: ['A0','A1','A2','A3','A4','A5','B0','B1','B2','B3','B4','B5','tabloide'],//opcoes pre feitas de folhas
         folha: 'A4',//tipo de folha do canvas por default
         dpisPossiveis: [72,50,300],
         altura:210, // éa largura no menu lol eixo y em (mm) ? na real cm ac
@@ -102,9 +103,38 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
                 this.altura = 148,
                 this.largura = 210//devia ser 1189
             }
+            //B0 n aparece pois exece max size, q ja parece
+            else if(this.folha === 'B1'){
+                this.altura = 707,
+                this.largura = 1000//devia ser 1189
+            }
+            else if(this.folha === 'B2'){
+                this.altura = 500,
+                this.largura = 707//devia ser 1189
+            }
+            else if(this.folha === 'B3'){
+                this.altura = 353,
+                this.largura = 500//devia ser 1189
+            }
+            else if(this.folha === 'B4'){
+                this.altura = 250,
+                this.largura = 353//devia ser 1189
+            }
+            else if(this.folha === 'tabloide'){
+                this.altura = 304,
+                this.largura = 457.2//devia ser 1189
+            }
         }
     },
     methods:{
+         getRealSize(){
+            //tamanho real em mm
+            this.$emit('getReal', {
+                altura: this.largura,//ja q tao trocados, troco aki p n cascatear esse prob
+                largura: this.altura
+            })
+            
+        },
          checkMode(){
             if(this.altura >= 88){
                 this.$emit('canvasmode',{
@@ -133,6 +163,7 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
                 }
              }//n da p ser maior, se n dá overflow! 
              this.checkMode()
+             this.getRealSize()
         },
         open(){
             this.dialog = true
@@ -140,8 +171,11 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
         close () {
             this.dialog = false
         },
+
         save(){
             this.genCanvasSize()
+            this.checkDim()
+            this.close()
         },
         genCanvasSize(){
             //calcula o tamanho do canvas em pixels basado na altura e largura passadas em mm
