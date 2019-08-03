@@ -345,6 +345,7 @@ export default {
         lastPosY: 0,
         altura:0,
         largura:0,
+        folha: 'A4',
        colors: '#194d33',//var obrigatoria na lib de color picker
        selectionFont: 'PT Serif',//font inicial de um texto
         fontSize: 20,
@@ -494,6 +495,7 @@ export default {
         fillInfo(data){
             this.altura = data.altura
             this.largura = data.largura
+            this.folha = data.folha
             alert("sapooo")
         },
         setCanvasDim(objeto){
@@ -853,15 +855,21 @@ export default {
 //                     });
                 let canvas = await html2canvas(document.getElementById('c'))
                     .then((canvas) => {
-                        const pdf = new jsPDF("l", "mm")
+                        const pdf = new jsPDF("p", "mm")//essencial msmm, mudand o de de p p l ou n
                         
                         var imgData = this.canvas.toDataURL('image/jpeg', 1.0);
                             let amX = (this.canvas.width * 0.264583).toFixed(6)
                             let amY = (this.canvas.heigth* 0.264583).toFixed(6)
                         console.log("amwes ", this.largura , " amy ", this.altura)
                         // // due to lack of documentation; try setting w/h based on unit
-                        pdf.addImage(imgData, 'JPEG',0,0, this.largura/2 * 72 / 25.4,this.altura/4 * 72 / 25.4);  // 180x150 mm @ (10,10)mm
-                        pdf.save('tabloideBolado.pdf')
+                        var width = pdf.internal.pageSize.getWidth();
+                        var height = pdf.internal.pageSize.getHeight();
+                       // if(this.folha === 'A4')
+                            pdf.addImage(imgData, 'JPEG',0,0, width,height);  // 180x150 mm @ (10,10)mm
+                       // if(this.folha === 'tabloide')
+                         //   pdf.addImage(imgData, 'JPEG',0,0, this.largura/2 * 72 / 25.4,this.altura/16 * (72) / 25.4);  // 180x150 mm @ (10,10)mm
+
+                       pdf.save('tabloideBolado.pdf')
                 })
             
         },
