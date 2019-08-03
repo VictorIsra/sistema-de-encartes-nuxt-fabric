@@ -277,7 +277,10 @@
                       
                     </no-ssr> 
                     <v-flex sx2> 
-                        <span @wheel="wheelOn"  @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove">
+                    <span v-if="isDragging" @wheel="wheelOn"  @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove.stop="mouseMove">
+                        <canvas  id="c" class="canvas-wrapper"></canvas>
+                    </span>
+                    <span  v-else @wheel="wheelOn"  @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove">
                          <canvas  id="c" class="canvas-wrapper"></canvas>
                         </span>
                     </v-flex>
@@ -360,6 +363,13 @@ export default {
         dpi: 300,
        // imgsList: []
     }),
+    computed:{
+        checkPrevent(){
+            if(this.isDragging){
+                return {click: 'e'}
+            }
+        }
+    },
     watch:{
         canvasMode(){
             this.checkGrid = false
@@ -535,7 +545,9 @@ export default {
                 this.isDragging = true
                 this.lastPosX = evento.clientX
                 this.lastPosY = evento.clientY
-                
+              
+              //  evento.__proto__.defaultPrevented = true
+                console.log("exito:??? ", evento,evento.defaultPrevented )
             }
         },
         mouseMove(evento){
