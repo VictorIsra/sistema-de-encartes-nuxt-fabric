@@ -1,11 +1,11 @@
 <template>
         <div>
         <v-card>
-            <alerts></alerts>
+         <!--   <alerts></alerts>
           <v-progress-linear v-if="loading"
       indeterminate
       color="cyan"
-    ></v-progress-linear>
+    ></v-progress-linear> -->
             <template v-if="userType === 'tabloide'">
                 <v-toolbar flat :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
@@ -171,16 +171,20 @@
                          </v-flex>
                         <v-divider vertical class="mx-2"></v-divider>
 
-                        <v-btn-toggle >
-                            <v-btn :value="1" text>
+                        <v-btn-toggle v-model="toggle_exclusive" mandatory>
+                
+                             <v-btn :value="3" text @click="checkFontStyle('normal')">
+                            <v-icon>text_fields</v-icon>
+                            </v-btn>
+                            <v-btn :value="1" text @click="checkFontStyle('Bold')">
                             <v-icon>format_bold</v-icon>
                             </v-btn>
 
-                            <v-btn :value="2" text>
+                            <v-btn :value="2" text @click="checkFontStyle('Italic')">
                             <v-icon>format_italic</v-icon>
-                            </v-btn>
+                           </v-btn>
 
-                        </v-btn-toggle>
+                        </v-btn-toggle >
                             <div>
                                 <v-btn color="white grey--text" fab small dark @click="superScript">
                                     <v-icon>fa-superscript</v-icon>
@@ -318,7 +322,7 @@ export default {
             { text: '90' },
             { text: '100' },
         ],
-        toggle_exclusive: '',
+        toggle_exclusive: 3,
         toggle_grid_exclusive: '',//util,toggle de outro agrupament oe botao
        elScale: {//serve pra ver a escala do elemento selecionado, "seu tamanho"
            x: 1,
@@ -617,6 +621,7 @@ export default {
                         doomedObj.forEachObject((obj) => {
                             obj.set("fontStyle", style)
                         })
+
                     }
                     else if(event === 'bring'){
                         doomedObj.forEachObject((obj) => {
