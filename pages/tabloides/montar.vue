@@ -2,7 +2,10 @@
         <div>
         <v-card>
             <alerts></alerts>
-          
+          <v-progress-linear v-if="loading"
+      indeterminate
+      color="cyan"
+    ></v-progress-linear>
             <template v-if="userType === 'tabloide'">
                 <v-toolbar flat :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
@@ -21,7 +24,7 @@
                                 </v-btn>
                             </div> 
                             <div>
-                                <v-btn color="primary" fab medium dark @click="salvarPdf(checkbox)">
+                                <v-btn color="primary" fab medium dark @click="salvarPdf">
                                     <v-icon size=40>picture_as_pdf</v-icon>
                                 </v-btn>
                             </div> 
@@ -252,7 +255,7 @@
                             </div> 
                         </v-toolbar-title>
                           <div>
-                                <v-btn color="primary"  fab medium dark @click="salvarPdf(checkbox)">
+                                <v-btn color="primary"  fab medium dark @click="salvarPdf">
                                     <v-icon size=40>picture_as_pdf</v-icon>
                                 </v-btn>
                             </div>
@@ -298,7 +301,7 @@
 
 <script>
 import alerts from '../../components/campanhas/generalUseComponents/alerts'// ../generalUseComponents/canvasOptions.vue'
-
+import jsPDF from 'jspdf'
 import canvasOption from '../../components/campanhas/generalUseComponents/canvasOptions'// ../generalUseComponents/canvasOptions.vue'
 import crudMixin from '../../components/mixins/CRUD.js'
 import { Compact, Chrome} from 'vue-color'
@@ -366,8 +369,10 @@ export default {
         compleImages: [],
         dataImages: [],
         campanha_id: undefined,
+        loading: false,
         currBg: '',//background q ta sendo usado no momento, usado caso a res do canvas mude 
         clipboard: '',
+        dpi: 300,
        // imgsList: []
     }),
     watch:{
@@ -496,7 +501,7 @@ export default {
             this.altura = data.altura
             this.largura = data.largura
             this.folha = data.folha
-            alert("sapooo")
+            this.dpi = data.dpi
         },
         setCanvasDim(objeto){
             if(objeto.data === undefined)
@@ -806,7 +811,7 @@ export default {
             this.currBg = jsonTabloide.data.tabloide_bg
             this.canvas.renderAll()
             //this.setCanvasDim(3600,2300,'landscape')
-            this.setCanvasDim(1540,1000,'portrait')
+           // this.setCanvasDim(1540,1000,'portrait')
 
         },
         async salvarTabloide(){
@@ -819,60 +824,28 @@ export default {
                 this.saveTabloide(json,this.campanha_id)
             console.log("salvo com sucesso.")
         },
-        async salvarPdf(checkbox){
-            
-
+        async salvarPdf(){
                 this.canvas.discardActiveObject()//deselect, p n salvar com a markinha das opcoes
                 this.restoreDefault()//restaura td pra posicao inicial ( tira zoom e panning)
-                this.checkGrid = false//desabilita o grid
+                this.checkGrid = false//desabilita o grid("")
                 await this.removeGrid()
                 this.canvas.renderAll()
-               // let imagem =  new Image()
-               // imagem.src = this.canvas.toDataURL()
-                //FUNDAMENTAL N USAR IMPORT, SE N DÁ O BUG DO WINDOW NOT DEFINED.
-                //ESSA SOLUCAO FOI RECOMENDADA EM https://github.com/MrRio/jsPDF/issues/1891
-                const jsPDF = require('jspdf')
-                const html2canvas = require("html2canvas")
-                window.html2canvas = html2canvas
-                //FIM DO TRECHO ESSENCIAL
-            
-//                 let canvas = await html2canvas(document.getElementById('c'))
-//                     .then((canvas) => {
-//                         const imgData = canvas.toDataURL('image/jpeg',1.0)
-//                         const pdf = new jsPDF("p","mm")//,"tabloid")//new jsPDF({
-//                         // orientation: 'landscape',
-//                         // });
-//                          let amX = (this.canvas.width * 0.264583).toFixed(6)
-//                          let amY = (this.canvas.heigth  * 0.264583).toFixed(6)
-// console.log("como ",amX , " ", amY , " cajva ", this.canvas)
-//                         const imgProps= pdf.getImageProperties(imgData);
-//                        // const pdfWidth = pdf.internal.pageSize.getWidth();
-//                         const pdfHeight = amX * amY / amY
+             
+                //const jsPDF = require('jspdf')
+                let mode = "landscape"
+                var imgData = this.canvas.toDataURL('image/png',1.0)
+                    if(this.canvas.width <= this.canvas.height)
+                        mode = "portrait"
+                    let pdf = new jsPDF(mode, "mm",this.folha)//essencial msmm, mudand o de de p p l ou n
+                    let prod = this.canvas.width * this.canvas.height
+                    // if( prod >= 5000) //canvas maior q isso é invalido, mt grande...ai retorn
+                    //     return
+                    let width = pdf.internal.pageSize.getWidth()
+                    let height = pdf.internal.pageSize.getHeight()
+                                    console.log("VEJA INF ", width , " he ", height, " prod ", this.canvas.width, " ", this.canvas.height, " veja  ", this.canvas.width * this.canvas.height)
 
-
-//                         pdf.addImage(imgData, 'JPEG', 1, 1)//,amX,amY)
-//                         pdf.save('tabloide.pdf');
-//                     });
-                let canvas = await html2canvas(document.getElementById('c'))
-                    .then((canvas) => {
-                        
-                        var imgData = this.canvas.toDataURL('image/png')
-                        alert("folha "+ this.folha)
-                        const pdf = new jsPDF("landscape", "mm",this.folha)//essencial msmm, mudand o de de p p l ou n
-
-                        //    let amX = (this.canvas.width * 0.264583).toFixed(6)
-                          //  let amY = (this.canvas.heigth* 0.264583).toFixed(6)
-                        console.log("amwes ", this.largura , " amy ", this.altura)
-                        // // due to lack of documentation; try setting w/h based on unit
-                        let width = pdf.internal.pageSize.getWidth()
-                        let height = pdf.internal.pageSize.getHeight()
-
-                            pdf.addImage(imgData, 'JPEG',0,0, width,height) // 180x150 mm @ (10,10)mm
-                       // if(this.folha === 'tabloide')
-                         //   pdf.addImage(imgData, 'JPEG',0,0, this.largura/2 * 72 / 25.4,this.altura/16 * (72) / 25.4);  // 180x150 mm @ (10,10)mm
-
-                       pdf.save('tabloideBolado.pdf')
-                })
+                   pdf.addImage(imgData, 'JPEG',0,0, width,height)
+                   pdf.save('tabloide.pdf')
             
         },
         addText(){

@@ -16,36 +16,46 @@
                 </v-layout>
                 <v-container grid-list-md >
                     <v-layout wrap class="justify-center">
-                        <div class="align-center">
-                       <v-flex xs12 sm5>
-                            <v-select
-                                :items="dpisPossiveis"
+                       <v-flex xs12 sm6>
+                             <v-text-field
                                 v-model="dpi"
+                                disabled
                                 label="DPI">
-                            ></v-select>
+                            ></v-text-field>
                         </v-flex>
-                        <v-flex xs12 sm5>
+                        <v-flex xs12 sm6>
                             <v-select
                                 :items="folhas"
                                 v-model="folha"
                                 label="folha">
                             ></v-select>
                         </v-flex>
-                        </div>
-                        <div>
-                          <v-flex xs12 sm5>
+                          <v-flex xs12 sm6>
                       
                         <v-text-field @change="checkDim"  v-model="largura"
+                                        
+                                        size="30"   
                                         label="Altura (mm)">
                         </v-text-field>
-                            
                         </v-flex>
-                         <v-flex xs12 sm5 @change="checkDim">
+                         <v-flex xs12 sm6 @change="checkDim">
                         <v-text-field   v-model="altura"
+                                        
                                         label="Largura (mm)">
                         </v-text-field>
                         </v-flex>
-                        </div>
+                        <v-btn-toggle mandatory>
+                            <div>
+                            <v-btn color="primary" fab small dark @click="swap(0)"  >
+                                <v-icon>stay_current_landscape</v-icon>
+                            </v-btn>
+                            </div>  
+                            <div>
+                            <v-btn color="primary" fab small dark @click="swap(1)" >
+                                <v-icon>stay_current_portrait</v-icon>
+                            </v-btn>
+                            </div> 
+                        </v-btn-toggle>
                     </v-layout>
                 </v-container>    
                 <v-layout class="justify-center">       
@@ -60,38 +70,32 @@
 <script>
 export default {/*px por miliemtro: Printers typically print at 300 pixels per inch.In millimeters: 300ppi / 25.4 mm-in = 11.81 pixels per millimeter.So if you want to print a 50mm drawing you would calculate the required pixel size like this:50mm x 11.81ppm = 590.5 pixels (591 pixels)And you resize the canvas to have 591 pixels (assuming square) like this: */
     data: () => ({
-        folhas: [   'tabloid','A5','A4','A3','A2','A2','A0'],//opcoes pre feitas de folhas
+        folhas: ['tabloid','A5','A4','A3'],//opcoes pre feitas de folhas
         folha: 'A4',//tipo de folha do canvas por default
-        dpisPossiveis: [72,50,300],
         altura:210, // éa largura no menu lol eixo y em (mm) ? na real cm ac
         largura : 297,//eixo x em (mm) ? na real cm
-        dpi: 72,//default q o jspdf gera, mas salverei posteriormenteo com 300, caso user queira.
+        dpi: 300,//default q o jspdf gera, mas salverei posteriormenteo com 300, caso user queira.
         dialog: false,
         width: '',//caso ex de folha 10cm por 15 cm : wid = 10 cm *300 / 2.54 = 1181 pixels
         height: '',//15 //caso ex de folha 10cm por 15 cm : hei = 15 cm *300 / 2.54 = 1772 pixels
     }),
     watch:{
-            // altura(){//NA REAL É LARGURA X
-            // alert("Oo")
+            altura(){//NA REAL É LARGURA X
+                if(this.altura >= 304)
+                    this.altura = 304
+                if(this.largura >= 457.2)
+                    this.largura = 457.2    
                 
-            // },
-            // largura(){//NA REAL É ALTURA  Y
-            //     this.checkDim()
-            // },
+            },
+            largura(){//NA REAL É ALTURA  Y
+               if(this.altura >= 304)
+                    this.altura = 304
+                if(this.largura >= 457.2)
+                    this.largura = 457.2    
+            },
         folha(){
-            if(this.folha === 'A0'){
-                this.altura = 841,
-                this.largura = 1000//devia ser 1189
-            }
-            else if(this.folha === 'A1'){
-                this.altura = 594,
-                this.largura = 841//devia ser 1189
-            }
-            else if(this.folha === 'A2'){
-                this.altura = 420,
-                this.largura = 594//devia ser 1189
-            }
-            else if(this.folha === 'A3'){
+
+            if(this.folha === 'A3'){
                 this.altura = 297,
                 this.largura = 420//devia ser 1189
             }
@@ -111,12 +115,20 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
         }
     },
     methods:{
+        swap(flag){//pportrait passa flag 0, land flag 1
+            if(this.chave != flag){
+                this.chave = flag
+                let aux = this.altura
+                this.altura = this.largura
+                this.largura = aux
+            }
+        },
          getRealSize(){
             //tamanho real em mm
             this.$emit('getReal', {
                 altura: this.largura,//ja q tao trocados, troco aki p n cascatear esse prob
                 largura: this.altura,
-                folha: this.folha
+                folha: this.folha.toLowerCase()
             })
             
         },
