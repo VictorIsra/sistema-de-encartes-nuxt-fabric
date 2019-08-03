@@ -1,11 +1,11 @@
 <template>
         <div>
         <v-card>
-         <!--   <alerts></alerts>
+            <alerts></alerts>
           <v-progress-linear v-if="loading"
       indeterminate
       color="cyan"
-    ></v-progress-linear> -->
+    ></v-progress-linear><save-canvas :canvas="canvasInfo" ></save-canvas>
             <template v-if="userType === 'tabloide'">
                 <v-toolbar flat :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
@@ -34,30 +34,12 @@
                                 <span class="subheading">Submeter este tablóide para avaliação</span>
                                 </v-tooltip>
                             </div> 
-                            <div>
-                                <v-tooltip bottom>
-                                <template v-slot:activator="{ on }">
-                                <v-btn color="primary" v-on="on" fab medium dark @click="salvarPdf">
-                                    <v-icon size=40>picture_as_pdf</v-icon>
-                                </v-btn> 
-                                </template>
-                                <span class="subheading">Baixar PDF desde tablóide</span>
-                                </v-tooltip>
-                            </div> 
+                     
                             <div>
                                 <canvas-option @canvasmode="setMode" @getReal="fillInfo" @resize-canvas="setCanvasDim"></canvas-option>
                             </div>
-                            <div>
-                                <v-tooltip bottom>
-                                <template v-slot:activator="{ on }">
-                                <v-btn color="warning" v-on="on" fab medium dark  @click="salvarTabloide">
-                                    <v-icon size=40>save</v-icon>
-                                </v-btn>    
-                                </template>
-                                <span class="subheading">Salvar alterações feitas no tablóide</span>
-                                </v-tooltip>
-                            </div> 
-
+                            <save-canvas :canvas="canvasInfo" ></save-canvas>
+                           
                         </v-layout>    
                 </v-toolbar>
                 <v-toolbar  :class="{'borda': canvasMode !== 'portrait',
@@ -404,6 +386,8 @@
 <script>
 import alerts from '../../components/campanhas/generalUseComponents/alerts'// ../generalUseComponents/canvasOptions.vue'
 import canvasOption from '../../components/campanhas/generalUseComponents/canvasOptions'// ../generalUseComponents/canvasOptions.vue'
+import saveCanvas from '../../components/campanhas/generalUseComponents/pdfHandler'// ../generalUseComponents/canvasOptions.vue'
+
 import crudMixin from '../../components/mixins/CRUD.js'
 import { Compact, Chrome} from 'vue-color'
 import {fabric}  from "fabric"
@@ -416,11 +400,12 @@ export default {
         'compact-picker': Compact,
         'chrome-picker':Chrome,
         'canvas-option':canvasOption,
+        'save-canvas': saveCanvas,
         alerts
     },
    data: () => ({
         dropdown_edit: [
-            { text: '10' },
+            {text: '10' },
             { text: '20' },
             { text: '30' },
             { text: '40' },
@@ -430,6 +415,10 @@ export default {
             { text: '80' },
             { text: '90' },
             { text: '100' },
+            { text: '200' },
+            { text: '300' },
+            { text: '400' },
+            { text: '500' }, 
         ],
         toggle_exclusive: 3,
         toggle_grid_exclusive: '',//util,toggle de outro agrupament oe botao
@@ -474,6 +463,7 @@ export default {
         currBg: '',//background q ta sendo usado no momento, usado caso a res do canvas mude 
         clipboard: '',
         dpi: 300,
+        canvasInfo: {}
        // imgsList: []
     }),
     computed:{
@@ -845,7 +835,7 @@ export default {
                 this.canvas.setZoom(this.canvas.getZoom() * 1.1) 
         },
         submeterAvaliacao(){//envia tabloide/campanha para o diretor
-            this.salvarTabloide()
+            //this.salvarTabloide() DEVERIA DEIXARP OR HR
             this.changeCampanhaStatus('em avaliação')
         },
         async changeCampanhaStatus(status){//irá mudar o status da campanha
@@ -864,6 +854,11 @@ export default {
                 this.$router.push('/tabloides')
             else{
                // this.fetchProdList()
+                this.canvasInfo = {
+                    ref: this.canvas,
+                    campanha_id: this.campanha_id,
+                    flag: this.currBg !== '' ? this.currBg : undefined
+                }
                 this.fetchProdutos()//console.log("ID: ", this.campanha_id) 
                 this.carregarTabloide()
             }        
@@ -919,40 +914,6 @@ export default {
             //this.setCanvasDim(3600,2300,'landscape')
            // this.setCanvasDim(1540,1000,'portrait')
 
-        },
-        async salvarTabloide(){
-            this.checkGrid = false
-            await this.removeGrid()
-            var json = JSON.stringify(this.canvas.toJSON())
-            if(this.currBg !== '')
-                this.saveTabloide(json,this.campanha_id,this.currBg)
-            else
-                this.saveTabloide(json,this.campanha_id)
-            console.log("salvo com sucesso.")
-        },
-        async salvarPdf(){
-                this.canvas.discardActiveObject()//deselect, p n salvar com a markinha das opcoes
-                this.restoreDefault()//restaura td pra posicao inicial ( tira zoom e panning)
-                this.checkGrid = false//desabilita o grid("")
-                await this.removeGrid()
-                this.canvas.renderAll()
-             
-                const jsPDF = require('jspdf')
-                let mode = "landscape"
-                var imgData = this.canvas.toDataURL('image/png',1.0)
-                    if(this.canvas.width <= this.canvas.height)
-                        mode = "portrait"
-                    let pdf = new jsPDF(mode, "mm",this.folha)//essencial msmm, mudand o de de p p l ou n
-                    let prod = this.canvas.width * this.canvas.height
-                    // if( prod >= 5000) //canvas maior q isso é invalido, mt grande...ai retorn
-                    //     return
-                    let width = pdf.internal.pageSize.getWidth()
-                    let height = pdf.internal.pageSize.getHeight()
-                                    console.log("VEJA INF ", width , " he ", height, " prod ", this.canvas.width, " ", this.canvas.height, " veja  ", this.canvas.width * this.canvas.height)
-
-                   pdf.addImage(imgData, 'JPEG',0,0, width,height)
-                   pdf.save('tabloide.pdf')
-            
         },
         addText(){
             const text = new fabric.IText('Texto',{ top: 100,fontSize: 200})
