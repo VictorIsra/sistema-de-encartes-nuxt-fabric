@@ -39,7 +39,8 @@
                                 <canvas-option @canvasmode="setMode" @getReal="fillInfo" @resize-canvas="setCanvasDim"></canvas-option>
                             </div>
                             <save-canvas :canvas="canvasInfo" ></save-canvas>
-                           
+                            <save-pdf :canvas="canvasInfo" ></save-pdf>
+
                         </v-layout>    
                 </v-toolbar>
                 <v-toolbar  :class="{'borda': canvasMode !== 'portrait',
@@ -132,43 +133,7 @@
                                 inset
                                 vertical>
                                 </v-divider>
-                        <div>
-                             <v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn color="primary" v-on="on" fab small dark @click="Xmovement(-1)">
-                                <v-icon>arrow_back</v-icon>
-                            </v-btn>
-                            </template>
-                            <span class="subheading">Mover canvas 1 unidade para esquerda</span>
-                            </v-tooltip>
-                        </div>
-                        <div>
-                            <v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn color="primary" fab small v-on="on" dark @click="Xmovement">
-                                <v-icon>arrow_forward</v-icon>
-                            </v-btn></template>
-                            <span class="subheading">Mover canvas 1 unidade para direita</span>
-                            </v-tooltip>
-                        </div>
-                        <div> <v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn color="primary" fab small v-on="on" dark @click="Ymovement(-1)">
-                                <v-icon>arrow_upward</v-icon>
-                            </v-btn>
-                            </template>
-                            <span class="subheading">Mover canvas 1 unidade para cima</span>
-                            </v-tooltip>
-                        </div>
-                        <div> <v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn color="primary" fab small v-on="on" dark @click="Ymovement">
-                                <v-icon>arrow_downward</v-icon>
-                            </v-btn>
-                               </template>
-                            <span class="subheading">Mover canvas 1 unidade para baixo</span>
-                            </v-tooltip>
-                        </div>
+                        <canvas-move :canvas="canvasInfo"></canvas-move>
                         <v-divider
                                 class="mx-2"
                                 inset
@@ -350,7 +315,7 @@
                             </div> 
                         </v-toolbar-title>
                           <div>
-                                <v-btn color="primary"  fab medium dark @click="salvarPdf">
+                                <v-btn color="primary"  fab medium dark > 
                                     <v-icon size=40>picture_as_pdf</v-icon>
                                 </v-btn>
                             </div>
@@ -386,8 +351,9 @@
 <script>
 import alerts from '../../components/campanhas/generalUseComponents/alerts'// ../generalUseComponents/canvasOptions.vue'
 import canvasOption from '../../components/campanhas/generalUseComponents/canvasOptions'// ../generalUseComponents/canvasOptions.vue'
-import saveCanvas from '../../components/campanhas/generalUseComponents/pdfHandler'// ../generalUseComponents/canvasOptions.vue'
-
+import saveCanvas from '../../components/campanhas/generalUseComponents/saveCanvas.vue'// ../generalUseComponents/canvasOptions.vue'
+import saveCavasPDF from '../../components/campanhas/generalUseComponents/saveCanvasPDF.vue'// ../generalUseComponents/canvasOptions.vue'
+import canvasMove from '../../components/campanhas/generalUseComponents/canvasMove.vue'
 import crudMixin from '../../components/mixins/CRUD.js'
 import { Compact, Chrome} from 'vue-color'
 import {fabric}  from "fabric"
@@ -401,6 +367,8 @@ export default {
         'chrome-picker':Chrome,
         'canvas-option':canvasOption,
         'save-canvas': saveCanvas,
+        'save-pdf': saveCavasPDF,
+        'canvas-move': canvasMove,
         alerts
     },
    data: () => ({
@@ -669,20 +637,20 @@ export default {
         mouseUp(){
             this.isDragging = false
         },
-        Xmovement(flag = 0){//andar p direita ou esuqer
-            var units = 10//caso direita
-            if(flag === -1)//caso esquerda
-                units = -units
-            var delta = new fabric.Point(units,0)
-            this.canvas.relativePan(delta)
-        },
-        Ymovement(flag = 0){//andar p cima ou p baixo
-            var units = 10//caso p baixo
-            if(flag === -1)//caso cima
-                units = -units
-            var delta = new fabric.Point(0,units)
-            this.canvas.relativePan(delta)
-        },
+        // Xmovement(flag = 0){//andar p direita ou esuqer
+        //     var units = 10//caso direita
+        //     if(flag === -1)//caso esquerda
+        //         units = -units
+        //     var delta = new fabric.Point(units,0)
+        //     this.canvas.relativePan(delta)
+        // },
+        // Ymovement(flag = 0){//andar p cima ou p baixo
+        //     var units = 10//caso p baixo
+        //     if(flag === -1)//caso cima
+        //         units = -units
+        //     var delta = new fabric.Point(0,units)
+        //     this.canvas.relativePan(delta)
+        // },
          restoreDefault(){
             this.canvas.setZoom(1)
             //reset o canvas para o status inicial

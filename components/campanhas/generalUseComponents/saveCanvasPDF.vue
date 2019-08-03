@@ -3,16 +3,6 @@
         <v-layout>
         <div>
             <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                    <v-btn color="warning" v-on="on" fab medium dark  @click="salvarTabloide">
-                    <v-icon size=40>save</v-icon>
-                    </v-btn>    
-                </template>
-                <span class="subheading">Salvar alterações feitas no tablóide</span>
-            </v-tooltip>
-        </div> 
-        <div>
-            <v-tooltip bottom>
             <template v-slot:activator="{ on }">
                 <v-btn color="primary" v-on="on" fab medium dark @click="salvarPdf">
                     <v-icon size=40>picture_as_pdf</v-icon>
@@ -48,7 +38,7 @@ export default {
       crudMixin
     ],
     methods:{
-        async salvarTabloide(){
+      /*  async salvarTabloide(){
             //this.checkGrid = false
             //await this.removeGrid()
             if(this.canvas.ref !== undefined && this.canvas.campanha_id !== undefined){
@@ -63,7 +53,7 @@ export default {
             else
                console.log("n pude salvar tabloide <componente pdfhandler.vue>")
            
-        },
+        },*/
          async salvarPdf(){
                 if(this.canvas.ref !== undefined){
                     this.canvas.ref.discardActiveObject()//deselect, p n salvar com a markinha das opcoes
