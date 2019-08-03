@@ -784,19 +784,6 @@ export default {
                 this.bgsImages[i].src = this.getImgURL(img)
 
             })
-            // let campanhaComple_id = ""
-            // this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
-            // this.itens.forEach(p => {
-            //     if(p.img !== undefined && p.img !== ''){
-            //         p.img.alt = p.nome
-            //         this.comple.push( p.img)
-            //     }    
-            // })
-            // this.comple.forEach((img,i) => {
-            //     this.compleImages.push(img)
-            //     this.compleImages[i].src = this.getImgURL(img)
-
-            // })
             this.dataImages.sort(function(a, b){//sortei produtos em ordem alfabetica
                 if(a.alt.toLowerCase() < b.alt.toLowerCase()) { return -1; }
                 if(a.alt.toLowerCase() > b.alt.toLowerCase()) { return 1; }
@@ -860,14 +847,14 @@ export default {
         addImg(img,i){
             console.log("adicionando img de indice ",img)
             const relaPath = "../../../uploads/fotos/" + img.name
-            const text = new fabric.IText(img.alt,{ top: 140,fontSize: 40 });
-            this.canvas.add(text)
-            const preco = new fabric.IText(img.preco_v,{ top: 180,fontSize: 30 });
-            this.canvas.add(preco)
-            
-            
+           
             this.addImgToCanvas(relaPath,img)//parece estranho eu n passar simplesmente img, mas o fabric é eskisito...entao vai assim
-            //    canvas.sendToBack(relaPath,img);
+          // this.canvas.bringToFront(preco)
+            const text = new fabric.IText(img.alt,{ top: 340,fontSize: 200 });
+            this.canvas.add(text)
+            //this.canvas.bringToFront(text)
+            const preco = new fabric.IText(img.preco_v,{ top: 480,fontSize: 200 });
+            this.canvas.add(preco)
             
             
        },
@@ -881,8 +868,8 @@ export default {
        },
         addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
             fabric.Image.fromURL(path,(img)=>{
-                img.scaleToWidth(250)//dif de crop, aqui literalmente "redimensiona"
-                img.scaleToHeight(250)
+                img.scaleToWidth(350)//dif de crop, aqui literalmente "redimensiona"
+                img.scaleToHeight(350)
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
                // if(!this.tobg){
                 this.canvas.add(temp)
