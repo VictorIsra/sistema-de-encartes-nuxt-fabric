@@ -75,17 +75,17 @@ export default {
                
         },
         async gerarPDF(){
-              const html2canvas = require('html2canvas')
-               window.html2canvas = html2canvas
+         //     const html2canvas = require('html2canvas')
+           //    window.html2canvas = html2canvas
             const jsPDF = require('jspdf')
             let mode = 'landscape'
-            let canvas = await html2canvas(document.getElementById('c'))
-                .then((canvas) => {
-                var  imgData =   canvas.toDataURL('image/png',1.0)
-                    if(canvas.width <= canvas.height)
+           // let canvas = await html2canvas(document.getElementById('c'))
+            //    .then((canvas) => {
+                var  imgData =   this.canvas.ref.toDataURL('image/png',1.0)
+                    if(this.canvas.ref.width <= this.canvas.ref.height)
                         mode = "portrait"//LEMBRE DE BOTAR THIS.FOLHA ESSENCIALLL FAZE DPS JANTAR
-                    let pdf = new jsPDF(mode, "mm",this.canvas.folha)//essencial msmm, mudand o de de p p l ou n
-                    let prod = canvas.width *canvas.height
+                    let pdf = new jsPDF(mode, "mm",this.canvas.ref.folha)//essencial msmm, mudand o de de p p l ou n
+                   // let prod = this.canvas.ref.width *this.canvas.ref.height
                                 // if( prod >= 5000) //canvas maior q isso é invalido, mt grande...ai retorn
                                 //     retur
                     let width = pdf.internal.pageSize.getWidth()
@@ -93,7 +93,7 @@ export default {
 
                     pdf.addImage(imgData, 'JPEG',0,0, width,height)
                     pdf.save('tabloide.pdf')
-                })   
+              //  })   
         },
         resetStatus(){
             if(this.canvas.ref !== undefined){

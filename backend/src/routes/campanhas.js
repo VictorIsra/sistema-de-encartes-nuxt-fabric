@@ -153,7 +153,8 @@ router.get('/campanhas/loadTabloide',async(req,res)=>{
         const campanha = await Campanha.findById(campanha_id)
         res.send({
             tabloide: campanha.tabloide,
-            tabloide_bg: campanha.tabloide_bg
+            tabloide_bg: campanha.tabloide_bg,
+            tabloide_folha: campanha.tabloide_folha
         })
     }catch(e){
         console.log("n consegui carregar ",e)
@@ -162,6 +163,7 @@ router.get('/campanhas/loadTabloide',async(req,res)=>{
 })
 router.post('/campanhas/saveTabloide',async(req,res)=> {
     const tabloide = req.body.tabloide
+    const folha = req.body.folha //defult é 'a4'
     const campanha_id = req.body.id
     const tabloide_bg = req.body.bg
     try{
@@ -169,6 +171,7 @@ router.post('/campanhas/saveTabloide',async(req,res)=> {
         campanha.tabloide = tabloide
         if(tabloide_bg)
             campanha.tabloide_bg = tabloide_bg
+        campanha.tabloide_folha = folha//salva tipo de folha: a3, a4 etc
         try{
             await campanha.save()
             console.log("canvastab salvo com sucesso!")

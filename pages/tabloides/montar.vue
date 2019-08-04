@@ -136,7 +136,7 @@
                             </div> 
                      
                             <div>
-                                <canvas-option  :canvas=canvas @canvasmode="setMode" @getReal="fillInfo" @resize-canvas="setCanvasDim"></canvas-option>
+                                <canvas-option  :campanha_id="campanha_id" :canvas=canvas @canvasmode="setMode" @getReal="fillInfo" @resize-canvas="setCanvasDim"></canvas-option>
                             </div>
                             <div @click="loading = true">
                             <save-canvas :canvas="canvasInfo" ></save-canvas>
@@ -561,9 +561,12 @@ export default {
         setCanvasDim(objeto){
             if(objeto.data === undefined)
                 return
+                alert("VEJAAA " )
+                console.log("q emite ", objeto , " objto data ", objeto.data)
             this.canvas.setHeight(objeto.data.width)
             this.canvas.setWidth(objeto.data.height)
             this.folha = objeto.data.folha
+            this.canvasInfo.folha = this.folha
             console.log(" this,folha ", this.folha , " objeto ",objeto.data)
             this.restoreDefault()//apos mudar as dim, da um refesh no canvas p ele voltar pro status original, porem com a res mudada
             let auxwidth = this.canvas.width
@@ -890,6 +893,8 @@ export default {
             const jsonTabloide = await this.loadTabloide(this.campanha_id)
             this.canvas.loadFromJSON(jsonTabloide.data.tabloide)
             this.currBg = jsonTabloide.data.tabloide_bg
+            this.folha = jsonTabloide.data.tabloide_folha
+            alert("FOLHA " + this.folha)
             this.canvas.renderAll()
             if(this.userType!== 'tabloide'){
                 alert("ideia boa mas temq usa bd agora xd" + this.altura + " l " + this.largura)

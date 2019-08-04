@@ -58,6 +58,9 @@ const campanhaSchema = new mongoose.Schema({
     tabloide_bg:{//gackground associado ao tabloide
         type: Object
     },
+    tabloide_folha:{//folha associada aotabloide: a4,tabloide,a3 etc
+        type: String
+    },
     // produtos: {    //ai posso passar um array de objetos [ {obj1},{obj2}] etc
     //     type: Array,
     //     "default":[]

@@ -67,6 +67,7 @@
 </template>
 <script>
   import formatInputMixin from '../../mixins/FormatInputMixin.js'
+import crudMixin from '../../mixins/CRUD.js'
 
 export default {/*px por miliemtro: Printers typically print at 300 pixels per inch.In millimeters: 300ppi / 25.4 mm-in = 11.81 pixels per millimeter.So if you want to print a 50mm drawing you would calculate the required pixel size like this:50mm x 11.81ppm = 590.5 pixels (591 pixels)And you resize the canvas to have 591 pixels (astming square) like this: */
     data: () => ({
@@ -78,12 +79,14 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
         dialog: false,
         width: '',//caso ex de folha 10cm por 15 cm : wid = 10 cm *300 / 2.54 = 1181 pixels
         height: '',//15 //caso ex de folha 10cm por 15 cm : hei = 15 cm *300 / 2.54 = 1772 pixels
+        fetchedFlag: false//indica se ja dei fetch no bd, p fazer so 1x
     }),
     mixins: [
-      formatInputMixin
+      formatInputMixin,
+      crudMixin
     ],
      props:
-         ['canvas']
+         ['canvas','campanha_id']
     ,    
     watch:{
             altura(){//NA REAL É LARGURA X
@@ -121,10 +124,20 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
         }
     },
     mounted(){
+       
+        //this.init()
         this.save()
     },
     methods:{
-       
+        async checkid(){
+            if(this.campanha_id !== undefined && !this.fetchedFlag){//garante fazer só 1x
+                let folha = await this.loadTabloide(this.campanha_id)
+                this.folha = folha.data.tabloide_folha
+                this.fetchedFlag = true    
+                alert("ne age " + this.folha)  
+            }
+           
+        },
         swap(flag){//pportrait passa flag 0, land flag 1
             if(this.chave != flag){
                 this.chave = flag
@@ -174,6 +187,7 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
              this.getRealSize()
         },
         open(){
+            this.checkid()
             this.dialog = true
         },
         close () {
@@ -191,7 +205,7 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
             //* 10 pq a formula é em cm, mas a entrada do user é  mm
             this.width =  ( this.largura * (300 / 2.54))/ 10//* 11.81//lol q bizarrroo
             this.height =   (this.altura * (300 /2.54))/10  //da o valor em pxs
-           
+           alert("emiti " + this.folha)
                 //this.canvas.setZoom(this.canvas.getZoom() / 1.5)
             this.$emit('resize-canvas',{
                 data: {
