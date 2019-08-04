@@ -1,49 +1,13 @@
 <template>
         <div>
         <v-card>
-            <alerts></alerts>
+       <!--     <alerts></alerts>-->
           <v-progress-linear v-if="loading"
       indeterminate
       color="cyan"
-    ></v-progress-linear><deletar :canvas="canvasInfo"></deletar>
+    ></v-progress-linear><!--deletar :canvas="canvasInfo"></deletar>-->
             <template v-if="userType === 'tabloide'">
-                <v-toolbar flat :class="{'borda': canvasMode !== 'portrait',
-                                'borda2': canvasMode === 'portrait'}">
-                    <v-layout align-center class="justify-center">
-                        
-                        <v-toolbar-title>
-                            <div>
-                              
-                                <v-tooltip bottom>
-                                <template v-slot:activator="{ on }">
-                                    <v-btn color="primary" fab medium dark @click="voltar" v-on="on"> 
-                                        <v-icon>arrow_back</v-icon>
-                                    </v-btn>
-                                </template>
-                                <span class="subheading">Voltar para painel inicial</span>
-                                </v-tooltip>
-                            </div> 
-                        </v-toolbar-title>
-                            <div>
-                                <v-tooltip bottom>
-                                <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" color="primary" fab medium dark @click="submeterAvaliacao">
-                                    <v-icon>gavel</v-icon>
-                                </v-btn>
-                                </template>
-                                <span class="subheading">Submeter este tablóide para avaliação</span>
-                                </v-tooltip>
-                            </div> 
-                     
-                            <div>
-                                <canvas-option @canvasmode="setMode" @getReal="fillInfo" @resize-canvas="setCanvasDim"></canvas-option>
-                            </div>
-                            <save-canvas :canvas="canvasInfo" ></save-canvas>
-                            <div @mouseover="removeGrid">
-                                <save-pdf :canvas="canvasInfo"></save-pdf>
-                            </div >
-                        </v-layout>    
-                </v-toolbar>
+               
                 <v-toolbar  :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
                     <v-layout align-center class="justify-center">
@@ -96,22 +60,94 @@
                             </v-btn></template>
                             <span class="subheading">Aproximar canvas em 1 unidade (Zoon in)</span>
                             </v-tooltip>
+                        </div>  <v-divider
+                                class="mx-2"
+                                
+                                vertical
+                            ></v-divider>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                        <v-btn color="primary" fab small v-on="on" @click="actionHandler('bring',false)"> <v-icon size=30>arrow_upward</v-icon></v-btn>
+                        </template>
+                        <span class="subheading">Jogar elemento(s) para frente do canvas</span></v-tooltip> <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                        <v-btn color="primary" v-on="on" fab small @click="actionHandler('bring',true)"><v-icon size=30>arrow_downward</v-icon></v-btn> </template>
+                        <span class="subheading">Jogar elemento(s) para o fundo do canvas</span> </v-tooltip>
+                        <v-divider
+                                class="mx-2"
+                                
+                                vertical
+                            ></v-divider>
+                        <div>
+                            <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="primary" fab small v-on="on" dark @click="lever = !lever">
+                                <v-icon size=30>build</v-icon>
+                            </v-btn></template>
+                            <span class="subheading">Painel de opções</span>
+                            </v-tooltip>
+                        </div> <div>
+                            <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="primary" fab small v-on="on" dark @click="lever2 = !lever2">
+                                <v-icon size=30>title</v-icon>
+                            </v-btn></template>
+                            <span class="subheading">Painel de formatação de texto</span>
+                            </v-tooltip>
+                        </div><div>
+                            <v-tooltip bottom>
+                            <template v-slot:activator="{ on }" v-on="on">
+                            <v-btn color="primary" @click="lever3 = !lever3" fab small v-on="on" dark>
+                                <v-icon size=30>image</v-icon>
+                            </v-btn></template>
+                            <span class="subheading">Mostrar lista de imagens</span>
+                            </v-tooltip>
                         </div>
                         <v-divider
                                 class="mx-2"
                                 inset
                                 vertical
-                            ></v-divider> <v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                        <v-btn color="primary" v-on="on" @click="actionHandler('bring',false)">FRENTE</v-btn>
-                        </template>
-                        <span class="subheading">Jogar elemento(s) para frente do canvas</span></v-tooltip> <v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                        <v-btn color="primary" v-on="on" @click="actionHandler('bring',true)">TRÁS</v-btn> </template>
-                        <span class="subheading">Jogar elemento(s) para o fundo do canvas</span> </v-tooltip>
+                            ></v-divider> 
                     </v-layout>
                 </v-toolbar>
-                    <v-toolbar dense :class="{'borda': canvasMode !== 'portrait',
+                 <v-toolbar v-show="lever" flat :class="{'borda': canvasMode !== 'portrait',
+                                'borda2': canvasMode === 'portrait'}">
+                    <v-layout align-center class="justify-center">
+                        
+                        <v-toolbar-title>
+                            <div>
+                              
+                                <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn color="primary" fab medium dark @click="voltar" v-on="on"> 
+                                        <v-icon>arrow_back</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span class="subheading">Voltar para painel inicial</span>
+                                </v-tooltip>
+                            </div> 
+                        </v-toolbar-title>
+                            <div>
+                                <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" color="primary" fab medium dark @click="submeterAvaliacao">
+                                    <v-icon>gavel</v-icon>
+                                </v-btn>
+                                </template>
+                                <span class="subheading">Submeter este tablóide para avaliação</span>
+                                </v-tooltip>
+                            </div> 
+                     
+                            <div>
+                                <canvas-option @canvasmode="setMode" @getReal="fillInfo" @resize-canvas="setCanvasDim"></canvas-option>
+                            </div>
+                            <save-canvas :canvas="canvasInfo" ></save-canvas>
+                            <div @mouseover="removeGrid">
+                                <save-pdf :canvas="canvasInfo"></save-pdf>
+                            </div >
+                        </v-layout>    
+                </v-toolbar>
+                    <v-toolbar v-show="lever2 === true" dense :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}"> 
                         <v-flex xs3>
                             <v-overflow-btn
@@ -209,7 +245,7 @@
                         </template>
                     </v-toolbar>
                
-                <v-toolbar :class="{'borda': canvasMode !== 'portrait',
+                <v-toolbar v-show="lever3" :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
                 <no-ssr>
                     
@@ -373,7 +409,11 @@ export default {
         dpi: 300,
         canvasInfo: {},//fundamental, será uma prop p diversos componentes!
        // imgsList: []
-       removeGridFlag: 0
+       removeGridFlag: 0,
+       lever: true,//lever1 e 2 controlam layout de opcoes e de edicao de texto respectivamente
+       lever2: false,
+       lever3: true
+
     }),
     computed:{
         checkPrevent(){
@@ -843,6 +883,7 @@ export default {
                 //this.canvas.setWidth(this.largura)
             
             }
+            this.lever = false
             //this.setCanvasDim(3600,2300,'landscape')
            // this.setCanvasDim(1540,1000,'portrait')
 

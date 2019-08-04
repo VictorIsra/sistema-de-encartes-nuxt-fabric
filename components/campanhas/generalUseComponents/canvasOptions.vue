@@ -3,7 +3,7 @@
         <v-tooltip bottom>
         <template v-slot:activator="{ on }">
             <v-btn class="mx-2" fab dark size=big color="primary"  v-on="on" @click="open">
-                <v-icon dark>build</v-icon>
+                <v-icon size=30 dark>stay_current_landscape</v-icon>
             </v-btn>
         </template>
         <span class="subheading">Configurações do canvas</span>
