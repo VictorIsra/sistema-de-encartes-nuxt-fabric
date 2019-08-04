@@ -5,7 +5,7 @@
           <v-progress-linear v-if="loading"
       indeterminate
       color="cyan"
-    ></v-progress-linear><save-canvas :canvas="canvasInfo" ></save-canvas>
+    ></v-progress-linear><canvas-grid :canvas="canvasInfo" :flag="removeGridFlag" :checkGrid="checkGrid"></canvas-grid> 
             <template v-if="userType === 'tabloide'">
                 <v-toolbar flat :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
@@ -39,8 +39,9 @@
                                 <canvas-option @canvasmode="setMode" @getReal="fillInfo" @resize-canvas="setCanvasDim"></canvas-option>
                             </div>
                             <save-canvas :canvas="canvasInfo" ></save-canvas>
-                            <save-pdf :canvas="canvasInfo" ></save-pdf>
-
+                            <div @mouseover="removeGrid">
+                                <save-pdf :canvas="canvasInfo"></save-pdf>
+                            </div >
                         </v-layout>    
                 </v-toolbar>
                 <v-toolbar  :class="{'borda': canvasMode !== 'portrait',
@@ -354,6 +355,8 @@ import canvasOption from '../../components/campanhas/generalUseComponents/canvas
 import saveCanvas from '../../components/campanhas/generalUseComponents/saveCanvas.vue'// ../generalUseComponents/canvasOptions.vue'
 import saveCavasPDF from '../../components/campanhas/generalUseComponents/saveCanvasPDF.vue'// ../generalUseComponents/canvasOptions.vue'
 import canvasMove from '../../components/campanhas/generalUseComponents/canvasMove.vue'
+import canvasGrid from '../../components/campanhas/generalUseComponents/canvasGrid.vue'
+
 import crudMixin from '../../components/mixins/CRUD.js'
 import { Compact, Chrome} from 'vue-color'
 import {fabric}  from "fabric"
@@ -369,6 +372,7 @@ export default {
         'save-canvas': saveCanvas,
         'save-pdf': saveCavasPDF,
         'canvas-move': canvasMove,
+         'canvas-grid': canvasGrid,
         alerts
     },
    data: () => ({
@@ -431,8 +435,9 @@ export default {
         currBg: '',//background q ta sendo usado no momento, usado caso a res do canvas mude 
         clipboard: '',
         dpi: 300,
-        canvasInfo: {}
+        canvasInfo: {},//fundamental, será uma prop p diversos componentes!
        // imgsList: []
+       removeGridFlag: 0
     }),
     computed:{
         checkPrevent(){
@@ -445,6 +450,13 @@ export default {
         canvasMode(){
             this.checkGrid = false
             this.removeGrid()
+        },
+        canvasInfo:{
+            handler(){
+                this.canvasInfo.folha = this.folha
+                console.log("dddd",this.canvasInfo.folha)
+              //  this.updateCanvasInfo()
+            },deep:true
         }
         ,
         filtroEscolhido(){
@@ -483,9 +495,9 @@ export default {
         //this.canvas.setWidth(1000)
         this.userType = this.$store.state.auth.userType
         this.checkRedirect()
-
     },
     methods: {  
+       
         setMode(objeto){
             if(objeto.data.mode === 'portrait')//troca p mduar e executar o watch
                 this.canvasMode = 'landscape'
@@ -576,6 +588,8 @@ export default {
                 return
             this.canvas.setHeight(objeto.data.width)
             this.canvas.setWidth(objeto.data.height)
+            this.folha = objeto.data.folha
+            console.log(" this,folha ", this.folha , " objeto ",objeto.data)
             this.restoreDefault()//apos mudar as dim, da um refesh no canvas p ele voltar pro status original, porem com a res mudada
             if(this.currBg !== ''){
                 this.addBg(this.currBg)
@@ -608,8 +622,11 @@ export default {
 
         },
         removeGrid(){
+            this.removeGridFlag = !this.removeGridFlag
             this.gridGroup && this.canvas.remove(this.gridGroup)
             this.gridGroup = null
+            this.checkGrid = undefined
+
         },
         mouseDown(evento){
             if (evento.ctrlKey === true) {
@@ -821,16 +838,27 @@ export default {
             if(this.campanha_id === undefined)
                 this.$router.push('/tabloides')
             else{
+//                                alert("hmmm" + this.folha)
+
                // this.fetchProdList()
                 this.canvasInfo = {
                     ref: this.canvas,
                     campanha_id: this.campanha_id,
-                    flag: this.currBg !== '' ? this.currBg : undefined
+                    flag: this.currBg !== '' ? this.currBg : undefined,
+                    folha: this.folha
                 }
                 this.fetchProdutos()//console.log("ID: ", this.campanha_id) 
                 this.carregarTabloide()
             }        
         },  
+        updateCanvasInfo(){
+            this.canvasInfo = {
+                    ref: this.canvas,
+                    campanha_id: this.campanha_id,
+                    flag: this.currBg !== '' ? this.currBg : undefined,
+                    folha: this.folha
+            }
+        },
         async fetchProdutos(){
             this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             this.itens.forEach(p => {

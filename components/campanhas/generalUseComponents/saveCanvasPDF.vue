@@ -12,7 +12,6 @@
             </v-tooltip>
         </div> 
         </v-layout>
-        
     </div>
 </template>
 <script>
@@ -20,7 +19,6 @@ import crudMixin from  '../../../components/mixins/CRUD.js'
 
 export default {
     data: () => ({
-        
     }),
     props: {
          canvas: {//tabela precisa q as datas fiquem dentro de um intervalo, daí ela envia essa prop preenchida
@@ -29,7 +27,8 @@ export default {
             return{
               ref: undefined,
               campanha_id: undefined,
-              flag:undefined
+              flag:undefined,
+              folha: 'a4'
             }  
           }
         },
@@ -38,26 +37,10 @@ export default {
       crudMixin
     ],
     methods:{
-      /*  async salvarTabloide(){
-            //this.checkGrid = false
-            //await this.removeGrid()
-            if(this.canvas.ref !== undefined && this.canvas.campanha_id !== undefined){
-                alert("salvarei")
-                var json = JSON.stringify(this.canvas.ref.toJSON())
-                if(this.canvas.flag)//this.currBg !== '')
-                    this.saveTabloide(json,this.canvas.campanha_id,this.canvas.flag)
-                else
-                    this.saveTabloide(json,this.canvas.campanha_id)
-                console.log("salvo com sucesso.")
-            }
-            else
-               console.log("n pude salvar tabloide <componente pdfhandler.vue>")
-           
-        },*/
          async salvarPdf(){
                 if(this.canvas.ref !== undefined){
                     this.canvas.ref.discardActiveObject()//deselect, p n salvar com a markinha das opcoes
-                    //this.restoreDefault()//restaura td pra posicao inicial ( tira zoom e panning)
+                    this.resetStatus()//restaura td pra posicao inicial ( tira zoom e panning)
                 // this.checkGrid = false//desabilita o grid("")
                 //   await this.removeGrid()
                 //   this.canvas.renderAll()        
@@ -65,13 +48,14 @@ export default {
                 //  const html2canvas = require('html2canvas')
                 // window.html2canvas = html2canvas
                     let mode = "landscape"
+                    console.log("o ",this.canvas.ref)
                 //  var imgData = await this.canvas.toDataURL('image/png',1.0)
                 // let canvas = await html2canvas(document.getElementById('c'))
                     //  .then((canvas) => {
                             var imgData =  this.canvas.ref.toDataURL('image/png',1.0)
                             if(this.canvas.ref.width <= this.canvas.ref.height)
-                                mode = "portrait"
-                            let pdf = new jsPDF(mode, "mm",'a4')//this.folha)//essencial msmm, mudand o de de p p l ou n
+                                mode = "portrait"//LEMBRE DE BOTAR THIS.FOLHA ESSENCIALLL FAZE DPS JANTAR
+                            let pdf = new jsPDF(mode, "mm",this.canvas.folha)//essencial msmm, mudand o de de p p l ou n
                             let prod = this.canvas.ref.width * this.canvas.ref.height
                             // if( prod >= 5000) //canvas maior q isso é invalido, mt grande...ai retorn
                             //     retur
@@ -84,6 +68,14 @@ export default {
             }
                
         },
+        resetStatus(){
+            if(this.canvas.ref !== undefined){
+                this.canvas.ref.setZoom(1)
+                //reset o canvas para o status inicial
+                this.canvas.ref.setViewportTransform([1,0,0,1,0,0]) 
+                this.canvas.ref.renderAll()
+            }
+        }
     
     }
     

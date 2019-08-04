@@ -38,7 +38,6 @@
                      <span class="subheading">Mover canvas 1 unidade para baixo</span>
                  </v-tooltip>
             </div>
-    
         </v-layout>
         
     </div>
