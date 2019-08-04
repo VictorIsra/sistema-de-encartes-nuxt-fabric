@@ -5,7 +5,7 @@
           <v-progress-linear v-if="loading"
       indeterminate
       color="cyan"
-    ></v-progress-linear>
+    ></v-progress-linear><deletar :canvas="canvasInfo"></deletar>
             <template v-if="userType === 'tabloide'">
                 <v-toolbar flat :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
@@ -59,36 +59,8 @@
                                 inset
                                 vertical>
                                 </v-divider>
-                             <div> 
-                            <v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn color="primary" fab small dark @click="agrupa" v-on="on" >
-                                <v-icon>present_to_all</v-icon>
-                            </v-btn> 
-                            </template>
-                            <span class="subheading">Agrupar seleção em um único elemento</span>
-                            </v-tooltip>
-                        </div> 
-                         <div>
-                            <v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn color="primary" fab small dark @click="desagrupa" v-on="on">
-                                <v-icon>no_sim</v-icon> 
-                            </v-btn>        
-                            </template>
-                            <span class="subheading">Separar elemento em elementos individuais</span>
-                            </v-tooltip>
-                        </div> 
-                         <div> 
-                             <v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn color="red" fab small v-on="on" dark @click="actionHandler('removeSelection')">
-                                <v-icon>clear</v-icon>   
-                            </v-btn>
-                            </template>
-                            <span class="subheading">Deletar elemento(s) selecionados(s)</span>
-                            </v-tooltip>
-                        </div> 
+                          <agrupar :canvas="canvasInfo"></agrupar>
+                        <deletar :canvas="canvasInfo"></deletar>
                          <v-divider class="mx-2"
                                 inset
                                 vertical>
@@ -316,6 +288,8 @@ import saveCavasPDF from '../../components/campanhas/generalUseComponents/saveCa
 import canvasMove from '../../components/campanhas/generalUseComponents/canvasMove.vue'
 import canvasGrid from '../../components/campanhas/generalUseComponents/canvasGrid.vue'
 import copiarColar from   '../../components/campanhas/generalUseComponents/copiarColar.vue'
+import agrupar from   '../../components/campanhas/generalUseComponents/agruparDesagrupar.vue'
+import deletar from  '../../components/campanhas/generalUseComponents/deletar.vue'
 import crudMixin from '../../components/mixins/CRUD.js'
 import { Compact, Chrome} from 'vue-color'
 import {fabric}  from "fabric"
@@ -333,6 +307,8 @@ export default {
         'canvas-move': canvasMove,
          'canvas-grid': canvasGrid,
         'copy-paste': copiarColar,
+        agrupar,
+        deletar,
         alerts
     },
    data: () => ({
