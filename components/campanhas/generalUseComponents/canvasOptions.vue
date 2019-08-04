@@ -82,6 +82,9 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
     mixins: [
       formatInputMixin
     ],
+     props:
+         ['canvas']
+    ,    
     watch:{
             altura(){//NA REAL É LARGURA X
                 if(this.altura >= 457.2)
@@ -188,6 +191,8 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
             //* 10 pq a formula é em cm, mas a entrada do user é  mm
             this.width =  ( this.largura * (300 / 2.54))/ 10//* 11.81//lol q bizarrroo
             this.height =   (this.altura * (300 /2.54))/10  //da o valor em pxs
+           
+                //this.canvas.setZoom(this.canvas.getZoom() / 1.5)
             this.$emit('resize-canvas',{
                 data: {
                     width: this.width.toFixed(3),

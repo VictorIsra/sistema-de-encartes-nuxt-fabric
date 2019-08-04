@@ -2,10 +2,7 @@
         <div>
         <v-card>
        <!--     <alerts></alerts>-->
-          <v-progress-linear v-if="loading"
-      indeterminate
-      color="cyan"
-    ></v-progress-linear><!--deletar :canvas="canvasInfo"></deletar>-->
+   <!--deletar :canvas="canvasInfo"></deletar>-->
             <template v-if="userType === 'tabloide'">
                
                 <v-toolbar  :class="{'borda': canvasMode !== 'portrait',
@@ -37,7 +34,7 @@
                             ></v-divider>
                         <div><v-tooltip bottom>
                             <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn color="primary" fab small dark v-on="on" @click="restoreDefault">
+                            <v-btn color="primary" fab small dark v-on="on" @click="restoreDefault2">
                                 <v-icon>restore</v-icon>
                             </v-btn>    
                             </template>
@@ -139,10 +136,12 @@
                             </div> 
                      
                             <div>
-                                <canvas-option @canvasmode="setMode" @getReal="fillInfo" @resize-canvas="setCanvasDim"></canvas-option>
+                                <canvas-option  :canvas=canvas @canvasmode="setMode" @getReal="fillInfo" @resize-canvas="setCanvasDim"></canvas-option>
                             </div>
+                            <div @click="loading = true">
                             <save-canvas :canvas="canvasInfo" ></save-canvas>
-                            <div @mouseover="removeGrid">
+                            </div>
+                            <div @mouseover="removeGrid" @click="loading = true">
                                 <save-pdf :canvas="canvasInfo"></save-pdf>
                             </div >
                         </v-layout>    
@@ -412,7 +411,7 @@ export default {
        removeGridFlag: 0,
        lever: true,//lever1 e 2 controlam layout de opcoes e de edicao de texto respectivamente
        lever2: false,
-       lever3: true
+       lever3: false
 
     }),
     computed:{
@@ -567,6 +566,12 @@ export default {
             this.folha = objeto.data.folha
             console.log(" this,folha ", this.folha , " objeto ",objeto.data)
             this.restoreDefault()//apos mudar as dim, da um refesh no canvas p ele voltar pro status original, porem com a res mudada
+            let auxwidth = this.canvas.width
+            this.canvas.setZoom(this.canvas.getZoom() / (auxwidth /175) )
+             var delta = new fabric.Point(400,0)
+             this.canvas.relativePan(delta)
+              var delta = new fabric.Point(0,20)
+             this.canvas.relativePan(delta)
             if(this.currBg !== ''){
                 this.addBg(this.currBg)
             }
@@ -613,6 +618,15 @@ export default {
               //  evento.__proto__.defaultPrevented = true
                 console.log("exito:??? ", evento,evento.defaultPrevented )
             }
+        },
+       restoreDefault2(){
+            this.restoreDefault()
+            let auxwidth = this.canvas.width
+            this.canvas.setZoom(this.canvas.getZoom() / (auxwidth /175) )
+             var delta = new fabric.Point(400,0)
+             this.canvas.relativePan(delta)
+              var delta = new fabric.Point(0,20)
+             this.canvas.relativePan(delta)
         },
         mouseMove(evento){
             if(this.isDragging) {

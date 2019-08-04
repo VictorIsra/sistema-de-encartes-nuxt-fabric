@@ -21,7 +21,16 @@
                             <span class="subheading">Colar elemento(s) copiados(s)</span>
                             </v-tooltip>
                         </div>
-                        
+                <div class="text-center ma-2">
+            <v-snackbar class="justify-end"
+            v-model="snackBar.snackbar"
+              :timeout="snackBar.timeout"
+            >
+            <span class="subheading">
+            {{ snackBar.text }}</span>
+       
+        </v-snackbar>
+        </div>             
         </v-layout>
         
     </div>
@@ -31,7 +40,16 @@ import crudMixin from  '../../../components/mixins/CRUD.js'
 
 export default {
     data: () => ({
-        clipboard: ''
+        clipboard: '',
+         snackBar:{
+            color: '',
+            mode: '',
+            snackbar: false,
+            text: 'Elementos copiados com sucesso',
+            timeout: 1500,
+            x: null,
+            y: 'top',
+        },
     }),
     props: {
          canvas: {//tabela precisa q as datas fiquem dentro de um intervalo, daí ela envia essa prop preenchida
@@ -55,7 +73,9 @@ export default {
                     this.canvas.ref.getActiveObject().clone(cloned => {
                         this.clipboard = cloned
                     })
-                
+                       this.snackBar.text = "Elemento(s) copiado(s) com sucesso!"
+                this.snackBar.snackbar = true
+                setTimeout(()=>this.snackBar.snackbar = false,this.snackBar.timeout)
                 console.log("clip ",this.clipboard)
                 }
             }
@@ -83,6 +103,9 @@ export default {
                         } else {
                             this.canvas.ref.add(clonedObj);
                         }
+                        this.snackBar.text = "Elemento(s) colado(s) com sucesso!"
+                          this.snackBar.snackbar = true
+                        setTimeout(()=> this.snackBar.snackbar = false,this.snackBar.timeout)
                         this.clipboard.top += 10;
                         this.clipboard.left += 10;
                         this.canvas.ref.setActiveObject(clonedObj);
