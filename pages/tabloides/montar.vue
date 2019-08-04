@@ -5,7 +5,7 @@
           <v-progress-linear v-if="loading"
       indeterminate
       color="cyan"
-    ></v-progress-linear><canvas-grid :canvas="canvasInfo" :flag="removeGridFlag" :checkGrid="checkGrid"></canvas-grid> 
+    ></v-progress-linear>
             <template v-if="userType === 'tabloide'">
                 <v-toolbar flat :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
@@ -48,53 +48,12 @@
                                 'borda2': canvasMode === 'portrait'}">
                     <v-layout align-center class="justify-center">
                        
-                            <v-btn-toggle v-model="checkGrid" mandatory>
-                                
-                        <div>
-                            <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
-                            <v-btn color="primary" fab small dark v-on="on">
-                                <v-icon>grid_off</v-icon>
-                            </v-btn> 
-                            </template>
-                            <span class="subheading">Esconder grid</span>
-                            </v-tooltip>
-                        </div> 
-                         <div> 
-                          <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
-                            <v-btn color="primary" fab small dark v-on="on" >
-                                <v-icon>grid_on</v-icon>
-                            </v-btn>
-                            </template>
-                            <span class="subheading">Mostrar grid</span>
-                            </v-tooltip>
-                        </div> 
-                         </v-btn-toggle>
+                      <canvas-grid :canvas="canvasInfo" :flag="removeGridFlag" :checkGrid="checkGrid"></canvas-grid> 
                         <v-divider  
                                 inset
                                 vertical class="mx-2"></v-divider>
                    
-                         <div> 
-                           <v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn color="primary" fab small dark @click="copy" v-on="on">
-                                <v-icon>fa-copy</v-icon>
-                            </v-btn> 
-                            </template>
-                            <span class="subheading">Copiar elemento(s) selecionado(s)</span>
-                            </v-tooltip>
-                        </div>
-                         <div>
-                            <v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn color="primary" fab small dark @click="paste" v-on="on">
-                                <v-icon>fa-clipboard</v-icon>
-                            </v-btn>
-                            </template>
-                            <span class="subheading">Colar elemento(s) copiados(s)</span>
-                            </v-tooltip>
-                        </div>
+                        <copy-paste :canvas="canvasInfo" ></copy-paste>
                         
                           <v-divider class="mx-2"
                                 inset
@@ -356,7 +315,7 @@ import saveCanvas from '../../components/campanhas/generalUseComponents/saveCanv
 import saveCavasPDF from '../../components/campanhas/generalUseComponents/saveCanvasPDF.vue'// ../generalUseComponents/canvasOptions.vue'
 import canvasMove from '../../components/campanhas/generalUseComponents/canvasMove.vue'
 import canvasGrid from '../../components/campanhas/generalUseComponents/canvasGrid.vue'
-
+import copiarColar from   '../../components/campanhas/generalUseComponents/copiarColar.vue'
 import crudMixin from '../../components/mixins/CRUD.js'
 import { Compact, Chrome} from 'vue-color'
 import {fabric}  from "fabric"
@@ -373,6 +332,7 @@ export default {
         'save-pdf': saveCavasPDF,
         'canvas-move': canvasMove,
          'canvas-grid': canvasGrid,
+        'copy-paste': copiarColar,
         alerts
     },
    data: () => ({
