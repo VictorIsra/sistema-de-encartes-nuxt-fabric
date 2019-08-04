@@ -11,6 +11,17 @@
                 <span class="subheading">Salvar alterações feitas no tablóide</span>
             </v-tooltip>
         </div>  
+         <div class="text-center ma-2">
+            <v-snackbar
+            v-model="snackBar.snackbar"
+              :timeout="snackBar.timeout"
+            color="success"
+            >
+            <span class="subheading">
+            {{ snackBar.text }}</span>
+       
+        </v-snackbar>
+        </div> 
         </v-layout>
         
     </div>
@@ -20,7 +31,15 @@ import crudMixin from  '../../../components/mixins/CRUD.js'
 
 export default {
     data: () => ({
-        
+         snackBar:{
+            color: '',
+            mode: '',
+            snackbar: false,
+            text: 'Canvas salvo com sucesso!',
+            timeout: 1500,
+            x: null,
+            y: 'top',
+        },
     }),
     props: {
          canvas: {//tabela precisa q as datas fiquem dentro de um intervalo, daí ela envia essa prop preenchida
@@ -41,8 +60,9 @@ export default {
         async salvarTabloide(){
             //this.checkGrid = false
             //await this.removeGrid()
+            this.snackBar.snackbar = true
+              setTimeout(()=>this.snackBar.snackbar = false,this.snackBar.timeout)
             if(this.canvas.ref !== undefined && this.canvas.campanha_id !== undefined){
-                alert("salvarei")
                 var json = JSON.stringify(this.canvas.ref.toJSON())
                 if(this.canvas.flag)//this.currBg !== '')
                     this.saveTabloide(json,this.canvas.campanha_id,this.canvas.flag)

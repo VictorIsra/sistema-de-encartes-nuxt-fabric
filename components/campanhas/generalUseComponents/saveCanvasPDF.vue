@@ -10,6 +10,17 @@
             </template>
             <span class="subheading">Baixar PDF desde tablóide</span>
             </v-tooltip>
+        </div>
+        <div class="text-center ma-2">
+            <v-snackbar
+            v-model="snackBar.snackbar"
+              :timeout="timeout"
+              
+            >
+            <span class="subheading" color="red--text">
+            {{ snackBar.text }}</span>
+       
+        </v-snackbar>
         </div> 
         </v-layout>
     </div>
@@ -19,6 +30,16 @@ import crudMixin from  '../../../components/mixins/CRUD.js'
 
 export default {
     data: () => ({
+        snackBar:{
+            color: '',
+            mode: '',
+            snackbar: false,
+            text: 'Gerando arquivo, por favor aguarde...',
+            timeout: 6000,
+            x: null,
+            y: 'top',
+        },
+         timeout:2000
     }),
     props: {
          canvas: {//tabela precisa q as datas fiquem dentro de um intervalo, daí ela envia essa prop preenchida
@@ -38,7 +59,10 @@ export default {
     ],
     methods:{
          async salvarPdf(){
-                if(this.canvas.ref !== undefined){
+             this.snackBar.snackbar = true
+             
+             setTimeout(()=>{
+                 if(this.canvas.ref !== undefined){
                     this.canvas.ref.discardActiveObject()//deselect, p n salvar com a markinha das opcoes
                     this.resetStatus()//restaura td pra posicao inicial ( tira zoom e panning)
                 // this.checkGrid = false//desabilita o grid("")
@@ -66,6 +90,8 @@ export default {
                             pdf.save('tabloide.pdf')
                     //  })
             }
+            }, 500);
+          
                
         },
         resetStatus(){
