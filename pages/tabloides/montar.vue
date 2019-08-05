@@ -1,6 +1,7 @@
 <template>
         <div>
         <v-card>
+            <add-polygon :canvas="canvas" :colors=colors></add-polygon>
        <!--     <alerts></alerts>-->
    <!--deletar :canvas="canvasInfo"></deletar>-->
             <template v-if="userType === 'tabloide'">
@@ -284,6 +285,8 @@ import canvasGrid from '../../components/campanhas/generalUseComponents/canvasGr
 import copiarColar from   '../../components/campanhas/generalUseComponents/copiarColar.vue'
 import agrupar from   '../../components/campanhas/generalUseComponents/agruparDesagrupar.vue'
 import deletar from  '../../components/campanhas/generalUseComponents/deletar.vue'
+import addpolygon from  '../../components/campanhas/generalUseComponents/addPolygon.vue'
+
 import crudMixin from '../../components/mixins/CRUD.js'
 import supers from '../../components/campanhas/generalUseComponents/super.vue'
 import textStyles from '../../components/campanhas/generalUseComponents/textStyles.vue'
@@ -308,6 +311,7 @@ export default {
         deletar,
         alerts,
         supers,
+        'addPolygon': addpolygon,
         'text-styles':textStyles
     },
    data: () => ({
