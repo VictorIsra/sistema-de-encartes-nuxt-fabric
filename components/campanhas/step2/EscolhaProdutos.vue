@@ -399,7 +399,6 @@
               item.qtdade = this.selectedImg.qtdade
               item.unidade = this.selectedImg.unidade
               item.nome = this.selectedImg.alt
-              alert("vai entraa")
              //gambiarra mas funciona, atualizandocoreteamente em tods os cases xd
             }
             else{//se tiver,atualizo c a img selecionada

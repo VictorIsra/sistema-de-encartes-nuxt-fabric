@@ -82,7 +82,7 @@
                       outline
                       name="input-7-4"
                       label="Observação:"
-                      v-model="editedItem.obs"
+                      v-model="editedItem.obsDemanda"
                       hint="escreva uma observação sobre esta demanda."
                     ></v-textarea>
                 </v-flex>
@@ -185,7 +185,7 @@
         </template>
         <template v-slot:expand="props">
           <v-card flat>
-            <v-card-text>{{props.item.obs}}</v-card-text>
+            <v-card-text>{{props.item.obsDemanda}}</v-card-text>
           </v-card>
         </template>
         <template v-slot:no-results>
