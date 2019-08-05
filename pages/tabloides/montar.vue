@@ -3,6 +3,7 @@
         <v-card>
        <!--     <alerts></alerts>-->
    <!--deletar :canvas="canvasInfo"></deletar>-->
+   <supers :canvas="canvas"></supers>
             <template v-if="userType === 'tabloide'">
                
                 <v-toolbar  :class="{'borda': canvasMode !== 'portrait',
@@ -175,31 +176,8 @@
                         <v-divider vertical class="mx-2"></v-divider>
                          <text-styles :canvas="canvas" @tstyles="listenFontStyle" :toggle="toggle_exclusive"></text-styles>
 
-                      
-                            <div><v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                                <v-btn color="white grey--text" v-on="on" fab small dark @click="superScript">
-                                    <v-icon>fa-superscript</v-icon>
-                                </v-btn></template>
-                            <span class="subheading">Aplicar superScript superior a(s) letra(s) achurada(s)</span>
-                            </v-tooltip>
-                            </div> 
-                            <div><v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                                <v-btn color="white grey--text" fab small v-on="on" dark @click="subScript"> 
-                                    <v-icon>fa-subscript</v-icon>
-                                </v-btn></template>
-                            <span class="subheading">Aplicar superScript inferior a(s) letra(s) achurada(s)</span>
-                            </v-tooltip>
-                            </div> 
-                            <div><v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                                <v-btn color="white grey--text" v-on="on" fab small dark @click="normalScript">
-                                    <v-icon>fa-times</v-icon>
-                                </v-btn></template>
-                            <span class="subheading">Resetar a(s) letra(s) achurada(s) para o formato padrão</span>
-                            </v-tooltip>
-                            </div>
+                        
+                          <supers :canvas="canvas"></supers>
                         <v-flex><v-tooltip bottom>
                             <template v-slot:activator="{ on }" v-on="on">
                             <v-btn class="mx-2" v-on="on" fab dark small color="white grey--text" @click="addText">
@@ -310,8 +288,10 @@ import copiarColar from   '../../components/campanhas/generalUseComponents/copia
 import agrupar from   '../../components/campanhas/generalUseComponents/agruparDesagrupar.vue'
 import deletar from  '../../components/campanhas/generalUseComponents/deletar.vue'
 import crudMixin from '../../components/mixins/CRUD.js'
+import supers from '../../components/campanhas/generalUseComponents/super.vue'
 import textStyles from '../../components/campanhas/generalUseComponents/textStyles.vue'
 import { Compact, Chrome} from 'vue-color'
+
 import {fabric}  from "fabric"
  
 export default {
@@ -330,6 +310,7 @@ export default {
         agrupar,
         deletar,
         alerts,
+        supers,
         'text-styles':textStyles
     },
    data: () => ({
@@ -752,7 +733,7 @@ export default {
             else if(style === 'Italic')
                 this.toggle_exclusive = 2
             else if( style === 'normal')
-                this.toggle_exclusive = '' 
+                this.toggle_exclusive = 3 
                 
         },
         changeTest(event){
