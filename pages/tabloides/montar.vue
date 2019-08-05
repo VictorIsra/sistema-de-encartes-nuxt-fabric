@@ -3,7 +3,6 @@
         <v-card>
        <!--     <alerts></alerts>-->
    <!--deletar :canvas="canvasInfo"></deletar>-->
-   <supers :canvas="canvas"></supers>
             <template v-if="userType === 'tabloide'">
                
                 <v-toolbar  :class="{'borda': canvasMode !== 'portrait',
@@ -175,8 +174,6 @@
                          </v-flex>
                         <v-divider vertical class="mx-2"></v-divider>
                          <text-styles :canvas="canvas" @tstyles="listenFontStyle" :toggle="toggle_exclusive"></text-styles>
-
-                        
                           <supers :canvas="canvas"></supers>
                         <v-flex><v-tooltip bottom>
                             <template v-slot:activator="{ on }" v-on="on">
@@ -616,20 +613,6 @@ export default {
         mouseUp(){
             this.isDragging = false
         },
-        // Xmovement(flag = 0){//andar p direita ou esuqer
-        //     var units = 10//caso direita
-        //     if(flag === -1)//caso esquerda
-        //         units = -units
-        //     var delta = new fabric.Point(units,0)
-        //     this.canvas.relativePan(delta)
-        // },
-        // Ymovement(flag = 0){//andar p cima ou p baixo
-        //     var units = 10//caso p baixo
-        //     if(flag === -1)//caso cima
-        //         units = -units
-        //     var delta = new fabric.Point(0,units)
-        //     this.canvas.relativePan(delta)
-        // },
          restoreDefault(){
             this.canvas.setZoom(1)
             //reset o canvas para o status inicial

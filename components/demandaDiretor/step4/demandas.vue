@@ -209,7 +209,7 @@
       async fetchProdutos(){
         //uso await this.getProdutos em vez de this.campanhaInfos.produtos pois o this.getProdutos pega os novos produtos em tempo real(nova query), assim, ficará atualizado caso eu passe da etapa 2 p 3, oq n seria o caso com o this.campanhaInfo.produtos, pois este é um 'print' do estado do produtos em um momento anterior
         this.itens = await this.getProdutos(this.campanha_id)
-        console.log(" intes fetados ", this.itens)
+        
       },
       editItem (item) {
         this.editedIndex = this.itens.indexOf(item)

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <tabloide-sender :snackbar="snackbarflag" :msg="'produtos enviados para usuário tabloide com sucesso!'"></tabloide-sender>
     <v-stepper  v-model="e1">
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">Dados da Campanha</v-stepper-step>
@@ -61,7 +62,7 @@
             <v-btn color="primary" @click="e1 = e1 - 1">Voltar para escolha de produtos</v-btn>
             <v-btn 
               color="primary"
-              @click="changeCampanhaStatus('enviado para tabloide')"
+              @click="sendToUserTabloide('enviado para tabloide')"
               :disabled="(produtosQtdadeInfo !== undefined && produtosQtdadeInfo.qtdade >= produtosQtdadeInfo.meta)  ? false : true"
             >
               Enviar campanha para criação de tablóide
@@ -82,6 +83,7 @@
   //impor etapa 3 ( step 3):
   import concorrencia from '../../components/campanhas/step3/concorrencia.vue'
   import crudMixin from '../../components/mixins/CRUD.js'
+  import tabloideSender from '../../components/campanhas/generalUseComponents/tabloideSended.vue'
 
   export default {
     mixins: [
@@ -90,7 +92,8 @@
     components: {
       formulario,
       'escolha-produtos': escolhaProdutos,
-      concorrencia
+      concorrencia,
+      'tabloide-sender': tabloideSender
     },
     created() {//mounted dá zika: ele perde o valor correto ( ou será q o mounted rola antes do data ser setado? se pa...)
       this.chooseStep()
@@ -105,13 +108,21 @@
         form_inputs: {},//componente filho (formulario.vue) irá preencher isso na hora correta
         getFilteredProdutos: false,//avisa ao step 3 (componente filgo concorrencia.vue) q ele deve alimentar a tabela com os valores dos produtos da etapa 2 filtrados
         campanha_id: undefined,//será preenchido via route.params no mounted
-        campanha_infos: ''//virá do bd
+        campanha_infos: '',//virá do bd
+        snackbarflag: false
       }
     },
     methods: {
       async changeCampanhaStatus(status){//irá mudar o status da campanha
         await this.updateStatus(this.campanha_id,status)
         this.$router.push('/campanhas') 
+      },
+      async sendToUserTabloide(status){
+        this.snackbarflag = !this.snackbarflag
+        await this.updateStatus(this.campanha_id,status)
+        setTimeout(() => {
+                 this.$router.push('/campanhas') 
+            }, 3500)
       },
       produtoQtdadeChange(data){
         this.produtosQtdadeInfo = data//vem da etapa 2 ( escolhaprodutps.vue) e alimentará etapa 3 ( concorrencia.vue)

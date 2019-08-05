@@ -272,11 +272,11 @@
       },
       //fim info relativas ao uplode e img ^
       headers: [
-        { text: 'SELECIONADO', value: 'sel' },
+        { text: '', value: 'sel' },
         { text: 'IMAGEM', value: 'img' , width: "1%", align: "center"},
         { text: 'PRODUTO', value: 'nome', width: "1%", align: "center"},
-        { text: 'DATA DE INÍCIO', value: 'data_i', width: "1%", align: "center"},
-        { text: 'DATA DE TÉRMINO', value: 'data_f', width: "1%", align: "center"},
+        { text: 'INÍCIO', value: 'data_i', width: "1%", align: "center"},
+        { text: 'TÉRMINO', value: 'data_f', align: "center"},
         { text: 'PREÇO DE VENDA', value: 'preco_v' , width: "1%", align: "center"},
         { text: 'TABLÓIDE', value: 'preco_v' , width: "1%", align: "center"},
         { text: 'CARTAZ', value: 'preco_v', width: "1%", align: "center"},
@@ -401,7 +401,6 @@
               item.qtdade = this.selectedImg.qtdade
               item.unidade = this.selectedImg.unidade
               item.nome = this.selectedImg.alt
-              alert("vai entraa")
              //gambiarra mas funciona, atualizandocoreteamente em tods os cases xd
             }
             else{//se tiver,atualizo c a img selecionada
