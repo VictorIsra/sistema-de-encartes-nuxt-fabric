@@ -84,7 +84,7 @@ export default {
                 var  imgData =   this.canvas.ref.toDataURL('image/png',1.0)
                     if(this.canvas.ref.width <= this.canvas.ref.height)
                         mode = "portrait"//LEMBRE DE BOTAR THIS.FOLHA ESSENCIALLL FAZE DPS JANTAR
-                    let pdf = new jsPDF(mode, "mm",this.canvas.ref.folha)//essencial msmm, mudand o de de p p l ou n
+                    let pdf = new jsPDF(mode, "mm",this.canvas.folha)//essencial msmm, mudand o de de p p l ou n
                    // let prod = this.canvas.ref.width *this.canvas.ref.height
                                 // if( prod >= 5000) //canvas maior q isso é invalido, mt grande...ai retorn
                                 //     retur

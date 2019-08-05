@@ -173,29 +173,9 @@
                         ></v-overflow-btn>
                          </v-flex>
                         <v-divider vertical class="mx-2"></v-divider>
+                         <text-styles :canvas="canvas" @tstyles="listenFontStyle" :toggle="toggle_exclusive"></text-styles>
 
-                        <v-btn-toggle v-model="toggle_exclusive" mandatory>
-                            <v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                             <v-btn :value="3" v-on="on" text @click="checkFontStyle('normal')">
-                            <v-icon>text_fields</v-icon>
-                            </v-btn> </template>
-                            <span class="subheading">Aplicar estilo padrão ao(s) texto(s) selecionado(s)</span>
-                            </v-tooltip><v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn :value="1" text @click="checkFontStyle('Bold')" v-on="on">
-                            <v-icon>format_bold</v-icon>
-                            </v-btn> </template>
-                            <span class="subheading" >Aplicar estilo negrito ao(s) texto(s) selecionado(s)</span>
-                            </v-tooltip><v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn :value="2" v-on="on" text @click="checkFontStyle('Italic')">
-                            <v-icon>format_italic</v-icon>
-                           </v-btn></template>
-                            <span class="subheading">Aplicar estilo itálico ao(s) texto(s) selecionado(s)</span>
-                            </v-tooltip>
-
-                        </v-btn-toggle >
+                      
                             <div><v-tooltip bottom>
                             <template v-slot:activator="{ on }" v-on="on">
                                 <v-btn color="white grey--text" v-on="on" fab small dark @click="superScript">
@@ -330,6 +310,7 @@ import copiarColar from   '../../components/campanhas/generalUseComponents/copia
 import agrupar from   '../../components/campanhas/generalUseComponents/agruparDesagrupar.vue'
 import deletar from  '../../components/campanhas/generalUseComponents/deletar.vue'
 import crudMixin from '../../components/mixins/CRUD.js'
+import textStyles from '../../components/campanhas/generalUseComponents/textStyles.vue'
 import { Compact, Chrome} from 'vue-color'
 import {fabric}  from "fabric"
  
@@ -348,7 +329,8 @@ export default {
         'copy-paste': copiarColar,
         agrupar,
         deletar,
-        alerts
+        alerts,
+        'text-styles':textStyles
     },
    data: () => ({
         dropdown_edit: [
@@ -458,7 +440,7 @@ export default {
             this.actionHandler('fontSize')
         },
         toggle_exclusive(){
-            this.actionHandler('fontStyle', this.toggle_exclusive)
+           // this.actionHandler('fontStyle', this.toggle_exclusive)
         },
         checkbox(){
             if(this.checkbox === true)
@@ -485,6 +467,9 @@ export default {
             this.canvasMode = objeto.data.mode
 
         
+        },
+        listenFontStyle(toggle){
+            this.toggle_exclusive = toggle
         },
         normalScript(){
             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
@@ -692,17 +677,17 @@ export default {
                              obj.setColor(this.colors.hex8)
                         })
                     }
-                    else if(event === 'fontStyle'){
-                        let style = 'normal'
-                        if(value === 1)
-                            style = 'Bold'
-                        else if(value === 2)
-                            style = 'Italic'    
-                        doomedObj.forEachObject((obj) => {
-                            obj.set("fontStyle", style)
-                        })
+                    // else if(event === 'fontStyle'){
+                    //     let style = 'normal'
+                    //     if(value === 1)
+                    //         style = 'Bold'
+                    //     else if(value === 2)
+                    //         style = 'Italic'    
+                    //     doomedObj.forEachObject((obj) => {
+                    //         obj.set("fontStyle", style)
+                    //     })
 
-                    }
+                    // }
                     else if(event === 'bring'){
                         doomedObj.forEachObject((obj) => {
                             if(!value){
@@ -728,9 +713,9 @@ export default {
                         if(event === 'fontFamily'){
                             this.canvas.getActiveObject().set("fontFamily", this.selectionFont)
                         }
-                        else if(event === 'fontSize'){
-                            this.canvas.getActiveObject().set("fontSize", this.fontSize.toString())
-                        }
+                        // else if(event === 'fontSize'){
+                        //     this.canvas.getActiveObject().set("fontSize", this.fontSize.toString())
+                        // }
                         else if(event === 'fontColor'){
                             this.canvas.getActiveObject().setColor(this.colors.hex8)
                         }
