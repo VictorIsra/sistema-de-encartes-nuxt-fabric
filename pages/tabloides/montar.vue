@@ -217,6 +217,10 @@
                         </vue-select-image>
                     </v-list>
                 </no-ssr> 
+                                            <v-divider vertical class="mx-1"></v-divider>
+
+                <add-polygon v-if="filtroEscolhido === 'complementares'" :canvas="canvas" :colors=colors></add-polygon>
+
                 <v-divider vertical class="mx-1"></v-divider>
                         <template>
                             <v-flex xs1>
