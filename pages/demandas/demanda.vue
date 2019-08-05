@@ -366,7 +366,8 @@
                 if(p.img !== undefined && p.img !== '')
                     this.imgs.push( {
                       img:p.img,
-                      prodNome: p.nome
+                      prodNome: p.nome,
+                      preco_v : p.preco_v
                     })
             })
             this.prepareProdInfo()
@@ -377,13 +378,15 @@
                 this.dataImages.push({  
                     src: temp,
                     alt: img.prodNome,
-                    originalName: img.img.originalName
+                    originalName: img.img.originalName,
+                     prodNome: img.prodNome,
+                      preco_v : img.preco_v
                 })
             })
         },
         onSelectImage(selected){//passado como arg indireto pelo compo vue-img
         this.selectedImg = selected
-        
+        console.log("SELECIONEII ", selected)
         this.ajustPath()
       },
       ajustPath(){//ajusta o path da img tanto rela qt abs
