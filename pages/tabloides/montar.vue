@@ -1,7 +1,6 @@
 <template>
         <div>
         <v-card>
-            <add-polygon :canvas="canvas" :colors=colors></add-polygon>
        <!--     <alerts></alerts>-->
    <!--deletar :canvas="canvasInfo"></deletar>-->
             <template v-if="userType === 'tabloide'">
@@ -205,15 +204,15 @@
                 <no-ssr>
                     
                     <v-list v-if="filtroEscolhido === 'produtos'" class="scroll-y">
-                        <vue-select-image :useLabel="true" :dataImages="dataImages" h='30px' w='30px' @onselectimage="addImg">
+                        <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="addImg">
                         </vue-select-image>
                     </v-list>
                      <v-list v-if="filtroEscolhido === 'backgrounds'" class="scroll-y">
-                        <vue-select-image :useLabel="true" :dataImages="bgsImages" h='30px' w='30px' @onselectimage="addBg">
+                        <vue-select-image :useLabel="true" :dataImages="bgsImages" h='50px' w='50px' @onselectimage="addBg">
                         </vue-select-image>
                     </v-list>
                       <v-list v-if="filtroEscolhido === 'complementares'" class="scroll-y">
-                        <vue-select-image :useLabel="true" :dataImages="compleImages" h='30px' w='30px' @onselectimage="addComple">
+                        <vue-select-image :useLabel="true" :dataImages="compleImages" h='50px' w='50px' @onselectimage="addComple">
                         </vue-select-image>
                     </v-list>
                 </no-ssr> 
@@ -245,7 +244,7 @@
                                 </v-btn>
                             </div> 
                         </v-toolbar-title>
-                          <div>
+                         <!-- <div>
                                 <v-btn color="primary"  fab medium dark > 
                                     <v-icon size=40>picture_as_pdf</v-icon>
                                 </v-btn>
@@ -254,7 +253,7 @@
                                 <v-btn color="primary" fab medium dark @click="restoreDefault">
                                     <v-icon size=40>restore</v-icon>
                                 </v-btn>
-                             </div> 
+                             </div> -->
                     </v-layout>
                 </v-toolbar>
             </template>  
@@ -269,10 +268,10 @@
                     </no-ssr> 
                     <v-flex sx2> 
                     <span v-if="isDragging" @wheel="wheelOn"  @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove.stop="mouseMove">
-                        <canvas  id="c" class="canvas-wrapper"></canvas>
+                        <canvas  id="c" class="canvas-wrapper "></canvas>
                     </span>
                     <span  v-else @wheel="wheelOn"  @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove">
-                         <canvas  id="c" class="canvas-wrapper"></canvas>
+                         <canvas  id="c" class="canvas-wrapper "></canvas>
                         </span>
                     </v-flex>
                 </v-layout>
@@ -872,9 +871,10 @@ export default {
             this.folha = jsonTabloide.data.tabloide_folha
             this.canvas.renderAll()
             if(this.userType!== 'tabloide'){
-                alert("ideia boa mas temq usa bd agora xd" + this.altura + " l " + this.largura)
-              //  this.canvas.setHeight(this.altura)
-                //this.canvas.setWidth(this.largura)
+               // alert("ideia boa mas temq usa bd agora xd" + this.altura + " l " + this.largura)
+                this.canvas.setHeight(2000)
+                this.canvas.setWidth(2500)
+                this.restoreDefault2()
             
             }
             this.lever = false
@@ -978,4 +978,8 @@ export default {
      width: 1000px;
      height:  200px;
  }
+ .xd7{
+  top: 20px; left: 20px;
+      z-index: 2;
+      color:black }
 </style>

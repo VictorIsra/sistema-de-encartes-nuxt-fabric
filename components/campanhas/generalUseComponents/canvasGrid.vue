@@ -73,8 +73,8 @@ export default {
             if(this.gridGroup)
                 return
             var gridoption = {
-                stroke: '#ebebeb',
-                strokeWidth: 0.5,
+                stroke: 'black',
+                strokeWidth: 2.5,
                 distance: 10
             }
             var gridLines = [];
