@@ -3,14 +3,14 @@
         <v-tooltip bottom>
         <template v-slot:activator="{ on }">
             <v-btn class="mx-2" fab dark small color="primary" @click="openDialog" v-on="on">
-                <v-icon dark>aspect_ratio</v-icon>
+                <v-icon dark>extension</v-icon>
             </v-btn>
         </template>
-        <span class="subheading">Adicionar backgrounds</span>
+        <span class="subheading">Adicionar imagens complementares</span>
         </v-tooltip>  
         <v-dialog v-model="dialog" persistent max-width="700">
         <v-card>
-            <v-card-title class="headline primary--text">Backgrounds cadastrados:</v-card-title>
+            <v-card-title class="headline primary--text">Imagens complementares cadastradas:</v-card-title>
             <v-card-text>
                  <v-layout class="justify-center">
                     <v-flex xs5>
@@ -23,7 +23,7 @@
                                     <v-icon dark>save</v-icon>
                                 </v-btn>
                             </template>
-                            <span>Salvar background</span>
+                            <span class="subheading">Salvar background</span>
                         </v-tooltip> 
                     </v-flex>
                 </v-layout>
@@ -76,14 +76,13 @@ export default {
         dataImages: [],
         itens: [],
         img: [],
-        campanha_id: '5d4223b924a1f1483c193259'//campanha relativa aos backgrounds, é unica no codigo
+        campanha_id: '5d478c3082c8e55273f6bad1'//campanha relativa aos backgrounds, é unica no codigo
     }),
     created(){
         this.fetchProdutos()
     },
     methods:{
         addImg(img){
-            alert("Koe")
             img.src = "static/uploads/fotos/" + img.name
            this.removeImg(img.src)
            this.removeRow(img.row_id,img.src,this.campanha_id)

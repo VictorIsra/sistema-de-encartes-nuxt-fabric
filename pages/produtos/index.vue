@@ -34,10 +34,15 @@
       <v-spacer></v-spacer>
       <v-tooltip bottom>
           <template v-slot:activator="{ on }">
+            <div>
+              <comple-dialog v-if="userType === 'tabloide'"></comple-dialog>
+            </div>
+            <div>
             <bg-dialog v-if="userType === 'tabloide'"></bg-dialog>
+            </div>
             <v-btn color="primary" dark class="mb-2"  @click="addItem(-1)" v-on="on" >Adicionar produto</v-btn> <!--v-on="on" -->
           </template>
-          <span>Cadastrar um novo produto ao sistema</span>
+          <span class="subheading">Cadastrar um novo produto ao sistema</span>
         </v-tooltip>  
         
       <v-dialog v-model="dialog" max-width="500px">
@@ -198,12 +203,14 @@
   import formatInputMixin from '../../components/mixins/FormatInputMixin.js'
   import crudMixin from '../../components/mixins/CRUD.js'
   import bgDialog from '../../components/campanhas/generalUseComponents/bgDialog.vue'
+import compleDialog from '../../components/campanhas/generalUseComponents/compleDialog.vue'
 
   export default {
     components: {
       'img-upload': imgUpload,
       datas,
-      bgDialog
+      bgDialog,
+      compleDialog
     },
     mixins: [
       formatInputMixin,

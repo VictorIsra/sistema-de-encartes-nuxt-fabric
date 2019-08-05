@@ -256,6 +256,10 @@
                         <vue-select-image :useLabel="true" :dataImages="bgsImages" h='30px' w='30px' @onselectimage="addBg">
                         </vue-select-image>
                     </v-list>
+                      <v-list v-if="filtroEscolhido === 'complementares'" class="scroll-y">
+                        <vue-select-image :useLabel="true" :dataImages="compleImages" h='30px' w='30px' @onselectimage="addComple">
+                        </vue-select-image>
+                    </v-list>
                 </no-ssr> 
                 <v-divider vertical class="mx-1"></v-divider>
                         <template>
@@ -561,7 +565,6 @@ export default {
         setCanvasDim(objeto){
             if(objeto.data === undefined)
                 return
-                alert("VEJAAA " )
                 console.log("q emite ", objeto , " objto data ", objeto.data)
             this.canvas.setHeight(objeto.data.width)
             this.canvas.setWidth(objeto.data.height)
@@ -882,6 +885,22 @@ export default {
                 if(a.alt.toLowerCase() > b.alt.toLowerCase()) { return 1; }
                 return 0;
             })
+            let complementar_id = "5d478c3082c8e55273f6bad1"
+            this.itens = await this.getProdutos(complementar_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+            this.itens.forEach(p => {
+                if(p.img !== undefined && p.img !== '')
+                    this.comple.push( p.img)  
+            })
+            this.comple.forEach((img,i) => {
+                this.compleImages.push(img)
+                this.compleImages[i].src = this.getImgURL(img)
+
+            })
+            // n tem texr associado ainda this.compleImages.sort(function(a, b){//sortei produtos em ordem alfabetica
+            //     if(a.alt.toLowerCase() < b.alt.toLowerCase()) { return -1; }
+            //     if(a.alt.toLowerCase() > b.alt.toLowerCase()) { return 1; }
+            //     return 0;
+            // })
         },    
         getImgURL(img){
         //se uma img nao tiver sido escolhida, retorne enm branco
@@ -894,7 +913,6 @@ export default {
             this.canvas.loadFromJSON(jsonTabloide.data.tabloide)
             this.currBg = jsonTabloide.data.tabloide_bg
             this.folha = jsonTabloide.data.tabloide_folha
-            alert("FOLHA " + this.folha)
             this.canvas.renderAll()
             if(this.userType!== 'tabloide'){
                 alert("ideia boa mas temq usa bd agora xd" + this.altura + " l " + this.largura)
@@ -912,19 +930,22 @@ export default {
             this.canvas.add(text)
         },//cria um texto no canvas
         //METODOS RELATIVOS AO CANVAS/FABRIC
-        addImg(img,i){
+        addImg(img){
             console.log("adicionando img de indice ",img)
             const relaPath = "../../../uploads/fotos/" + img.name
            
             this.addImgToCanvas(relaPath,img)//parece estranho eu n passar simplesmente img, mas o fabric é eskisito...entao vai assim
           // this.canvas.bringToFront(preco)
+          
             const text = new fabric.IText(img.alt,{ top: 340,fontSize: 200 });
             this.canvas.add(text)
-            //this.canvas.bringToFront(text)
+                    //this.canvas.bringToFront(text)
             const preco = new fabric.IText(img.preco_v,{ top: 480,fontSize: 200 });
-            this.canvas.add(preco)
-            
-            
+            this.canvas.add(preco)      
+       },
+       addComple(img){
+            const relaPath = "../../../uploads/fotos/" + img.name
+            this.addImgToCanvas(relaPath,img)//parece e
        },
        addBg(img,i){
            console.log("vejaa IMGa ", img)

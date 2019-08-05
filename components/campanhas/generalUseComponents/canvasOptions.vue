@@ -42,18 +42,13 @@
                                         label="Largura (mm)">
                         </v-text-field>
                         </v-flex>
-                        <v-btn-toggle mandatory>
+                       
                             <div>
-                            <v-btn color="primary" fab small dark @click="swap(0)"  >
-                                <v-icon>stay_current_landscape</v-icon>
-                            </v-btn>
-                            </div>  
-                            <div>
-                            <v-btn color="primary" fab small dark @click="swap(1)" >
-                                <v-icon>stay_current_portrait</v-icon>
+                            <v-btn color="primary" fab small dark @click="swap" >
+                                <v-icon>compare_arrows</v-icon>
                             </v-btn>
                             </div> 
-                        </v-btn-toggle>
+                      
                     </v-layout>
                 </v-container>    
                 <v-layout class="justify-center">       
@@ -134,17 +129,16 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
                 let folha = await this.loadTabloide(this.campanha_id)
                 this.folha = folha.data.tabloide_folha
                 this.fetchedFlag = true    
-                alert("ne age " + this.folha)  
             }
            
         },
-        swap(flag){//pportrait passa flag 0, land flag 1
-            if(this.chave != flag){
-                this.chave = flag
+        swap(){//pportrait passa flag 0, land flag 1
+            // if(this.chave != flag){
+            //     this.chave = flag
                 let aux = this.altura
                 this.altura = this.largura
                 this.largura = aux
-            }
+           // }
            
         },
          getRealSize(){
@@ -205,7 +199,6 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
             //* 10 pq a formula é em cm, mas a entrada do user é  mm
             this.width =  ( this.largura * (300 / 2.54))/ 10//* 11.81//lol q bizarrroo
             this.height =   (this.altura * (300 /2.54))/10  //da o valor em pxs
-           alert("emiti " + this.folha)
                 //this.canvas.setZoom(this.canvas.getZoom() / 1.5)
             this.$emit('resize-canvas',{
                 data: {

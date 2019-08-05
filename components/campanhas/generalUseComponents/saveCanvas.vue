@@ -65,7 +65,6 @@ export default {
               setTimeout(()=>this.snackBar.snackbar = false,this.snackBar.timeout)
             if(this.canvas.ref !== undefined && this.canvas.campanha_id !== undefined){
                 var json = JSON.stringify(this.canvas.ref.toJSON())
-                alert("valra " + this.canvas.folha)
                 if(this.canvas.flag)//this.currBg !== '')
                     this.saveTabloide(json,this.canvas.campanha_id,this.canvas.flag,this.canvas.folha)
                 else
