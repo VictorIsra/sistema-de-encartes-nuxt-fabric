@@ -1,5 +1,14 @@
 <template>
-  <div>   
+  <div>  <div class="text-center ma-2">
+            <v-snackbar    :top="y === 'top'"  class="justify-end"
+            v-model="snackBar"
+              :timeout="2100"
+            >
+            <span class="subheading">
+            {{snackMsg}}</span>
+       
+        </v-snackbar>
+        </div>            
       <v-toolbar flat color="grey lighten-4">
           <v-toolbar-title>
             <v-layout align-center class="mr-2 primary--text">
@@ -247,6 +256,9 @@
       dialog: false,
       search: '',
       valid: false,
+       y: 'top',
+      snackMsg: 'Demanda atualizada com sucesso!',
+      snackBar: false,
       datesErrors: ['#'],//é uma pilha que checa os erros nas datas. nao terá erro qd ela só tiver o elemento base('#'), ou seja, se datesErros.length ===1
         defaultDatesValues: {//valor das datas em uma linha em particular da tabela. É uma prop
           Rdata_i: '', //de 'row data inicio'
@@ -496,6 +508,7 @@
             //console.log(" imgs ", this.editedItem.img)
             await this.fillImgInfo('',this.editedItem)
             this.updateRow(this.editedItem,this.campanha_id)
+            this.snackBar = true
             Object.assign(this.itens[this.editedIndex], this.editedItem)
 
         } else {//caso esteja adicionando algo em vez de editando

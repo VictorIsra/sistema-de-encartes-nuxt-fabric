@@ -2,6 +2,16 @@
 -->
 <template>
   <div> 
+      <div class="text-center ma-2">
+            <v-snackbar    :top="y === 'top'"  class="justify-end"
+            v-model="snackBar"
+              :timeout="2100"
+            >
+            <span class="subheading">
+            {{snackMsg}}</span>
+       
+        </v-snackbar>
+        </div>           
      <v-toolbar>
         <no-ssr>
             <v-list class="scroll-y">
@@ -214,6 +224,9 @@
         meta: '',
         qtdade: ''
       },
+      y: 'top',
+      snackMsg: 'Produto cadastrado com sucesso!',
+      snackBar: false,
       inputsValidation: {//usarei isso pra definir a validade dos inputs de forma eficaz
         nome:     true,
         qtdade:   true,
@@ -412,6 +425,8 @@
             }
             console.log("TES ", this.selectedImg  )
             this.updateRow(item, this.campanha_id)
+            this.snackMsg = "Produto atualizado com sucesso!"
+            this.snackBar = true
           })
       },
       prepareImgInfo(currentItem){//envia pro componente filho image_uload.vue os valores ( sao props no comp filho) a serem colocados ao abrir a aba/form de edit
@@ -485,9 +500,13 @@
             this.editUserInputs()
             //console.log(" imgs ", this.editedItem.img)
             await this.fillImgInfo('',this.editedItem)
+            this.snackMsg = 'Produto editado com sucesso!'
             Object.assign(this.itens[this.editedIndex], this.editedItem)
             this.updateRow(this.editedItem,this.campanha_id)
+
         } else {//caso esteja adicionando algo em vez de editando
+                                this.snackMsg = 'Produto adicionado com sucesso!'
+
             await this.fillImgInfo(0,this.editedItem)
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
@@ -495,6 +514,7 @@
             this.editedItem._id = row_id
             this.decrementProdutos(false)//qd passo flag flase, eu INCREMENTO 
         }
+        this.snackBar = true
         //this.saveProdutos()
         this.close()      
       },

@@ -1,7 +1,16 @@
 <!-- //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
 -->
 <template>
-  <div>
+  <div> <div class="text-center ma-2">
+            <v-snackbar    :top="y === 'top'"  class="justify-end"
+            v-model="snackBar"
+              :timeout="2100"
+            >
+            <span class="subheading">
+            {{snackMsg}}</span>
+       
+        </v-snackbar>
+        </div>          
     <v-toolbar flat color="white">
       <!-- aqui é uma prop passada pela etapa 2 (indiretamente, via o componente pai adicionar.vues) -->
     <span v-if="campanhaInfos && produtosQtdadeInfo !== undefined" class="title font-weight-regular primary--text">Produtos cadastrados: {{produtosQtdadeInfo.qtdade}}/{{produtosQtdadeInfo.meta}}</span>
@@ -131,7 +140,9 @@
       dialog: false,
       search: '',
       valid: true,
-
+ y: 'top',
+      snackMsg: 'Produto atualizado com sucesso!',
+      snackBar: false,
       headers: [
         
         { text: 'IMAGEM', value: 'img' , width: "1%", align: "center"},
@@ -204,6 +215,8 @@
             this.editUserInputs(true)
             Object.assign(this.itens[this.editedIndex], this.editedItem)
             this.updateRow(this.editedItem,this.campanha_id)
+                        this.snackBar = true
+
         }    
         this.close()      
       },
