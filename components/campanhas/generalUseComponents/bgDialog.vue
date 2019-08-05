@@ -1,5 +1,15 @@
 <template>
-    <v-layout justify-end>
+<div><div class="text-center ma-2">
+            <v-snackbar  
+            v-model="snackBar"
+              :timeout="2100"
+            >
+            <span class="subheading">
+            {{snackMsg}}</span>
+       
+        </v-snackbar>
+        </div> 
+    <v-layout justify-end>       
         <v-tooltip bottom>
         <template v-slot:activator="{ on }">
             <v-btn class="mx-2" fab dark small color="primary" @click="openDialog" v-on="on">
@@ -45,7 +55,8 @@
             </v-card-actions>
         </v-card>
         </v-dialog>
-    </v-layout>    
+    </v-layout> 
+    </div>   
 </template>
 
 <script>
@@ -61,6 +72,9 @@ export default {
         'img-upload': imgUpload
     },
     data: () => ({
+            y: 'top',
+      snackMsg: 'Produto cadastrado com sucesso!',
+      snackBar: false,
         cachedImgInfo: {
             imgName: '',//só o nome da img
             imgFile: '',//objeto que pode ser salvo no db e posteriormente renderizado em uma img,inclusive
@@ -83,10 +97,11 @@ export default {
     },
     methods:{
         addImg(img){
-            alert("Koe")
             img.src = "static/uploads/fotos/" + img.name
            this.removeImg(img.src)
            this.removeRow(img.row_id,img.src,this.campanha_id)
+           this.snackMsg = 'Background removido com sucesso'
+           this.snackBar = true
            this.dataImages.forEach((it,i)=>{
                if(it.src === img.src)
                 this.dataImages.splice(i,1)
@@ -106,11 +121,13 @@ export default {
             let flag2 = await this.fillImgInfo('',item)//retornara se salvou alguma img ou a entrada era nula e usara isso como flag
             if(flag2 != -1){
                 
+                this.snackMsg = 'Novo background cafastrado com sucesso!'
 
                 item.img.src = "static/uploads/fotos/" + item.name
                 const row_id = await this.addRow(item,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
                 item.img._id = row_id
                 item.img.src = this.getImgURL(item.img)
+                this.snackBar = true
                 this.dataImages.push(item.img)
                 this.resetImgCached()
                 this.imgInfo.flag = 0

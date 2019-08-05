@@ -14,7 +14,6 @@ export default {
         removeImg(path){//remove uma unica img. util na hr de remover bg
             if(path !== '' && path !== undefined)
                 api.campanha.removeImg({path})
-                alert("dropeiii")
         },
         async removeCampanha(campanha_id,produtos){
             try{

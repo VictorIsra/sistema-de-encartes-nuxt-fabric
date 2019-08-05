@@ -1,7 +1,16 @@
 <!-- //arquivo igual ao componente tabelaProdutos.vue mas numa localizacao onde posso debuga-lo sem ter que repetir a etapa 1
 -->
 <template>
-  <div> 
+  <div>   <div class="text-center ma-2">
+            <v-snackbar    :top="y === 'top'"  class="justify-end"
+            v-model="snackBar"
+              :timeout="2100"
+            >
+            <span class="subheading">
+            {{snackMsg}}</span>
+       
+        </v-snackbar>
+        </div>        
     <v-toolbar flat color="grey lighten-4">
         <v-toolbar-title>
           <v-layout align-center class="mr-2 primary--text">
@@ -219,6 +228,9 @@ import compleDialog from '../../components/campanhas/generalUseComponents/comple
     //fetchCampanhas
     //props:['campanha_id','campanhaInfos'],
     data: () => ({
+          y: 'top',
+      snackMsg: 'Produto cadastrado com sucesso!',
+      snackBar: false,
       userType: '',//autoexplicativo, porra xD
       campanhaInfos: '',
       campanha_id: '5d2f6b45384572128c682715',//é hardcoded pois o cadastro de produto é sempre feito nessa id 
@@ -416,12 +428,16 @@ import compleDialog from '../../components/campanhas/generalUseComponents/comple
       },
       async save () {
         if (this.editedIndex > -1) {//na edicao, preciso editar antes do assign, se nao vou modificar uma copia q nao é mais usada
-            this.editUserInputs()
+            this.editUserInputs()          
+              this.snackMsg = 'Produto editado com sucesso!'
+
             //console.log(" imgs ", this.editedItem.img)
             await this.fillImgInfo('',this.editedItem)
             Object.assign(this.itens[this.editedIndex], this.editedItem)
             this.updateRow(this.editedItem,this.campanha_id)
         } else {//caso esteja adicionando algo em vez de editando
+                                                this.snackMsg = 'Produto cadastrado com sucesso!'
+
             await this.fillImgInfo(0,this.editedItem)
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
@@ -430,6 +446,8 @@ import compleDialog from '../../components/campanhas/generalUseComponents/comple
             this.editedItem.id = row_id
             this.decrementProdutos(false)//qd passo flag flase, eu INCREMENTO 
         }
+                        this.snackBar = true
+
         //this.saveProdutos()
         this.close()      
       },
