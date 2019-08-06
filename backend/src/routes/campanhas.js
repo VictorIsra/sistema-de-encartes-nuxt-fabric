@@ -134,6 +134,7 @@ router.put('/campanhas/removeRow',async(req,res)=>{
     //só pode excluir img da base de dados, que é essa(s) campanha(s) é(sao) hardcoded
     //ou seja, só essas duas ids tem permissao de defato deeltar uma fot,bg, oq seja do sistema
     if(imgPath !== undefined && (campanha_id === '5d2f6b45384572128c682715' || campanha_id === '5d41e7571db4d9250a0d96c2'|| campanha_id === '5d478c3082c8e55273f6bad1')){//será undefined caso o item n tenha foto associada
+        console.log("VAIII DELETA")
         axios.post('/campanhas/removeImg',{
             path: imgPath
         }).then(r => console.log("deleteeei"))

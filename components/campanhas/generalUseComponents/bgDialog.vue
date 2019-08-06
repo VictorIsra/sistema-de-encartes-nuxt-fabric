@@ -97,14 +97,17 @@ export default {
     },
     methods:{
         addImg(img){
+            console.log("lalala ", img)
             img.src = "static/uploads/fotos/" + img.name
-           this.removeImg(img.src)
-           this.removeRow(img.row_id,img.src,this.campanha_id)
-           this.snackMsg = 'Background removido com sucesso'
-           this.snackBar = true
-           this.dataImages.forEach((it,i)=>{
-               if(it.src === img.src)
-                this.dataImages.splice(i,1)
+         // this.removeImg(img.src)
+            this.removeRow(img.row_id,img.src,this.campanha_id)
+            this.snackMsg = 'Background removido com sucesso'
+            this.snackBar = true
+            this.dataImages.forEach((it,i)=>{
+               if(it.src === img.src){
+                    this.img.splice(i,1)
+                    this.dataImages.splice(i,1)
+               }
            })
         },
         openDialog(flag){
@@ -136,11 +139,13 @@ export default {
            
         },
         async fetchProdutos(){
+        
             this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             this.itens.forEach((p,i) => {
                 if(p.img !== undefined && p.img !== ''){
                     this.img.push( p.img)
                     this.img[i].row_id = p._id
+                    
                 }    
             })
             this.img.forEach((img,i) => {
@@ -148,6 +153,7 @@ export default {
                 this.dataImages[i].src = this.getImgURL(img)
 
             })
+            console.log("LALA DDDDD ", this.itens)
         },
         fillCachedImgInfo(data){//componente filho img-upload enviará um evento e esta f será triggada por este evento
         //cacheio esses resultados e só associo a variavel 'itens' qd o usuario quiser salvar de fato a img

@@ -118,6 +118,7 @@ export default {
              .catch(e => console.log("erro: ",e))
         },
         removeRow(row_id,path,campanha_id){
+            console.log("vejaa ",path)
              api.campanha.removeRow({
                  campanha_id,
                  row_id: row_id,

@@ -84,11 +84,12 @@ export default {
     methods:{
         addImg(img){
             img.src = "static/uploads/fotos/" + img.name
-           this.removeImg(img.src)
            this.removeRow(img.row_id,img.src,this.campanha_id)
            this.dataImages.forEach((it,i)=>{
-               if(it.src === img.src)
-                this.dataImages.splice(i,1)
+               if(it.src === img.src){
+                    this.img.splice(i,1)
+                    this.dataImages.splice(i,1)
+               }
            })
         },
         openDialog(flag){
