@@ -2,6 +2,7 @@
   <div>
     <tabloide-sender :snackbar="snackbarflag" :msg="'produtos enviados para usuário tabloide com sucesso!'"></tabloide-sender>
     <v-stepper  v-model="e1">
+      
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">Dados da Campanha</v-stepper-step>
 
@@ -39,6 +40,7 @@
 
         <v-stepper-content step="2">
           <v-container grid-list-xs>
+
             <escolha-produtos  :campanhaInfos="campanha_infos" :campanha_id="campanha_id" @produtoQtdadeChange="produtoQtdadeChange"/>
           </v-container>
         
@@ -82,6 +84,7 @@
   import escolhaProdutos from '../../components/campanhas/step2/EscolhaProdutos.vue'
   //impor etapa 3 ( step 3):
   import concorrencia from '../../components/campanhas/step3/concorrencia.vue'
+
   import crudMixin from '../../components/mixins/CRUD.js'
   import tabloideSender from '../../components/campanhas/generalUseComponents/tabloideSended.vue'
 

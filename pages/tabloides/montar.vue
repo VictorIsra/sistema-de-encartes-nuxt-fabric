@@ -199,10 +199,11 @@
                                 'borda2': canvasMode === 'portrait'}">
                 <no-ssr>
                     
-                    <v-list v-if="filtroEscolhido === 'produtos'" class="scroll-y">
+                   <!-- <v-list v-if="filtroEscolhido === 'produtos'" class="scroll-y">
                         <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="addImg">
                         </vue-select-image>
-                    </v-list>
+                    </v-list> -->
+                    <listsx v-if="filtroEscolhido === 'produtos'" :campanha_id="campanha_id" :canvas="canvas"></listsx>
                      <v-list v-if="filtroEscolhido === 'backgrounds'" class="scroll-y">
                         <vue-select-image :useLabel="true" :dataImages="bgsImages" h='50px' w='50px' @onselectimage="addBg">
                         </vue-select-image>
@@ -289,7 +290,7 @@ import copiarColar from   '../../components/campanhas/generalUseComponents/copia
 import agrupar from   '../../components/campanhas/generalUseComponents/agruparDesagrupar.vue'
 import deletar from  '../../components/campanhas/generalUseComponents/deletar.vue'
 import addpolygon from  '../../components/campanhas/generalUseComponents/addPolygon.vue'
-
+import listsx from '../../components/campanhas/generalUseComponents/lists.vue'
 import crudMixin from '../../components/mixins/CRUD.js'
 import supers from '../../components/campanhas/generalUseComponents/super.vue'
 import textStyles from '../../components/campanhas/generalUseComponents/textStyles.vue'
@@ -314,6 +315,7 @@ export default {
         deletar,
         alerts,
         supers,
+        listsx,
         'addPolygon': addpolygon,
         'text-styles':textStyles
     },

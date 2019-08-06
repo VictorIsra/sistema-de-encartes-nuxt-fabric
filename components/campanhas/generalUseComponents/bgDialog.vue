@@ -98,7 +98,6 @@ export default {
     },
     methods:{
         addImg(img){
-            console.log("lalala ", img)
             img.src = "static/uploads/fotos/" + img.name
             this.removeRow(img.row_id,img.src,this.campanha_id)
             this.snackMsg = 'Background removido com sucesso'
