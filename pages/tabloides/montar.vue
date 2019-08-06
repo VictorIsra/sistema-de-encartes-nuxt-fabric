@@ -259,21 +259,25 @@
             </template>  
         </v-card>
             <v-layout row >
-                 <no-ssr>
-                    <template>  
-                    <chrome-picker class=" teste2" v-model="colors">
-                        </chrome-picker>
-                    </template>  
-                      
-                    </no-ssr> 
-                    <v-flex sx2> 
-                    <span v-if="isDragging" @wheel="wheelOn"  @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove.stop="mouseMove">
-                        <canvas  id="c" class="canvas-wrapper "></canvas>
-                    </span>
-                    <span  v-else @wheel="wheelOn"  @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove">
-                         <canvas  id="c" class="canvas-wrapper "></canvas>
+                    <v-layout>
+                        <v-flex>
+                        <no-ssr sx1>
+                        <template>  
+                        <chrome-picker class=" teste2" v-model="colors">
+                            </chrome-picker>
+                        </template>  
+                        
+                        </no-ssr>
+                        </v-flex> 
+                        <v-flex sx1> 
+                        <span v-if="isDragging" @wheel="wheelOn"  @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove.stop="mouseMove">
+                            <canvas  id="c"   ></canvas>
                         </span>
-                    </v-flex>
+                        <span  v-else @wheel="wheelOn"  @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove">
+                            <canvas  id="c"   ></canvas>
+                            </span>
+                        </v-flex>
+                    </v-layout>
                 </v-layout>
         </div>
 </template>
@@ -334,6 +338,8 @@ export default {
             { text: '400' },
             { text: '500' }, 
         ],
+        w:200,
+        h: 290,
         toggle_exclusive: 3,
         toggle_grid_exclusive: '',//util,toggle de outro agrupament oe botao
        elScale: {//serve pra ver a escala do elemento selecionado, "seu tamanho"
@@ -536,6 +542,8 @@ export default {
             if(objeto.data === undefined)
                 return
                 console.log("q emite ", objeto , " objto data ", objeto.data)
+            //    this.h = objeto.data.width
+             //   this.w = objeto.data.height
             this.canvas.setHeight(objeto.data.width)
             this.canvas.setWidth(objeto.data.height)
             this.folha = objeto.data.folha
