@@ -100,11 +100,7 @@
                             <span class="subheading">Mostrar lista de imagens</span>
                             </v-tooltip>
                         </div>
-                        <v-divider
-                                class="mx-2"
-                                inset
-                                vertical
-                            ></v-divider> 
+                    
                     </v-layout>
                 </v-toolbar>
                  <v-toolbar v-show="lever" flat :class="{'borda': canvasMode !== 'portrait',
@@ -259,11 +255,11 @@
             </template>  
         </v-card>
             <v-layout row >
-                    <v-layout>
+                    <v-layout >
                         <v-flex>
                         <no-ssr sx1>
                         <template>  
-                        <chrome-picker class=" teste2" v-model="colors">
+                        <chrome-picker class="borda2" v-model="colors">
                             </chrome-picker>
                         </template>  
                         
@@ -271,7 +267,7 @@
                         </v-flex> 
                         <v-flex sx1> 
                         <span v-if="isDragging" @wheel="wheelOn"  @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove.stop="mouseMove">
-                            <canvas  id="c"   ></canvas>
+                            <canvas  id="c"     ></canvas>
                         </span>
                         <span  v-else @wheel="wheelOn"  @click="changeTest" @mouseup="mouseUp" @mousedown="mouseDown" @mousemove="mouseMove">
                             <canvas  id="c"   ></canvas>
@@ -322,6 +318,10 @@ export default {
         'text-styles':textStyles
     },
    data: () => ({
+    //    wrap:{
+    //        width: '10px',
+    //        height: '10px'
+    //    },
         dropdown_edit: [
             {text: '10' },
             { text: '20' },
@@ -544,8 +544,11 @@ export default {
                 console.log("q emite ", objeto , " objto data ", objeto.data)
             //    this.h = objeto.data.width
              //   this.w = objeto.data.height
+             
             this.canvas.setHeight(objeto.data.width)
             this.canvas.setWidth(objeto.data.height)
+           // this.wrap.width = '1024px'
+            //this.wrap.height = '720px'
             this.folha = objeto.data.folha
             this.canvasInfo.folha = this.folha
             console.log(" this,folha ", this.folha , " objeto ",objeto.data)

@@ -3,6 +3,7 @@
             <v-snackbar  
             v-model="snackBar"
               :timeout="2100"
+              :vertical="true"
             >
             <span class="subheading">
             {{snackMsg}}</span>

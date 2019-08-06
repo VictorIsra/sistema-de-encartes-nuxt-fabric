@@ -1,5 +1,15 @@
 <template>
-    <v-layout justify-end>
+    <v-layout justify-end><div class="text-center ma-2">
+            <v-snackbar  
+            v-model="snackBar"
+              :timeout="2100"
+              :vertical="true"
+            >
+            <span class="subheading">
+            {{snackMsg}}</span>
+       
+        </v-snackbar>
+        </div> 
         <v-tooltip bottom>
         <template v-slot:activator="{ on }">
             <v-btn class="mx-2" fab dark small color="primary" @click="openDialog" v-on="on">
@@ -61,6 +71,9 @@ export default {
         'img-upload': imgUpload
     },
     data: () => ({
+                y: 'top',
+      snackMsg: 'Complemento cadastrado com sucesso!',
+      snackBar: false,
         cachedImgInfo: {
             imgName: '',//só o nome da img
             imgFile: '',//objeto que pode ser salvo no db e posteriormente renderizado em uma img,inclusive
@@ -86,6 +99,8 @@ export default {
             img.src = "static/uploads/fotos/" + img.name
             // this.removeImg(img.src)//como sao campanha especials, remove a img em removerow
            this.removeRow(img.row_id,img.src,this.campanha_id)
+           this.snackMsg = "Complemento removido com sucesso!"
+           this.snackBar = true
            this.dataImages.forEach((it,i)=>{
                if(it.src === img.src){
                     this.img.splice(i,1)
@@ -111,6 +126,8 @@ export default {
                 item.img.src = "static/uploads/fotos/" + item.name
                 const row_id = await this.addRow(item,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
                 item.img.row_id = row_id
+                this.snackMsg = "Complemento cadastrado com sucesso!"
+                this.snackBar = true
                 item.img.src = this.getImgURL(item.img)
                 this.dataImages.push(item.img)
                 this.resetImgCached()

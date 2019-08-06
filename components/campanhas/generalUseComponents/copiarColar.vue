@@ -1,5 +1,14 @@
 <template>
-    <div>
+    <div>     <div class="text-center ma-2">
+            <v-snackbar class="justify-end"
+            v-model="snackBar.snackbar"
+              :timeout="snackBar.timeout"
+            >
+            <span class="subheading">
+            {{ snackBar.text }}</span>
+       
+        </v-snackbar>
+        </div>            
         <v-layout>
           <div> 
                            <v-tooltip bottom>
@@ -21,16 +30,7 @@
                             <span class="subheading">Colar elemento(s) copiados(s)</span>
                             </v-tooltip>
                         </div>
-                <div class="text-center ma-2">
-            <v-snackbar class="justify-end"
-            v-model="snackBar.snackbar"
-              :timeout="snackBar.timeout"
-            >
-            <span class="subheading">
-            {{ snackBar.text }}</span>
-       
-        </v-snackbar>
-        </div>             
+            
         </v-layout>
         
     </div>
