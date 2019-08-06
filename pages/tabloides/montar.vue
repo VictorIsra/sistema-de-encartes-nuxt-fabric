@@ -203,7 +203,9 @@
                         <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="addImg">
                         </vue-select-image>
                     </v-list> -->
+                    <v-flex>
                     <listsx v-if="filtroEscolhido === 'produtos'" :campanha_id="campanha_id" :canvas="canvas"></listsx>
+                    </v-flex>
                      <v-list v-if="filtroEscolhido === 'backgrounds'" class="scroll-y">
                         <vue-select-image :useLabel="true" :dataImages="bgsImages" h='50px' w='50px' @onselectimage="addBg">
                         </vue-select-image>

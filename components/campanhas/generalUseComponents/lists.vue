@@ -7,8 +7,18 @@
                 </vue-select-image>
             </v-list>
         </no-ssr> 
+                            <v-flex xs1>
+                            <span class="heading indigo--text">Tag:</span>
+                            </v-flex>
+                            <v-flex xs2>
+                            <v-select
+                                :items="tags"
+                                v-model="tag"
+                            ></v-select>
+                            </v-flex>
         </v-toolbar>
-    </div>                   
+    </div> 
+
 </template>
 <script>
 import crudMixin from '../../../components/mixins/CRUD.js'
@@ -16,14 +26,23 @@ import {fabric}  from "fabric"
 
 export default {
     data: () =>({
-        dataImages: [],
-        imgs: [],//temporaria, usada como chace intermediario
+        aux: [],//filtra oq importa proq é msotrado
+        dataImages: [],//guarda oq sera mostrado
+        imgs: [],//temporaria, usada como chace 
+        tags:[
+        ],
+        tag: '--'
     }),
     mounted(){
         this.fetchProdutos()
     },
     props: ['canvas','campanha_id'],
     mixins:[crudMixin],
+    watch:{
+        tag(){
+            this.filtraTags()   
+        }
+    },
     methods:{
         onSelectImage(img){
             console.log("clickei   em ", img)
@@ -48,13 +67,37 @@ export default {
                   //  this.canvas.bringToFront(this.gridGroup)//grid ficar sempre atras, caso ele exista
             })//{canvas: canvas})//n funciona passar esse arg...doc lixoooo
         },
-            getImgURL(img){
+        getImgURL(img){
                 //se uma img nao tiver sido escolhida, retorne enm branco
-                console.log("entrou c ",img)
+                console.log("entrou c ",img, "  ser undine? ", img.name === undefined)
                 const path = img.name === undefined ? "" : "../../../uploads/fotos/" + img.name
                 return path
-            },
-            async fetchProdutos(){
+        },
+        getTagsOption(){
+             //   if(this.tag === 'todos')
+            let samples = []
+            this.imgs.forEach(img =>{//troca em fetch p isso funfard novo
+                samples.push(img.tag)
+                console.log("TAG ",img.tag)
+            })
+           
+               const unique = (value, index, self) => {
+                    return self.indexOf(value) === index;
+                }
+            let distintas = samples.filter(unique)
+            this.tags = distintas
+       },
+        filtraTags(){
+            let aux = this.imgs.filter(img => {
+                return img.tag === this.tag
+            })
+            this.dataImages = []
+            aux.forEach((img,i) =>{
+                this.dataImages.push(img)
+                this.dataImages[i].src = this.getImgURL(img)
+            })
+        },
+        async fetchProdutos(){
                             if(this.campanha_id === undefined)
                                 return
             this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
@@ -62,14 +105,19 @@ export default {
                 if(p.img !== undefined && p.img !== ''){
                     p.img.alt = p.nome
                     p.img.preco_v = p.preco_v
+                    p.img.tag = p.obs
                     this.imgs.push( p.img)
                 }    
             })
             this.imgs.forEach((img,i) => {
+                //this.aux.push(img)
+                //this.aux[i].src = this.getImgURL(img)
                 this.dataImages.push(img)
                 this.dataImages[i].src = this.getImgURL(img)
 
             })
+            this.getTagsOption()
+            this.filtraTags()
             // let campanhaBg_id = "5d4223b924a1f1483c193259"
             // this.itens = await this.getProdutos(campanhaBg_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             // this.itens.forEach(p => {
@@ -81,7 +129,8 @@ export default {
             //     this.bgsImages[i].src = this.getImgURL(img)
 
             // })
-            this.dataImages.sort(function(a, b){//sortei produtos em ordem alfabetica
+            //this.dataImages.sort
+            this.aux.sort(function(a, b){//sortei produtos em ordem alfabetica
                 if(a.alt.toLowerCase() < b.alt.toLowerCase()) { return -1; }
                     if(a.alt.toLowerCase() > b.alt.toLowerCase()) { return 1; }
                     return 0;
