@@ -99,7 +99,6 @@ export default {
         addImg(img){
             console.log("lalala ", img)
             img.src = "static/uploads/fotos/" + img.name
-         // this.removeImg(img.src)
             this.removeRow(img.row_id,img.src,this.campanha_id)
             this.snackMsg = 'Background removido com sucesso'
             this.snackBar = true
@@ -128,7 +127,7 @@ export default {
 
                 item.img.src = "static/uploads/fotos/" + item.name
                 const row_id = await this.addRow(item,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
-                item.img._id = row_id
+                item.img.row_id = row_id
                 item.img.src = this.getImgURL(item.img)
                 this.snackBar = true
                 this.dataImages.push(item.img)
