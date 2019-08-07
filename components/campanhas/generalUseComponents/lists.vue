@@ -3,7 +3,7 @@
         <v-toolbar>
         <no-ssr>
             <v-list class="scroll-y">
-              <vue-select-image :useLabel="true" class="cor" :dataImages="dataImages" h='50px' w='50px' @onselectimage="onSelectImage">
+              <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="onSelectImage">
                 </vue-select-image>
             </v-list>
         </no-ssr> 
@@ -96,6 +96,11 @@ export default {
                 this.dataImages.push(img)
                 this.dataImages[i].src = this.getImgURL(img)
             })
+            this.dataImages.sort(function(a, b){//sortei produtos em ordem alfabetica
+                if(a.alt.toLowerCase() < b.alt.toLowerCase()) { return -1; }
+                    if(a.alt.toLowerCase() > b.alt.toLowerCase()) { return 1; }
+                    return 0;
+            })
         },
         async fetchProdutos(){
                             if(this.campanha_id === undefined)
@@ -157,6 +162,5 @@ export default {
 }
 </script>
 <style>
-.cor {
-}
+
 </style>

@@ -32,13 +32,14 @@
                         </v-flex>
                           <v-flex xs12 sm6>
                       
-                        <v-text-field  @change="checkDim"
+                        <v-text-field  disabled
+                        @change="checkDim"
                                         v-model="largura"
                                         label="Altura (mm)">
                         </v-text-field>
                         </v-flex>
                          <v-flex xs12 sm6>
-                        <v-text-field   v-model="altura"  @change="checkDim" 
+                        <v-text-field   disabled v-model="altura"  @change="checkDim" 
                                         label="Largura (mm)">
                         </v-text-field>
                         </v-flex>
@@ -66,7 +67,7 @@ import crudMixin from '../../mixins/CRUD.js'
 
 export default {/*px por miliemtro: Printers typically print at 300 pixels per inch.In millimeters: 300ppi / 25.4 mm-in = 11.81 pixels per millimeter.So if you want to print a 50mm drawing you would calculate the required pixel size like this:50mm x 11.81ppm = 590.5 pixels (591 pixels)And you resize the canvas to have 591 pixels (astming square) like this: */
     data: () => ({
-        folhas: ['A5','A4','A3','tabloid','A2'],//opcoes pre feitas de folhas
+        folhas: ['A5','letter','A4','A3','A2','tabloid'],//opcoes pre feitas de folhas
         folha: 'A4',//tipo de folha do canvas por default
         altura:210, // éa largura no menu lol eixo y em (mm) ? na real cm ac
         largura : 297,//eixo x em (mm) ? na real cm
@@ -84,7 +85,9 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
          ['canvas','campanha_id']
     ,    
     watch:{
-            altura(){//NA REAL É LARGURA X
+            altura(){//NA REAL É LARGURA 
+                if(typeof(this.altura) !== 'number')
+                this.altura = 600
                  if(this.altura >= 594)
                      this.altura = 594
                 // if(this.largura >= 457.2)
@@ -93,6 +96,8 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
             },
             largura(){//NA REAL É ALTURA  Y
             //    if(this.altura >= 457.2)
+            if(typeof(this.largura) !== 'number')
+                this.largura = 600
                 if(this.largura >= 594)
                     this.largura = 594    
             },
@@ -114,7 +119,10 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
                 this.altura = 420,//altura na vdd é largura e vice versa
                 this.largura = 594//devia ser 1189
             }
-          
+             else if(this.folha === 'letter'){
+                this.altura = 216,//altura na vdd é largura e vice versa
+                this.largura = 279//devia ser 1189
+            }
             else if(this.folha === 'tabloid'){
                 this.altura = 304,
                 this.largura = 457.2//devia ser 1189

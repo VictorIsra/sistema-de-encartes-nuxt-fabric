@@ -69,7 +69,7 @@
                                 label="Unidade"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6>
-                  <v-text-field ref="editedItem.obs" v-model="editedItem.obs" label="Observação"></v-text-field>
+                  <v-text-field ref="editedItem.obs" v-model="editedItem.obs" label="Tag do produto"></v-text-field>
                 </v-flex>
                 <v-flex>
                   <datas   :dateRange="campanhaInfos"
@@ -268,7 +268,7 @@
         { text: 'PRODUTO', value: 'nome' , width: "1%", align: "center"},
         { text: 'ESTOQUE', value: 'qtdade', width: "1%", align: "center"},
         { text: 'UNIDADE', value: 'unidade' , width: "1%", align: "center"},
-        { text: 'OBSERVAÇÃO', value: 'obs' , width: "1%", align: "center"},
+        { text: 'TAG', value: 'obs' , width: "1%", align: "center"},
         { text: 'INÍCIO', value: 'data_i' , width: "5%", align: "center"},
         { text: 'TÉRMINO', value: 'data_f' , width: "5%", align: "center"},
         { text: 'PREÇO DE COMPRA', value: 'preco_c' , width: "1%", align: "center"},

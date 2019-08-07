@@ -367,10 +367,10 @@ export default {
        selectionFont: 'PT Serif',//font inicial de um texto
         fontSize: 20,
         fonts: [ 'PT Serif','Times New Roman',"Roboto", 'Literata' , 'Oswald', "Inconsolata",'Josefin Sans','Indie Flower','Amiri','Rokkitt'],
-        textbox:'',
+      salvarComo: 'baixar em PDF',
+          textbox:'',
         tobg: false,
         checkbox: true,
-        salvarComo: 'baixar em PDF',
         userType: '',
         canvas: '',
         canvasMode: 'portrait',//portrait ou landscape,
