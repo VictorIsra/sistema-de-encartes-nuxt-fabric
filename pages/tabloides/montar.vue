@@ -144,34 +144,19 @@
                 </v-toolbar>
                     <v-toolbar v-show="lever2 === true" dense :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}"> 
-                        <v-flex xs3>
-                            <v-overflow-btn
-                            label="FONTE"
-                            hide-details
-                            class="pa-0"
-                            v-model="selectionFont"
-                            :items='fonts'
-                            dense
-                            ></v-overflow-btn>
-                        </v-flex>
+                    
                         <template v-if="$vuetify.breakpoint.mdAndUp">
                         <v-divider vertical></v-divider>
-                                    <font-size :flag=evflag :canvas=canvas></font-size>
-
-                    
+                        <font-manager :flag=evflag :canvas=canvas></font-manager>
                         <v-divider vertical class="mx-2"></v-divider>
                          <text-styles :canvas="canvas" @tstyles="listenFontStyle" :toggle="toggle_exclusive"></text-styles>
-                          <supers :canvas="canvas"></supers>
-                        <v-flex><v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn class="mx-2" v-on="on" fab dark small color="white grey--text" @click="addText">
-                                <v-icon dark>title</v-icon>
-                            </v-btn></template>
-                            <span class="subheading">Adicionar nova caixa de texto ao canvas</span>
-                            </v-tooltip>
-                        </v-flex>
-                        <v-divider  class="mx-2" vertical></v-divider>
-                        <v-flex class="mx-4">
+                        <supers :canvas="canvas"></supers>
+                        <text-box :canvas=canvas></text-box>
+
+                        <v-divider  class="mx-1" vertical></v-divider>
+                        <escala></escala>
+
+                     <!--   <v-flex class="mx-4">
                             <span class="subheading indigo--text mx-1">Escala X:</span>
                         </v-flex>
                         <v-flex xs1>
@@ -182,18 +167,14 @@
                         <v-flex xs1>
                             <v-divider vertical></v-divider>
                             <span class="subheading indigo--text ">{{elScale.y.toFixed(3)}}</span>
-                        </v-flex>
+                        </v-flex>-->
+
                         </template>
                     </v-toolbar>
                
                 <v-toolbar v-show="lever3" :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
                 <no-ssr>
-                    
-                   <!-- <v-list v-if="filtroEscolhido === 'produtos'" class="scroll-y">
-                        <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="addImg">
-                        </vue-select-image>
-                    </v-list> -->
                     <v-flex>
                     <listsx v-if="filtroEscolhido === 'produtos'" :campanha_id="campanha_id" :canvas="canvas"></listsx>
                     </v-flex>
@@ -286,8 +267,11 @@ import addpolygon from  '../../components/campanhas/generalUseComponents/addPoly
 import listsx from '../../components/campanhas/generalUseComponents/lists.vue'
 import crudMixin from '../../components/mixins/CRUD.js'
 import supers from '../../components/campanhas/generalUseComponents/super.vue'
-import fontSize from '../../components/campanhas/generalUseComponents/fontSize'
+import fontManager from '../../components/campanhas/generalUseComponents/fontManager'
 import textStyles from '../../components/campanhas/generalUseComponents/textStyles.vue'
+import textBox from '../../components/campanhas/generalUseComponents/textBox.vue'
+import escala from '../../components/campanhas/generalUseComponents/escala.vue'
+
 import { Compact, Chrome} from 'vue-color'
 
 import {fabric}  from "fabric"
@@ -297,7 +281,8 @@ export default {
       crudMixin
     ],
     components:{
-        fontSize,
+        escala,
+        'font-manager': fontManager,
         'compact-picker': Compact,
         'chrome-picker':Chrome,
         'canvas-option':canvasOption,
@@ -312,17 +297,18 @@ export default {
         supers,
         listsx,
         'addPolygon': addpolygon,
-        'text-styles':textStyles
+        'text-styles':textStyles,
+        textBox
     },
    data: () => ({
         w:200,
         h: 290,
         toggle_exclusive: 3,
         toggle_grid_exclusive: '',//util,toggle de outro agrupament oe botao
-       elScale: {//serve pra ver a escala do elemento selecionado, "seu tamanho"
-           x: 1,
-           y: 1
-       },
+    //    elScale: {//serve pra ver a escala do elemento selecionado, "seu tamanho"
+    //        x: 1,
+    //        y: 1
+    //    },
         filtro: [{ text: 'produtos'},
                 {text: 'backgrounds'},
                 {text: 'complementares'}
@@ -337,9 +323,9 @@ export default {
         largura:0,
         folha: 'A4',
        colors: '#194d33',//var obrigatoria na lib de color picker
-       selectionFont: 'PT Serif',//font inicial de um texto
+       //selectionFont: 'PT Serif',//font inicial de um texto
     //    fontSize: 20,
-        fonts: [ 'PT Serif','Times New Roman',"Roboto", 'Literata' , 'Oswald', "Inconsolata",'Josefin Sans','Indie Flower','Amiri','Rokkitt'],
+      //  fonts: [ 'PT Serif','Times New Roman',"Roboto", 'Literata' , 'Oswald', "Inconsolata",'Josefin Sans','Indie Flower','Amiri','Rokkitt'],
       salvarComo: 'baixar em PDF',
           textbox:'',
         tobg: false,
@@ -354,7 +340,6 @@ export default {
         comple:[],//img complementares
         bgsImages:[],//vetor q contera bgs
         compleImages: [],
-        dataImages: [],
         campanha_id: undefined,
         loading: false,
         currBg: '',//background q ta sendo usado no momento, usado caso a res do canvas mude 
@@ -402,9 +387,9 @@ export default {
         colors(){
             this.actionHandler('fontColor')
         },
-        selectionFont(){
-            this.actionHandler('fontFamily')
-        },
+        // selectionFont(){
+        //     this.actionHandler('fontFamily')
+        // },
         toggle_exclusive(){
            // this.actionHandler('fontStyle', this.toggle_exclusive)
         },
@@ -619,13 +604,13 @@ export default {
                 if (doomedObj.type === 'activeSelection') {
                     //varios object selecinados
                     doomedObj.canvas = this.canvas
-                    if(event === 'fontFamily'){
-                        doomedObj.forEachObject((obj) => {
-                            obj.set("fontFamily", this.selectionFont)
-                        })
-                    }
+                    // if(event === 'fontFamily'){
+                    //     doomedObj.forEachObject((obj) => {
+                    //         obj.set("fontFamily", this.selectionFont)
+                    //     })
+                    // }
                    
-                    else if(event === 'fontColor'){
+                    if(event === 'fontColor'){
                         doomedObj.forEachObject((obj) => {
                              obj.setColor(this.colors.hex8)
                         })
@@ -653,13 +638,13 @@ export default {
                 //um unico objeto selecionado
                     var activeObject = this.canvas.getActiveObject();
                     if(activeObject !== null ) {''
-                        if(event === 'fontFamily'){
-                            this.canvas.getActiveObject().set("fontFamily", this.selectionFont)
-                        }
+                        // if(event === 'fontFamily'){
+                        //     this.canvas.getActiveObject().set("fontFamily", this.selectionFont)
+                        // }
                         // else if(event === 'fontSize'){
                         //     this.canvas.getActiveObject().set("fontSize", this.fontSize.toString())
                         // }
-                        else if(event === 'fontColor'){
+                         if(event === 'fontColor'){
                             this.canvas.getActiveObject().setColor(this.colors.hex8)
                         }
                         else if(event === 'fontStyle'){
@@ -702,10 +687,10 @@ export default {
             // console.log(obj.text, obj.fontFamily, obj.fontSize, obj.fontStyle)
             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
                 //comum a todos os el: img, texto etc
-                this.elScale.x = this.canvas.getActiveObject().scaleX
-                this.elScale.y = this.canvas.getActiveObject().scaleY
+                // this.elScale.x = this.canvas.getActiveObject().scaleX
+                // this.elScale.y = this.canvas.getActiveObject().scaleY
                 if(this.canvas.getActiveObject().text !== undefined){//exclusivo p texto
-                    this.selectionFont = this.canvas.getActiveObject().fontFamily //só textos passam desse teste, imgs sao object active, mas retornam undefined para esse atributo
+                  //  this.selectionFont = this.canvas.getActiveObject().fontFamily //só textos passam desse teste, imgs sao object active, mas retornam undefined para esse atributo
                     this.checkFontStyle(this.canvas.getActiveObject().fontStyle)
                     this.evflag = !this.evflag
                 }
@@ -784,19 +769,6 @@ export default {
             }
         },
         async fetchProdutos(){
-            this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
-            this.itens.forEach(p => {
-                if(p.img !== undefined && p.img !== ''){
-                    p.img.alt = p.nome
-                    p.img.preco_v = p.preco_v
-                    this.imgs.push( p.img)
-                }    
-            })
-            this.imgs.forEach((img,i) => {
-                this.dataImages.push(img)
-                this.dataImages[i].src = this.getImgURL(img)
-
-            })
             let campanhaBg_id = "5d4223b924a1f1483c193259"
             this.itens = await this.getProdutos(campanhaBg_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             this.itens.forEach(p => {
@@ -808,11 +780,7 @@ export default {
                 this.bgsImages[i].src = this.getImgURL(img)
 
             })
-            this.dataImages.sort(function(a, b){//sortei produtos em ordem alfabetica
-                if(a.alt.toLowerCase() < b.alt.toLowerCase()) { return -1; }
-                if(a.alt.toLowerCase() > b.alt.toLowerCase()) { return 1; }
-                return 0;
-            })
+          
             let complementar_id = "5d478c3082c8e55273f6bad1"
             this.itens = await this.getProdutos(complementar_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             this.itens.forEach(p => {
@@ -824,11 +792,6 @@ export default {
                 this.compleImages[i].src = this.getImgURL(img)
 
             })
-            // n tem texr associado ainda this.compleImages.sort(function(a, b){//sortei produtos em ordem alfabetica
-            //     if(a.alt.toLowerCase() < b.alt.toLowerCase()) { return -1; }
-            //     if(a.alt.toLowerCase() > b.alt.toLowerCase()) { return 1; }
-            //     return 0;
-            // })
         },    
         getImgURL(img){
         //se uma img nao tiver sido escolhida, retorne enm branco
@@ -854,10 +817,10 @@ export default {
            // this.setCanvasDim(1540,1000,'portrait')
 
         },
-        addText(){
-            const text = new fabric.IText('Texto',{ top: 100,fontSize: 200})
-            this.canvas.add(text)
-        },//cria um texto no canvas
+        // addText(){
+        //     const text = new fabric.IText('Texto',{ top: 100,fontSize: 200})
+        //     this.canvas.add(text)
+        // },//cria um texto no canvas
         //METODOS RELATIVOS AO CANVAS/FABRIC
         addImg(img){
             console.log("adicionando img de indice ",img)
@@ -910,7 +873,6 @@ export default {
 </script>
 
 <style scoped >
-@import url('https://fonts.googleapis.com/css?family=Bahianita|PT+Serif|Darker+Grotesque|Indie+Flower|Josefin+Sans|Literata|Oswald|Roboto|Amiri|Cinzel|Patua+One|Permanent+Marker|Righteous|Rokkitt|Vollkorn&display=swap');
 .listaHorizontal{
     float: left;
     padding: 2px
