@@ -156,18 +156,9 @@
                         </v-flex>
                         <template v-if="$vuetify.breakpoint.mdAndUp">
                         <v-divider vertical></v-divider>
+                                    <font-size :flag=evflag :canvas=canvas></font-size>
 
-                         <v-flex xs3>
-                        <v-overflow-btn
-                            :items="dropdown_edit"
-                            editable
-                            v-model="fontSize"
-                            label="Tamanho da fonte"
-                            hide-details
-                            class="pa-0"
-                            overflow
-                        ></v-overflow-btn>
-                         </v-flex>
+                    
                         <v-divider vertical class="mx-2"></v-divider>
                          <text-styles :canvas="canvas" @tstyles="listenFontStyle" :toggle="toggle_exclusive"></text-styles>
                           <supers :canvas="canvas"></supers>
@@ -295,6 +286,7 @@ import addpolygon from  '../../components/campanhas/generalUseComponents/addPoly
 import listsx from '../../components/campanhas/generalUseComponents/lists.vue'
 import crudMixin from '../../components/mixins/CRUD.js'
 import supers from '../../components/campanhas/generalUseComponents/super.vue'
+import fontSize from '../../components/campanhas/generalUseComponents/fontSize'
 import textStyles from '../../components/campanhas/generalUseComponents/textStyles.vue'
 import { Compact, Chrome} from 'vue-color'
 
@@ -305,6 +297,7 @@ export default {
       crudMixin
     ],
     components:{
+        fontSize,
         'compact-picker': Compact,
         'chrome-picker':Chrome,
         'canvas-option':canvasOption,
@@ -322,26 +315,6 @@ export default {
         'text-styles':textStyles
     },
    data: () => ({
-    //    wrap:{
-    //        width: '10px',
-    //        height: '10px'
-    //    },
-        dropdown_edit: [
-            {text: '10' },
-            { text: '20' },
-            { text: '30' },
-            { text: '40' },
-            { text: '50' },
-            { text: '60' },
-            { text: '70' },
-            { text: '80' },
-            { text: '90' },
-            { text: '100' },
-            { text: '200' },
-            { text: '300' },
-            { text: '400' },
-            { text: '500' }, 
-        ],
         w:200,
         h: 290,
         toggle_exclusive: 3,
@@ -365,7 +338,7 @@ export default {
         folha: 'A4',
        colors: '#194d33',//var obrigatoria na lib de color picker
        selectionFont: 'PT Serif',//font inicial de um texto
-        fontSize: 20,
+    //    fontSize: 20,
         fonts: [ 'PT Serif','Times New Roman',"Roboto", 'Literata' , 'Oswald', "Inconsolata",'Josefin Sans','Indie Flower','Amiri','Rokkitt'],
       salvarComo: 'baixar em PDF',
           textbox:'',
@@ -392,7 +365,8 @@ export default {
        removeGridFlag: 0,
        lever: true,//lever1 e 2 controlam layout de opcoes e de edicao de texto respectivamente
        lever2: false,
-       lever3: false
+       lever3: false,
+       evflag: 0//serve p ver qd cliquei num texto e assim alterar o tomanho da font
 
     }),
     computed:{
@@ -430,9 +404,6 @@ export default {
         },
         selectionFont(){
             this.actionHandler('fontFamily')
-        },
-        fontSize(){
-            this.actionHandler('fontSize')
         },
         toggle_exclusive(){
            // this.actionHandler('fontStyle', this.toggle_exclusive)
@@ -653,27 +624,13 @@ export default {
                             obj.set("fontFamily", this.selectionFont)
                         })
                     }
-                    else if(event === 'fontSize'){
-                        doomedObj.forEachObject((obj) => {
-                            obj.set("fontSize", this.fontSize.toString())
-                        })
-                    }
+                   
                     else if(event === 'fontColor'){
                         doomedObj.forEachObject((obj) => {
                              obj.setColor(this.colors.hex8)
                         })
                     }
-                    // else if(event === 'fontStyle'){
-                    //     let style = 'normal'
-                    //     if(value === 1)
-                    //         style = 'Bold'
-                    //     else if(value === 2)
-                    //         style = 'Italic'    
-                    //     doomedObj.forEachObject((obj) => {
-                    //         obj.set("fontStyle", style)
-                    //     })
-
-                    // }
+                  
                     else if(event === 'bring'){
                         doomedObj.forEachObject((obj) => {
                             if(!value){
@@ -695,7 +652,7 @@ export default {
                 else{
                 //um unico objeto selecionado
                     var activeObject = this.canvas.getActiveObject();
-                    if(activeObject !== null ) {
+                    if(activeObject !== null ) {''
                         if(event === 'fontFamily'){
                             this.canvas.getActiveObject().set("fontFamily", this.selectionFont)
                         }
@@ -749,8 +706,8 @@ export default {
                 this.elScale.y = this.canvas.getActiveObject().scaleY
                 if(this.canvas.getActiveObject().text !== undefined){//exclusivo p texto
                     this.selectionFont = this.canvas.getActiveObject().fontFamily //só textos passam desse teste, imgs sao object active, mas retornam undefined para esse atributo
-                    this.fontSize = this.canvas.getActiveObject().fontSize.toString()
                     this.checkFontStyle(this.canvas.getActiveObject().fontStyle)
+                    this.evflag = !this.evflag
                 }
             }
             else
