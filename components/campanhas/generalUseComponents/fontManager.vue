@@ -1,7 +1,7 @@
 <template>
     <v-layout > 
         <v-flex xs12>
-            <v-overflow-btn
+            <v-overflow-btn 
                 label="FONTE"
                 hide-details
                 class="pa-0"
@@ -10,7 +10,7 @@
                 dense
             ></v-overflow-btn>
         </v-flex>
-        <v-flex xs12>
+        <v-flex >
             <v-overflow-btn
                 :items="fontSizes"
                 editable
@@ -21,7 +21,7 @@
                 overflow
             ></v-overflow-btn>
         </v-flex>
-        <v-flex xs12>
+        <v-flex xs6>
             <v-overflow-btn
                 :items="bordas"
                 editable
@@ -34,7 +34,7 @@
         </v-flex> <div>
                             <v-tooltip bottom>
                             <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn color="primary" fab small dark @click="manageFonts('border_color')" v-on="on">
+                            <v-btn color="white grey--text" fab small dark @click="manageFonts('border_color')" v-on="on">
                                 <v-icon size=30>format_color_fill</v-icon>
                             </v-btn>
                             </template>
@@ -113,6 +113,8 @@ export default {
                         else if(event === 'fontFamily'){
                             doomedObj.forEachObject((obj) => {
                                 obj.set("fontFamily", this.fontFamily)
+                                this.canvas.renderAll()
+                                this.canvas.setZoom(this.canvas.getZoom() / 1.1 )
                             })
                         }
                          else if(event === 'border'){
@@ -146,7 +148,8 @@ export default {
                             } 
                             else if(event === 'fontFamily'){
                                 this.canvas.getActiveObject().set("fontFamily", this.fontFamily)
-
+                                this.canvas.renderAll()
+                                this.canvas.setZoom(this.canvas.getZoom() / 1.1 )
                             }
                             else if(event === 'border'){
                                 this.canvas.getActiveObject().set('strokeWidth',parseInt(this.border) )

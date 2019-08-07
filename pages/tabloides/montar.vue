@@ -4,42 +4,22 @@
        <!--     <alerts></alerts>-->
    <!--deletar :canvas="canvasInfo"></deletar>-->
             <template v-if="userType === 'tabloide'">
-               
                 <v-toolbar  :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
-                    <v-layout align-center class="justify-center">
-                       
-                      <canvas-grid :canvas="canvasInfo" :flag="removeGridFlag" :checkGrid="checkGrid"></canvas-grid> 
-                        <v-divider  
-                                inset
-                                vertical class="mx-2"></v-divider>
-                   
-                        <copy-paste :canvas="canvasInfo" ></copy-paste>
+                    <v-layout align-center class="justify-center">  
                         
-                          <v-divider class="mx-2"
-                                inset
-                                vertical>
-                                </v-divider>
-                          <agrupar :canvas="canvasInfo"></agrupar>
+                        <canvas-grid :canvas="canvasInfo" :flag="removeGridFlag" :checkGrid="checkGrid"></canvas-grid> 
+                            <v-divider  inset vertical class="mx-2"></v-divider>
+                        <copy-paste :canvas="canvasInfo" ></copy-paste>
+                            <v-divider class="mx-2" inset vertical></v-divider>
+                        <agrupar :canvas="canvasInfo"></agrupar>
                         <deletar :canvas="canvasInfo"></deletar>
-                         <v-divider class="mx-2"
-                                inset
-                                vertical>
-                                </v-divider>
+                            <v-divider class="mx-2" inset vertical></v-divider>
                         <canvas-move :canvas="canvasInfo"></canvas-move>
-                        <v-divider
-                                class="mx-2"
-                                inset
-                                vertical
-                            ></v-divider>
-                        <div><v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn color="primary" fab small dark v-on="on" @click="restoreDefault2">
-                                <v-icon>restore</v-icon>
-                            </v-btn>    
-                            </template>
-                            <span class="subheading">Setar canvas para posição e zoon originais</span>
-                            </v-tooltip>
+                            <v-divider class="mx-2" inset vertical></v-divider>
+                   
+                        <div>
+                        <reset-canvas :canvas=canvas></reset-canvas>
                         </div>
                         <div><v-tooltip bottom>
                             <template v-slot:activator="{ on }" v-on="on">
@@ -146,7 +126,6 @@
                                 'borda2': canvasMode === 'portrait'}"> 
                     
                         <template v-if="$vuetify.breakpoint.mdAndUp">
-                        <v-divider vertical></v-divider>
                         <font-manager :flag=evflag :canvas=canvas  :colors=colors></font-manager>
                         <v-divider vertical class="mx-2"></v-divider>
                          <text-styles :canvas="canvas" @tstyles="listenFontStyle" :toggle="toggle_exclusive"></text-styles>
@@ -155,20 +134,6 @@
 
                         <v-divider  class="mx-1" vertical></v-divider>
                         <escala :canvas=canvas :flag=evflag></escala>
-
-                     <!--   <v-flex class="mx-4">
-                            <span class="subheading indigo--text mx-1">Escala X:</span>
-                        </v-flex>
-                        <v-flex xs1>
-                            <v-divider vertical></v-divider>
-                            <span class="subheading indigo--text"> {{elScale.x.toFixed(3)}}</span>
-                        </v-flex>
-                        <span class="subheading indigo--text">Escala Y:</span>
-                        <v-flex xs1>
-                            <v-divider vertical></v-divider>
-                            <span class="subheading indigo--text ">{{elScale.y.toFixed(3)}}</span>
-                        </v-flex>-->
-
                         </template>
                     </v-toolbar>
                
@@ -176,15 +141,13 @@
                                 'borda2': canvasMode === 'portrait'}">
                 <no-ssr>
                     <v-flex>
-                    <listsx v-if="filtroEscolhido === 'produtos'" :campanha_id="campanha_id" :canvas="canvas"></listsx>
+                    <listsx v-show="filtroEscolhido === 'produtos'" :campanha_id="campanha_id" :canvas="canvas"></listsx>
                     </v-flex>
-                     <v-list v-if="filtroEscolhido === 'backgrounds'" class="scroll-y">
-                        <vue-select-image :useLabel="true" :dataImages="bgsImages" h='50px' w='50px' @onselectimage="addBg">
-                        </vue-select-image>
+                     <v-list v-show="filtroEscolhido === 'backgrounds'" class="scroll-y">
+                        <bg-lista  :canvas=canvas :currBg=currBg :flag=bgFlag></bg-lista>
                     </v-list>
-                      <v-list v-if="filtroEscolhido === 'complementares'" class="scroll-y">
-                        <vue-select-image :useLabel="true" :dataImages="compleImages" h='50px' w='50px' @onselectimage="addComple">
-                        </vue-select-image>
+                      <v-list v-show="filtroEscolhido === 'complementares'" class="scroll-y">
+                       <comple-list :canvas=canvas></comple-list>
                     </v-list>
                 </no-ssr> 
                                             <v-divider vertical class="mx-1"></v-divider>
@@ -215,16 +178,6 @@
                                 </v-btn>
                             </div> 
                         </v-toolbar-title>
-                         <!-- <div>
-                                <v-btn color="primary"  fab medium dark > 
-                                    <v-icon size=40>picture_as_pdf</v-icon>
-                                </v-btn>
-                            </div>
-                            <div>
-                                <v-btn color="primary" fab medium dark @click="restoreDefault">
-                                    <v-icon size=40>restore</v-icon>
-                                </v-btn>
-                             </div> -->
                     </v-layout>
                 </v-toolbar>
             </template>  
@@ -267,9 +220,14 @@ import addpolygon from  '../../components/campanhas/generalUseComponents/addPoly
 import listsx from '../../components/campanhas/generalUseComponents/lists.vue'
 import crudMixin from '../../components/mixins/CRUD.js'
 import supers from '../../components/campanhas/generalUseComponents/super.vue'
+import bgList from '../../components/campanhas/generalUseComponents/bgList.vue'
 import fontManager from '../../components/campanhas/generalUseComponents/fontManager'
 import textStyles from '../../components/campanhas/generalUseComponents/textStyles.vue'
 import textBox from '../../components/campanhas/generalUseComponents/textBox.vue'
+import compleList from '../../components/campanhas/generalUseComponents/compleList.vue'
+
+import resetCanvas from '../../components/campanhas/generalUseComponents/resetCanvas.vue'
+
 import escala from '../../components/campanhas/generalUseComponents/escala.vue'
 
 import { Compact, Chrome} from 'vue-color'
@@ -281,7 +239,9 @@ export default {
       crudMixin
     ],
     components:{
+        'reset-canvas':resetCanvas,
         escala,
+        'bg-lista':bgList,
         'font-manager': fontManager,
         'compact-picker': Compact,
         'chrome-picker':Chrome,
@@ -289,20 +249,20 @@ export default {
         'save-canvas': saveCanvas,
         'save-pdf': saveCavasPDF,
         'canvas-move': canvasMove,
-         'canvas-grid': canvasGrid,
+        'canvas-grid': canvasGrid,
         'copy-paste': copiarColar,
         agrupar,
         deletar,
         alerts,
         supers,
         listsx,
+        'comple-list':compleList,
         'addPolygon': addpolygon,
         'text-styles':textStyles,
         textBox
     },
    data: () => ({
-        w:200,
-        h: 290,
+    
         toggle_exclusive: 3,
         toggle_grid_exclusive: '',//util,toggle de outro agrupament oe botao
         filtro: [{ text: 'produtos'},
@@ -320,31 +280,24 @@ export default {
         folha: 'A4',
        colors: '#194d33',//var obrigatoria na lib de color picker
       salvarComo: 'baixar em PDF',
-          textbox:'',
         tobg: false,
         checkbox: true,
         userType: '',
         canvas: '',
         canvasMode: 'portrait',//portrait ou landscape,
-        img: '',
-        itens: '',//imgs, futuramente texto..etc,
-        imgs: [],//produtos
-        bgs:[],//bgs
-        comple:[],//img complementares
-        bgsImages:[],//vetor q contera bgs
-        compleImages: [],
         campanha_id: undefined,
         loading: false,
         currBg: '',//background q ta sendo usado no momento, usado caso a res do canvas mude 
         clipboard: '',
         dpi: 300,
         canvasInfo: {},//fundamental, será uma prop p diversos componentes!
-       // imgsList: []
        removeGridFlag: 0,
+       bgFlag: 0,
        lever: true,//lever1 e 2 controlam layout de opcoes e de edicao de texto respectivamente
        lever2: false,
        lever3: false,
-       evflag: 0//serve p ver qd cliquei num texto e assim alterar o tomanho da font
+       evflag: 0,//serve p ver qd cliquei num texto e assim alterar o tomanho da font
+       zout: true
 
     }),
     computed:{
@@ -363,7 +316,6 @@ export default {
             handler(){
                 this.canvasInfo.folha = this.folha
                 console.log("dddd",this.canvasInfo.folha)
-              //  this.updateCanvasInfo()
             },deep:true
         }
         ,
@@ -454,29 +406,24 @@ export default {
         setCanvasDim(objeto){
             if(objeto.data === undefined)
                 return
-                console.log("q emite ", objeto , " objto data ", objeto.data)
-            //    this.h = objeto.data.width
-             //   this.w = objeto.data.height
-             
+                console.log("q emite ", objeto , " objto data ", objeto.data)  
             this.canvas.setHeight(objeto.data.width)
             this.canvas.setWidth(objeto.data.height)
-           // this.wrap.width = '1024px'
-            //this.wrap.height = '720px'
             this.folha = objeto.data.folha
             this.canvasInfo.folha = this.folha
             console.log(" this,folha ", this.folha , " objeto ",objeto.data)
-            this.restoreDefault()//apos mudar as dim, da um refesh no canvas p ele voltar pro status original, porem com a res mudada
             let auxwidth = this.canvas.width
-            this.canvas.setZoom(this.canvas.getZoom() / (auxwidth /175) )
-             var delta = new fabric.Point(400,0)
-             this.canvas.relativePan(delta)
-              var delta = new fabric.Point(0,20)
-             this.canvas.relativePan(delta)
-            if(this.currBg !== ''){
-                this.addBg(this.currBg)
-            }
+            this.bgFlag = !this.bgFlag   
+
+                if(this.zout){//essencial p n dar zoomout qd eu reseto o status no componente
+                    this.canvas.setZoom(this.canvas.getZoom() / (auxwidth /175) )
+                    var delta = new fabric.Point(400,0)
+                    this.canvas.relativePan(delta)
+                    var delta = new fabric.Point(0,20)
+                    this.canvas.relativePan(delta)
+                }
+                this.zout = false    
         },
-     
         removeGrid(){
             this.removeGridFlag = !this.removeGridFlag
             this.gridGroup && this.canvas.remove(this.gridGroup)
@@ -490,18 +437,8 @@ export default {
                 this.lastPosX = evento.clientX
                 this.lastPosY = evento.clientY
               
-              //  evento.__proto__.defaultPrevented = true
                 console.log("exito:??? ", evento,evento.defaultPrevented )
             }
-        },
-       restoreDefault2(){
-            this.restoreDefault()
-            let auxwidth = this.canvas.width
-            this.canvas.setZoom(this.canvas.getZoom() / (auxwidth /175) )
-             var delta = new fabric.Point(400,0)
-             this.canvas.relativePan(delta)
-              var delta = new fabric.Point(0,20)
-             this.canvas.relativePan(delta)
         },
         mouseMove(evento){
             if(this.isDragging) {
@@ -519,12 +456,6 @@ export default {
         mouseUp(){
             this.isDragging = false
         },
-         restoreDefault(){
-            this.canvas.setZoom(1)
-            //reset o canvas para o status inicial
-            this.canvas.setViewportTransform([1,0,0,1,0,0]) 
-            this.canvas.renderAll()
-       },
         //event indicará a acao q deve ser feita, e o value o valor passado
         actionHandler(event, value = false){//como as f de mudar cor, tamanho do texto, font etc tem a msm estrutura, essa funcao fará o papel de todos os casos
            if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
@@ -532,12 +463,7 @@ export default {
                 if (doomedObj.type === 'activeSelection') {
                     //varios object selecinados
                     doomedObj.canvas = this.canvas
-                    // if(event === 'fontFamily'){
-                    //     doomedObj.forEachObject((obj) => {
-                    //         obj.set("fontFamily", this.selectionFont)
-                    //     })
-                    // }
-                   
+
                     if(event === 'fontColor'){
                         doomedObj.forEachObject((obj) => {
                              obj.setColor(this.colors.hex8)
@@ -566,12 +492,6 @@ export default {
                 //um unico objeto selecionado
                     var activeObject = this.canvas.getActiveObject();
                     if(activeObject !== null ) {''
-                        // if(event === 'fontFamily'){
-                        //     this.canvas.getActiveObject().set("fontFamily", this.selectionFont)
-                        // }
-                        // else if(event === 'fontSize'){
-                        //     this.canvas.getActiveObject().set("fontSize", this.fontSize.toString())
-                        // }
                          if(event === 'fontColor'){
                             this.canvas.getActiveObject().setColor(this.colors.hex8)
                         }
@@ -608,21 +528,14 @@ export default {
             else if(style === 'Italic')
                 this.toggle_exclusive = 2
             else if( style === 'normal')
-                this.toggle_exclusive = 3 
-                
+                this.toggle_exclusive = 3     
         },
         changeTest(event){
-            // console.log(obj.text, obj.fontFamily, obj.fontSize, obj.fontStyle)
             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                //comum a todos os el: img, texto etc
-                // this.elScale.x = this.canvas.getActiveObject().scaleX
-                // this.elScale.y = this.canvas.getActiveObject().scaleY
                 if(this.canvas.getActiveObject().text !== undefined){//exclusivo p texto
-                  //  this.selectionFont = this.canvas.getActiveObject().fontFamily //só textos passam desse teste, imgs sao object active, mas retornam undefined para esse atributo
                     this.checkFontStyle(this.canvas.getActiveObject().fontStyle)
                 }
-                                    this.evflag = !this.evflag
-
+                this.evflag = !this.evflag
             }
             else
                 console.log("Nada selec")    
@@ -676,16 +589,12 @@ export default {
             if(this.campanha_id === undefined)
                 this.$router.push('/tabloides')
             else{
-//                                alert("hmmm" + this.folha)
-
-               // this.fetchProdList()
                 this.canvasInfo = {
                     ref: this.canvas,
                     campanha_id: this.campanha_id,
                     flag: this.currBg !== '' ? this.currBg : undefined,
                     folha: this.folha
                 }
-                this.fetchProdutos()//console.log("ID: ", this.campanha_id) 
                 this.carregarTabloide()
             }        
         },  
@@ -697,31 +606,7 @@ export default {
                     folha: this.folha
             }
         },
-        async fetchProdutos(){
-            let campanhaBg_id = "5d4223b924a1f1483c193259"
-            this.itens = await this.getProdutos(campanhaBg_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
-            this.itens.forEach(p => {
-                if(p.img !== undefined && p.img !== '')
-                    this.bgs.push( p.img)  
-            })
-            this.bgs.forEach((img,i) => {
-                this.bgsImages.push(img)
-                this.bgsImages[i].src = this.getImgURL(img)
-
-            })
-          
-            let complementar_id = "5d478c3082c8e55273f6bad1"
-            this.itens = await this.getProdutos(complementar_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
-            this.itens.forEach(p => {
-                if(p.img !== undefined && p.img !== '')
-                    this.comple.push( p.img)  
-            })
-            this.comple.forEach((img,i) => {
-                this.compleImages.push(img)
-                this.compleImages[i].src = this.getImgURL(img)
-
-            })
-        },    
+  
         getImgURL(img){
         //se uma img nao tiver sido escolhida, retorne enm branco
         console.log("entrou c ",img)
@@ -737,44 +622,14 @@ export default {
             if(this.userType!== 'tabloide'){
                // alert("ideia boa mas temq usa bd agora xd" + this.altura + " l " + this.largura)
                 this.canvas.setHeight(2000)
-                this.canvas.setWidth(2500)
-                this.restoreDefault2()
-            
+                this.canvas.setWidth(2500)            
             }
+            this.evflag = !this.evflag
             this.lever = false
-            //this.setCanvasDim(3600,2300,'landscape')
-           // this.setCanvasDim(1540,1000,'portrait')
-
         },
-        // addText(){
-        //     const text = new fabric.IText('Texto',{ top: 100,fontSize: 200})
-        //     this.canvas.add(text)
-        // },//cria um texto no canvas
-        //METODOS RELATIVOS AO CANVAS/FABRIC
-        addImg(img){
-            console.log("adicionando img de indice ",img)
-            const relaPath = "../../../uploads/fotos/" + img.name
-           
-            this.addImgToCanvas(relaPath,img)//parece estranho eu n passar simplesmente img, mas o fabric é eskisito...entao vai assim
-          // this.canvas.bringToFront(preco)
-          
-            const text = new fabric.IText(img.alt,{ top: 340,fontSize: 200 });
-            this.canvas.add(text)
-                    //this.canvas.bringToFront(text)
-            const preco = new fabric.IText(img.preco_v,{ top: 480,fontSize: 200 });
-            this.canvas.add(preco)      
-       },
        addComple(img){
             const relaPath = "../../../uploads/fotos/" + img.name
             this.addImgToCanvas(relaPath,img)//parece e
-       },
-       addBg(img,i){
-           console.log("vejaa IMGa ", img)
-            const relaPath = "../../../uploads/fotos/" + img.name
-            this.setBackground(relaPath,img)
-            this.currBg = img
-            if(this.gridGroup)
-                this.canvas.bringToFront(this.gridGroup)//grid ficar sempre atras, caso ele exista
        },
         addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
             fabric.Image.fromURL(path,(img)=>{
