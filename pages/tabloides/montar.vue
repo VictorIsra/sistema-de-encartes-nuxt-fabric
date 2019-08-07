@@ -207,39 +207,15 @@
 </template>
 
 <script>
-import alerts from '../../components/campanhas/generalUseComponents/alerts'// ../generalUseComponents/canvasOptions.vue'
-import canvasOption from '../../components/campanhas/generalUseComponents/canvasOptions'// ../generalUseComponents/canvasOptions.vue'
-import saveCanvas from '../../components/campanhas/generalUseComponents/saveCanvas.vue'// ../generalUseComponents/canvasOptions.vue'
-import saveCavasPDF from '../../components/campanhas/generalUseComponents/saveCanvasPDF.vue'// ../generalUseComponents/canvasOptions.vue'
-import canvasMove from '../../components/campanhas/generalUseComponents/canvasMove.vue'
-import canvasGrid from '../../components/campanhas/generalUseComponents/canvasGrid.vue'
-import copiarColar from   '../../components/campanhas/generalUseComponents/copiarColar.vue'
-import agrupar from   '../../components/campanhas/generalUseComponents/agruparDesagrupar.vue'
-import deletar from  '../../components/campanhas/generalUseComponents/deletar.vue'
-import addpolygon from  '../../components/campanhas/generalUseComponents/addPolygon.vue'
-import listsx from '../../components/campanhas/generalUseComponents/lists.vue'
 import crudMixin from '../../components/mixins/CRUD.js'
-import supers from '../../components/campanhas/generalUseComponents/super.vue'
-import bgList from '../../components/campanhas/generalUseComponents/bgList.vue'
-import fontManager from '../../components/campanhas/generalUseComponents/fontManager'
-import textStyles from '../../components/campanhas/generalUseComponents/textStyles.vue'
-import textBox from '../../components/campanhas/generalUseComponents/textBox.vue'
-import compleList from '../../components/campanhas/generalUseComponents/compleList.vue'
-
-import resetCanvas from '../../components/campanhas/generalUseComponents/resetCanvas.vue'
-
-import escala from '../../components/campanhas/generalUseComponents/escala.vue'
-
-import { Compact, Chrome} from 'vue-color'
-
 import {fabric}  from "fabric"
- 
+import {textStyles,supers,bgList,resetCanvas,escala,fontManager,Compact,Chrome,canvasOption,saveCanvas,saveCavasPDF,canvasMove,canvasGrid,copiarColar,agrupar,deletar,alerts,addpolygon,listsx,compleList,textBox} from '../../plugins/canvasImports.js'
 export default {
     mixins: [
       crudMixin
     ],
     components:{
-        'reset-canvas':resetCanvas,
+         'reset-canvas':resetCanvas,
         escala,
         'bg-lista':bgList,
         'font-manager': fontManager,
@@ -342,8 +318,7 @@ export default {
     mounted() { 
         this.canvas = new fabric.Canvas('c',{
         preserveObjectStacking: true})
-       // this.canvas.setHeight(1540)
-        //this.canvas.setWidth(1000)
+      
         this.userType = this.$store.state.auth.userType
         this.checkRedirect()
     },
@@ -606,7 +581,6 @@ export default {
                     folha: this.folha
             }
         },
-  
         getImgURL(img){
         //se uma img nao tiver sido escolhida, retorne enm branco
         console.log("entrou c ",img)
@@ -655,7 +629,6 @@ export default {
     }
 }
 </script>
-
 <style scoped >
 .listaHorizontal{
     float: left;
@@ -680,7 +653,6 @@ export default {
     color: red;
 
  }  
- 
  .tolbar{
      position: relative;
   color:aqua;
