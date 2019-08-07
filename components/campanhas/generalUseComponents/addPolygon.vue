@@ -30,15 +30,6 @@
                             </template>
                             <span class="subheading">Adicionar círculo ao canvas</span>
                             </v-tooltip>
-                        </div> <div>
-                            <v-tooltip bottom>
-                            <template v-slot:activator="{ on }" v-on="on">
-                            <v-btn color="primary" fab small dark @click="strokeColor" v-on="on">
-                                <v-icon size=30>format_color_fill</v-icon>
-                            </v-btn>
-                            </template>
-                            <span class="subheading">Aplicar cor selecionada à borda da(s) seleção(s)</span>
-                            </v-tooltip>
                         </div>
                      
         </v-layout>
@@ -116,7 +107,7 @@ export default {
                let doomedObj = this.canvas.getActiveObject()
                 if (doomedObj.type === 'activeSelection') {
                         doomedObj.forEachObject((obj) => {
-                            obj.set('strokeWidth', 10)
+                          // obj.set('strokeWidth', 5)
                            obj.set('stroke',cor)
                         })
                     
@@ -125,7 +116,7 @@ export default {
                 //um unico objeto selecionado
                     var activeObject = this.canvas.getActiveObject();
                     if(activeObject !== null ) {
-                        this.canvas.getActiveObject().set('strokeWidth', 10)
+                     //   this.canvas.getActiveObject().set('strokeWidth', 5)
                         this.canvas.getActiveObject().set('stroke',cor)
                     }
                 }      

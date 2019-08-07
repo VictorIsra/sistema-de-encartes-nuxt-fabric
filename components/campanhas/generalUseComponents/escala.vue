@@ -16,19 +16,21 @@
 </template>
 <script>
 export default {
+    props: ['canvas','flag'],
     data: () => ({
+    
         elScale: {//serve pra ver a escala do elemento selecionado, "seu tamanho"
            x: 1,
            y: 1
        },
     }),
-    methods:{
-        getScale(){
-            if(this.canvas !== undefined){
+    watch:{
+        flag(){
+           if(this.canvas !== undefined){
                 if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
                     this.elScale.x = this.canvas.getActiveObject().scaleX
                     this.elScale.y = this.canvas.getActiveObject().scaleY
-                }    
+                }     
             }
         }
     }

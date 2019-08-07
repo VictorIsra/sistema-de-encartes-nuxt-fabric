@@ -147,14 +147,14 @@
                     
                         <template v-if="$vuetify.breakpoint.mdAndUp">
                         <v-divider vertical></v-divider>
-                        <font-manager :flag=evflag :canvas=canvas></font-manager>
+                        <font-manager :flag=evflag :canvas=canvas  :colors=colors></font-manager>
                         <v-divider vertical class="mx-2"></v-divider>
                          <text-styles :canvas="canvas" @tstyles="listenFontStyle" :toggle="toggle_exclusive"></text-styles>
                         <supers :canvas="canvas"></supers>
                         <text-box :canvas=canvas></text-box>
 
                         <v-divider  class="mx-1" vertical></v-divider>
-                        <escala></escala>
+                        <escala :canvas=canvas :flag=evflag></escala>
 
                      <!--   <v-flex class="mx-4">
                             <span class="subheading indigo--text mx-1">Escala X:</span>
@@ -305,10 +305,6 @@ export default {
         h: 290,
         toggle_exclusive: 3,
         toggle_grid_exclusive: '',//util,toggle de outro agrupament oe botao
-    //    elScale: {//serve pra ver a escala do elemento selecionado, "seu tamanho"
-    //        x: 1,
-    //        y: 1
-    //    },
         filtro: [{ text: 'produtos'},
                 {text: 'backgrounds'},
                 {text: 'complementares'}
@@ -323,9 +319,6 @@ export default {
         largura:0,
         folha: 'A4',
        colors: '#194d33',//var obrigatoria na lib de color picker
-       //selectionFont: 'PT Serif',//font inicial de um texto
-    //    fontSize: 20,
-      //  fonts: [ 'PT Serif','Times New Roman',"Roboto", 'Literata' , 'Oswald', "Inconsolata",'Josefin Sans','Indie Flower','Amiri','Rokkitt'],
       salvarComo: 'baixar em PDF',
           textbox:'',
         tobg: false,
@@ -387,12 +380,6 @@ export default {
         colors(){
             this.actionHandler('fontColor')
         },
-        // selectionFont(){
-        //     this.actionHandler('fontFamily')
-        // },
-        toggle_exclusive(){
-           // this.actionHandler('fontStyle', this.toggle_exclusive)
-        },
         checkbox(){
             if(this.checkbox === true)
                 this.salvarComo = 'baixar em PDF'
@@ -421,40 +408,6 @@ export default {
         },
         listenFontStyle(toggle){
             this.toggle_exclusive = toggle
-        },
-        normalScript(){
-            if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                if(this.canvas.getActiveObject().type === 'image' ||this.canvas.getActiveObject().type === 'group'|| this.canvas.getActiveObject().type === 'activeSelection')
-                    return
-                var active = this.canvas.getActiveObject()
-                // if (!active) return;
-                active.setSelectionStyles({
-                    fontSize: undefined,
-                    deltaY: undefined,
-                })
-                this.canvas.requestRenderAll()
-            }    
-        },
-        superScript() {
-            if( this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-               if(this.canvas.getActiveObject().type === 'image' || this.canvas.getActiveObject().type === 'group'|| this.canvas.getActiveObject().type === 'activeSelection')
-                    return
-                this.normalScript()//restaura antes d alterar
-                var active = this.canvas.getActiveObject()
-                console.log("NOAO RETORNE ", active)
-                active.setSuperscript();
-                this.canvas.requestRenderAll()
-            }    
-        },
-        subScript() {
-            if( this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
-                if(this.canvas.getActiveObject().type === 'image' || this.canvas.getActiveObject().type === 'group' || this.canvas.getActiveObject().type === 'activeSelection')
-                    return
-                this.normalScript()//restaura antes de auterar
-                var active = this.canvas.getActiveObject()
-                active.setSubscript()
-                this.canvas.requestRenderAll()
-            }    
         },
         copy(){
             if(this.canvas.getActiveObject() !== undefined && this.canvas.getActiveObject() !== null){
@@ -523,32 +476,7 @@ export default {
                 this.addBg(this.currBg)
             }
         },
-        fillGrid(){
-            if(this.gridGroup)
-                return
-            var gridoption = {
-                stroke: '#ebebeb',
-                strokeWidth: 0.5,
-                distance: 10
-            }
-            var gridLines = [];
-            let gridlen = this.canvas.width > this.canvas.height ?  this.canvas.width :  this.canvas.height
-            for (var x = 1; x < (gridlen ); x += 30) {
-                gridLines.push(new fabric.Line([x, 0, x, gridlen], gridoption));
-          //  }
-            //for (var x = 1; x < (this.canvas.height ); x += 30) {
-                gridLines.push(new fabric.Line([0, x, gridlen, x], gridoption));
-            }
-            this.gridGroup = new fabric.Group(gridLines, {
-                selectable: false,
-                evented: false
-            })
-            this.gridGroup.addWithUpdate()
-            this.canvas.add(this.gridGroup)  
-            //this.canvas.sendToBack(this.gridGroup)
-            this.canvas.bringToFront(this.gridGroup)
-
-        },
+     
         removeGrid(){
             this.removeGridFlag = !this.removeGridFlag
             this.gridGroup && this.canvas.remove(this.gridGroup)
@@ -692,8 +620,9 @@ export default {
                 if(this.canvas.getActiveObject().text !== undefined){//exclusivo p texto
                   //  this.selectionFont = this.canvas.getActiveObject().fontFamily //só textos passam desse teste, imgs sao object active, mas retornam undefined para esse atributo
                     this.checkFontStyle(this.canvas.getActiveObject().fontStyle)
-                    this.evflag = !this.evflag
                 }
+                                    this.evflag = !this.evflag
+
             }
             else
                 console.log("Nada selec")    
