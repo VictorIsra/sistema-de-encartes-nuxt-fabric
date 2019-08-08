@@ -66,6 +66,7 @@ export default {
             }
         },
         saveTabloide(tabloide,id,bg = undefined,folha = 'a4'){
+            bg = undefined //n quero mais essa opcao!!
             api.campanha.saveTabloide({
                 tabloide,
                 id,

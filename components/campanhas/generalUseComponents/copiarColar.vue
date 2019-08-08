@@ -88,8 +88,8 @@ export default {
                 if(this.canvas.ref !== undefined){
                         this.canvas.ref.discardActiveObject();
                         clonedObj.set({
-                            left: clonedObj.left + 10,
-                            top: clonedObj.top + 10,
+                            left: clonedObj.left + 20,
+                            top: clonedObj.top + 20,
                             evented: true,
                         });
                         if (clonedObj.type === 'activeSelection') {

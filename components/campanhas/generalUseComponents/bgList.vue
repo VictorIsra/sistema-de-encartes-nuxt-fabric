@@ -34,18 +34,33 @@ export default {
     mixins:[crudMixin],
     watch:{
         flag(){
-            this.usingBg = this.currBg
-            console.log("veee aa ", this.usingBg ," <--")
-            if(this.usingBg !== '')
+            this.usingBg = this.canvas.backgroundImage
+             console.log("vejamo ", this.canvas.backgroundImage)
+
+            if(this.usingBg === '' && this.usingBg === undefined){
+                this.usingBg = this.bgsImages[0]//aplica uma img default na ausencia de uma
                 this.addBg(this.usingBg)
-        }
+            }
+            //console.log("veee aa ", this.usingBg ," <--")
+            else if(this.usingBg !== '' && this.usingBg !== undefined)
+                this.addBg2(this.usingBg)
+        },
     },
     methods:{
+        addBg2(){
+            if(this.canvas.backgroundImage !== null){
+                this.canvas.setBackgroundImage(this.canvas.backgroundImage,this.canvas.renderAll.bind(this.canvas), {
+                scaleX: this.canvas.width /this.canvas.backgroundImage.width,
+                scaleY: this.canvas.height /this.canvas.backgroundImage.height})
+            }
+        },
         addBg(img){
-            const relaPath = "../../../uploads/fotos/" + img.name
-            this.pathInfo.img = img
-            this.pathInfo.path = relaPath 
-            this.setBackground(relaPath,img)
+            if(img !== undefined){
+                const relaPath = "../../../uploads/fotos/" + img.name
+                this.pathInfo.img = img
+                this.pathInfo.path = relaPath 
+                this.setBackground(relaPath,img)
+            }
         },
          setBackground(path,img){
             fabric.Image.fromURL(path,(img)=>{

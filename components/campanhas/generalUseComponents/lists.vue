@@ -32,7 +32,8 @@ export default {
         tags:[
         ],
         tag: '--',
-        itens: []
+        itens: [],
+        lastAdded: undefined
     }),
     mounted(){
         this.fetchProdutos()
@@ -52,18 +53,28 @@ export default {
            
             this.addImgToCanvas(relaPath,img)//parece estranho eu n passar simplesmente img, mas o fabric é eskisito...entao vai assim
           
-            const text = new fabric.IText(img.alt,{ top: 340,fontSize: 200 });
+            const text = new fabric.IText(img.alt,{ top: 340,fontSize: 200 })
+            if(this.lastAdded !== undefined)
+                text.set({left: this.lastAdded.left,top: this.lastAdded.top + 340,fontSize: 200})
             this.canvas.add(text)
                     //this.canvas.bringToFront(text)
-            const preco = new fabric.IText(img.preco_v,{ top: 480,fontSize: 200 });
+            const preco = new fabric.IText(img.preco_v,{ top: 480,fontSize: 200 })
+            if(this.lastAdded !== undefined)
+                preco.set({left: this.lastAdded.left,top: this.lastAdded.top + 480,fontSize: 200})
             this.canvas.add(preco)   
         },addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
             fabric.Image.fromURL(path,(img)=>{
                 img.scaleToWidth(350)//dif de crop, aqui literalmente "redimensiona"
                 img.scaleToHeight(350)
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
-               // if(!this.tobg){
-                this.canvas.add(temp)
+
+                if(this.lastAdded !== undefined){
+                        temp.set({left: this.lastAdded.left + 20,
+                                top: this.lastAdded.top + 20})
+                        this.canvas.add(temp)
+                        this.canvas.setActiveObject(temp)
+                    }
+                    this.lastAdded = temp
                // if(this.gridGroup)
                   //  this.canvas.bringToFront(this.gridGroup)//grid ficar sempre atras, caso ele exista
             })//{canvas: canvas})//n funciona passar esse arg...doc lixoooo

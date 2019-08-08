@@ -145,7 +145,11 @@
     methods: {
       initialize () {
         this.userType = this.$store.state.auth.userType
-        this.fetchInfos()
+        if(this.userType === 'diretor')
+            this.$router.push('/analise') 
+
+        else
+          this.fetchInfos()
       },
       editItem (item) {
         this.editedIndex = this.infos.indexOf(item)

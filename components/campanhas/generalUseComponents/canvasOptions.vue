@@ -154,6 +154,8 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
         },
          getRealSize(){
             //tamanho real em mm
+            if(this.folha === undefined)
+                this.folha = 'A4'//valor padrao
             this.$emit('getReal', {
                 altura: this.largura,//ja q tao trocados, troco aki p n cascatear esse prob
                 largura: this.altura,

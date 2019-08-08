@@ -41,15 +41,6 @@ export default {
     data:()=>({
 
     }),
-    /*
-    Circle (fabric.Circle)
-    Ellipse (fabric.Ellipse)
-    Line (fabric.Line)
-    Polygon (fabric.Polygon)
-    Polyline (fabric.Polyline)
-    Rectangle (fabric.Rect)
-    Triangle (fabric.Triangle)
-*/
     methods:{
         addPolygon(){
             if(this.canvas !== undefined){
@@ -127,4 +118,3 @@ export default {
     }}
 }
 </script>
-

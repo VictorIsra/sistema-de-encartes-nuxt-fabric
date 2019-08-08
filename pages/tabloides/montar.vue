@@ -1,8 +1,6 @@
 <template>
         <div>
         <v-card>
-       <!--     <alerts></alerts>-->
-   <!--deletar :canvas="canvasInfo"></deletar>-->
             <template v-if="userType === 'tabloide'">
                 <v-toolbar  :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
@@ -143,12 +141,12 @@
                     <v-flex>
                     <listsx v-show="filtroEscolhido === 'produtos'" :campanha_id="campanha_id" :canvas="canvas"></listsx>
                     </v-flex>
-                     <v-list v-show="filtroEscolhido === 'backgrounds'" class="scroll-y">
-                        <bg-lista  :canvas=canvas :currBg=currBg :flag=bgFlag></bg-lista>
-                    </v-list>
-                      <v-list v-show="filtroEscolhido === 'complementares'" class="scroll-y">
-                       <comple-list :canvas=canvas></comple-list>
-                    </v-list>
+                    <v-flex>
+                    <bg-lista   v-show="filtroEscolhido === 'backgrounds'" :canvas=canvas :currBg=currBg :flag=bgFlag></bg-lista>
+                    </v-flex>
+                    <v-flex>
+                    <comple-list v-show="filtroEscolhido === 'complementares'" :canvas=canvas></comple-list>
+                    </v-flex>
                 </no-ssr> 
                                             <v-divider vertical class="mx-1"></v-divider>
 
@@ -238,7 +236,6 @@ export default {
         textBox
     },
    data: () => ({
-    
         toggle_exclusive: 3,
         toggle_grid_exclusive: '',//util,toggle de outro agrupament oe botao
         filtro: [{ text: 'produtos'},
@@ -254,10 +251,8 @@ export default {
         altura:0,
         largura:0,
         folha: 'A4',
-       colors: '#194d33',//var obrigatoria na lib de color picker
-      salvarComo: 'baixar em PDF',
-        tobg: false,
-        checkbox: true,
+        colors: '#194d33',//var obrigatoria na lib de color picker
+        salvarComo: 'baixar em PDF',
         userType: '',
         canvas: '',
         canvasMode: 'portrait',//portrait ou landscape,
@@ -293,26 +288,12 @@ export default {
                 this.canvasInfo.folha = this.folha
                 console.log("dddd",this.canvasInfo.folha)
             },deep:true
-        }
-        ,
-        filtroEscolhido(){
-            if(this.filtroEscolhido === 'backgrounds')
-                this.tobg = true
         },
        checkGrid(){
-            if(this.checkGrid)
-                this.fillGrid()
-            else
-                this.removeGrid()    
+            this.removeGrid()    
         },
         colors(){
             this.actionHandler('fontColor')
-        },
-        checkbox(){
-            if(this.checkbox === true)
-                this.salvarComo = 'baixar em PDF'
-            else
-                this.salvarComo = 'baixar em BMP'
         },
     },
     mounted() { 
@@ -349,28 +330,28 @@ export default {
             if(this.clipboard === '' || (this.clipboard === undefined))
                 return
             this.clipboard.clone(clonedObj => {
-            this.canvas.discardActiveObject();
-            clonedObj.set({
-                left: clonedObj.left + 10,
-                top: clonedObj.top + 10,
-                evented: true,
-            });
-            if (clonedObj.type === 'activeSelection') {
-                // active selection needs a reference to the canvas.
-                clonedObj.canvas = this.canvas;
-                clonedObj.forEachObject(obj => {
-                    this.canvas.add(obj)
-                })
-                // this should solve the unselectability
-                clonedObj.setCoords();
-            } else {
-                this.canvas.add(clonedObj);
-            }
-           this.clipboard.top += 10;
-           this.clipboard.left += 10;
-            this.canvas.setActiveObject(clonedObj);
-            this.canvas.requestRenderAll();
-        });
+                this.canvas.discardActiveObject();
+                clonedObj.set({
+                    left: clonedObj.left + 10,
+                    top: clonedObj.top + 10,
+                    evented: true,
+                });
+                if (clonedObj.type === 'activeSelection') {
+                    // active selection needs a reference to the canvas.
+                    clonedObj.canvas = this.canvas;
+                    clonedObj.forEachObject(obj => {
+                        this.canvas.add(obj)
+                    })
+                    // this should solve the unselectability
+                    clonedObj.setCoords();
+                } else {
+                    this.canvas.add(clonedObj);
+                }
+                this.clipboard.top += 10;
+                this.clipboard.left += 10;
+                this.canvas.setActiveObject(clonedObj);
+                this.canvas.requestRenderAll();
+            })
         },
         fillInfo(data){
             this.altura = data.altura
@@ -404,7 +385,6 @@ export default {
             this.gridGroup && this.canvas.remove(this.gridGroup)
             this.gridGroup = null
             this.checkGrid = undefined
-
         },
         mouseDown(evento){
             if (evento.ctrlKey === true) {
@@ -438,13 +418,11 @@ export default {
                 if (doomedObj.type === 'activeSelection') {
                     //varios object selecinados
                     doomedObj.canvas = this.canvas
-
                     if(event === 'fontColor'){
                         doomedObj.forEachObject((obj) => {
                              obj.setColor(this.colors.hex8)
                         })
                     }
-                  
                     else if(event === 'bring'){
                         doomedObj.forEachObject((obj) => {
                             if(!value){
@@ -591,41 +569,25 @@ export default {
             const jsonTabloide = await this.loadTabloide(this.campanha_id)
             this.canvas.loadFromJSON(jsonTabloide.data.tabloide)
             this.currBg = jsonTabloide.data.tabloide_bg
+            console.log("VEEEEJA ", this.currBg)
             this.folha = jsonTabloide.data.tabloide_folha
             this.canvas.renderAll()
-            if(this.userType!== 'tabloide'){
-               // alert("ideia boa mas temq usa bd agora xd" + this.altura + " l " + this.largura)
-                this.canvas.setHeight(2000)
-                this.canvas.setWidth(2500)            
-            }
+           
             this.evflag = !this.evflag
             this.lever = false
-        },
-       addComple(img){
-            const relaPath = "../../../uploads/fotos/" + img.name
-            this.addImgToCanvas(relaPath,img)//parece e
-       },
-        addImgToCanvas(path,img){//fabric salvará essas imgs e poderei as referencias
-            fabric.Image.fromURL(path,(img)=>{
-                img.scaleToWidth(350)//dif de crop, aqui literalmente "redimensiona"
-                img.scaleToHeight(350)
-                let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
-               // if(!this.tobg){
-                this.canvas.add(temp)
-                if(this.gridGroup)
-                    this.canvas.bringToFront(this.gridGroup)//grid ficar sempre atras, caso ele exista
-            })//{canvas: canvas})//n funciona passar esse arg...doc lixoooo
-        },
-        setBackground(path,img){
-        
-            fabric.Image.fromURL(path,(img)=>{
-                let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
-                this.canvas.setBackgroundImage(temp,this.canvas.renderAll.bind(this.canvas), {
-                scaleX: this.canvas.width / temp.width,
-                scaleY: this.canvas.height /temp.height})
-            })
-        
-        },    
+             if(this.userType!== 'tabloide'){
+                if(this.zout){//essencial p n dar zoomout qd eu reseto o status no componente
+                 this.canvas.setHeight(2000)
+                 this.canvas.setWidth(2500)
+                    this.canvas.setZoom(this.canvas.getZoom() / 7 )
+                    var delta = new fabric.Point(200,0)
+                    this.canvas.relativePan(delta)
+                    var delta = new fabric.Point(0,10)
+                    this.canvas.relativePan(delta)
+                }
+                this.zout = false    
+            }
+        }, 
     }
 }
 </script>

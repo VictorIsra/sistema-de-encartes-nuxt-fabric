@@ -15,23 +15,20 @@ import fontManager from '../components/campanhas/generalUseComponents/fontManage
 import textStyles from '../components/campanhas/generalUseComponents/textStyles.vue'
 import textBox from '../components/campanhas/generalUseComponents/textBox.vue'
 import compleList from '../components/campanhas/generalUseComponents/compleList.vue'
-
 import resetCanvas from '../components/campanhas/generalUseComponents/resetCanvas.vue'
-
 import escala from '../components/campanhas/generalUseComponents/escala.vue'
-
 import { Compact, Chrome} from 'vue-color'
 
 export {
     resetCanvas,
     escala,
     bgList,
-     fontManager,
-     Compact,
+    fontManager,
+    Compact,
     Chrome,
     canvasOption,
     saveCanvas,
-saveCavasPDF,
+    saveCavasPDF,
     canvasMove,
     canvasGrid,
     copiarColar,

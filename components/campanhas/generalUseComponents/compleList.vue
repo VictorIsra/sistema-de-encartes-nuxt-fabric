@@ -22,6 +22,7 @@ export default {
         compleImages: [],
         imgs: [],//temporaria, usada como chace 
         itens: [],
+        lastAdded: undefined//objeto mais recente addicionado ao canvas
     }),
     mounted(){
         this.fetchProdutos()
@@ -63,8 +64,19 @@ export default {
                 img.scaleToHeight(350)
                 let temp = img.set({ left: 0, top: 0 })// faz um crop:,width:500,height:500})
                // if(!this.tobg){
-                if(this.canvas !== undefined)
-                    this.canvas.add(temp)
+                   
+                if(this.canvas !== undefined){
+                    if(this.lastAdded !== undefined){
+                        temp.set({left: this.lastAdded.left + 20,
+                                top: this.lastAdded.top + 20})
+                        this.canvas.add(temp)
+                        this.canvas.setActiveObject(temp)
+                    }
+                    this.lastAdded = temp
+
+                }   
+                
+
                // if(this.gridGroup)
                 //    this.canvas.bringToFront(this.gridGroup)//grid ficar sempre atras, caso ele exista
             })//{canvas: canvas})//n funciona passar esse arg...doc lixoooo

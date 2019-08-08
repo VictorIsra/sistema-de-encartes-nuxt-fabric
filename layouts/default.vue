@@ -252,9 +252,7 @@ export default {
             else if( it.title === 'Produtos')
               it.showMe = true
             else if(it.title == 'Analisar campanhas')    
-              it.showMe = true
-            else if(it.title === 'Tablóides')    
-              it.showMe = true    
+              it.showMe = true 
             else
               it.showMe = false 
           }

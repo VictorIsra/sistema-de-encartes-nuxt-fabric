@@ -367,6 +367,7 @@
           this.fetchProdutos()
         }  
         else{
+          this.$router.push('/demandas') 
           this.fetchProdList()
           console.log("escolhaprodutos.vue : nenhum id valido por hora ",this.campanha_id)  
         }
