@@ -362,12 +362,15 @@
         this.userType = this.$store.state.auth.userType
         this.campanha_id = this.$route.params.campanha_id
         this.canAdd = this.$route.params.canAdd
-        if(this.campanha_id !== undefined && this.campanha_id !== '-1'){
+        if(this.campanha_id !== undefined && this.campanha_id !== '-1'){//-1 é se to criando mini demanda
           this.fetchProdList()
           this.fetchProdutos()
         }  
         else{
-          this.$router.push('/demandas') 
+          
+          if(this.canAdd === undefined)// caso refresh {}
+            this.$router.push('/demandas')
+          //caso criando mini demanda
           this.fetchProdList()
           console.log("escolhaprodutos.vue : nenhum id valido por hora ",this.campanha_id)  
         }

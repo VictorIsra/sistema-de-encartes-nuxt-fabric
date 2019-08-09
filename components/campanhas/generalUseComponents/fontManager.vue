@@ -1,4 +1,5 @@
 <template>
+<div>
     <v-layout > 
         <v-flex xs12>
             <v-overflow-btn 
@@ -41,7 +42,9 @@
                             <span class="subheading">Aplicar cor selecionada à borda da(s) seleção(s)</span>
                             </v-tooltip>
                         </div>  
-    </v-layout>   
+
+    </v-layout> 
+</div>   
 </template>
 <script>
 export default {

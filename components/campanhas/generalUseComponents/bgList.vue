@@ -37,12 +37,12 @@ export default {
             this.usingBg = this.canvas.backgroundImage
              console.log("vejamo ", this.canvas.backgroundImage)
 
-            if(this.usingBg === '' && this.usingBg === undefined){
+            if(this.usingBg === '' || this.usingBg === undefined || this.usingBg === null ){
                 this.usingBg = this.bgsImages[0]//aplica uma img default na ausencia de uma
                 this.addBg(this.usingBg)
-            }
+            }//aprece idiota mas essa logic q rola
             //console.log("veee aa ", this.usingBg ," <--")
-            else if(this.usingBg !== '' && this.usingBg !== undefined)
+            else if(this.usingBg !== '' && this.usingBg !== undefined && this.usingBg !== null)
                 this.addBg2(this.usingBg)
         },
     },

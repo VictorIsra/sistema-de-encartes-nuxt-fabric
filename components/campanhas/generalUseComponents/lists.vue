@@ -73,8 +73,10 @@ export default {
                                 top: this.lastAdded.top + 20})
                         this.canvas.add(temp)
                         this.canvas.setActiveObject(temp)
-                    }
-                    this.lastAdded = temp
+                }else{
+                    this.canvas.add(temp)
+                }
+                this.lastAdded = temp
                // if(this.gridGroup)
                   //  this.canvas.bringToFront(this.gridGroup)//grid ficar sempre atras, caso ele exista
             })//{canvas: canvas})//n funciona passar esse arg...doc lixoooo

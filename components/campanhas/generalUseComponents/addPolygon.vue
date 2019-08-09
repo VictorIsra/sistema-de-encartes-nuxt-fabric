@@ -39,7 +39,7 @@
 export default {
     props:['canvas','colors'],
     data:()=>({
-
+        lastAdded: undefined
     }),
     methods:{
         addPolygon(){
@@ -51,7 +51,12 @@ export default {
                 fill: 'yellow',
                 stroke: 'red',
                 strokeWidth: 5
-                });
+                })
+                if(this.lastAdded !== undefined){
+                        rect.set({left: this.lastAdded.left + 40,
+                        top: this.lastAdded.top + 40})
+                }
+                this.lastAdded = rect
                 this.canvas.add(rect)
             }
         },
@@ -64,9 +69,14 @@ export default {
                         top: 100,
                         strokeWidth: 5,
                         stroke: 'red'
-                    });
+                    })
+                    if(this.lastAdded !== undefined){
+                        object.set({left: this.lastAdded.left + 40,
+                                    top: this.lastAdded.top + 40})
+                    }
+                    this.lastAdded = object
                     this.canvas.add(object)
-                }
+                    }
         },
         addElipse(){
             let ellip = new fabric.Ellipse({
@@ -75,8 +85,13 @@ export default {
                 stroke: 'red',
                 rx: 250,
                 ry: 100
-            });
-        this.canvas.add(ellip)
+            })
+            if(this.lastAdded !== undefined){
+                ellip.set({left: this.lastAdded.left + 40,
+                        top: this.lastAdded.top + 40})
+            }
+            this.lastAdded = ellip         
+            this.canvas.add(ellip)
         },
         addRectangle(){
 

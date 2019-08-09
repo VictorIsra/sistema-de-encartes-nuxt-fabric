@@ -98,6 +98,9 @@ export default {
     },
     methods:{
         addImg(img){
+            if(img.name === "7deadbc709f80be1b0ec0fd651971d1d.png")//bg padrao q n pode ser deletado
+                return
+            console.log("imggg ", img)
             img.src = "static/uploads/fotos/" + img.name
             this.removeRow(img.row_id,img.src,this.campanha_id)
             this.snackMsg = 'Background removido com sucesso'
@@ -141,6 +144,7 @@ export default {
         
             this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             this.itens.forEach((p,i) => {
+                
                 if(p.img !== undefined && p.img !== ''){
                     this.img.push( p.img)
                     this.img[i].row_id = p._id
@@ -149,8 +153,7 @@ export default {
             })
             this.img.forEach((img,i) => {
                 this.dataImages.push(img)
-                this.dataImages[i].src = this.getImgURL(img)
-
+                this.dataImages[i].src = this.getImgURL(img)     
             })
             console.log("LALA DDDDD ", this.itens)
         },

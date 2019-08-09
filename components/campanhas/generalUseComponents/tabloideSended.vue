@@ -3,7 +3,7 @@
    
 
     <v-snackbar
-    v-model="snackbar"
+    v-model="snackAux"
     :multi-line="multiLine"
     :timeout="timeOut"
     color="success"
@@ -18,6 +18,7 @@
     data: () => ({
         timeOut: 3500,
         multiLine: true,
+        snackAux: false
        // snackbar: false,
        // text: 'produtos enviados para usuário tabloide com sucesso!',
     }),
@@ -33,7 +34,8 @@
     },   
     watch:{
         snackbar(){
-            if(this.snackbar === false)
+            this.snackAux = this.snackbar
+            if(this.snackAux === false)
                 this.closeTrigger()//fechara dps de 2500s
         }
     },

@@ -545,7 +545,7 @@ export default {
                 this.canvasInfo = {
                     ref: this.canvas,
                     campanha_id: this.campanha_id,
-                    flag: this.currBg !== '' ? this.currBg : undefined,
+                    flag: (this.currBg !== '' && this.currBg !== undefined  && this.currBg !== null) ? this.currBg : undefined,
                     folha: this.folha
                 }
                 this.carregarTabloide()
@@ -555,7 +555,7 @@ export default {
             this.canvasInfo = {
                     ref: this.canvas,
                     campanha_id: this.campanha_id,
-                    flag: this.currBg !== '' ? this.currBg : undefined,
+                    flag:(this.currBg !== '' && this.currBg !== undefined  && this.currBg !== null) ? this.currBg : undefined,
                     folha: this.folha
             }
         },
@@ -568,6 +568,7 @@ export default {
         async carregarTabloide(){
             const jsonTabloide = await this.loadTabloide(this.campanha_id)
             this.canvas.loadFromJSON(jsonTabloide.data.tabloide)
+            console.log("vejo calma la ", this.canvas.backgroundImage)
             this.currBg = jsonTabloide.data.tabloide_bg
             console.log("VEEEEJA ", this.currBg)
             this.folha = jsonTabloide.data.tabloide_folha
