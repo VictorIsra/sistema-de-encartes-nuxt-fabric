@@ -91,14 +91,14 @@ export default {
         dataImages: [],
         itens: [],
         img: [],
-        campanha_id: '5d4223b924a1f1483c193259'//campanha relativa aos backgrounds, é unica no codigo
+        campanha_id: '5d5b057f75885d1e18bd4e05'//campanha relativa aos backgrounds, é unica no codigo
     }),
     created(){
         this.fetchProdutos()
     },
     methods:{
         addImg(img){
-            if(img.name === "7deadbc709f80be1b0ec0fd651971d1d.png")//bg padrao q n pode ser deletado
+            if(img.name === "5b2bc6320b3ceb5987d57580af503e50.png")//bg padrao q n pode ser deletado
                 return
             console.log("imggg ", img)
             img.src = "static/uploads/fotos/" + img.name

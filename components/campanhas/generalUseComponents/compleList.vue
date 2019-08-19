@@ -35,7 +35,7 @@ export default {
     methods:{
         async fetchProdutos(){
             if(this.canvas !== undefined){
-                let complementar_id = "5d478c3082c8e55273f6bad1"
+                let complementar_id = "5d5b051075885d1e18bd4e04"
                 this.itens = await this.getProdutos(complementar_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
                 this.itens.forEach(p => {
                     if(p.img !== undefined && p.img !== '')

@@ -233,7 +233,7 @@ import compleDialog from '../../components/campanhas/generalUseComponents/comple
       snackBar: false,
       userType: '',//autoexplicativo, porra xD
       campanhaInfos: '',
-      campanha_id: '5d2f6b45384572128c682715',//é hardcoded pois o cadastro de produto é sempre feito nessa id 
+      campanha_id: '5d5b03ad75885d1e18bd4e02', //'5d2f6b45384572128c682715',//é hardcoded pois o cadastro de produto é sempre feito nessa id 
       produtosQtdadeInfo: {//referente a qtdade de protudos cadastrados e metas, nao é o this.campanhaInfo.produtos ou this.campanhaInfo.qtdade pois este só da o fetch uma unica vez, vou mudar seu valor a lvl de app, e a lvl de bd somente atraves da pag de campanhas ;)
         meta: '',
         qtdade: ''
@@ -359,6 +359,8 @@ import compleDialog from '../../components/campanhas/generalUseComponents/comple
       async fetchCampanhaInfo(){
         //pega info dessa campanha hardocded que simboliza o cadastro dos produtos do sistmea
         this.campanhaInfos = await this.fetchCampanhas(this.campanha_id)
+        // if(this.campanhaInfos === null)//caso de defesa, onde n existe campanha de produtos( isso n deveria acontecer, mas pode rolar caso eu drope o db e tente acessar essa pag por ex)
+        //   this.$router.push('/')
       },
       prepareImgInfo(currentItem){//envia pro componente filho image_uload.vue os valores ( sao props no comp filho) a serem colocados ao abrir a aba/form de edit
         //é dif do cached info, pois aqui, é alimentado com info do db, e o db n salva a url ( pq é um buffer) e tal

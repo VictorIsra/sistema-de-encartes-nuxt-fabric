@@ -71,7 +71,7 @@ export default {
             })
         },    
         async fetchProdutos(){
-            let campanhaBg_id = "5d4223b924a1f1483c193259"
+            let campanhaBg_id = "5d5b057f75885d1e18bd4e05"
             this.itens = await this.getProdutos(campanhaBg_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             this.itens.forEach(p => {
                 if(p.img !== undefined && p.img !== '')

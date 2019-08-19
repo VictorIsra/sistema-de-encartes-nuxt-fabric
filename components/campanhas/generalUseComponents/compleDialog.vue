@@ -89,7 +89,7 @@ export default {
         dataImages: [],
         itens: [],
         img: [],
-        campanha_id: '5d478c3082c8e55273f6bad1'//campanha relativa aos backgrounds, é unica no codigo
+        campanha_id: '5d5b051075885d1e18bd4e04'//campanha relativa aos backgrounds, é unica no codigo
     }),
     created(){
         this.fetchProdutos()
