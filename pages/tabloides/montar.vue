@@ -124,7 +124,9 @@
                                 'borda2': canvasMode === 'portrait'}"> 
                     
                         <template v-if="$vuetify.breakpoint.mdAndUp">
+                        <v-layout>
                         <font-manager :flag=evflag :canvas=canvas  :colors=colors></font-manager>
+                        </v-layout>
                         <v-divider vertical class="mx-2"></v-divider>
                          <text-styles :canvas="canvas" @tstyles="listenFontStyle" :toggle="toggle_exclusive"></text-styles>
                         <supers :canvas="canvas"></supers>

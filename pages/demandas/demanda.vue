@@ -65,7 +65,7 @@
                                   @blur="editUserInputs(false)"
                                   v-model.trim="editedItem.nome"
                                   :rules="[nomeRule]" 
-                                  label="Produto">
+                                  label="nome do Produto">
                     </v-text-field>
                   </v-flex>
                   <v-flex xs12 sm6>
@@ -107,6 +107,9 @@
                   <v-checkbox label="radio externa"  color="success" class="layout" v-model="editedItem.radio_externa"></v-checkbox>   
                   <v-checkbox label="pov"  color="success" class="layout" v-model="editedItem.pov"></v-checkbox>   
                 </v-flex>
+                 <v-flex xs12 sm6>
+                  <v-text-field ref="editedItem.obs" v-model="editedItem.obs" label="Tag do produto"></v-text-field>
+                </v-flex>
                 </v-layout>
               </v-container>
               <v-card-actions>
@@ -138,6 +141,7 @@
             </td>
             <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
             <td class="text-xs-center">{{ props.item.nome }}</td>
+            <td class="text-xs-center">{{ props.item.obs }}</td>
             <td class="text-xs-center">{{ props.item.data_i }}</td>
             <td class="text-xs-center">{{ props.item.data_f }}</td>
             <td class="text-xs-center">{{ props.item.preco_v }}</td>
@@ -189,6 +193,27 @@
               <span span class="subheading" v-if="userType === 'diretor'">Clique aqui para editar esta demanda</span>
               <span span class="subheading" v-else>somente o diretor pode editar as informações de uma demanda</span>
               </v-tooltip>
+          <v-tooltip  bottom >
+          <template v-slot:activator="{ on }">
+            <v-icon 
+              v-if="userType === 'diretor'"
+              small
+              @click="deleteItem(props.item)"
+              v-on="on"
+            >
+              delete
+            </v-icon>
+            <v-icon 
+              v-else
+              small
+              v-on="on"
+            >
+              delete
+            </v-icon>
+          </template>
+          <span class="subheading" v-if="userType === 'diretor'">Clique aqui para excluir esta linha da tabela</span>
+          <span class="subheading" v-else>somente o diretor pode deletar produtos de uma demanda</span>
+          </v-tooltip>
             </td>
           </tr>
         </template>
@@ -287,6 +312,7 @@
         { text: '', value: 'sel' },
         { text: 'IMAGEM', value: 'img' , width: "1%", align: "center"},
         { text: 'PRODUTO', value: 'nome', width: "1%", align: "center"},
+        { text: 'TAG', value: 'obs', width: "1%", align: "center"},
         { text: 'INÍCIO', value: 'data_i', width: "1%", align: "center"},
         { text: 'TÉRMINO', value: 'data_f', align: "center"},
         { text: 'PREÇO DE VENDA', value: 'preco_v' , width: "1%", align: "center"},
@@ -298,7 +324,7 @@
         { text: 'RÁDIO EXTERNA', value: 'preco_v' , width: "1%", align: "center"},
         { text: 'JORNAIS', value: 'preco_v' , width: "1%", align: "center"},
         { text: 'POV', value: 'preco_v' , width: "1%", align: "center"},
-        { text: 'AÇÕES', value: 'obs', width: "1%", align: "center"},
+        { text: 'AÇÕES', value: ' ', width: "1%", align: "center"},
       ],
       itens: [],
       editedIndex: -1,
@@ -317,7 +343,7 @@
         radio_externa: false,
         jornais: false,
         pov: false,
-        obs: ''
+        obs: '--'
       },
       defaultItem: {//aqui seto os valores defaults
         img:  '',
@@ -334,7 +360,7 @@
         radio_externa: false,
         jornais: false,
         pov: false,
-        obs: ''
+        obs: '--'
       }
     }),
     computed: {
@@ -376,7 +402,7 @@
         }
       },
       async fetchProdList(){//pega produtos cadastrados no si
-            const prodListID = '5d2f6b45384572128c682715'//é unico no programa todo
+            const prodListID = '5d5b03ad75885d1e18bd4e02'//é unico no programa todo
             const lista = await this.getProdutos(prodListID)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             lista.forEach(p => {
                 if(p.img !== undefined && p.img !== '')
@@ -473,7 +499,7 @@
             radio_externa: false,
             jornais: false,
             pov: false,
-            obs: ''
+            obs: '--'
         }
       },
       deleteItem (item) {
@@ -483,7 +509,7 @@
         if(targetId === undefined)//mas qt dou um get do bd, ele seta o _id direto como um atributo, esse if vai ajustar pra ambos os casos xD
           targetId = this.editedItem._id
         const imgSrc = this.editedItem.img.src//path pra img que irei excluir
-        confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.decrementProdutos(true) && this.removeRow(targetId,imgSrc,this.campanha_id))
+        confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1)  && this.removeRow(targetId,imgSrc,this.campanha_id))
      },
       close () {
         this.resetImgCached()
@@ -539,7 +565,7 @@
       console.log("ENTRO COM ",this.campanha_id)
         if(this.campanha_id === undefined){
             this.campanha_id = await this.createCampanha({
-                status: 'pendente',
+                status: 'enviado para tabloide',
                 qtdade: '0',
                 data_termino: this.createDate(),
                 data_inicio:  this.createDate(),

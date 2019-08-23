@@ -117,7 +117,7 @@ export default {
                             doomedObj.forEachObject((obj) => {
                                 obj.set("fontFamily", this.fontFamily)
                                 this.canvas.renderAll()
-                                this.canvas.setZoom(this.canvas.getZoom() / 1.1 )
+                                //this.canvas.setZoom(this.canvas.getZoom() / 1.1 )
                             })
                         }
                          else if(event === 'border'){
@@ -152,7 +152,7 @@ export default {
                             else if(event === 'fontFamily'){
                                 this.canvas.getActiveObject().set("fontFamily", this.fontFamily)
                                 this.canvas.renderAll()
-                                this.canvas.setZoom(this.canvas.getZoom() / 1.1 )
+                               // this.canvas.setZoom(this.canvas.getZoom() / 1.1 )
                             }
                             else if(event === 'border'){
                                 this.canvas.getActiveObject().set('strokeWidth',parseInt(this.border) )
