@@ -112,7 +112,7 @@
                             <div>
                                 <canvas-option  :campanha_id="campanha_id" :canvas=canvas @canvasmode="setMode" @getReal="fillInfo" @resize-canvas="setCanvasDim"></canvas-option>
                             </div>
-                            <div @click="loading = true">
+                            <div @mouseover="removeGrid" @click="loading = true">
                             <save-canvas :canvas="canvasInfo" ></save-canvas>
                             </div>
                             <div @mouseover="removeGrid" @click="loading = true">

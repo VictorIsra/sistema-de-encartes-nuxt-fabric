@@ -98,7 +98,6 @@ export default {
                     //     "PrintArea": "BleedBox",
                     //     "PrintClip": "BleedBox"
                     // });
-                   pdf.viewerPreferences({'CenterWindow': true},true)
                     //x, y sao respect qt mm a img vai distar da borda esquerda e superior, respectivamente
                     //é a metade de alfa, basta ver no papel q a conta baixa
                     pdf.addImage(imgData, 'JPEG',3,3, width,height, undefined,'FAST')
