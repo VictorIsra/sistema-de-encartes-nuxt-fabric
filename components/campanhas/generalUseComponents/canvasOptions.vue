@@ -219,7 +219,8 @@ export default {/*px por miliemtro: Printers typically print at 300 pixels per i
                 data: {
                     width: this.width.toFixed(3),
                     height: this.height.toFixed(3),
-                    folha: this.folha
+                    folha: this.folha,
+                    sangramento: this.sangramento
                     }
             })
         }

@@ -290,7 +290,8 @@ export default {
         canvasInfo:{
             handler(){
                 this.canvasInfo.folha = this.folha
-                console.log("dddd",this.canvasInfo.folha)
+              //  this.canvasInfo.sangramento = 3
+                console.log("INFOOO2 ",this.canvasInfo.folha, " bleed ", this.canvasInfo.sangramento)
             },deep:true
         },
        checkGrid(){
@@ -366,12 +367,13 @@ export default {
         setCanvasDim(objeto){
             if(objeto.data === undefined)
                 return
-                console.log("q emite ", objeto , " objto data ", objeto.data)  
+                console.log("EEEETA emite ", objeto , " objto data ", objeto.data)  
             this.canvas.setHeight(objeto.data.width)
             this.canvas.setWidth(objeto.data.height)
             this.folha = objeto.data.folha
             this.canvasInfo.folha = this.folha
-            console.log(" this,folha ", this.folha , " objeto ",objeto.data)
+            this.canvasInfo.sangramento = objeto.data.sangramento
+            console.log(" this,folha ", this.folha , " objeto ",objeto.data, "SG TIRCTIC ",objeto.data.sangramento, this.canvasInfo.sangramento)
             let auxwidth = this.canvas.width
             this.bgFlag = !this.bgFlag   
 

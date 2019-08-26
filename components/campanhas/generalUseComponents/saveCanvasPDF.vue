@@ -49,7 +49,8 @@ export default {
               ref: undefined,
               campanha_id: undefined,
               flag:undefined,
-              folha: 'a4'
+              folha: 'a4',
+              sangramento: 3
             }  
           }
         },
@@ -88,9 +89,10 @@ export default {
                    // let prod = this.canvas.ref.width *this.canvas.ref.height
                                 // if( prod >= 5000) //canvas maior q isso é invalido, mt grande...ai retorn
                                 //     retur
-                    let width = pdf.internal.pageSize.getWidth() -(2* 3)
-                    let height = pdf.internal.pageSize.getHeight() -( 2 *3 )
-                    console.log(" ttt ", width, " he  ", height)
+                                console.log("PORRA ", this.canvas.sangramento)
+                    let width = pdf.internal.pageSize.getWidth() -(2* this.canvas.sangramento)
+                    let height = pdf.internal.pageSize.getHeight() -( 2 * this.canvas.sangramento )
+                    console.log(" ttt ", width, " he  ", height, "saaang ", this.canvas.sangramento)
                    // pdf.viewerPreferences({'PrintArea':'MediaBox'})
                     // pdf.viewerPreferences({
                     //     "ViewArea": "BleedBox",
@@ -100,7 +102,7 @@ export default {
                     // });
                     //x, y sao respect qt mm a img vai distar da borda esquerda e superior, respectivamente
                     //é a metade de alfa, basta ver no papel q a conta baixa
-                    pdf.addImage(imgData, 'JPEG',3,3, width,height, undefined,'FAST')
+                    pdf.addImage(imgData, 'JPEG',this.canvas.sangramento,this.canvas.sangramento, width,height, undefined,'FAST')
                     pdf.save('tabloide.pdf')
               //  })   
         },
