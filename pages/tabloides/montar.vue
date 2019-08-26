@@ -125,15 +125,17 @@
                     
                         <template v-if="$vuetify.breakpoint.mdAndUp">
                         <v-layout>
+                        <v-flex>
                         <font-manager :flag=evflag :canvas=canvas  :colors=colors></font-manager>
+                        </v-flex>
                         </v-layout>
                         <v-divider vertical class="mx-2"></v-divider>
                          <text-styles :canvas="canvas" @tstyles="listenFontStyle" :toggle="toggle_exclusive"></text-styles>
                         <supers :canvas="canvas"></supers>
                         <text-box :canvas=canvas></text-box>
 
-                        <v-divider  class="mx-1" vertical></v-divider>
-                        <escala :canvas=canvas :flag=evflag></escala>
+                      <!--  <v-divider  class="mx-1" vertical></v-divider> -->
+                     <!--   <escala :canvas=canvas :flag=evflag></escala> -->
                         </template>
                     </v-toolbar>
                

@@ -16,13 +16,20 @@
                 </v-layout>
                 <v-container grid-list-md >
                     <v-layout wrap class="justify-center">
-                       <v-flex xs12 sm6>
+                    <!--   <v-flex xs12 sm6>
                              <v-text-field
                                 v-model="dpi"
                                 disabled
                                 label="DPI">
                             ></v-text-field>
-                        </v-flex>
+                        </v-flex> -->
+                        <v-flex xs12 sm4>
+                             <v-select
+                                v-model="sangramento"
+                                :items="sangramentos"
+                                label="Sangramento">
+                            ></v-select>
+                        </v-flex> -
                         <v-flex xs12 sm6>
                             <v-select
                                 :items="folhas"
@@ -68,6 +75,8 @@ import crudMixin from '../../mixins/CRUD.js'
 export default {/*px por miliemtro: Printers typically print at 300 pixels per inch.In millimeters: 300ppi / 25.4 mm-in = 11.81 pixels per millimeter.So if you want to print a 50mm drawing you would calculate the required pixel size like this:50mm x 11.81ppm = 590.5 pixels (591 pixels)And you resize the canvas to have 591 pixels (astming square) like this: */
     data: () => ({
         folhas: ['A5','letter','A4','A3','A2','tabloid'],//opcoes pre feitas de folhas
+        sangramentos: ['3','5'],
+        sangramento: '3',//sangramrnto default
         folha: 'A4',//tipo de folha do canvas por default
         altura:210, // éa largura no menu lol eixo y em (mm) ? na real cm ac
         largura : 297,//eixo x em (mm) ? na real cm

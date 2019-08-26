@@ -88,10 +88,20 @@ export default {
                    // let prod = this.canvas.ref.width *this.canvas.ref.height
                                 // if( prod >= 5000) //canvas maior q isso é invalido, mt grande...ai retorn
                                 //     retur
-                    let width = pdf.internal.pageSize.getWidth()
-                    let height = pdf.internal.pageSize.getHeight()
-
-                    pdf.addImage(imgData, 'JPEG',0,0, width,height, undefined,'FAST')
+                    let width = pdf.internal.pageSize.getWidth() -(2* 3)
+                    let height = pdf.internal.pageSize.getHeight() -( 2 *3 )
+                    console.log(" ttt ", width, " he  ", height)
+                   // pdf.viewerPreferences({'PrintArea':'MediaBox'})
+                    // pdf.viewerPreferences({
+                    //     "ViewArea": "BleedBox",
+                    //     "ViewClip": "BleedBox",
+                    //     "PrintArea": "BleedBox",
+                    //     "PrintClip": "BleedBox"
+                    // });
+                   pdf.viewerPreferences({'CenterWindow': true},true)
+                    //x, y sao respect qt mm a img vai distar da borda esquerda e superior, respectivamente
+                    //é a metade de alfa, basta ver no papel q a conta baixa
+                    pdf.addImage(imgData, 'JPEG',3,3, width,height, undefined,'FAST')
                     pdf.save('tabloide.pdf')
               //  })   
         },

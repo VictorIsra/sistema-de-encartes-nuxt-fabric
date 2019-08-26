@@ -359,7 +359,7 @@
           console.log("escolhaprodutos.vue : nenhum id valido por hora ")  
       },
        async fetchProdList(){//pega produtos cadastrados no si
-            const prodListID = '5d2f6b45384572128c682715'//é unico no programa todo
+            const prodListID = '5d5b03ad75885d1e18bd4e02'//é unico no programa todo
             const lista = await this.getProdutos(prodListID)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             lista.forEach(p => {
                 if(p.img !== undefined && p.img !== '')
