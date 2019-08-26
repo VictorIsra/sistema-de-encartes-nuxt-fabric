@@ -81,11 +81,21 @@ export default {
                 
                     if(this.canvas.ref.width <= this.canvas.ref.height)
                         mode = "portrait"
-                    let bgcache = null
+                    
                     let pdf = new jsPDF(mode, "mm",this.canvas.folha,true)//essencial msmm, mudand o de de p p l ou n
-                    //comente a prox linha para gerar pdf mostrando a margem de seguranca, descomente p gerar pdf final protegido, ( vai ta protegido mas visualmente n vou perceber, comente p debug só)
-                     bgcache = this.expandeBG(pdf)
-                   
+                    
+                    var bgcache = this.canvas.ref.backgroundImage//copia o bg pra seta-lo novamente ( pois irei seta-lo p undefined ja,ja) apos gerar o pdf
+                    //1**comente prox linha p ver margem de seguranca */
+                   var bgT = this.canvas.ref.backgroundImage.toDataURL('image/png',1.0)//COMENTE PARA VER A MARGEM DE SEGURANCA
+                    //adicione o bg ao pdf, o bg aqui é do tamanho da folha, e parte do bg será perdido SIM, mas n é isso que é essencial proteger
+                    //2**comente prox linha p ver margem de seguranca */
+                    await pdf.addImage(bgT, 'JPEG',0,0,pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight(),undefined,'FAST')//COMENTE P VER A MARGEM DE SEGURANC
+                    //removo o bg dps de adiciona-lo ao pdf na linha acima para que ele nao
+                    //adicione o bg duas vezes, evitando assim que demore mt pra gerar o pdf, e mais
+                    //essencial ainda, inpede que tenha um bg interno e um externo!! essencial setar pra undefined
+                    //3*comente prox linha p ver a margem de seguranca
+                   this.canvas.ref.backgroundImage = undefined//garante q a sangria dira respeito apenas a td q nao for bg
+                    
                     var  imgData =   this.canvas.ref.toDataURL('image/png',1.0)
                     //o sangramento aqui na verdade é uma margem de seguranca interna
                     let width = pdf.internal.pageSize.getWidth() -(2* this.canvas.sangramento)
@@ -93,9 +103,7 @@ export default {
                 
                     pdf.addImage(imgData, 'JPEG',this.canvas.sangramento,this.canvas.sangramento, width,height, undefined,'FAST')
                     await pdf.save('tabloide.pdf')
-                    console.log("lalala ",bgcache)
-                    if(bgcache !== null)
-                        this.canvas.ref.backgroundImage = bgcache//restauro o bg
+                    this.canvas.ref.backgroundImage = bgcache//restauro o bg
               //  })   
         },
         resetStatus(){
@@ -105,20 +113,6 @@ export default {
                 this.canvas.ref.setViewportTransform([1,0,0,1,0,0]) 
                 this.canvas.ref.renderAll()
             }
-        },
-        async expandeBG(pdf){
-            var bgcache = this.canvas.ref.backgroundImage//copia o bg pra seta-lo novamente ( pois irei seta-lo p undefined ja,ja) apos gerar o pdf
-                    //1**comente prox linha p ver margem de seguranca */
-                    var bgT = this.canvas.ref.backgroundImage.toDataURL('image/png',1.0)//COMENTE PARA VER A MARGEM DE SEGURANCA
-                    //adicione o bg ao pdf, o bg aqui é do tamanho da folha, e parte do bg será perdido SIM, mas n é isso que é essencial proteger
-                    //2**comente prox linha p ver margem de seguranca */
-                    await pdf.addImage(bgT, 'JPEG',0,0,pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight(),undefined,'FAST')//COMENTE P VER A MARGEM DE SEGURANC
-                    //removo o bg dps de adiciona-lo ao pdf na linha acima para que ele nao
-                    //adicione o bg duas vezes, evitando assim que demore mt pra gerar o pdf, e mais
-                    //essencial ainda, inpede que tenha um bg interno e um externo!! essencial setar pra undefined
-                    //3*comente prox linha p ver a margem de seguranca
-                   this.canvas.ref.backgroundImage = undefined//garante q a sangria dira respeito apenas a td q nao for bg
-            return bgcache        
         }
     
     }
