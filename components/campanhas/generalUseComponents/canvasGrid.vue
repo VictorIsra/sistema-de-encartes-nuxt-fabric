@@ -79,7 +79,7 @@ export default {
             }
             var gridLines = [];
             let gridlen = this.canvas.ref.width > this.canvas.ref.height ?  this.canvas.ref.width :  this.canvas.ref.height
-            for (var x = 1; x < (gridlen ); x += 30) {
+            for (var x = 1; x < (gridlen ); x += 100) {
                 gridLines.push(new fabric.Line([x, 0, x, gridlen], gridoption));
           //  }
             //for (var x = 1; x < (this.canvas.height ); x += 30) {
