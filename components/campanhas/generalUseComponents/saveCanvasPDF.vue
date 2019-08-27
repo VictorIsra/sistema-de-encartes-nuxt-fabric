@@ -82,8 +82,11 @@ export default {
                     if(this.canvas.ref.width <= this.canvas.ref.height)
                         mode = "portrait"
                     
-                    let pdf = new jsPDF(mode, "mm",this.canvas.folha,true)//essencial msmm, mudand o de de p p l ou n
-                    
+                    let pdf = new jsPDF(mode,"mm",this.canvas.folha,true)//essencial msmm, mudand o de de p p l ou n
+                    //é o mais prox d CMYK q da p fazer...o resto vai depende da imgs do cliente
+                    pdf.setDrawColor(0.0, 0.0, 0.0, 1.0);
+                    pdf.setFillColor(0.0, 0.0, 0.0, 1.0);
+                    pdf.setTextColor(0.0, 0.0, 0.0, 1.0);
                     var bgcache = this.canvas.ref.backgroundImage//copia o bg pra seta-lo novamente ( pois irei seta-lo p undefined ja,ja) apos gerar o pdf
                     //1**comente prox linha p ver margem de seguranca */
                    var bgT = this.canvas.ref.backgroundImage.toDataURL('image/png',1.0)//COMENTE PARA VER A MARGEM DE SEGURANCA
@@ -102,6 +105,8 @@ export default {
                     let height = pdf.internal.pageSize.getHeight() -( 2 * this.canvas.sangramento )
                 
                     pdf.addImage(imgData, 'JPEG',this.canvas.sangramento,this.canvas.sangramento, width,height, undefined,'FAST')
+                  
+
                     await pdf.save('tabloide.pdf')
                     this.canvas.ref.backgroundImage = bgcache//restauro o bg
               //  })   
