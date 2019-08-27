@@ -6,8 +6,8 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --watch backend --exec \"nuxt\" --port 3000 ",
-    "build": "nuxt build",
-    "start": "cross-env NODE_ENV=production nuxt build && nuxt start",
+    "build": "cross-env NODE_ENV=production nuxt build",
+    "start": "cross-env NODE_ENV=production nuxt build",
     "generate": "nuxt generate"
   },
   "dependencies": {
