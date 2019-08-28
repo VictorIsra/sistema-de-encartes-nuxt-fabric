@@ -165,9 +165,9 @@ export default {
         }, 
         getImgURL(img){
         //se uma img nao tiver sido escolhida, retorne enm branco
-        console.log("imag ", img.name === undefined)
+        console.log("imag undefined? ", img.name === undefined)
         const path = img.name === undefined ? "" : "../../../uploads/fotos/" + img.name
-        console.log("path é ", path)
+       // console.log("path é ", path)
             if(path === '')
                 return
             else{

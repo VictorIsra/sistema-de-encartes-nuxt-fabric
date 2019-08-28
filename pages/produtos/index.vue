@@ -152,6 +152,12 @@
       class="elevation-1"
       :search="search"
     > 
+    <template slot="no-data">
+      <v-alert :value="true" class="text-xs-center title" color="success">
+      Não há nenhum produto cadastrado no sistema. 
+      Clique no botão 'adiconar produto' para cadastrar um novo produto.
+      </v-alert>
+    </template>
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
         <td class="text-xs-center"><img :src="getImgURL(props.item)" width="50px" height="50px" v-bind:alt="props.item.img.src"></td>
         <td class="text-xs-center">{{ props.item.nome }}</td>
@@ -233,7 +239,7 @@
       snackBar: false,
       userType: '',//autoexplicativo, porra xD
       campanhaInfos: '',
-      campanha_id: '5d5b03ad75885d1e18bd4e02', //'5d2f6b45384572128c682715',//é hardcoded pois o cadastro de produto é sempre feito nessa id 
+     // campanha_id: '5d5b03ad75885d1e18bd4e02', //'5d2f6b45384572128c682715',//é hardcoded pois o cadastro de produto é sempre feito nessa id 
       produtosQtdadeInfo: {//referente a qtdade de protudos cadastrados e metas, nao é o this.campanhaInfo.produtos ou this.campanhaInfo.qtdade pois este só da o fetch uma unica vez, vou mudar seu valor a lvl de app, e a lvl de bd somente atraves da pag de campanhas ;)
         meta: '',
         qtdade: ''
@@ -349,12 +355,12 @@
     methods: {
       initialize () {
         this.userType = this.$store.state.auth.userType
-        if(this.campanha_id !== undefined && this.campanha_id !== '-1'){
+       // if(this.campanha_id !== undefined && this.campanha_id !== '-1'){
         //  this.fetchCampanhaInfo()
           this.fetchProdutos()
-        }  
-        else
-          console.log("escolhaprodutos.vue : nenhum id valido por hora ")  
+       // }  
+        //else
+          //console.log("escolhaprodutos.vue : nenhum id valido por hora ")  
       },
       async fetchCampanhaInfo(){
         //pega info dessa campanha hardocded que simboliza o cadastro dos produtos do sistmea
@@ -405,8 +411,8 @@
         if(targetId === undefined)//mas qt dou um get do bd, ele seta o _id direto como um atributo, esse if vai ajustar pra ambos os casos xD
           targetId = this.editedItem._id
         const imgSrc = this.editedItem.img.src//path pra img que irei excluir
-        confirm('Você tem certeza de que deseja remover este item?') && ( this.itens.splice(index, 1) && this.decrementProdutos(true) && this.removeRow(targetId,imgSrc,this.campanha_id))
-     },
+        confirm('Você tem certeza de que deseja remover este produto?') && ( this.itens.splice(index, 1) && this.removeProduto(imgSrc,targetId))
+      },
       close () {
         this.resetImgCached()
         this.resetFlags()
@@ -431,24 +437,23 @@
       async save () {
         if (this.editedIndex > -1) {//na edicao, preciso editar antes do assign, se nao vou modificar uma copia q nao é mais usada
             this.editUserInputs()          
-              this.snackMsg = 'Produto editado com sucesso!'
+            this.snackMsg = 'Produto editado com sucesso!'
 
             //console.log(" imgs ", this.editedItem.img)
             await this.fillImgInfo('',this.editedItem)
             Object.assign(this.itens[this.editedIndex], this.editedItem)
-            this.updateRow(this.editedItem,this.campanha_id)
+            this.updateProduto(this.editedItem,this.editedItem._id)
         } else {//caso esteja adicionando algo em vez de editando
-                                                this.snackMsg = 'Produto cadastrado com sucesso!'
-
+            this.snackMsg = 'Produto cadastrado com sucesso!'
             await this.fillImgInfo(0,this.editedItem)
             this.itens.unshift(this.editedItem)//adicionar ao topo da lista, em vez de no final
             this.editUserInputs()
-            const row_id = await this.addRow(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
-            this.editedItem._id = row_id
-            this.editedItem.id = row_id
+            const produto_id = await this.addProduto(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
+            this.editedItem._id = produto_id
+            this.editedItem.id = produto_id
             this.decrementProdutos(false)//qd passo flag flase, eu INCREMENTO 
         }
-                        this.snackBar = true
+        this.snackBar = true
 
         //this.saveProdutos()
         this.close()      

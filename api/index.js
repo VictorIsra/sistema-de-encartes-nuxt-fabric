@@ -25,6 +25,9 @@ export default {
     removeImg: (data) => axios.post('/campanhas/removeImg',data)
   },
   produto: {
-    getProdutos: (data) => axios.get('/produtos/getProdutos',data)
+    getProdutos: (data) => axios.get('/produtos/getProdutos',data),
+    addProduto: (data) => axios.post('/produtos/addProduto',data),
+    updateProduto: (data) => axios.patch('/produtos/updateProduto',data),
+    removeProduto: (data) => axios.put('/produtos/removeProduto',data)
   }
 }

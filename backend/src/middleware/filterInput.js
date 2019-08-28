@@ -9,7 +9,7 @@ const filterInput = function(req,res,next){
         if(key !== '_id')
             filtrado[key] = produtos[key]
     })
-    console.log("middleware me deu: ",filtrado)
+   // console.log("middleware me deu: ",filtrado)
     req.body.produtos = filtrado
     next()
 }
