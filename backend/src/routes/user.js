@@ -107,10 +107,10 @@ router.post('/users/login', async (req,res) => {
     try{
         const user = await User.findByCredentials(req.body.user, req.body.password)//f q eu irei definir
         const token = await user.generateAuthToken()//criarei esse metodo a lvl de instancia
-        //console.log("ACHOA")
+       // console.log("ACHOA")
         res.status(202).send({user,token})
     }catch(e){
-       // console.log("N ACHOU")
+        //console.log("N ACHOU")
         res.status(404).send(e)//n sei pq, se passo só send(e), ele n printa nada
     }
 })

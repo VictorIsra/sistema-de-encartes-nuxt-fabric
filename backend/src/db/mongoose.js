@@ -10,6 +10,7 @@ if(process.env.NODE_ENV == 'production'){
     })
 }else{
     //se conecta com o bd
+  //  console.log("lalalaaaaaaaa")
     mongoose.connect('mongodb://127.0.0.1:27017/encarte-api',{
         useNewUrlParser: true,
         useCreateIndex: true ,//cria o index automaticamente, bem nice

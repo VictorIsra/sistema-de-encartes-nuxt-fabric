@@ -86,7 +86,7 @@
         <!-- trecho com avat + nome do user..ate podia ser um compoennte aparte mas n tem pq xD -->
         <v-layout justify-center fill-height>
           <v-divider  vertical
-                      class="white"
+                     
           ></v-divider>
         </v-layout>
         <user-profile/>

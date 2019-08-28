@@ -28,7 +28,7 @@
             
           </v-list-tile>
         </v-list>
-        <v-divider class="primary"></v-divider>
+        <v-divider></v-divider>
 
         <v-list>
           <v-list-tile 
@@ -46,7 +46,7 @@
             </v-tooltip> 
           </v-list-tile>
         </v-list>
-        <v-divider class="primary"></v-divider>
+        <v-divider></v-divider>
         <v-list>
           <v-list-tile
           >

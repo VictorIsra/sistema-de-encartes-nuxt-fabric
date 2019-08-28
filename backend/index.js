@@ -2,6 +2,7 @@ const express = require('express')
 require('./src/db/mongoose')//garante que vai conectar ao bd
 const userRoute = require('./src/routes/user')
 const campanhaRoute = require('./src/routes/campanhas')
+const produtoRoute = require ('./src/routes/produtos')
 // const multer = require('multer')//p faze uploado da img pra um folder
 // const fs = require('fs')//p deletar a img de um folder ( path)
 // const crypto = require('crypto')
@@ -43,6 +44,7 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.json())//parsea automaticamente os json pra objeto, dai posso acessar no body
 app.use(userRoute)
 app.use(campanhaRoute)
+app.use(produtoRoute)
 
 // export the server middleware
 module.exports = {//em vez de escutar uma porta, exporto isso pro nuxt.config que ele irá 'escutar'

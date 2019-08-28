@@ -23,5 +23,8 @@ export default {
     removeRow: (data) => axios.put('/campanhas/removeRow',data),//remove uma row de produtos de uma campanha
     uploadImg: (data) => axios.post('/campanhas/uploadImg',data),
     removeImg: (data) => axios.post('/campanhas/removeImg',data)
+  },
+  produto: {
+    getProdutos: (data) => axios.get('/produtos/getProdutos',data)
   }
 }

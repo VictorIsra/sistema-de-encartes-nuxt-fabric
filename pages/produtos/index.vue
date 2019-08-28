@@ -210,9 +210,9 @@
   import imgUpload from '../../components/campanhas/generalUseComponents/image_upload.vue'
   import datas from  '../../components/campanhas/generalUseComponents/datas.vue'
   import formatInputMixin from '../../components/mixins/FormatInputMixin.js'
-  import crudMixin from '../../components/mixins/CRUD.js'
+  import produtoMixin from '../../components/mixins/produtoMixin.js'
   import bgDialog from '../../components/campanhas/generalUseComponents/bgDialog.vue'
-import compleDialog from '../../components/campanhas/generalUseComponents/compleDialog.vue'
+  import compleDialog from '../../components/campanhas/generalUseComponents/compleDialog.vue'
 
   export default {
     components: {
@@ -223,7 +223,7 @@ import compleDialog from '../../components/campanhas/generalUseComponents/comple
     },
     mixins: [
       formatInputMixin,
-      crudMixin
+      produtoMixin 
     ],
     //fetchCampanhas
     //props:['campanha_id','campanhaInfos'],
@@ -350,7 +350,7 @@ import compleDialog from '../../components/campanhas/generalUseComponents/comple
       initialize () {
         this.userType = this.$store.state.auth.userType
         if(this.campanha_id !== undefined && this.campanha_id !== '-1'){
-          this.fetchCampanhaInfo()
+        //  this.fetchCampanhaInfo()
           this.fetchProdutos()
         }  
         else
@@ -358,7 +358,7 @@ import compleDialog from '../../components/campanhas/generalUseComponents/comple
       },
       async fetchCampanhaInfo(){
         //pega info dessa campanha hardocded que simboliza o cadastro dos produtos do sistmea
-        this.campanhaInfos = await this.fetchCampanhas(this.campanha_id)
+       // this.campanhaInfos = await this.fetchCampanhas(this.campanha_id)
         // if(this.campanhaInfos === null)//caso de defesa, onde n existe campanha de produtos( isso n deveria acontecer, mas pode rolar caso eu drope o db e tente acessar essa pag por ex)
         //   this.$router.push('/')
       },
@@ -555,13 +555,13 @@ import compleDialog from '../../components/campanhas/generalUseComponents/comple
         return path
       },
       async fetchProdutos(){
-        this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
-        this.setMetasProdutos()
-        this.itens.sort(function(a, b){//sortei produtos em ordem alfabetica
-            if(a.nome.toLowerCase() < b.nome.toLowerCase()) { return -1; }
-            if(a.nome.toLowerCase() > b.nome.toLowerCase()) { return 1; }
-            return 0;
-        })
+        this.itens = await this.getProdutos()///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+        // this.setMetasProdutos()
+        // this.itens.sort(function(a, b){//sortei produtos em ordem alfabetica
+        //     if(a.nome.toLowerCase() < b.nome.toLowerCase()) { return -1; }
+        //     if(a.nome.toLowerCase() > b.nome.toLowerCase()) { return 1; }
+        //     return 0;
+        // })
       },
       setMetasProdutos(){//seta o valor inicial da meta de produtos, dps, isso será controlado a lvl de app, e nao de bd. de bd somente vindo da pag campanhas. Ao interagir aqui dentro, será só a lvl de app ( incrementando e decrementando baseado nas acoes)
         this.produtosQtdadeInfo.meta = this.campanhaInfos.qtdade
