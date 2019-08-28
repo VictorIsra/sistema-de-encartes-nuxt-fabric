@@ -39,14 +39,21 @@
                     </v-flex>
                 </v-layout>
                     <v-card-text  class="sub-heading primary--text">Clique numa imagem na lista abaixo para remove-la:</v-card-text>
-                <v-toolbar class="borda">
+                <v-toolbar class="borda" v-if="dataImages.length > 0">
                  <no-ssr>
                     <v-list class="scroll-y">
                         <vue-select-image :useLabel="true" :dataImages="dataImages" h='30px' w='30px' @onselectimage="addImg">
                         </vue-select-image>
                     </v-list>
                 </no-ssr> 
-                </v-toolbar>    
+                </v-toolbar>
+                <v-toolbar v-else class="white--text title warning">
+                    <v-flex class="text-xs-center">
+                        <span>
+                        Ainda não há backgrounds cadastrados.
+                        </span>
+                    </v-flex>
+                </v-toolbar>   
             <v-card>
             </v-card>    
             </v-card-text>       
@@ -61,13 +68,13 @@
 </template>
 
 <script>
-import crudMixin from '../../mixins/CRUD.js'
+import bgMixin from '../../mixins/bgMixin.js'
 import imgUpload from '../generalUseComponents/image_upload.vue'
 
 
 export default {
     mixins: [
-      crudMixin
+      bgMixin
     ],
     components:{
         'img-upload': imgUpload
@@ -91,10 +98,9 @@ export default {
         dataImages: [],
         itens: [],
         img: [],
-        campanha_id: '5d5b057f75885d1e18bd4e05'//campanha relativa aos backgrounds, é unica no codigo
     }),
     created(){
-        this.fetchProdutos()
+        this.fetchBgs()
     },
     methods:{
         addImg(img){
@@ -102,7 +108,7 @@ export default {
             //     return
             console.log("imggg ", img)
             img.src = "static/uploads/fotos/" + img.name
-            this.removeRow(img.row_id,img.src,this.campanha_id)
+            this.removeBackground(img.src,img.bg_id)
             this.snackMsg = 'Background removido com sucesso'
             this.snackBar = true
             this.dataImages.forEach((it,i)=>{
@@ -129,8 +135,8 @@ export default {
                 this.snackMsg = 'Novo background cafastrado com sucesso!'
 
                 item.img.src = "static/uploads/fotos/" + item.name
-                const row_id = await this.addRow(item,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
-                item.img.row_id = row_id
+                const bg_id = await this.addBackground(item)//na real nem precisava passa isso como arg mas foda-se
+                item.img.bg_id = bg_id
                 item.img.src = this.getImgURL(item.img)
                 this.snackBar = true
                 this.dataImages.push(item.img)
@@ -140,14 +146,13 @@ export default {
             }
            
         },
-        async fetchProdutos(){
-        
-            this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+        async fetchBgs(){
+            this.itens = await this.getBackgroundsSistema()///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             this.itens.forEach((p,i) => {
                 
                 if(p.img !== undefined && p.img !== ''){
                     this.img.push( p.img)
-                    this.img[i].row_id = p._id
+                    this.img[i].bg_id = p._id
                     
                 }    
             })

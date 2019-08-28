@@ -38,14 +38,21 @@
                     </v-flex>
                 </v-layout>
                     <v-card-text  class="sub-heading primary--text">Clique numa imagem na lista abaixo para remove-la:</v-card-text>
-                <v-toolbar class="borda">
+                <v-toolbar class="borda" v-if="dataImages.length > 0">
                  <no-ssr>
                     <v-list class="scroll-y">
                         <vue-select-image :useLabel="true" :dataImages="dataImages" h='30px' w='30px' @onselectimage="addImg">
                         </vue-select-image>
                     </v-list>
                 </no-ssr> 
-                </v-toolbar>    
+                </v-toolbar>
+                <v-toolbar v-else class="white--text title warning">
+                    <v-flex class="text-xs-center">
+                        <span>
+                        Ainda não há imagens complementares cadastradas.
+                        </span>
+                    </v-flex>
+                </v-toolbar>  
             <v-card>
             </v-card>    
             </v-card-text>       
@@ -59,13 +66,13 @@
 </template>
 
 <script>
-import crudMixin from '../../mixins/CRUD.js'
+import complementarMixin from '../../mixins/complementarMixin.js'
 import imgUpload from '../generalUseComponents/image_upload.vue'
 
 
 export default {
     mixins: [
-      crudMixin
+      complementarMixin
     ],
     components:{
         'img-upload': imgUpload
@@ -89,16 +96,16 @@ export default {
         dataImages: [],
         itens: [],
         img: [],
-        campanha_id: '5d5b051075885d1e18bd4e04'//campanha relativa aos backgrounds, é unica no codigo
+        compleCadastrado: false//flag que indica se ja cadastrei alguma img complementar ou n
     }),
     created(){
-        this.fetchProdutos()
+        this.fetchComplementares()
     },
     methods:{
         addImg(img){
             img.src = "static/uploads/fotos/" + img.name
             // this.removeImg(img.src)//como sao campanha especials, remove a img em removerow
-           this.removeRow(img.row_id,img.src,this.campanha_id)
+           this.removeComplementar(img.src,img.complementar_id)
            this.snackMsg = "Complemento removido com sucesso!"
            this.snackBar = true
            this.dataImages.forEach((it,i)=>{
@@ -109,39 +116,34 @@ export default {
            })
         },
         openDialog(flag){
-            
             this.imgInfo.flag = flag
             this.resetImgCached()
             this.imgInfo.flag = 0
             this.dialog = true
-
         },
         async save(flag){
             this.imgInfo.flag = flag
             let item = { img: this.dataImages}
             let flag2 = await this.fillImgInfo('',item)//retornara se salvou alguma img ou a entrada era nula e usara isso como flag
             if(flag2 != -1){
-                
-
                 item.img.src = "static/uploads/fotos/" + item.name
-                const row_id = await this.addRow(item,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
-                item.img.row_id = row_id
+                const complementar_id = await this.addComplementar(item)
+                item.img.complementar_id = complementar_id
                 this.snackMsg = "Complemento cadastrado com sucesso!"
                 this.snackBar = true
                 item.img.src = this.getImgURL(item.img)
                 this.dataImages.push(item.img)
                 this.resetImgCached()
                 this.imgInfo.flag = 0
-
             }
-           
         },
-        async fetchProdutos(){
-            this.itens = await this.getProdutos(this.campanha_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+        async fetchComplementares(){
+            this.itens = await this.getComplementar()
+
             this.itens.forEach((p,i) => {
                 if(p.img !== undefined && p.img !== ''){
                     this.img.push( p.img)
-                    this.img[i].row_id = p._id
+                    this.img[i].complementar_id = p._id
                 }    
             })
             this.img.forEach((img,i) => {

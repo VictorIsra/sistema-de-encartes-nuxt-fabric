@@ -3,14 +3,15 @@ import api from '~/api'//pra eu poder fazer as req pro axios com uma sintaxe enx
 export default {
     methods: {
         async getComplementar(){//bae de dado do sistema
+            console.log("CHAMEI O LIXO DA API CARALHO")
             try{
                 const out = await api.complementar.getComplementar({
                     // params: {
                     //     campanha_id
                     // }
                 })
-                console.log("TUDO AZUULLL ", out.data.produtos)
-                return out.data.produtos
+                
+                return out.data.complementares
             }catch(e){
                 console.log("Erro: ",e)
             }    
@@ -19,21 +20,21 @@ export default {
             try{ 
                 const saida = await api.complementar.addComplementar(
                     { 
-                        produtos:editedItem
+                        complementar:editedItem
                     }
                    // campanha_id}
                 )
                 //console.log("retornarei ", saida)
-                return saida.data.produto_id
+                return saida.data.complementar_id
             }
             catch(e){
                 console.log('erro ao tenta add linha ',e)
             }    
         },
-        removeComplementar(path,produto_id){
+        removeComplementar(path,complementar_id){
             console.log("vejaa ",path)
              api.complementar.removeComplementar({
-                produto_id,
+                complementar_id,
                 path: path //path da img que vou excluir ( lembre q excluir a linha é dif de excluir o path da img, sao operacoes dif)
              }).then(
                r => console.log("removido com sucesso: ")

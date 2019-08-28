@@ -153,9 +153,8 @@
       :search="search"
     > 
     <template slot="no-data">
-      <v-alert :value="true" class="text-xs-center title" color="success">
+      <v-alert :value="true" class="text-xs-center title" color="warning">
       Não há nenhum produto cadastrado no sistema. 
-      Clique no botão 'adiconar produto' para cadastrar um novo produto.
       </v-alert>
     </template>
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->

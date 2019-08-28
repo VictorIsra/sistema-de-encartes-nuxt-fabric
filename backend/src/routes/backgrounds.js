@@ -1,27 +1,29 @@
 const axios = require('axios')
 const express = require('express')
-const Produto = require('../models/background')
+const Background = require('../models/background')
 const router = new express.Router()
 
-router.get('/backgrounds/getBackground',async(req,res) => {
+router.get('/backgrounds/getBackgrounds',async(req,res) => {
     //pega todos os produtos do sistema
     try{
-        const produtos = await Produto.find({})
-        console.log("ACHEI :", produtos)
-        res.status(202).send({ produtos: produtos})
+        console.log("EMTRO")
+
+        const bgs = await Background.find({})
+        console.log("BGS do sistema:", bgs)
+        res.status(202).send({ bgs: bgs})
     }catch(e){
-        console.log("nao consegui achar produtos <routes/produtos.js>")
+        console.log("nao consegui achar bgs <routes/bgs.js>")
         res.status(500).send(e)
     }    
 }),
 router.post('/backgrounds/addBackground',async (req,res) => {//adiciona linha de produtos a campanha
     //const campanha_id = req.body.campanha_id//id da CAMPANHA
-    let new_produto = new Produto(req.body.produtos)//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
+    let new_bg = new Background(req.body.bgs)//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
 
     try{
-        await new_produto.save()
+        await new_bg.save()
         res.status(202).send({
-            produto_id: new_produto._id,
+            bg_id: new_bg._id,
         })
     }catch(e){
         console.log("nao consegui adicionar novo produto a colection produtos", e)
@@ -29,9 +31,9 @@ router.post('/backgrounds/addBackground',async (req,res) => {//adiciona linha de
     }
 }),
 router.put('/backgrounds/removeBackground',async(req,res)=>{
-    const produto_id = req.body.produto_id
+    const bg_id = req.body.bg_id
     const imgPath = req.body.path//path da img q irei excluir
-   
+    
     if(imgPath !== undefined ){ 
         axios.post('/campanhas/removeImg',{
             path: imgPath
@@ -41,7 +43,7 @@ router.put('/backgrounds/removeBackground',async(req,res)=>{
     else
         console.log("produtos.js removeProduto: n tem img associada pra remover ")  
     //excluo o path da img, dps excluo o produto em si
-    Produto.findByIdAndRemove( produto_id,(err,doc)=>{
+    Background.findByIdAndRemove(bg_id,(err,doc)=>{
         
         if(err){
             console.log("nao consegui remover produto ", err)

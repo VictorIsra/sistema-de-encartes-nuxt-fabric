@@ -9,8 +9,8 @@ export default {
                     //     campanha_id
                     // }
                 })
-                console.log("TUDO AZUULLL ", out.data.produtos)
-                return out.data.produtos
+                console.log("BGS ", out.data.bgs)
+                return out.data.bgs
             }catch(e){
                 console.log("Erro: ",e)
             }    
@@ -19,24 +19,24 @@ export default {
             try{ 
                 const saida = await api.background.addBackground(
                     { 
-                        produtos:editedItem
+                        bgs:editedItem
                     }
                    // campanha_id}
                 )
                 //console.log("retornarei ", saida)
-                return saida.data.produto_id
+                return saida.data.bg_id
             }
             catch(e){
                 console.log('erro ao tenta add linha ',e)
             }    
         },
-        removeBackground(path,produto_id){
+        removeBackground(path,bg_id){
             console.log("vejaa ",path)
              api.background.removeBackground({
-                produto_id,
+                bg_id,
                 path: path //path da img que vou excluir ( lembre q excluir a linha é dif de excluir o path da img, sao operacoes dif)
              }).then(
-               r => console.log("removido com sucesso: ")
+               r => console.log(" bg removido com sucesso: ")
              )
              .catch(e => console.log(e))
         },
