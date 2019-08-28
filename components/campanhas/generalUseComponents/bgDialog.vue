@@ -98,8 +98,8 @@ export default {
     },
     methods:{
         addImg(img){
-            if(img.name === "5b2bc6320b3ceb5987d57580af503e50.png")//bg padrao q n pode ser deletado
-                return
+            // if(img.name === "5b2bc6320b3ceb5987d57580af503e50.png")//bg padrao q n pode ser deletado
+            //     return
             console.log("imggg ", img)
             img.src = "static/uploads/fotos/" + img.name
             this.removeRow(img.row_id,img.src,this.campanha_id)

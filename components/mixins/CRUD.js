@@ -122,7 +122,7 @@ export default {
              api.campanha.removeRow({
                  campanha_id,
                  row_id: row_id,
-                 path: path //path da img que vou excluir ( lembre q excluir a linha é dif de excluir o path da img, sao operacoes dif)
+                // path: path //path da img que vou excluir ( lembre q excluir a linha é dif de excluir o path da img, sao operacoes dif)
              }).then(
                r => console.log("removido com sucesso: ")
              )

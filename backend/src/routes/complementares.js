@@ -1,9 +1,9 @@
 const axios = require('axios')
 const express = require('express')
-const Produto = require('../models/produto')
+const Produto = require('../models/complementar')
 const router = new express.Router()
 
-router.get('/produtos/getProdutos',async(req,res) => {
+router.get('/complementar/getComplementar',async(req,res) => {
     //pega todos os produtos do sistema
     try{
         const produtos = await Produto.find({})
@@ -14,7 +14,7 @@ router.get('/produtos/getProdutos',async(req,res) => {
         res.status(500).send(e)
     }    
 }),
-router.post('/produtos/addProduto',async (req,res) => {//adiciona linha de produtos a campanha
+router.post('/complementar/addComplementar',async (req,res) => {//adiciona linha de produtos a campanha
     //const campanha_id = req.body.campanha_id//id da CAMPANHA
     let new_produto = new Produto(req.body.produtos)//linha a ser adicionada ao array de produtos ja filtrada pelo middleware
 
@@ -28,7 +28,7 @@ router.post('/produtos/addProduto',async (req,res) => {//adiciona linha de produ
         res.status(500).send("nao consegui adicionar novo produto a colection produtos" + e )//n sei pq, se passo só send(e), ele n printa nada
     }
 }),
-router.patch('/produtos/updateProduto',async(req,res) => {
+router.patch('/complementar/updateComplementar',async(req,res) => {
     const produto_id = req.body.produto_id
     const produtos = req.body.produtos//linha a ser atualizada ao array de produtos
     try{
@@ -41,7 +41,7 @@ router.patch('/produtos/updateProduto',async(req,res) => {
         res.status(404).send(e)
     } 
 }),
-router.put('/produtos/removeProduto',async(req,res)=>{
+router.put('/complementar/removeComplementar',async(req,res)=>{
     const produto_id = req.body.produto_id
     const imgPath = req.body.path//path da img q irei excluir
    

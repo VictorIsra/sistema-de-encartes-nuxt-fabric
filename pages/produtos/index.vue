@@ -560,7 +560,7 @@
         return path
       },
       async fetchProdutos(){
-        this.itens = await this.getProdutos()///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+        this.itens = await this.getProdutosSistema()///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
         // this.setMetasProdutos()
         // this.itens.sort(function(a, b){//sortei produtos em ordem alfabetica
         //     if(a.nome.toLowerCase() < b.nome.toLowerCase()) { return -1; }

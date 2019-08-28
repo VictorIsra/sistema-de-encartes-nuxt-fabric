@@ -12,13 +12,20 @@
        
         </v-snackbar>
         </div>           
-     <v-toolbar>
+      <v-toolbar v-if="prodcadastrado">
         <no-ssr>
             <v-list class="scroll-y">
                 <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="onSelectImage">
                 </vue-select-image>
-            </v-list>
+            </v-list> 
         </no-ssr>       
+    </v-toolbar>
+    <v-toolbar v-else class="white--text title warning">
+      <v-flex class="text-xs-center">
+        <span>
+        Ainda não há produtos cadastrados no sistema.
+        </span>
+      </v-flex>
     </v-toolbar>
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
     <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{produtosQtdadeInfo.qtdade}}/{{produtosQtdadeInfo.meta}}</span>
@@ -216,6 +223,7 @@
     data: () => ({
       //variaveis necessarias pra lidar c lista de produtos do si
       dataImages: [],
+      prodcadastrado: false,//se tiver algo cadastrado na base de dados do sistema, isso sera true, se nao, false
       selected: [],//objetos selecionados  ( linhas da tabela selecionadas)
       selectedImg: '', //imagem da lista de produtos selecionada
       imgs: [],//imgs cadastradas no si
@@ -359,8 +367,15 @@
           console.log("escolhaprodutos.vue : nenhum id valido por hora ")  
       },
        async fetchProdList(){//pega produtos cadastrados no si
-            const prodListID = '5d5b03ad75885d1e18bd4e02'//é unico no programa todo
-            const lista = await this.getProdutos(prodListID)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+            const lista = await this.getProdutosSistema()///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+            
+            if(lista.length === 0){
+              this.prodcadastrado = false
+            
+            }  
+            else
+              this.prodcadastrado = true
+
             lista.forEach(p => {
                 if(p.img !== undefined && p.img !== '')
                     this.imgs.push( {

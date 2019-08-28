@@ -129,21 +129,8 @@ router.put('/campanhas/removeRow',async(req,res)=>{
     //rempve uma linha da tabela
     const campanha_id = req.body.campanha_id
     const row_id = req.body.row_id
-    //n exclui mais pois agora s imgs vem de uma base comum!
-    const imgPath = req.body.path//path da img q irei excluir
-    console.log("IDD ", campanha_id, " img path ", imgPath)
-    //só pode excluir img da base de dados, que é essa(s) campanha(s) é(sao) hardcoded
-    //ou seja, só essas duas ids tem permissao de defato deeltar uma fot,bg, oq seja do sistema //5d4223b924a1f1483c193259  bg                 // 5d478c3082c8e55273f6bad1   comple
-    if(imgPath !== undefined && (campanha_id === '5d5b03ad75885d1e18bd4e02' || campanha_id === '5d5b057f75885d1e18bd4e05'|| campanha_id === '5d5b051075885d1e18bd4e04')){//será undefined caso o item n tenha foto associada
-        console.log("VAIII DELETA")
-        axios.post('/campanhas/removeImg',{
-            path: imgPath
-        }).then(r => console.log("deleteeei"))
-        .catch(e => console.log("erro xd ", e))
-    }  
-    else
-        console.log("wtf como assim xddd ")  
-    //excluo o path da img, dps excluo a linha em si, tanto faz a ordem ja q sao operacoes independentes
+   
+    //excluo a linha em si, tanto faz a ordem ja q sao operacoes independentes
     Campanha.findOneAndUpdate({_id: campanha_id}, { $pull: {produtos:{_id:row_id}}},(err,doc)=>{
         console.log("AGORA ATUA id ", row_id)
         if(err){

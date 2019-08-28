@@ -2,9 +2,9 @@ import api from '~/api'//pra eu poder fazer as req pro axios com uma sintaxe enx
 
 export default {
     methods: {
-        async getProdutosSistema(){//bae de dado do sistema
+        async getBackgroundsSistema(){//bae de dado do sistema
             try{
-                const out = await api.produto.getProdutos({
+                const out = await api.background.getBackgrounds({
                     // params: {
                     //     campanha_id
                     // }
@@ -15,9 +15,9 @@ export default {
                 console.log("Erro: ",e)
             }    
         },
-        async addProduto(editedItem){//vai virar um mixin
+        async addBackground(editedItem){//vai virar um mixin
             try{ 
-                const saida = await api.produto.addProduto(
+                const saida = await api.background.addBackground(
                     { 
                         produtos:editedItem
                     }
@@ -30,25 +30,9 @@ export default {
                 console.log('erro ao tenta add linha ',e)
             }    
         },
-        updateProduto(editedItem,produto_id){//a lvl de bd, serve tano pra editar uma linha qt pra criar uma, ja q uma linha é um objeto dentro de uma campanha
-            var img_id = ''
-            console.log("entradas ",editedItem, " id: ", produto_id)
-            if(editedItem._id.data !== undefined)//primeira edicao apos criar algo existe um _id.data, nos outros casos apenas _id, entao cuidado
-                img_id = editedItem._id.data
-            else
-                img_id = editedItem._id    
-            api.produto.updateProduto({
-                   produtos:editedItem,
-                   produto_id,
-                  // row_id:img_id
-             }).then(
-                   r => console.log("produto atualizado com sucesso")
-             )
-             .catch(e => console.log("erro: ",e))
-        },
-        removeProduto(path,produto_id){
+        removeBackground(path,produto_id){
             console.log("vejaa ",path)
-             api.produto.removeProduto({
+             api.background.removeBackground({
                 produto_id,
                 path: path //path da img que vou excluir ( lembre q excluir a linha é dif de excluir o path da img, sao operacoes dif)
              }).then(
@@ -76,6 +60,6 @@ export default {
             }catch(e){
               console.log("erro ", e)
             } 
-        },
+        }
     }
 }    

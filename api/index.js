@@ -9,6 +9,22 @@ export default {
     fetch: () => axios.get('/users/all'),
     remove: (data) => axios.put('/users/remove',data)
   },
+  produto: {
+    getProdutos: (data) => axios.get('/produtos/getProdutos',data),
+    addProduto: (data) => axios.post('/produtos/addProduto',data),
+    updateProduto: (data) => axios.patch('/produtos/updateProduto',data),
+    removeProduto: (data) => axios.put('/produtos/removeProduto',data)
+  },
+  background: {
+    getBackgrounds: (data) => axios.get('/backgrounds/getBackgrounds',data),
+    addBackground: (data) => axios.post('/backgrounds/addBackground',data),
+    removeBackground: (data) => axios.put('/backgrounds/removeBackground',data)
+  },
+  complementar: {
+    getComplementar: (data) => axios.get('/complementares/getComplementar',data),
+    addComplementar: (data) => axios.post('/complementares/addComplementar',data),
+    removeComplementar: (data) => axios.put('/complementares/removeComplementar',data)
+  },
   campanha: {
     getProdutos: (data) => axios.get('/campanhas/produtos',data),//pega vetor de produtos de uma campanha particular
     getGeneralInfo: (data) => axios.get('/campanhas/generalInfo',data),//pega as tds as info das  campanhas ( com excecao dos produtos)
@@ -24,10 +40,4 @@ export default {
     uploadImg: (data) => axios.post('/campanhas/uploadImg',data),
     removeImg: (data) => axios.post('/campanhas/removeImg',data)
   },
-  produto: {
-    getProdutos: (data) => axios.get('/produtos/getProdutos',data),
-    addProduto: (data) => axios.post('/produtos/addProduto',data),
-    updateProduto: (data) => axios.patch('/produtos/updateProduto',data),
-    removeProduto: (data) => axios.put('/produtos/removeProduto',data)
-  }
 }

@@ -10,14 +10,21 @@
             {{snackMsg}}</span>
        
         </v-snackbar>
-        </div>           
-     <v-toolbar>
+        </div>      
+     <v-toolbar v-if="prodcadastrado">
         <no-ssr>
             <v-list class="scroll-y">
                 <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="onSelectImage">
                 </vue-select-image>
-            </v-list>
+            </v-list> 
         </no-ssr>       
+    </v-toolbar>
+    <v-toolbar v-else class="white--text title warning">
+      <v-flex class="text-xs-center">
+        <span>
+        Ainda não há produtos cadastrados no sistema.
+        </span>
+      </v-flex>
     </v-toolbar>
     <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
     <span v-if="campanhaInfos" class="title font-weight-regular primary--text">Produtos cadastrados: {{produtosQtdadeInfo.qtdade}}/{{produtosQtdadeInfo.meta}}</span>
@@ -201,6 +208,7 @@
   import datas from  '../generalUseComponents/datas.vue'
   import formatInputMixin from '../../mixins/FormatInputMixin.js'
   import crudMixin from '../../mixins/CRUD.js'
+  import produtoMixin from '../../mixins/produtoMixin.js'
 
   export default {
     components: {
@@ -209,13 +217,15 @@
     },
     mixins: [
       formatInputMixin,
-      crudMixin
+      crudMixin,
+      produtoMixin 
     ],
     props:['campanha_id','campanhaInfos'],
     data: () => ({
          y: 'top',
       snackMsg: 'Produto cadastrado com sucesso!',
       snackBar: false,
+      prodcadastrado: false,//se tiver algo cadastrado na base de dados do sistema, isso sera true, se nao, false
       //variaveis necessarias pra lidar c lista de produtos do si
       dataImages: [],
       selected: [],//objetos selecionados  ( linhas da tabela selecionadas)
@@ -351,7 +361,7 @@
         return validos
       },
       initialize () {
-                  this.fetchProdList()
+        this.fetchProdList()
 
         if(this.campanha_id !== undefined && this.campanha_id !== '-1'){
           this.fetchProdutos()
@@ -360,8 +370,15 @@
           console.log("escolhaprodutos.vue : nenhum id valido por hora ")  
       },
        async fetchProdList(){//pega produtos cadastrados no si
-            const prodListID = '5d5b03ad75885d1e18bd4e02'//é unico no programa todo
-            const lista = await this.getProdutos(prodListID)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+            const lista = await this.getProdutosSistema()///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+            
+            if(lista.length === 0){
+              this.prodcadastrado = false
+            
+            }  
+            else
+              this.prodcadastrado = true
+
             lista.forEach(p => {
                 if(p.img !== undefined && p.img !== '')
                     this.imgs.push( {
