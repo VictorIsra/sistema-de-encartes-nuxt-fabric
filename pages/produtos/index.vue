@@ -153,7 +153,7 @@
       :search="search"
     > 
     <template slot="no-data">
-      <v-alert :value="true" class="text-xs-center title" color="warning">
+      <v-alert :value="true" class="text-xs-center title" color="primary">
       Não há nenhum produto cadastrado no sistema. 
       </v-alert>
     </template>

@@ -47,7 +47,7 @@
                     </v-list>
                 </no-ssr> 
                 </v-toolbar>
-                <v-toolbar v-else class="white--text title warning">
+                <v-toolbar v-else class="white--text title primary">
                     <v-flex class="text-xs-center">
                         <span>
                         Ainda não há backgrounds cadastrados.
