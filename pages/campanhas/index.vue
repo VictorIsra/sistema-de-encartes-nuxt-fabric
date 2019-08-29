@@ -29,6 +29,11 @@
       class="elevation-1"
       :search="search"
     >
+     <template slot="no-data">
+      <v-alert :value="true" class="text-xs-center title" color="primary">
+      Não há campanhas. 
+      </v-alert>
+    </template>
     <template slot="headerCell" slot-scope="props">
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">

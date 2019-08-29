@@ -79,7 +79,7 @@
               <template v-slot:activator="{ on }">
                 <!-- usuario padrao nao pode ser deletado, ele é o root xD -->
                 <v-icon
-                  v-if="props.item._id !== '5d5b00b375885d1e18bd4df7'"
+                  v-if="props.item.name !== 'root' && props.item.login !== 'root'"
                   small
                   @click="deleteItem(props.item)"
                   v-on="on"

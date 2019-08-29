@@ -7,7 +7,8 @@ export default {
     logout: (data) => axios.post('users/logout',data),
     signin: (data) => axios.post('/users/signin',data),
     fetch: () => axios.get('/users/all'),
-    remove: (data) => axios.put('/users/remove',data)
+    remove: (data) => axios.put('/users/remove',data),
+    checkRoot: (data) => axios.get('users/checkRoot')
   },
   produto: {
     getProdutos: (data) => axios.get('/produtos/getProdutos',data),

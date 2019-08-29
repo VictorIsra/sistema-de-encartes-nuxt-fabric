@@ -34,6 +34,7 @@
 <script>
 import Logo from '~/components/Logo.vue'
 import VuetifyLogo from '~/components/VuetifyLogo.vue'
+import userCRUD  from '~/components/mixins/userCRUD.js'
 
 export default {
   layout: 'login',
@@ -42,12 +43,16 @@ export default {
     Logo,
     VuetifyLogo
   },
+  mixins: [userCRUD],
   data: () => ({
     user:'',
     senha:'',
     erroStatus: false,
     showPws: false,
   }),
+  created () {
+    this.checkRoot()//cria o user root se nao existir.
+  },  
   methods: {
     doLogin(){
         this.$store.dispatch('auth/login', {
@@ -64,8 +69,21 @@ export default {
         this.erroStatus = true
       })
     },
-    logInRules(){
+    async checkRoot(){//se o user root n existir, crie-o
       
+      const existeUserRoot = await this.checkRootUser()
+      //console.log("E AI: ",existeUserRoot)
+      if(!existeUserRoot){
+      //  console.log("IREI CRIAR")
+        await this.registrar({
+          userType: "admin",
+          name: "root",
+          login: "root",
+          email: "root@gmail.com",
+          empresa: "--",
+          password: "toor123456"
+        })
+      }
     }
   }
 }

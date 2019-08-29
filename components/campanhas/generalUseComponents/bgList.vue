@@ -13,7 +13,7 @@
 
 </template>
 <script>
-import crudMixin from '../../../components/mixins/CRUD.js'
+import bgMixin from '../../../components/mixins/bgMixin.js'
 import {fabric}  from "fabric"
 
 export default {
@@ -28,10 +28,10 @@ export default {
         usingBg:''
     }),
     mounted(){
-        this.fetchProdutos()
+        this.fetchBgs()
     },
     props: ['canvas','currBg','flag'],
-    mixins:[crudMixin],
+    mixins:[bgMixin],
     watch:{
         flag(){
             this.usingBg = this.canvas.backgroundImage
@@ -70,9 +70,8 @@ export default {
                 scaleY: this.canvas.height /temp.height})
             })
         },    
-        async fetchProdutos(){
-            let campanhaBg_id = "5d5b057f75885d1e18bd4e05"
-            this.itens = await this.getProdutos(campanhaBg_id)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+        async fetchBgs(){
+            this.itens = await this.getBackgroundsSistema()///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             this.itens.forEach(p => {
                 if(p.img !== undefined && p.img !== '')
                     this.bgs.push( p.img)  

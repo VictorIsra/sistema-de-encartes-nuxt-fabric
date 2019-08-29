@@ -26,7 +26,18 @@ export default {
             })
             .then(r => console.log("user removido com sucesso! "))
             .catch(e => console.log("n pude remover user..."))
+        },
+        async checkRootUser(){
+            try{
+               const existe = await api.auth.checkRoot()
+               //console.log("EXISTE? ",existe.data === '')
+               if(existe.data === '')
+                return false//n existe user root, entao mandarei a flag e irei cria-lo
+               else
+                return true 
+            }catch(e){
+                console.log("userCRUD.js: error em checkRootUser()")
+            }
         }
-
     }
 }

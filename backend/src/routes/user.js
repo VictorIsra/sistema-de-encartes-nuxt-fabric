@@ -14,6 +14,16 @@ router.get('/users/me',auth,async(req,res) => {
     }
     res.send({user,token: req.token})//req.user foi passado pela funcao auth qd o user foi autenticado xD
 })
+router.get('/users/checkRoot', async (req,res) => {
+    User.findOne({
+        login: 'root'
+    },(err, user) => {
+        if(err)
+            res.status(200).send(err)
+        else
+            res.status(200).send(user)
+    })
+})
 router.get('/users/all',async(req,res)=>{
     try{
         const users = await User.find({})
