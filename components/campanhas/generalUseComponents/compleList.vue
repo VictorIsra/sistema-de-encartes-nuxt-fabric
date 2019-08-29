@@ -1,16 +1,21 @@
 <template>
     <div>
-        <v-toolbar>
+        <v-toolbar v-if="compleImages.length > 0">
         <no-ssr>
             <v-list class="scroll-y">
               <vue-select-image :useLabel="true" :dataImages="compleImages" h='50px' w='50px' @onselectimage="addComple">
                 </vue-select-image>
             </v-list>
         </no-ssr> 
-            
+        </v-toolbar>
+        <v-toolbar v-else class="white--text primary">
+        <v-flex class="text-xs-center">
+            <span>
+            Ainda não há imagens complementares cadastradas no sistema.
+            </span>
+        </v-flex>
         </v-toolbar>
     </div> 
-
 </template>
 <script>
 import complementarMixin from '../../../components/mixins/complementarMixin.js'
@@ -49,7 +54,7 @@ export default {
         },    
         getImgURL(img){
         //se uma img nao tiver sido escolhida, retorne enm branco
-        console.log("entrou c ",img)
+        //console.log("entrou c ",img)
         const path = img.name === undefined ? "" : "../../../uploads/fotos/" + img.name
         return path
         },

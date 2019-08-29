@@ -6,7 +6,7 @@ export const actions = {
   nuxtServerInit ({dispatch, router}, context) {
 
     return new Promise((resolve, reject) => {
-      console.log("CHAMO SERVER INITI ERECE")
+      console.log("nuxtServerInit invocado")
       const cookies = cookie.parse(context.req.headers.cookie || '')
       if (cookies.hasOwnProperty('x-access-token')) {
         setAuthToken(cookies['x-access-token'])
@@ -17,7 +17,7 @@ export const actions = {
             resolve(true)
           })
           .catch(error => {
-            console.log('erro ao tentar auth/fetch no store: index.js honra ', error)
+            console.log('erro ao tentar auth/fetch no store: index.js ', error)
             this.$router.push('/login')                       
             resetAuthToken()
             resolve(false)

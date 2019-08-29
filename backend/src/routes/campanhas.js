@@ -112,7 +112,7 @@ router.post('/campanhas/createCampanha', async (req,res) => {//cria campanha
         })
        
     }catch(e){
-        console.log(" zik foi ", e)
+        console.log("erro ao tentar criar campanha ", e)
         res.status(500).send("n rolou de criar campanha" + e )//n sei pq, se passo só send(e), ele n printa nada
     }
 })

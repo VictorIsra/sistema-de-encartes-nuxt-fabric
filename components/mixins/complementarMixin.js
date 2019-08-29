@@ -3,7 +3,6 @@ import api from '~/api'//pra eu poder fazer as req pro axios com uma sintaxe enx
 export default {
     methods: {
         async getComplementar(){//bae de dado do sistema
-            console.log("CHAMEI O LIXO DA API CARALHO")
             try{
                 const out = await api.complementar.getComplementar({
                     // params: {

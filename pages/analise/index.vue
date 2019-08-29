@@ -38,7 +38,7 @@
       class="elevation-1"
     >
      <template slot="no-data">
-      <v-alert :value="true" class="text-xs-center title" color="primary">
+      <v-alert :value="true" class="text-xs-center" color="primary">
       Não há campanhas prontas para análise da direção. 
       </v-alert>
     </template>

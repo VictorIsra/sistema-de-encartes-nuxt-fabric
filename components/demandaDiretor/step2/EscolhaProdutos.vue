@@ -141,6 +141,11 @@
       v-model="selected"
       item-key="_id"
     > 
+    <template slot="no-data">
+      <v-alert :value="true" class="text-xs-center" color="primary">
+      Ainda não há produtos adicionados a esta campanha. 
+      </v-alert>
+    </template>
       <template v-slot:items="props"> <!-- {{ props.item.img }}-->
         <td> 
          <v-checkbox class="justify-center layout px-0"

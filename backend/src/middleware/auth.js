@@ -10,7 +10,7 @@ const auth = async (req,res,next) => {
        // console.log("decoded: ", decoded)
         const user = await User.findOne({_id:decoded._id,'tokens.token':token})//procurará no array de tokens ( tokens.token ) se há um match com o token passado pelo user no req.header
         if(!user){
-            console.log("zika auth.js backend")
+            console.log("user nao encontrado: auth.js backend")
             //console.log("ths ", this.$router)
             throw new Error()
         }//n precisa de else, poiss o throw retorna um error

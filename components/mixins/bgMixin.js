@@ -9,7 +9,7 @@ export default {
                     //     campanha_id
                     // }
                 })
-                console.log("BGS ", out.data.bgs)
+                //console.log("BGS ", out.data.bgs)
                 return out.data.bgs
             }catch(e){
                 console.log("Erro: ",e)

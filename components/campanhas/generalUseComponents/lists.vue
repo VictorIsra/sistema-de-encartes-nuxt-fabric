@@ -7,18 +7,18 @@
                 </vue-select-image>
             </v-list>
         </no-ssr> 
-                            <v-flex xs1>
-                            <span class="heading indigo--text">Tag:</span>
-                            </v-flex>
-                            <v-flex xs2>
-                            <v-select
-                                :items="tags"
-                                v-model="tag"
-                            ></v-select>
-                            </v-flex>
+        <v-divider vertical class="mx-1"></v-divider>
+        <v-flex xs1>
+            <span class="heading indigo--text"> Tag:</span>
+        </v-flex>
+         <v-flex xs2>
+            <v-select
+                :items="tags"
+                v-model="tag"
+            ></v-select>
+        </v-flex>
         </v-toolbar>
     </div> 
-
 </template>
 <script>
 import crudMixin from '../../../components/mixins/CRUD.js'
@@ -83,7 +83,7 @@ export default {
         },
         getImgURL(img){
                 //se uma img nao tiver sido escolhida, retorne enm branco
-                console.log("entrou c ",img, "  ser undine? ", img.name === undefined)
+                //console.log("entrou c ",img, "  ser undine? ", img.name === undefined)
                 const path = img.name === undefined ? "" : "../../../uploads/fotos/" + img.name
                 return path
         },

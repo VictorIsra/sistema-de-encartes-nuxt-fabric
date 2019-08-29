@@ -1,16 +1,21 @@
 <template>
-    <div>
-        <v-toolbar>
+    <span>
+        <v-toolbar v-if="bgsImages.length > 0">
         <no-ssr>
             <v-list class="scroll-y">
               <vue-select-image :useLabel="true" :dataImages="bgsImages" h='50px' w='50px' @onselectimage="addBg">
                 </vue-select-image>
             </v-list>
         </no-ssr> 
-            
         </v-toolbar>
-    </div> 
-
+        <v-toolbar v-else class="white--text primary">
+        <v-flex class="text-xs-center">
+            <span>
+            Ainda não há backgrounds cadastrados no sistema.
+            </span>
+        </v-flex>
+        </v-toolbar>
+    </span> 
 </template>
 <script>
 import bgMixin from '../../../components/mixins/bgMixin.js'
@@ -25,6 +30,7 @@ export default {
             img: '',
             path: ''
         },
+        default_bg: '../../../static/icones/bg_default.png',
         usingBg:''
     }),
     mounted(){
@@ -35,11 +41,15 @@ export default {
     watch:{
         flag(){
             this.usingBg = this.canvas.backgroundImage
-             console.log("vejamo ", this.canvas.backgroundImage)
+             //console.log("vejamo ", this.canvas.backgroundImage)
 
             if(this.usingBg === '' || this.usingBg === undefined || this.usingBg === null ){
-                this.usingBg = this.bgsImages[0]//aplica uma img default na ausencia de uma
-                this.addBg(this.usingBg)
+                // this.usingBg = this.default_bg//aplica uma img default na ausencia de uma
+                // console.log("veja o bg ", this.usingBg)
+                // //this.addBg(this.usingBg)
+                // this.canvas.setBackgroundImage(this.usingBg,this.canvas.renderAll.bind(this.canvas), {
+                //   // backgroundImageStretch: true
+                // })  
             }//aprece idiota mas essa logic q rola
             //console.log("veee aa ", this.usingBg ," <--")
             else if(this.usingBg !== '' && this.usingBg !== undefined && this.usingBg !== null)
@@ -84,7 +94,7 @@ export default {
         }, 
         getImgURL(img){
         //se uma img nao tiver sido escolhida, retorne enm branco
-        console.log("entrou c ",img)
+        //console.log("entrou c ",img)
         const path = img.name === undefined ? "" : "../../../uploads/fotos/" + img.name
         return path
         },

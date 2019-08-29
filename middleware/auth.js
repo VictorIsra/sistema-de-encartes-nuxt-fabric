@@ -15,7 +15,7 @@ export default function ({store, redirect, route}) {
   const urlForbiddenForDirector = /(^\/campanhas(\/|$))|(^\/admin(\/|$))|(^\/users(\/|$))/i.test(route.fullPath)
   const urlForbiddenForTabloideUser = /(^\/campanhas(\/|$))|(^\/admin(\/|$))|(^\/analise(\/|$))|(^\/users(\/|$))/i.test(route.fullPath)
   
-  console.log("to akiii (middleware/auth.js)")
+  console.log("middleware checado (middleware/auth.js)")
   if (!userIsLoggedIn && urlRequiresAuth) {
     return redirect('/login')
   }
@@ -24,17 +24,17 @@ export default function ({store, redirect, route}) {
   }
   //restringe o acesso a paginas/subpaginas baseado no tipo de user
   if(userIsLoggedIn){
-    console.log("opa to logado e estou em ", route.fullPath, " e sou user do tipo: ", userType)
+    console.log("logado em ", route.fullPath, " user do tipo: ", userType)
     if(userType === 'client' && urlForbiddenForCompradores){
-      console.log("vaza cliente..")
+      //console.log("vaza cliente..")
       return redirect('/')
     }
     else if(userType === 'diretor' && urlForbiddenForDirector){
-      console.log("vaza diretor..")
+     // console.log("vaza diretor..")
       return redirect('/')
     }
     else if(userType === 'tabloide' && urlForbiddenForTabloideUser){
-      console.log("vaza tablodeUser..")
+      //console.log("vaza tablodeUser..")
       return redirect('/')
     }
   }

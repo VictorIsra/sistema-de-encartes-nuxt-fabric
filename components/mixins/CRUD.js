@@ -85,7 +85,7 @@ export default {
                 console.log("saida ",campanhaAtualizada)
                 return campanhaAtualizada.data
             }catch(e){
-                console.log("zika updatestauts ",e)
+                console.log("erro em updateStatus ",e)
             }
         },
         async addRow(editedItem,campanha_id){//vai virar um mixin

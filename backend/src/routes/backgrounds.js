@@ -6,10 +6,8 @@ const router = new express.Router()
 router.get('/backgrounds/getBackgrounds',async(req,res) => {
     //pega todos os produtos do sistema
     try{
-        console.log("EMTRO")
-
         const bgs = await Background.find({})
-        console.log("BGS do sistema:", bgs)
+       // console.log("BGS do sistema:", bgs)
         res.status(202).send({ bgs: bgs})
     }catch(e){
         console.log("nao consegui achar bgs <routes/bgs.js>")

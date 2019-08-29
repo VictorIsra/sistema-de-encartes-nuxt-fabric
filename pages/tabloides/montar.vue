@@ -142,32 +142,29 @@
                 <v-toolbar v-show="lever3" :class="{'borda': canvasMode !== 'portrait',
                                 'borda2': canvasMode === 'portrait'}">
                 <no-ssr>
-                    <v-flex>
-                    <listsx v-show="filtroEscolhido === 'produtos'" :campanha_id="campanha_id" :canvas="canvas"></listsx>
+                    <v-flex sm12 v-show="filtroEscolhido === 'produtos'">
+                        <listsx :campanha_id="campanha_id" :canvas="canvas"></listsx>
                     </v-flex>
-                    <v-flex>
-                    <bg-lista   v-show="filtroEscolhido === 'backgrounds'" :canvas=canvas :currBg=currBg :flag=bgFlag></bg-lista>
+                    <v-flex sm12 v-show="filtroEscolhido === 'backgrounds'">
+                        <bg-lista :canvas=canvas :currBg=currBg :flag=bgFlag></bg-lista>
                     </v-flex>
-                    <v-flex>
-                    <comple-list v-show="filtroEscolhido === 'complementares'" :canvas=canvas></comple-list>
+                    <v-flex justify-space-around v-show="filtroEscolhido === 'complementares'">
+                        <comple-list :canvas=canvas></comple-list>
                     </v-flex>
                 </no-ssr> 
-                                            <v-divider vertical class="mx-1"></v-divider>
-
-                <add-polygon v-if="filtroEscolhido === 'complementares'" :canvas="canvas" :colors=colors></add-polygon>
-
                 <v-divider vertical class="mx-1"></v-divider>
-                        <template>
-                            <v-flex xs1>
-                            <span class="heading indigo--text">Filtrar por</span>
-                            </v-flex>
-                            <v-flex xs2>
-                            <v-select
-                                :items="filtro"
-                                v-model="filtroEscolhido"
-                            ></v-select>
-                            </v-flex>
-                        </template>    
+                <add-polygon v-if="filtroEscolhido === 'complementares'" :canvas="canvas" :colors=colors></add-polygon>
+                <template>
+                    <v-flex xs1>
+                        <span class="heading indigo--text">Filtrar por</span>
+                    </v-flex>
+                    <v-flex xs2>
+                        <v-select
+                            :items="filtro"
+                            v-model="filtroEscolhido"
+                        ></v-select>
+                    </v-flex>
+                </template>    
             </v-toolbar>      
             </template>
             <template v-else>
@@ -290,8 +287,7 @@ export default {
         canvasInfo:{
             handler(){
                 this.canvasInfo.folha = this.folha
-              //  this.canvasInfo.sangramento = 3
-                console.log("INFOOO2 ",this.canvasInfo.folha, " bleed ", this.canvasInfo.sangramento)
+                //console.log("INFOOO2 ",this.canvasInfo.folha, " bleed ", this.canvasInfo.sangramento)
             },deep:true
         },
        checkGrid(){
@@ -367,13 +363,13 @@ export default {
         setCanvasDim(objeto){
             if(objeto.data === undefined)
                 return
-                console.log("EEEETA emite ", objeto , " objto data ", objeto.data)  
+                //console.log("EEEETA emite ", objeto , " objto data ", objeto.data)  
             this.canvas.setHeight(objeto.data.width)
             this.canvas.setWidth(objeto.data.height)
             this.folha = objeto.data.folha
             this.canvasInfo.folha = this.folha
             this.canvasInfo.sangramento = objeto.data.sangramento
-            console.log(" this,folha ", this.folha , " objeto ",objeto.data, "SG TIRCTIC ",objeto.data.sangramento, this.canvasInfo.sangramento)
+            //console.log(" this,folha ", this.folha , " objeto ",objeto.data, "SG TIRCTIC ",objeto.data.sangramento, this.canvasInfo.sangramento)
             let auxwidth = this.canvas.width
             this.bgFlag = !this.bgFlag   
 
@@ -567,16 +563,15 @@ export default {
         },
         getImgURL(img){
         //se uma img nao tiver sido escolhida, retorne enm branco
-        console.log("entrou c ",img)
+        //console.log("entrou c ",img)
         const path = img.name === undefined ? "" : "../../../uploads/fotos/" + img.name
         return path
         },
         async carregarTabloide(){
             const jsonTabloide = await this.loadTabloide(this.campanha_id)
             this.canvas.loadFromJSON(jsonTabloide.data.tabloide)
-            console.log("vejo calma la ", this.canvas.backgroundImage)
+            //console.log("vejo calma la ", this.canvas.backgroundImage)
             this.currBg = jsonTabloide.data.tabloide_bg
-            console.log("VEEEEJA ", this.currBg)
             this.folha = jsonTabloide.data.tabloide_folha
             this.canvas.renderAll()
            
