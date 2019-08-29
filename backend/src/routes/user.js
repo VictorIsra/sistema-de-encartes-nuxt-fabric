@@ -27,7 +27,11 @@ router.get('/users/checkRoot', async (req,res) => {
 router.get('/users/all',async(req,res)=>{
     try{
         const users = await User.find({})
-        console.log(" ok ", users)
+        users.forEach( user => {//só p proteger info valiozas, p n chegar no client hehe..mas nao salvo, entao n mudei n obd xD
+            user.password = '--',
+            user.tokens = []
+            console.log(user)
+        })
         res.status(202).send(users)  
     }
     catch(e){

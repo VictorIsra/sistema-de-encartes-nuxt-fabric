@@ -165,7 +165,7 @@
       },
       async fetchInfos(){//pega as info relativas aos users
         this.infos = await this.fetchAll()
-        console.log("infos ", this.infos)
+        //console.log("infos ", this.infos)
       },
       save () {
         if (this.editedIndex > -1) {
