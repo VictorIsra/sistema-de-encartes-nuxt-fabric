@@ -214,6 +214,7 @@
   import datas from  '../generalUseComponents/datas.vue'
   import formatInputMixin from '../../mixins/FormatInputMixin.js'
   import crudMixin from '../../mixins/CRUD.js'
+  import produtoMixin from '../../mixins/produtoMixin.js'
 
   export default {
     components: {
@@ -222,7 +223,8 @@
     },
     mixins: [
       formatInputMixin,
-      crudMixin
+      crudMixin,
+      produtoMixin
     ],
     props:['campanha_id','campanhaInfos'],
     data: () => ({
