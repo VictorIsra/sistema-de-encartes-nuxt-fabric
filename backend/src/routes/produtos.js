@@ -20,8 +20,11 @@ router.post('/produtos/addProduto',async (req,res) => {//adiciona linha de produ
 
     try{
         await new_produto.save()
+        new_produto.produto_id = new_produto._id
+        await new_produto.save()
+
         res.status(202).send({
-            produto_id: new_produto._id,
+           produto_id: new_produto._id,
         })
     }catch(e){
         console.log("nao consegui adicionar novo produto a colection produtos", e)
@@ -31,11 +34,13 @@ router.post('/produtos/addProduto',async (req,res) => {//adiciona linha de produ
 router.patch('/produtos/updateProduto',async(req,res) => {
     const produto_id = req.body.produto_id
     const produtos = req.body.produtos//linha a ser atualizada ao array de produtos
+    console.log("RECEBI EDICAR: PRODUTOS ",produtos, " IDD ", produto_id)
     try{
-        Produto.findOneAndUpdate(produto_id, produtos,{ new: true },(err,atualizado) => {
+        console.log("farei nada ainda")
+        Produto.findByIdAndUpdate(produto_id, produtos,{ new: true },(err,atualizado) => {
             if(err)
                 return res.status(500).send(err)
-        })
+       })
     }catch(e){
         console.log("errorrr no be ", e)
         res.status(404).send(e)

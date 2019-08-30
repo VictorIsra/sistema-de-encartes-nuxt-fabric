@@ -449,7 +449,7 @@
             this.editUserInputs()
             const produto_id = await this.addProduto(this.editedItem,this.campanha_id)//na real nem precisava passa isso como arg mas foda-se
             this.editedItem._id = produto_id
-            this.editedItem.id = produto_id
+            console.log("ITEM CRIADO ", this.editedItem)
             this.decrementProdutos(false)//qd passo flag flase, eu INCREMENTO 
         }
         this.snackBar = true
