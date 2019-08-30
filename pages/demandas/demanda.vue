@@ -22,13 +22,20 @@
             vertical
           ></v-divider>
       </v-toolbar>
-          <v-toolbar v-if="userType === 'diretor'">
+          <v-toolbar v-if="userType === 'diretor' && dataImages.length > 0">
             <no-ssr>
                 <v-list class="scroll-y">
                     <vue-select-image :useLabel="true" :dataImages="dataImages" h='50px' w='50px' @onselectimage="onSelectImage">
                     </vue-select-image>
                 </v-list>
             </no-ssr>       
+          </v-toolbar>
+            <v-toolbar v-if="userType === 'diretor' && dataImages.length === 0" class="white--text primary">
+            <v-flex class="text-xs-center">
+              <span>
+              Ainda não há produtos cadastrados no sistema.
+              </span>
+            </v-flex>
           </v-toolbar>
         <v-toolbar flat color="white"><!-- store direto pq no date n da p referenciar o this e tal, mais facil assim -->
         <span class="title font-weight-regular primary--text">Clique em uma linha para ver as observações relativas a demanda</span>
@@ -244,6 +251,7 @@
   import formatInputMixin from '../../components/mixins/FormatInputMixin.js'
   import crudMixin from '../../components/mixins/CRUD.js'
   import demandas from '../../components/demandaDiretor/step4/demandas.vue'
+  import produtoMixin from '../../components/mixins/produtoMixin.js'
 
   export default {
     components: {
@@ -252,7 +260,8 @@
     },
     mixins: [
       formatInputMixin,
-      crudMixin
+      crudMixin,
+      produtoMixin
     ],
     
     props:['campanhaInfos'],
@@ -402,8 +411,7 @@
         }
       },
       async fetchProdList(){//pega produtos cadastrados no si
-            const prodListID = '5d5b03ad75885d1e18bd4e02'//é unico no programa todo
-            const lista = await this.getProdutos(prodListID)///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
+            const lista = await this.getProdutosSistema()///fazer campanhaInfos.produtos n funciona idealmente aqui pois ele seta o valor antes da prop ser setada ( tem a ver com sync e promises). por isso, aqui é melhor deixar assim. ja em 'concorrencia.vue', posso usar o campanha.Infos.produtos com seguranca
             lista.forEach(p => {
                 if(p.img !== undefined && p.img !== '')
                     this.imgs.push( {

@@ -1,14 +1,6 @@
 <template>
   <div>
     <v-card-title primary-title class="justify-center">
-          <div>
-            <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-            <v-btn v-on="on" to="/analise" color="primary">voltar para análise de campanhas</v-btn>
-            </template>
-            <span span class="subheading">Voltar para painel de análise das campanhas</span>
-            </v-tooltip>
-          </div> 
     </v-card-title>
     <v-stepper  v-model="e1">
       <v-stepper-header>
@@ -19,15 +11,15 @@
 
         <v-stepper-step :complete="e1 >= 3" step="3">Análise da concorrência</v-stepper-step>
          
-        <v-divider></v-divider>
+      <!--  <v-divider></v-divider>
 
-        <v-stepper-step step="4">Criação de demandas</v-stepper-step>
+        <v-stepper-step step="4">Criação de demandas</v-stepper-step> -->
 
 
       </v-stepper-header>
 
       <v-stepper-items>
- <v-card-title v-if="campanha_infos !== '' && e1 > 0" primary-title class="justify-center primary">
+  <v-card-title v-if="campanha_infos !== '' && e1 > 0" primary-title class="justify-center primary">
           <div>
             <span class="white--text font-weight-black caption">Empresa: <span>{{campanha_infos.empresa}} </span> <v-divider vertical></v-divider> Campanha: <span> {{campanha_infos.campanha}} </span> <v-divider vertical></v-divider> Tipo: <span> {{campanha_infos.tipos_campanhas}} </span> <v-divider vertical></v-divider> Data de início: <span> {{campanha_infos.data_inicio}} </span> <v-divider vertical></v-divider> Data de término: <span> {{campanha_infos.data_termino}} </span><v-divider vertical></v-divider>  Margem de lucro mínima: <span> {{campanha_infos.marluc}} </span></span>  
           </div>
@@ -38,6 +30,12 @@
           </v-container>
         
           <div class="text-xs-right">
+            <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+            <v-btn v-on="on" to="/analise" color="primary">voltar para análise de campanhas</v-btn>
+            </template>
+            <span span class="subheading">Voltar para painel de análise das campanhas</span>
+            </v-tooltip>
             <v-btn
               color="primary"
               @click="changeFlag"
@@ -54,17 +52,23 @@
           </v-container>
             
           <div class="text-xs-right">
+            <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+            <v-btn v-on="on" to="/analise" color="primary">voltar para análise de campanhas</v-btn>
+            </template>
+            <span span class="subheading">Voltar para painel de análise das campanhas</span>
+            </v-tooltip>
             <v-btn color="primary" @click="e1 = e1 - 1">Voltar para escolha de produtos</v-btn>
-            <v-btn 
+         <!--   <v-btn 
               color="primary"
               @click="changeFlag"
             >
              Próximo
-            </v-btn>
+            </v-btn> -->
           </div>
         </v-stepper-content>
 
-        <v-stepper-content step="4">
+     <!--   <v-stepper-content step="4">
       
           <v-container grid-list-xs>
             <demandas :campanhaInfos="campanha_infos" :flagC="concorrenceFlag" :campanha_id="campanha_id" :produtosQtdadeInfo="produtosQtdadeInfo"/>
@@ -84,11 +88,12 @@
             <span span class="subheading">Enviar essa campanha e suas demandas para o painel de demandas</span>
             </v-tooltip>
           </div>
-        </v-stepper-content>
+        </v-stepper-content> -->
       </v-stepper-items>
     </v-stepper>
 
   </div>
+  
 </template>
 
 <script>

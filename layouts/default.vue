@@ -247,8 +247,8 @@ export default {
           else if(this.user === 'diretor'){
             if( it.title === 'Início')
               it.showMe = true
-            else if( it.title === 'Demandas')
-              it.showMe = true
+           // else if( it.title === 'Demandas')
+             // it.showMe = true
             else if( it.title === 'Produtos')
               it.showMe = true
             else if(it.title == 'Analisar campanhas')    

@@ -18,7 +18,7 @@
             </div>
         </v-card-title>
         <v-spacer></v-spacer>
-         <v-layout class="justify-end">
+        <!-- <v-layout class="justify-end">
           <v-layout align-center class="justify-end">
             <h3 class="subheading font-weight-regular primary--text">Criar mini demanda</h3>  
           </v-layout>  
@@ -30,7 +30,7 @@
            </template>
           <span class="subheading">Criar uma mini demanda</span>
           </v-tooltip>   
-          </v-layout>
+          </v-layout> -->
     </v-toolbar>
     <v-data-table
       :headers="headers"

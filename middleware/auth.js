@@ -11,8 +11,8 @@ export default function ({store, redirect, route}) {
   const urlRequiresAuth = /(^\/campanhas(\/|$))|(^\/produtos(\/|$))|(^\/(\/|$))|(^\/tabloides(\/|$))|(^\/admin(\/|$))|(^\/analise(\/|$))|(^\/users(\/|$))|(^\/demandas(\/|$))/i.test(route.fullPath)//restringe qq coisa que comece com '/campanhas/'
   const urlRequiresNonAuth = /^\/login(\/|$)/.test(route.fullPath)
   //criterios pra restringir acesso a pag/subpaginas baseado no tipo de user:
-  const urlForbiddenForCompradores = /(^\/admin(\/|$))|(^\/analise(\/|$))|(^\/users(\/|$))/i.test(route.fullPath)
-  const urlForbiddenForDirector = /(^\/campanhas(\/|$))|(^\/admin(\/|$))|(^\/users(\/|$))/i.test(route.fullPath)
+  const urlForbiddenForCompradores = /(^\/admin(\/|$))|(^\/analise(\/|$))|(^\/users(\/|$))|(^\/demandas(\/|$))/i.test(route.fullPath)
+  const urlForbiddenForDirector = /(^\/campanhas(\/|$))|(^\/admin(\/|$))|(^\/users(\/|$))|(^\/demandas(\/|$))/i.test(route.fullPath)
   const urlForbiddenForTabloideUser = /(^\/campanhas(\/|$))|(^\/admin(\/|$))|(^\/analise(\/|$))|(^\/users(\/|$))/i.test(route.fullPath)
   
   console.log("middleware checado (middleware/auth.js)")
