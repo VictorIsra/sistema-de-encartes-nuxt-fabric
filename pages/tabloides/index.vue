@@ -47,7 +47,7 @@
       :search="search"
     >
      <template slot="no-data">
-      <v-alert :value="true" class="text-xs-center title" color="primary">
+      <v-alert :value="true" class="text-xs-center" color="primary">
       Não há tablóides. 
       </v-alert>
     </template>

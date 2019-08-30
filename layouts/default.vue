@@ -235,8 +235,8 @@ export default {
               it.showMe = true
             else if( it.title === 'Produtos')
               it.showMe = true
-            else if( it.title === 'Demandas')
-              it.showMe = true
+          //  else if( it.title === 'Demandas')
+            //  it.showMe = true
             else if(it.title === 'Campanhas')
               it.showMe = true
             else if(it.title === 'Tablóides')    
