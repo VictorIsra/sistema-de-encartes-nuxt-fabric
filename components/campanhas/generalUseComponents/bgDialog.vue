@@ -38,6 +38,16 @@
                         </v-tooltip> 
                     </v-flex>
                 </v-layout>
+                   <div v-if="loading" class="text-xs-center">
+                       <span class="subheading">
+                           <div class="primary--text">
+                        carregando imagem, por favor aguarde...
+                           </div> </span>
+                        <v-progress-circular
+                        indeterminate
+                        color="primary"
+                        ></v-progress-circular>
+                    </div>
                     <v-card-text  class="sub-heading primary--text">Clique numa imagem na lista abaixo para remove-la:</v-card-text>
                 <v-toolbar class="borda" v-if="dataImages.length > 0">
                  <no-ssr>
@@ -81,6 +91,7 @@ export default {
     },
     data: () => ({
             y: 'top',
+            loading: false,
       snackMsg: 'Produto cadastrado com sucesso!',
       snackBar: false,
         cachedImgInfo: {
@@ -128,6 +139,7 @@ export default {
         },
         async save(flag){
             this.imgInfo.flag = flag
+            this.loading = true
             let item = { img: this.dataImages}
             let flag2 = await this.fillImgInfo('',item)//retornara se salvou alguma img ou a entrada era nula e usara isso como flag
             if(flag2 != -1){
@@ -142,7 +154,7 @@ export default {
                 this.dataImages.push(item.img)
                 this.resetImgCached()
                 this.imgInfo.flag = 0
-
+                this.loading = false
             }
            
         },
